@@ -3,8 +3,8 @@ package com.group.practic.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.group.practic.dto.CourseDTO;
-import com.group.practic.entity.Course;
-import com.group.practic.entity.Student;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentOnCourse;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.repository.StudentRepository;
@@ -18,39 +18,39 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
 
-    public List<Course> findAll() {
+    public List<CourseEntity> findAll() {
         return courseRepository.findAll();
     }
 
-    public Course save(CourseDTO courseDTO) {
-        return courseRepository.save(new Course(courseDTO.name(), courseDTO.description()));
+    public CourseEntity save(CourseDTO courseDTO) {
+        return courseRepository.save(new CourseEntity(courseDTO.name(), courseDTO.description()));
     }
 
-    public Course addStudentToCourse(String courseName, String studentPib) {
-        Course course = courseRepository.findByName(courseName);
-        Student student = studentRepository.findByPib(studentPib);
+    public CourseEntity addStudentToCourse(String courseName, String studentPib) {
+        CourseEntity courseEntity = courseRepository.findByName(courseName);
+        StudentEntity studentEntity = studentRepository.findByPib(studentPib);
 
-        if (course != null && student != null) {
+        if (courseEntity != null && studentEntity != null) {
             StudentOnCourse studentOnCourse = new StudentOnCourse();
-            studentOnCourse.setStudent(student);
-            studentOnCourse.setCourse(course);
+            studentOnCourse.setStudent(studentEntity);
+            studentOnCourse.setCourse(courseEntity);
 
-            course.getStudents().add(studentOnCourse);
+            courseEntity.getStudents().add(studentOnCourse);
 
-            return courseRepository.save(course);
+            return courseRepository.save(courseEntity);
         }
 
         return null;
     }
 
-    public List<Student> findAllStudentsByCourseName(String courseName) {
-        Course foundByNameCourse = courseRepository.findByName(courseName);
+    public List<StudentEntity> findAllStudentsByCourseName(String courseName) {
+        CourseEntity foundByNameCourseEntity = courseRepository.findByName(courseName);
 
-        if (foundByNameCourse == null) {
+        if (foundByNameCourseEntity == null) {
             return List.of();
         }
 
-        return foundByNameCourse.getStudents().stream()
+        return foundByNameCourseEntity.getStudents().stream()
                 .filter(studentOnCourse -> !studentOnCourse.getInactive())
                 .map(StudentOnCourse::getStudent)
                 .toList();

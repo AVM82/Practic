@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.group.practic.dto.CourseDTO;
-import com.group.practic.entity.Course;
+import com.group.practic.entity.CourseEntity;
 import com.group.practic.service.CourseService;
 
 import java.util.List;
@@ -18,24 +18,24 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<List<Course>> getAllCourses() {
+    public ResponseEntity<List<CourseEntity>> getAllCourses() {
         return ResponseEntity.ok(courseService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody CourseDTO courseDTO) {
+    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseDTO courseDTO) {
         return new ResponseEntity<>(courseService.save(courseDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("/{courseName}")
-    public ResponseEntity<Course> addStudentToCourse(@PathVariable String courseName,
-                                                     @RequestParam String studentPib) {
-        Course course = courseService.addStudentToCourse(courseName, studentPib);
+    public ResponseEntity<CourseEntity> addStudentToCourse(@PathVariable String courseName,
+                                                           @RequestParam String studentPib) {
+        CourseEntity courseEntity = courseService.addStudentToCourse(courseName, studentPib);
 
-        if (course == null) {
+        if (courseEntity == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return new ResponseEntity<>(course, HttpStatus.CREATED);
+        return new ResponseEntity<>(courseEntity, HttpStatus.CREATED);
     }
 }

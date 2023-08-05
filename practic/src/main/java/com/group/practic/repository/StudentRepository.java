@@ -2,10 +2,10 @@ package com.group.practic.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.group.practic.entity.Student;
+import com.group.practic.entity.StudentEntity;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Long> {
+public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
-    Student findByPib(String studentPib);
+    StudentEntity findByPib(String studentPib);
 }

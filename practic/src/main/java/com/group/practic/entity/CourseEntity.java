@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Course {
+public class CourseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -22,7 +22,7 @@ public class Course {
     Long inactive;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    Mentor mentor;
+    MentorEntity mentor;
 
     @ManyToOne(fetch = FetchType.EAGER)
     CourseType courseType;
@@ -34,7 +34,7 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Set<StudentOnCourse> students = new HashSet<>();
 
-    public Course(String name, String description) {
+    public CourseEntity(String name, String description) {
         this.name = name;
         this.description = description;
     }

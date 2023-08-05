@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.group.practic.dto.StudentDTO;
-import com.group.practic.entity.Student;
+import com.group.practic.entity.StudentEntity;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.StudentService;
 
@@ -20,10 +20,10 @@ public class StudentController {
     private final CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<List<Student>> findAllStudentsByCourseName(
+    public ResponseEntity<List<StudentEntity>> findAllStudentsByCourseName(
             @RequestParam(required = false) String courseName) {
         if (courseName != null) {
-            List<Student> allStudentsByCourseName = courseService.findAllStudentsByCourseName(courseName);
+            List<StudentEntity> allStudentsByCourseName = courseService.findAllStudentsByCourseName(courseName);
             return ResponseEntity.ok(allStudentsByCourseName);
         }
 
@@ -31,7 +31,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createCourse(@RequestBody StudentDTO studentDTO) {
+    public ResponseEntity<StudentEntity> createCourse(@RequestBody StudentDTO studentDTO) {
         return new ResponseEntity<>(studentService.save(studentDTO), HttpStatus.CREATED);
     }
 }

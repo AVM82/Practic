@@ -17,14 +17,12 @@ public class StudentOnCourse {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "student_id")
-    Student student;
+    StudentEntity student;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "course_id")
     @JsonIgnore
-    Course course;
+    CourseEntity course;
 
     Boolean inactive = false;
 

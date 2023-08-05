@@ -1,20 +1,18 @@
 package com.group.practic.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity
+@Table(name = "student")
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class Student {
+public class StudentEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -46,7 +44,7 @@ public class Student {
 
 	String locality;
 
-	public Student(String pib, String notes, String email, String phone, Long discordId) {
+	public StudentEntity(String pib, String notes, String email, String phone, Long discordId) {
 		this.pib = pib;
 		this.notes = notes;
 		this.email = email;

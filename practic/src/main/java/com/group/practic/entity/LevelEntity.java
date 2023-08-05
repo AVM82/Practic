@@ -4,22 +4,18 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "level")
 @Data
-public class Chapter {
+public class LevelEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	Long id;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	Level level;
-
-	@ManyToOne(fetch=FetchType.LAZY)
-	Chapter parent;
+	CourseEntity course;
 	
-	Integer step;
+	Integer number;
 
-	String name;
-	
-	String refs;
+	Long discordChat; //?
 }
