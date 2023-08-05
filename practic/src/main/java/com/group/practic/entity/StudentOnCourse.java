@@ -26,7 +26,7 @@ public class StudentOnCourse {
 
     Boolean inactive = false;
 
-    Boolean ban;
+    Boolean ban = false;
 
     LocalDate registered;
 

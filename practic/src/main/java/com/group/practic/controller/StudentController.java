@@ -21,9 +21,13 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<List<StudentEntity>> findAllStudentsByCourseName(
-            @RequestParam(required = false) String courseName) {
+            @RequestParam(required = false) String courseName,
+            @RequestParam(required = false, defaultValue = "false") Boolean inactive,
+            @RequestParam(required = false, defaultValue = "false") Boolean ban) {
+
         if (courseName != null) {
-            List<StudentEntity> allStudentsByCourseName = courseService.findAllStudentsByCourseName(courseName);
+            List<StudentEntity> allStudentsByCourseName =
+                    courseService.findAllStudentsByCourseName(courseName, inactive, ban);
             return ResponseEntity.ok(allStudentsByCourseName);
         }
 

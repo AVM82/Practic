@@ -43,7 +43,7 @@ public class CourseService {
         return null;
     }
 
-    public List<StudentEntity> findAllStudentsByCourseName(String courseName) {
+    public List<StudentEntity> findAllStudentsByCourseName(String courseName, Boolean inactive, Boolean ban) {
         CourseEntity foundByNameCourseEntity = courseRepository.findByName(courseName);
 
         if (foundByNameCourseEntity == null) {
@@ -51,7 +51,8 @@ public class CourseService {
         }
 
         return foundByNameCourseEntity.getStudents().stream()
-                .filter(studentOnCourse -> !studentOnCourse.getInactive())
+                .filter(studentOnCourse ->
+                        studentOnCourse.getInactive().equals(inactive) && studentOnCourse.getBan().equals(ban))
                 .map(StudentOnCourse::getStudent)
                 .toList();
     }
