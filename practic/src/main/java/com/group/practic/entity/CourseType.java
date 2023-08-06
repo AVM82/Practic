@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class CourseType {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Long id;
-	
-	String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long id;
+
+    String name;
 }

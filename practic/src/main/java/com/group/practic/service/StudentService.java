@@ -1,12 +1,12 @@
 package com.group.practic.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import com.group.practic.dto.StudentDTO;
+import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.repository.StudentRepository;
-
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +18,9 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public StudentEntity save(StudentDTO studentDTO) {
-        return studentRepository.save(new StudentEntity(studentDTO.pib(), studentDTO.notes(), studentDTO.email(),
-                studentDTO.phone(), studentDTO.discordId()));
+    public StudentEntity save(StudentDto studentDto) {
+        return studentRepository.save(
+                new StudentEntity(studentDto.pib(), studentDto.notes(), studentDto.email(),
+                studentDto.phone(), studentDto.discordId()));
     }
 }

@@ -1,13 +1,23 @@
 package com.group.practic.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 
 @Table(name = "person",
         uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 @Entity
-
 public class PersonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +31,9 @@ public class PersonEntity {
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
-    @JoinTable(name = "persons_roles",joinColumns =
-    @JoinColumn(name = "person_id",referencedColumnName = "id"),inverseJoinColumns =
-    @JoinColumn(name = "role_id",referencedColumnName = "id"))
+    @JoinTable(name = "persons_roles",
+            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<RoleEntity> roles;
 
     public PersonEntity(String name, String linkedin, Collection<RoleEntity> roles) {
@@ -72,11 +82,11 @@ public class PersonEntity {
 
     @Override
     public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", linkedin='" + linkedin + '\'' +
-                ", roles=" + roles +
-                '}';
+        return "Person{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", linkedin='" + linkedin + '\''
+                + ", roles=" + roles
+                + '}';
     }
 }

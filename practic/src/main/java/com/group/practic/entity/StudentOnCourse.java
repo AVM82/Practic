@@ -1,11 +1,16 @@
 package com.group.practic.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UniqueStudentOnCourse",
@@ -14,7 +19,6 @@ import java.time.LocalDate;
 @Setter
 @IdClass(StudentOnCourseId.class)
 public class StudentOnCourse {
-
     @Id
     @ManyToOne
     StudentEntity student;

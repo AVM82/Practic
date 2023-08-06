@@ -1,6 +1,12 @@
 package com.group.practic.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
@@ -8,14 +14,14 @@ import lombok.Data;
 @Data
 public class LevelEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	Long id;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	CourseEntity course;
-	
-	Integer number;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    Long id;
 
-	Long discordChat; //?
+    @ManyToOne(fetch = FetchType.LAZY)
+    CourseEntity course;
+
+    Integer number;
+
+    Long discordChat; //?
 }

@@ -1,15 +1,14 @@
 package com.group.practic.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import com.group.practic.dto.CourseDTO;
+import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentOnCourse;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.repository.StudentRepository;
-
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +21,8 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
-    public CourseEntity save(CourseDTO courseDTO) {
-        return courseRepository.save(new CourseEntity(courseDTO.name(), courseDTO.description()));
+    public CourseEntity save(CourseDto courseDto) {
+        return courseRepository.save(new CourseEntity(courseDto.name(), courseDto.description()));
     }
 
     public CourseEntity addStudentToCourse(String courseName, String studentPib) {
@@ -43,7 +42,8 @@ public class CourseService {
         return null;
     }
 
-    public List<StudentEntity> findAllStudentsByCourseName(String courseName, Boolean inactive, Boolean ban) {
+    public List<StudentEntity> findAllStudentsByCourseName(
+            String courseName, Boolean inactive, Boolean ban) {
         CourseEntity foundByNameCourseEntity = courseRepository.findByName(courseName);
 
         if (foundByNameCourseEntity == null) {
@@ -52,7 +52,8 @@ public class CourseService {
 
         return foundByNameCourseEntity.getStudents().stream()
                 .filter(studentOnCourse ->
-                        studentOnCourse.getInactive().equals(inactive) && studentOnCourse.getBan().equals(ban))
+                        studentOnCourse.getInactive()
+                                .equals(inactive) && studentOnCourse.getBan().equals(ban))
                 .map(StudentOnCourse::getStudent)
                 .toList();
     }

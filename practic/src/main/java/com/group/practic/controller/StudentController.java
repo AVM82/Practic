@@ -1,15 +1,19 @@
 package com.group.practic.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.group.practic.dto.StudentDTO;
+import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.StudentService;
-
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/students")
@@ -35,7 +39,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<StudentEntity> createCourse(@RequestBody StudentDTO studentDTO) {
-        return new ResponseEntity<>(studentService.save(studentDTO), HttpStatus.CREATED);
+    public ResponseEntity<StudentEntity> createCourse(@RequestBody StudentDto studentDto) {
+        return new ResponseEntity<>(studentService.save(studentDto), HttpStatus.CREATED);
     }
 }

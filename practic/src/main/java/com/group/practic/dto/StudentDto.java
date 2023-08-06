@@ -2,14 +2,14 @@ package com.group.practic.dto;
 
 import java.util.Objects;
 
-public final class StudentDTO {
+public final class StudentDto {
     private final String pib;
     private final String notes;
     private final String email;
     private final String phone;
     private final Long discordId;
 
-    StudentDTO(String pib, String notes, String email, String phone, Long discordId) {
+    StudentDto(String pib, String notes, String email, String phone, Long discordId) {
         this.pib = pib;
         this.notes = notes;
         this.email = email;
@@ -45,12 +45,12 @@ public final class StudentDTO {
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        var that = (StudentDTO) obj;
-        return Objects.equals(this.pib, that.pib) &&
-                Objects.equals(this.notes, that.notes) &&
-                Objects.equals(this.email, that.email) &&
-                Objects.equals(this.phone, that.phone) &&
-                Objects.equals(this.discordId, that.discordId);
+        var that = (StudentDto) obj;
+        return Objects.equals(this.pib, that.pib)
+                && Objects.equals(this.notes, that.notes)
+                && Objects.equals(this.email, that.email)
+                && Objects.equals(this.phone, that.phone)
+                && Objects.equals(this.discordId, that.discordId);
     }
 
     @Override
@@ -60,12 +60,12 @@ public final class StudentDTO {
 
     @Override
     public String toString() {
-        return "StudentDTO[" +
-                "pib=" + pib + ", " +
-                "notes=" + notes + ", " +
-                "email=" + email + ", " +
-                "phone=" + phone + ", " +
-                "discordId=" + discordId + ']';
+        return "StudentDTO["
+                + "pib=" + pib + ", "
+                + "notes=" + notes + ", "
+                + "email=" + email + ", "
+                + "phone=" + phone + ", "
+                + "discordId=" + discordId + ']';
     }
 
 }
