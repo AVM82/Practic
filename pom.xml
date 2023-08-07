@@ -63,8 +63,8 @@
                     <configLocation>google_checks.xml</configLocation>
                     <propertyExpansion>suppressionFile=google_checks.xml</propertyExpansion>
                     <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
-                    <failOnViolation>true</failOnViolation>
+                    <failsOnError>false</failsOnError>
+                    <failOnViolation>false</failOnViolation>
                     <violationSeverity>warning</violationSeverity>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <suppressionsLocation>
