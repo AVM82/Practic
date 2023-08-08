@@ -1,34 +1,144 @@
 package com.group.practic.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
 
 @Entity
 @Table(name = "mentor")
-@Data
 public class MentorEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	int id;
+	
+	boolean inactive;
+	
+	@ManyToMany
+	Set<CourseEntity> course; 
 
-    Boolean inactive;
+	String PIB;
+	
+	String notes;
+	
+	String email;
+	
+	String phone;
+	
+	long discordId;
+	
+	String discordName;
+	
+	String linkedinRef;
 
-    String pib;
+	
+	public MentorEntity(int id, boolean inactive, String pIB, String notes, String email, String phone, long discordId,
+			String discordName, String linkedInRef) {
+		super();
+		this.id = id;
+		this.inactive = inactive;
+		PIB = pIB;
+		this.notes = notes;
+		this.email = email;
+		this.phone = phone;
+		this.discordId = discordId;
+		this.discordName = discordName;
+		this.linkedinRef = linkedInRef;
+	}
 
-    String notes;
 
-    String email;
+	public int getId() {
+		return id;
+	}
 
-    String phone;
 
-    Long discordId;
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    String discordName;
 
-    String linkedInRef;
+	public boolean isInactive() {
+		return inactive;
+	}
+
+
+	public void setInactive(boolean inactive) {
+		this.inactive = inactive;
+	}
+
+
+	public String getPIB() {
+		return PIB;
+	}
+
+
+	public void setPIB(String pIB) {
+		PIB = pIB;
+	}
+
+
+	public String getNotes() {
+		return notes;
+	}
+
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+	public String getPhone() {
+		return phone;
+	}
+
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+
+	public long getDiscordId() {
+		return discordId;
+	}
+
+
+	public void setDiscordId(long discordId) {
+		this.discordId = discordId;
+	}
+
+
+	public String getDiscordName() {
+		return discordName;
+	}
+
+
+	public void setDiscordName(String discordName) {
+		this.discordName = discordName;
+	}
+
+
+	public String getLinkedinRef() {
+		return linkedinRef;
+	}
+
+
+	public void setLinkedinRef(String linkedinRef) {
+		this.linkedinRef = linkedinRef;
+	}
+
 }

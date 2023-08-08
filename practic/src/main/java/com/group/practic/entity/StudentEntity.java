@@ -30,6 +30,7 @@ public class StudentEntity {
     String phone;
 
     Long discordId;
+
     String discordName;
 
     String linkedInRef;
@@ -52,6 +53,26 @@ public class StudentEntity {
         this.email = email;
         this.phone = phone;
         this.discordId = discordId;
+    }
+
+    public StudentEntity(Long id, String pib, String notes, String email, String phone, long discordId,
+                          String discordName, String linkedInRef, String githubRef, String skypeRef, String facebookRef,
+                          String telegramRef, String instagramRef, String locality) {
+        super();
+        this.id = id;
+        this.pib = pib;
+        this.notes = notes;
+        this.email = email;
+        this.phone = phone;
+        this.discordId = discordId;
+        this.discordName = discordName;
+        this.linkedInRef = linkedInRef;
+        this.githubRef = githubRef;
+        this.skypeRef = skypeRef;
+        this.facebookRef = facebookRef;
+        this.telegramRef = telegramRef;
+        this.instagramRef = instagramRef;
+        this.locality = locality;
     }
 
     public void setId(Long id) {

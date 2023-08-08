@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -17,6 +18,7 @@ import lombok.Setter;
         columnNames = {"student_id", "course_id"})})
 @Getter
 @Setter
+@NoArgsConstructor
 @IdClass(StudentOnCourseId.class)
 public class StudentOnCourse {
     @Id
@@ -47,4 +49,22 @@ public class StudentOnCourse {
     String english;
 
     String purpose;
+
+    public StudentOnCourse(StudentEntity student, CourseEntity course, boolean inactive, boolean ban,
+                                 LocalDate registered, LocalDate start, LocalDate finish, int weeks, String skills, String os,
+                                 String english, String purpose) {
+        super();
+        this.student = student;
+        this.course = course;
+        this.inactive = inactive;
+        this.ban = ban;
+        this.registered = registered;
+        this.start = start;
+        this.finish = finish;
+        this.weeks = weeks;
+        this.skills = skills;
+        this.os = os;
+        this.english = english;
+        this.purpose = purpose;
+    }
 }
