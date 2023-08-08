@@ -2,12 +2,12 @@ package com.group.practic.enumeration;
 
 public enum ReportState {
 
-	ANNOUNCED,
+    ANNOUNCED,
 
-	STARTED,
+    STARTED,
 
-	FINISHED,
+    FINISHED,
 
-	CANCELLED
+    CANCELLED
 
 }

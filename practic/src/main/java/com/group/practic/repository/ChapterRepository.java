@@ -1,10 +1,10 @@
 package com.group.practic.repository;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.group.practic.entity.ChapterEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ChapterRepository extends JpaRepository <ChapterEntity, Integer> {
+public interface ChapterRepository extends JpaRepository<ChapterEntity, Integer> {
 
 }

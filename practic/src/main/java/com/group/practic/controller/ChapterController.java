@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("chapter")
 public class ChapterController {
 
-  ChapterService сhapterService;
+    ChapterService chapterService;
 
-  @Autowired
-  ChapterController(ChapterService сhapterService) {
-    this.сhapterService = сhapterService;
-  }
+    @Autowired
+    ChapterController(ChapterService chapterService) {
+        this.chapterService = chapterService;
+    }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<ChapterEntity> get(@Valid @Min(1) @PathVariable int id) {
-    return ResponseUtils.getResponse(сhapterService.get(id));
-  }
+    @GetMapping("/{id}")
+    public ResponseEntity<ChapterEntity> get(@Valid @Min(1) @PathVariable int id) {
+        return ResponseUtils.getResponse(chapterService.get(id));
+    }
 
 }

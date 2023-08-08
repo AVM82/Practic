@@ -1,15 +1,21 @@
 package com.group.practic.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
-
 
 
 @Entity
@@ -53,7 +59,9 @@ public class CourseEntity {
         mentors = Set.of();
     }
 
-    public CourseEntity(Long id, Boolean inactive, Set<AuthorEntity> authors, Set<MentorEntity> mentors, String courseType, String name, String purpose, String description, ChapterEntity additionalMaterials) {
+    public CourseEntity(Long id, Boolean inactive, Set<AuthorEntity> authors,
+                        Set<MentorEntity> mentors, String courseType, String name,
+                        String purpose, String description, ChapterEntity additionalMaterials) {
         super();
         this.id = id;
         this.inactive = inactive;

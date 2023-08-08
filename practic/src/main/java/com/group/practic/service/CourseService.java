@@ -1,15 +1,19 @@
 package com.group.practic.service;
 
 import com.group.practic.dto.CourseDto;
-import com.group.practic.entity.*;
+import com.group.practic.entity.AuthorEntity;
+import com.group.practic.entity.ChapterEntity;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.LevelEntity;
+import com.group.practic.entity.StudentEntity;
+import com.group.practic.entity.StudentOnCourse;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.repository.StudentRepository;
+import com.group.practic.structure.SimpleChapterStructure;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.group.practic.structure.SimpleChapterStructure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -71,12 +75,12 @@ public class CourseService {
 
 
     public Long create(Set<String> authors,
-                      String type,
-                      String name,
-                      String purpose,
-                      String description,
-                      Map<Integer, List<Integer>> levels,
-                      List<SimpleChapterStructure> chapters) {
+                       String type,
+                       String name,
+                       String purpose,
+                       String description,
+                       Map<Integer, List<Integer>> levels,
+                       List<SimpleChapterStructure> chapters) {
         if (levels == null || chapters == null) {
             return 0L;
         }

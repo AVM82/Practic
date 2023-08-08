@@ -55,9 +55,10 @@ public class StudentEntity {
         this.discordId = discordId;
     }
 
-    public StudentEntity(Long id, String pib, String notes, String email, String phone, long discordId,
-                          String discordName, String linkedInRef, String githubRef, String skypeRef, String facebookRef,
-                          String telegramRef, String instagramRef, String locality) {
+    public StudentEntity(Long id, String pib, String notes, String email, String phone,
+                         long discordId, String discordName, String linkedInRef, String githubRef,
+                         String skypeRef, String facebookRef, String telegramRef,
+                         String instagramRef, String locality) {
         super();
         this.id = id;
         this.pib = pib;

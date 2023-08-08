@@ -50,9 +50,9 @@ public class StudentOnCourse {
 
     String purpose;
 
-    public StudentOnCourse(StudentEntity student, CourseEntity course, boolean inactive, boolean ban,
-                                 LocalDate registered, LocalDate start, LocalDate finish, int weeks, String skills, String os,
-                                 String english, String purpose) {
+    public StudentOnCourse(StudentEntity student, CourseEntity course, boolean inactive,
+                           boolean ban, LocalDate registered, LocalDate start, LocalDate finish,
+                           int weeks, String skills, String os, String english, String purpose) {
         super();
         this.student = student;
         this.course = course;
