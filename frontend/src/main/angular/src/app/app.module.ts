@@ -6,19 +6,32 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslocoRootModule } from './transloco-root.module';
+import {HeaderComponent} from "./componets/header/header.component";
+import {CoursesComponent} from "./componets/courses/courses.component";
+import {PageNotFoundComponent} from "./componets/page-not-found/page-not-found.component";
+import {CoursesService} from "./services/courses.service";
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+      HeaderComponent,
+      CoursesComponent,
+      PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    TranslocoRootModule
+    TranslocoRootModule,
+    MatCardModule,
+    MatIconModule,
+    MatToolbarModule
   ],
-  providers: [],
+  providers: [CoursesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
