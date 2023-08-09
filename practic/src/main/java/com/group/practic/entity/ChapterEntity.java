@@ -21,87 +21,103 @@ import lombok.Data;
 @Data
 public class ChapterEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  long id;
 
-    @ManyToOne
-    @JsonIgnore
-    CourseEntity course;
+  @ManyToOne
+  @JsonIgnore
+  CourseEntity course;
 
-    int number;
+  int number;
 
-    @NotBlank
-    @Column(length = 1024)
-    String name;
+  @NotBlank
+  @Column(length = 1024)
+  String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy("number")
-    List<SubChapterEntity> subChapters = new ArrayList<>();
+  @OneToMany(cascade = CascadeType.ALL)
+  @OrderBy("number")
+  List<SubChapterEntity> subChapters = new ArrayList<>();
 
-    @ManyToOne
-    QuizEntity quiz;
+  @ManyToOne
+  QuizEntity quiz;
 
-    public ChapterEntity() {
-    }
 
-    public ChapterEntity(int id, CourseEntity course, int number, String name, QuizEntity quiz) {
-        this.id = id;
-        this.course = course;
-        this.number = number;
-        this.name = name;
-        this.quiz = quiz;
-    }
 
-    public int getId() {
-        return id;
-    }
+  public ChapterEntity() {}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  
+  public ChapterEntity(long id, CourseEntity course, int number, String name, QuizEntity quiz) {
+    this.id = id;
+    this.course = course;
+    this.number = number;
+    this.name = name;
+    this.quiz = quiz;
+  }
 
-    public CourseEntity getCourse() {
-        return course;
-    }
+  
+  public long getId() {
+    return id;
+  }
 
-    public void setCourse(CourseEntity course) {
-        this.course = course;
-    }
+  
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public int getNumber() {
-        return number;
-    }
+  
+  public CourseEntity getCourse() {
+    return course;
+  }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+  
+  public void setCourse(CourseEntity course) {
+    this.course = course;
+  }
 
-    public String getName() {
-        return name;
-    }
+  
+  public int getNumber() {
+    return number;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  
+  public void setNumber(int number) {
+    this.number = number;
+  }
 
-    public QuizEntity getQuiz() {
-        return quiz;
-    }
+  
+  public String getName() {
+    return name;
+  }
 
-    public void setQuiz(QuizEntity quiz) {
-        this.quiz = quiz;
-    }
+  
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public List<SubChapterEntity> getSubChapters() {
-        return subChapters;
-    }
 
-    public void setSubChapters(List<SubChapterEntity> subChapters) {
-        this.subChapters = subChapters;
-    }
+  public QuizEntity getQuiz() {
+    return quiz;
+  }
 
-    public void addSubChapter(SubChapterEntity subChapter) {
-        subChapters.add(subChapter);
-    }
+
+  public void setQuiz(QuizEntity quiz) {
+    this.quiz = quiz;
+  }
+
+
+  public List<SubChapterEntity> getSubChapters() {
+    return subChapters;
+  }
+
+
+  public void setSubChapters(List<SubChapterEntity> subChapters) {
+    this.subChapters = subChapters;
+  }
+
+
+  public void addSubChapter(SubChapterEntity subChapter) {
+    subChapters.add(subChapter);
+  }
+
 }

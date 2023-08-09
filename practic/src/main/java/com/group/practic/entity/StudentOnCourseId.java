@@ -4,6 +4,6 @@ import java.io.Serializable;
 
 public class StudentOnCourseId implements Serializable {
 
-    private Long student;
-    private Long course;
+    private long student;
+    private long course;
 }

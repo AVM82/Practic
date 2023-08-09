@@ -15,87 +15,84 @@ import jakarta.validation.constraints.NotBlank;
 @Table(name = "sub_sub_chapter")
 public class SubSubChapterEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    CourseEntity course;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JsonIgnore
+  SubChapterEntity subChapter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    SubChapterEntity subChapter;
+  int number;
 
-    int number;
+  @NotBlank
+  @Column(length = 1024)
+  String name;
 
-    @NotBlank
-    @Column(length = 1024)
-    String name;
+  @Column(length = 1024)
+  String refs;
 
-    @Column(length = 1024)
-    String refs;
 
-    public SubSubChapterEntity() {
-    }
+  public SubSubChapterEntity() {}
 
-    public SubSubChapterEntity(int id, CourseEntity course, SubChapterEntity subChapter, int number,
-                               @NotBlank String name, String refs) {
-        super();
-        this.id = id;
-        this.course = course;
-        this.subChapter = subChapter;
-        this.number = number;
-        this.name = name;
-        this.refs = refs;
-    }
 
-    public int getId() {
-        return id;
-    }
+  public SubSubChapterEntity(long id, SubChapterEntity subChapter, int number, String name,
+      String refs) {
+    this.id = id;
+    this.subChapter = subChapter;
+    this.number = number;
+    this.name = name;
+    this.refs = refs;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public CourseEntity getCourse() {
-        return course;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public void setCourse(CourseEntity course) {
-        this.course = course;
-    }
 
-    public SubChapterEntity getSubChapter() {
-        return subChapter;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public void setSubChapter(SubChapterEntity subChapter) {
-        this.subChapter = subChapter;
-    }
 
-    public int getNumber() {
-        return number;
-    }
+  public SubChapterEntity getSubChapter() {
+    return subChapter;
+  }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
 
-    public String getName() {
-        return name;
-    }
+  public void setSubChapter(SubChapterEntity subChapter) {
+    this.subChapter = subChapter;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getRefs() {
-        return refs;
-    }
+  public int getNumber() {
+    return number;
+  }
 
-    public void setRefs(String refs) {
-        this.refs = refs;
-    }
+
+  public void setNumber(int number) {
+    this.number = number;
+  }
+
+
+  public String getName() {
+    return name;
+  }
+
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+
+  public String getRefs() {
+    return refs;
+  }
+
+
+  public void setRefs(String refs) {
+    this.refs = refs;
+  }
 
 }

@@ -20,105 +20,108 @@ import java.util.List;
 @Table(name = "sub_chapter")
 public class SubChapterEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    CourseEntity course;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JsonIgnore
+  ChapterEntity chapter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    ChapterEntity chapter;
+  int number;
 
-    int number;
+  @NotBlank
+  @Column(length = 1024)
+  String name;
 
-    @NotBlank
-    @Column(length = 1024)
-    String name;
+  @Column(length = 1024)
+  String refs;
 
-    @Column(length = 1024)
-    String refs;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy("number")
-    List<SubSubChapterEntity> subSubChapters = new ArrayList<>();
+  @OneToMany(cascade = CascadeType.ALL)
+  @OrderBy("number")
+  List<SubSubChapterEntity> subSubChapters = new ArrayList<>();
 
 
-    public SubChapterEntity() {
-    }
+  public SubChapterEntity() {}
 
 
-    public SubChapterEntity(int id, CourseEntity course, ChapterEntity chapter, int number,
-                            @NotBlank String name, String refs) {
-        super();
-        this.id = id;
-        this.course = course;
-        this.chapter = chapter;
-        this.number = number;
-        this.name = name;
-        this.refs = refs;
-    }
+  public SubChapterEntity(int id, ChapterEntity chapter, int number, String name, String refs) {
+    super();
+    this.id = id;
+    this.chapter = chapter;
+    this.number = number;
+    this.name = name;
+    this.refs = refs;
+  }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public CourseEntity getCourse() {
-        return course;
-    }
 
-    public void setCourse(CourseEntity course) {
-        this.course = course;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public ChapterEntity getChapter() {
-        return chapter;
-    }
 
-    public void setChapter(ChapterEntity chapter) {
-        this.chapter = chapter;
-    }
+  public ChapterEntity getChapter() {
+    return chapter;
+  }
 
-    public int getNumber() {
-        return number;
-    }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+  public void setChapter(ChapterEntity chapter) {
+    this.chapter = chapter;
+  }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public int getNumber() {
+    return number;
+  }
 
-    public String getRefs() {
-        return refs;
-    }
 
-    public void setRefs(String refs) {
-        this.refs = refs;
-    }
+  public void setNumber(int number) {
+    this.number = number;
+  }
 
-    public List<SubSubChapterEntity> getSubSubChapters() {
-        return subSubChapters;
-    }
 
-    public void setSubSubChapters(List<SubSubChapterEntity> subSubChapters) {
-        this.subSubChapters = subSubChapters;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void addSubSubChapter(SubSubChapterEntity subSubChapter) {
-        subSubChapters.add(subSubChapter);
-    }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+
+  public String getRefs() {
+    return refs;
+  }
+
+
+  public void setRefs(String refs) {
+    this.refs = refs;
+  }
+
+
+  public List<SubSubChapterEntity> getSubSubChapters() {
+    return subSubChapters;
+  }
+
+
+  public void setSubSubChapters(List<SubSubChapterEntity> subSubChapters) {
+    this.subSubChapters = subSubChapters;
+  }
+
+
+  public void addSubSubChapter(SubSubChapterEntity subSubChapter) {
+    subSubChapters.add(subSubChapter);
+  }
+
+
+  public boolean removeSubSubChapter(SubSubChapterEntity subSubChapter) {
+    return subSubChapters.remove(subSubChapter);
+  }
 
 }

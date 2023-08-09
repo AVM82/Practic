@@ -1,7 +1,7 @@
 package com.group.practic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,75 +13,74 @@ import java.util.Set;
 @Table(name = "level")
 public class LevelEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    CourseEntity course;
+  @ManyToOne
+  @JsonIgnore
+  CourseEntity course;
 
-    int number;
+  int number;
 
-    Set<Integer> chapters;
+  Set<Integer> chapters;
 
-    String discordChat; //?
+  String discordChat; // ?
 
-    String telegramChat;
+  String telegramChat;
 
-    String anotherChat;
-
-
-    public LevelEntity() {
-    }
+  String anotherChat;
 
 
-    public LevelEntity(int id, CourseEntity course, int number, String discordChat) {
-        super();
-        this.id = id;
-        this.course = course;
-        this.number = number;
-        this.discordChat = discordChat;
-    }
+  public LevelEntity() {}
 
 
-    public int getId() {
-        return id;
-    }
+  public LevelEntity(int id, CourseEntity course, int number, String discordChat) {
+    super();
+    this.id = id;
+    this.course = course;
+    this.number = number;
+    this.discordChat = discordChat;
+  }
 
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public int getId() {
+    return id;
+  }
 
 
-    public CourseEntity getCourse() {
-        return course;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
 
-    public void setCourse(CourseEntity course) {
-        this.course = course;
-    }
+  public CourseEntity getCourse() {
+    return course;
+  }
 
 
-    public int getNumber() {
-        return number;
-    }
+  public void setCourse(CourseEntity course) {
+    this.course = course;
+  }
 
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+  public int getNumber() {
+    return number;
+  }
 
 
-    public String getDiscordChat() {
-        return discordChat;
-    }
+  public void setNumber(int number) {
+    this.number = number;
+  }
 
 
-    public void setDiscordChat(String discordChat) {
-        this.discordChat = discordChat;
-    }
+  public String getDiscordChat() {
+    return discordChat;
+  }
 
+
+  public void setDiscordChat(String discordChat) {
+    this.discordChat = discordChat;
+  }
 
 }

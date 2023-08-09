@@ -3,8 +3,10 @@ package com.group.practic.controller;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.service.CourseService;
+import com.group.practic.util.ResponseUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,30 +19,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/courses")
-@RequiredArgsConstructor
 public class CourseController {
 
-    private final CourseService courseService;
+  @Autowired
+  private CourseService courseService;
 
-    @GetMapping
-    public ResponseEntity<List<CourseEntity>> getAllCourses() {
-        return ResponseEntity.ok(courseService.findAll());
+
+  @GetMapping
+  public ResponseEntity<List<CourseEntity>> get() {
+    return ResponseUtils.getResponse(courseService.get());
+  }
+
+
+  @PostMapping
+  public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseDto courseDto) {
+    return ResponseUtils.postResponse(courseService.create(courseDto));
+  }
+
+
+  @PostMapping("/{course_id}/student/{person_id}")
+
+  @PostMapping("/{courseName}")
+  public ResponseEntity<CourseEntity> addStudentToCourse(@PathVariable String courseName,
+      @RequestParam String studentPib) {
+    CourseEntity courseEntity = courseService.addStudentToCourse(courseName, studentPib);
+
+    if (courseEntity == null) {
+      return ResponseEntity.notFound().build();
     }
 
-    @PostMapping
-    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseDto courseDto) {
-        return new ResponseEntity<>(courseService.save(courseDto), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/{courseName}")
-    public ResponseEntity<CourseEntity> addStudentToCourse(
-            @PathVariable String courseName, @RequestParam String studentPib) {
-        CourseEntity courseEntity = courseService.addStudentToCourse(courseName, studentPib);
-
-        if (courseEntity == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return new ResponseEntity<>(courseEntity, HttpStatus.CREATED);
-    }
+    return new ResponseEntity<>(courseEntity, HttpStatus.CREATED);
+  }
 }
