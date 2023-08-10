@@ -26,7 +26,7 @@ public class CourseEntity {
   Set<String> authors = new HashSet<>();
 
   @ManyToMany
-  Set<MentorEntity> mentors = new HashSet<>();
+  Set<PersonEntity> mentors = new HashSet<>();
 
   String courseType;
 
@@ -41,7 +41,7 @@ public class CourseEntity {
   String description;
 
   @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-  private Set<StudentOnCourse> students = new HashSet<>();
+  private Set<StudentOnCourseEntity> students = new HashSet<>();
 
   @ManyToOne
   ChapterEntity additionalMaterials;
@@ -83,16 +83,24 @@ public class CourseEntity {
     this.authors = authors;
   }
 
-  public Set<MentorEntity> getMentors() {
+  public Set<PersonEntity> getMentors() {
     return mentors;
   }
 
 
-  public void setMentors(Set<MentorEntity> mentor) {
-    this.mentors = mentor;
+  public void setMentors(Set<PersonEntity> mentors) {
+    this.mentors = mentors;
   }
 
-
+  public boolean setMentor(PersonEntity mentor) {
+    return mentors.add(mentor);
+  }
+  
+  
+  public boolean removeMentor(PersonEntity mentor) {
+    return mentors.remove(mentor);
+  }
+  
   public String getCourseType() {
     return courseType;
   }

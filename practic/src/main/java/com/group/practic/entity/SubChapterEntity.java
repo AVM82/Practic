@@ -45,8 +45,14 @@ public class SubChapterEntity {
   public SubChapterEntity() {}
 
 
+  public SubChapterEntity(ChapterEntity chapter, int number, String name) {
+    this.chapter = chapter;
+    this.number = number == 0 ? chapter.getSubChapterSucceedingNumber() : number;
+    this.name = name;
+  }
+  
+  
   public SubChapterEntity(int id, ChapterEntity chapter, int number, String name, String refs) {
-    super();
     this.id = id;
     this.chapter = chapter;
     this.number = number;

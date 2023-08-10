@@ -47,6 +47,13 @@ public class ChapterEntity {
   public ChapterEntity() {}
 
   
+  public ChapterEntity(CourseEntity course, int number, String name) {
+    this.course = course;
+    this.number = number;
+    this.name = name;
+  }
+  
+  
   public ChapterEntity(long id, CourseEntity course, int number, String name, QuizEntity quiz) {
     this.id = id;
     this.course = course;
@@ -120,4 +127,9 @@ public class ChapterEntity {
     subChapters.add(subChapter);
   }
 
+  
+  public int getSubChapterSucceedingNumber() {
+    return subChapters.isEmpty() ? 1 : subChapters.get(subChapters.size() - 1).number + 1;
+  }
+  
 }

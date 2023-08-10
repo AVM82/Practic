@@ -14,12 +14,12 @@ public class PropertyLoader {
   Properties prop = new Properties();
 
 
-  PropertyLoader(String file) {
+  public PropertyLoader(String file) {
     initialized = loadProperties(prop, file);
   }
 
 
-  PropertyLoader(ClassLoader classLoader, String file) {
+  public PropertyLoader(ClassLoader classLoader, String file) {
     initialized = loadProperties(classLoader, file);
   }
 

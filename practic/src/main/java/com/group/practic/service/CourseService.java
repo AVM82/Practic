@@ -1,12 +1,9 @@
 package com.group.practic.service;
 
 import com.group.practic.dto.CourseDto;
-import com.group.practic.entity.AuthorEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
-import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.StudentOnCourse;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.structure.SimpleChapterStructure;
 import com.group.practic.util.Converter;
@@ -14,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +19,6 @@ public class CourseService {
 
   @Autowired
   private CourseRepository courseRepository;
-
-  @Autowired
-  private PersonService personService;
 
   @Autowired
   private ChapterService chapterService;
@@ -44,49 +37,21 @@ public class CourseService {
   }
 
   
-  public CourseEntity create(CourseDto courseDto) {
-    return courseRepository.save(Converter.convert(courseDto));
+  public Optional<CourseEntity> get(String name) {
+    return Optional.ofNullable(courseRepository.findByName(name));
   }
 
   
-  public CourseEntity addStudentToCourse(String courseName, String studentPib) {
-    CourseEntity courseEntity = courseRepository.findByName(courseName);
-    StudentEntity studentEntity = studentRepository.findByPib(studentPib);
+  public Optional<CourseEntity> create(CourseDto courseDto) {
+    return Optional.ofNullable(courseRepository.save(Converter.convert(courseDto)));
+  }
 
-    if (courseEntity != null && studentEntity != null) {
-      StudentOnCourse studentOnCourse = new StudentOnCourse();
-      studentOnCourse.setStudent(studentEntity);
-      studentOnCourse.setCourse(courseEntity);
 
-      courseEntity.getStudents().add(studentOnCourse);
-
-      return courseRepository.save(courseEntity);
-    }
-
-    return null;
+  public Optional<CourseEntity> create(CourseEntity course) {
+    return Optional.ofNullable(courseRepository.save(course));
   }
 
   
-  public List<StudentEntity> findAllStudentsByCourseName(String courseName, Boolean inactive,
-      Boolean ban) {
-    CourseEntity foundByNameCourseEntity = courseRepository.findByName(courseName);
-
-    if (foundByNameCourseEntity == null) {
-      return List.of();
-    }
-
-    return foundByNameCourseEntity.getStudents().stream()
-        .filter(studentOnCourse -> studentOnCourse.getInactive().equals(inactive)
-            && studentOnCourse.getBan().equals(ban))
-        .map(StudentOnCourse::getStudent).toList();
-  }
-
-  
-  public long create(CourseEntity course) {
-    return courseRepository.saveAndFlush(course).getId();
-  }
-
-
   public long create(Set<String> authors, String type, String name, String purpose,
       String description, Map<Integer, List<Integer>> levels,
       List<SimpleChapterStructure> chapters) {
