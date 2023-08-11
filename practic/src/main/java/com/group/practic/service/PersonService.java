@@ -13,47 +13,47 @@ import org.springframework.stereotype.Service;
 @Service
 public class PersonService {
 
-  @Autowired
-  private PersonRepository personRepository;
+    @Autowired
+    private PersonRepository personRepository;
 
 
-  public List<PersonEntity> get() {
-    return personRepository.findAll();
-  }
+    public List<PersonEntity> get() {
+        return personRepository.findAll();
+    }
 
 
-  public Optional<PersonEntity> get(long id) {
-    return personRepository.findById(id);
-  }
+    public Optional<PersonEntity> get(long id) {
+        return personRepository.findById(id);
+    }
 
 
-  public Optional<PersonEntity> get(String name) {
-    return personRepository.findAllByName(name);
-  }
+    public Optional<PersonEntity> get(String name) {
+        return personRepository.findAllByName(name);
+    }
 
 
-  public Optional<PersonEntity> getByDiscord(String discord) {
-    return personRepository.findByDiscord(discord);
-  }
+    public List<PersonEntity> get(boolean inactive, boolean ban) {
+        return personRepository.findAllByInactiveAndBan(inactive, ban);
+    }
 
 
-  public Optional<PersonEntity> getByLinkedin(String linkedin) {
-    return personRepository.findByLinkedin(linkedin);
-  }
+    public List<PersonEntity> get(String name, boolean inactive, boolean ban) {
+        return personRepository.findAllByNameAndInactiveAndBan(name, inactive, ban);
+    }
 
 
-  public List<PersonEntity> get(boolean inactive, boolean ban) {
-    return personRepository.findAllByInactiveAndBan(inactive, ban);
-  }
+    public Optional<PersonEntity> getByDiscord(String discord) {
+        return personRepository.findByDiscord(discord);
+    }
 
 
-  public List<PersonEntity> get(String name, boolean inactive, boolean ban) {
-    return personRepository.findAllByNameInactiveAndBan(name, inactive, ban);
-  }
+    public Optional<PersonEntity> getByLinkedin(String linkedin) {
+        return personRepository.findByLinkedin(linkedin);
+    }
 
 
-  public Optional<PersonEntity> create(PersonDto personDto) {
-    return Optional.ofNullable(personRepository.save(Converter.convert(personDto)));
-  }
+    public Optional<PersonEntity> create(PersonDto personDto) {
+        return Optional.ofNullable(personRepository.save(Converter.convert(personDto)));
+    }
 
 }

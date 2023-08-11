@@ -1,6 +1,5 @@
 package com.group.practic.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,187 +11,185 @@ import java.time.LocalDate;
 
 
 @Entity
-@Table(uniqueConstraints = {
-    @UniqueConstraint(name = "UniqueStudentOnCourse", columnNames = {"student_id", "course_id"})})
+@Table(name = "student_on_course", uniqueConstraints = {
+        @UniqueConstraint(name = "UniqueStudentOnCourse", columnNames = { "student_id",
+                "course_id" }) })
 public class StudentOnCourseEntity {
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  long id;
-  
-  @ManyToOne
-  @JsonIgnore
-  PersonEntity student;
 
-  @ManyToOne
-  @JsonIgnore
-  CourseEntity course;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    long id;
 
-  Boolean inactive = false;
+    @ManyToOne
+    PersonEntity student;
 
-  Boolean ban = false;
+    @ManyToOne
+    CourseEntity course;
 
-  LocalDate registered;
+    boolean inactive;
 
-  LocalDate start;
+    boolean ban;
 
-  LocalDate finish;
+    LocalDate registered;
 
-  Integer weeks;
+    LocalDate start;
 
-  String skills;
+    LocalDate finish;
 
-  String os;
+    Integer weeks;
 
-  String english;
+    String skills;
 
-  String purpose;
+    String os;
 
+    String english;
 
-  public StudentOnCourseEntity() {}
+    String purpose;
 
 
-  public StudentOnCourseEntity(PersonEntity student, CourseEntity course) {
-    this.student = student;
-    this.course = course;
-    this.registered = LocalDate.now();
-  }
+    public StudentOnCourseEntity() {
+    }
 
-  
-  public StudentOnCourseEntity(PersonEntity student, CourseEntity course, String skills, String os,
-      String english, String purpose) {
-    this(student, course);
-    this.skills = skills;
-    this.os = os;
-    this.english = english;
-    this.purpose = purpose;
-  }
 
+    public StudentOnCourseEntity(PersonEntity student, CourseEntity course) {
+        this.student = student;
+        this.course = course;
+        this.registered = LocalDate.now();
+    }
 
-  public long getId() {
-    return id;
-  }
 
+    public StudentOnCourseEntity(PersonEntity student, CourseEntity course, String skills,
+            String os, String english, String purpose) {
+        this(student, course);
+        this.skills = skills;
+        this.os = os;
+        this.english = english;
+        this.purpose = purpose;
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
 
+    public long getId() {
+        return id;
+    }
 
-  public PersonEntity getStudent() {
-    return student;
-  }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public void setStudent(PersonEntity student) {
-    this.student = student;
-  }
 
+    public PersonEntity getStudent() {
+        return student;
+    }
 
-  public CourseEntity getCourse() {
-    return course;
-  }
 
+    public void setStudent(PersonEntity student) {
+        this.student = student;
+    }
 
-  public void setCourse(CourseEntity course) {
-    this.course = course;
-  }
 
+    public CourseEntity getCourse() {
+        return course;
+    }
 
-  public Boolean getInactive() {
-    return inactive;
-  }
 
+    public void setCourse(CourseEntity course) {
+        this.course = course;
+    }
 
-  public void setInactive(Boolean inactive) {
-    this.inactive = inactive;
-  }
 
+    public Boolean getInactive() {
+        return inactive;
+    }
 
-  public Boolean getBan() {
-    return ban;
-  }
 
+    public void setInactive(Boolean inactive) {
+        this.inactive = inactive;
+    }
 
-  public void setBan(Boolean ban) {
-    this.ban = ban;
-  }
 
+    public Boolean getBan() {
+        return ban;
+    }
 
-  public LocalDate getStart() {
-    return start;
-  }
 
+    public void setBan(Boolean ban) {
+        this.ban = ban;
+    }
 
-  public void setStart(LocalDate start) {
-    this.start = start;
-  }
 
+    public LocalDate getStart() {
+        return start;
+    }
 
-  public LocalDate getFinish() {
-    return finish;
-  }
 
+    public void setStart(LocalDate start) {
+        this.start = start;
+    }
 
-  public void setFinish(LocalDate finish) {
-    this.finish = finish;
-  }
 
+    public LocalDate getFinish() {
+        return finish;
+    }
 
-  public Integer getWeeks() {
-    return weeks;
-  }
 
+    public void setFinish(LocalDate finish) {
+        this.finish = finish;
+    }
 
-  public void setWeeks(Integer weeks) {
-    this.weeks = weeks;
-  }
 
+    public Integer getWeeks() {
+        return weeks;
+    }
 
-  public String getSkills() {
-    return skills;
-  }
 
+    public void setWeeks(Integer weeks) {
+        this.weeks = weeks;
+    }
 
-  public void setSkills(String skills) {
-    this.skills = skills;
-  }
 
+    public String getSkills() {
+        return skills;
+    }
 
-  public String getOs() {
-    return os;
-  }
 
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
 
-  public void setOs(String os) {
-    this.os = os;
-  }
 
+    public String getOs() {
+        return os;
+    }
 
-  public String getEnglish() {
-    return english;
-  }
 
+    public void setOs(String os) {
+        this.os = os;
+    }
 
-  public void setEnglish(String english) {
-    this.english = english;
-  }
 
+    public String getEnglish() {
+        return english;
+    }
 
-  public String getPurpose() {
-    return purpose;
-  }
 
+    public void setEnglish(String english) {
+        this.english = english;
+    }
 
-  public void setPurpose(String purpose) {
-    this.purpose = purpose;
-  }
 
+    public String getPurpose() {
+        return purpose;
+    }
 
-  public LocalDate getRegistered() {
-    return registered;
-  }
-  
-  
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
+
+    public LocalDate getRegistered() {
+        return registered;
+    }
 
 }

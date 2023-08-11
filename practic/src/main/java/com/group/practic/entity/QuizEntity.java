@@ -9,6 +9,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
 
+
 @Entity
 @Table(name = "quiz")
 public class QuizEntity {
@@ -20,6 +21,7 @@ public class QuizEntity {
     @OneToMany
     @JsonIgnore
     Set<ChapterEntity> chapter;
+
 
     QuizEntity() {
     }

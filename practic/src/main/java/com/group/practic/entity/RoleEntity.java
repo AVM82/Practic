@@ -7,48 +7,51 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+
 @Entity
 @Table(name = "role")
 public class RoleEntity {
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private long id;
 
-  @Column
-  private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
 
-
-  public RoleEntity() {}
+    @Column
+    private String name;
 
 
-  public RoleEntity(String name) {
-    this.name = name;
-  }
+    public RoleEntity() {
+    }
 
 
-  public long getId() {
-    return id;
-  }
-
-  
-  public void setId(long id) {
-    this.id = id;
-  }
+    public RoleEntity(String name) {
+        this.name = name;
+    }
 
 
-  public String getName() {
-    return name;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
 
-  
-  @Override
-  public String toString() {
-    return "Role{" + "name='" + name + '\'' + '}';
-  }
-  
+    public void setId(long id) {
+        this.id = id;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Role{" + "name='" + name + '\'' + '}';
+    }
+
 }

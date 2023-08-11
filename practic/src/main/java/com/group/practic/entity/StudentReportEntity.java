@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "student_report")
 public class StudentReportEntity {
@@ -36,84 +37,84 @@ public class StudentReportEntity {
     @Enumerated(EnumType.STRING)
     ReportState state = ReportState.ANNOUNCED;
 
-    
-    public StudentReportEntity() {}
-    
-    
-    public StudentReportEntity(ChapterEntity chapter, PersonEntity student,
-        @Future LocalDateTime dateTime, @NotBlank String title) {
-      this.chapter = chapter;
-      this.student = student;
-      this.dateTime = dateTime;
-      this.title = title;
+
+    public StudentReportEntity() {
     }
 
-    
+
+    public StudentReportEntity(ChapterEntity chapter, PersonEntity student,
+            @Future LocalDateTime dateTime, @NotBlank String title) {
+        this.chapter = chapter;
+        this.student = student;
+        this.dateTime = dateTime;
+        this.title = title;
+    }
+
+
     public StudentReportEntity(int id, ChapterEntity chapter, PersonEntity student,
-        @Future LocalDateTime dateTime, @NotBlank String title, ReportState state) {
-      this(chapter, student, dateTime, title);
-      this.id = id;
+            @Future LocalDateTime dateTime, @NotBlank String title) {
+        this(chapter, student, dateTime, title);
+        this.id = id;
     }
 
 
     public int getId() {
-      return id;
+        return id;
     }
 
 
     public void setId(int id) {
-      this.id = id;
+        this.id = id;
     }
 
 
     public ChapterEntity getChapter() {
-      return chapter;
+        return chapter;
     }
 
 
     public void setChapter(ChapterEntity chapter) {
-      this.chapter = chapter;
+        this.chapter = chapter;
     }
 
 
     public PersonEntity getStudent() {
-      return student;
+        return student;
     }
 
 
     public void setStudent(PersonEntity student) {
-      this.student = student;
+        this.student = student;
     }
 
 
     public LocalDateTime getDateTime() {
-      return dateTime;
+        return dateTime;
     }
 
 
     public void setDateTime(LocalDateTime dateTime) {
-      this.dateTime = dateTime;
+        this.dateTime = dateTime;
     }
 
 
     public String getTitle() {
-      return title;
+        return title;
     }
 
 
     public void setTitle(String title) {
-      this.title = title;
+        this.title = title;
     }
 
 
     public ReportState getState() {
-      return state;
+        return state;
     }
 
 
     public void setState(ReportState state) {
-      this.state = state;
+        this.state = state;
     }
-   
-    
+
 }

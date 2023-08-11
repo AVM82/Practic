@@ -9,10 +9,13 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class LevelService {
+
     @Autowired
     LevelRepository levelRepository;
+
 
     public List<LevelEntity> createMany(CourseEntity course, Map<Integer, List<Integer>> levels) {
         for (Entry<Integer, List<Integer>> entry : levels.entrySet()) {
@@ -21,4 +24,5 @@ public class LevelService {
         }
         return levelRepository.findAllByCourse(course);
     }
+
 }

@@ -10,14 +10,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
-  List<PersonEntity> findAllByInactiveAndBan(boolean inactive, boolean ban);
+    List<PersonEntity> findAllByInactiveAndBan(boolean inactive, boolean ban);
 
-  Optional<PersonEntity> findAllByName(String name);
+    List<PersonEntity> findAllByNameAndInactiveAndBan(String name, boolean inactive, boolean ban);
 
-  Optional<PersonEntity> findByDiscord(String discord);
+    Optional<PersonEntity> findAllByName(String name);
 
-  Optional<PersonEntity> findByLinkedin(String linkedin);
+    Optional<PersonEntity> findByDiscord(String discord);
 
-  List<PersonEntity> findAllByNameInactiveAndBan(String name, boolean inactive, boolean ban);
-  
+    Optional<PersonEntity> findByLinkedin(String linkedin);
+
 }

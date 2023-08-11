@@ -1,5 +1,6 @@
 package com.group.practic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,135 +10,169 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+
 @Entity
+@Table(name = "course")
 public class CourseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    long id;
 
-  boolean inactive;
+    boolean inactive;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  Set<String> authors = new HashSet<>();
+    String authors;
 
-  @ManyToMany
-  Set<PersonEntity> mentors = new HashSet<>();
+    @ManyToMany
+    Set<PersonEntity> mentors = new HashSet<>();
 
-  String courseType;
+    String courseType;
 
-  @NotBlank
-  String name;
+    @NotBlank
+    String name;
 
-  @Column(length = 1024)
-  String purpose;
+    @Column(length = 1024)
+    @JsonIgnore
+    String purpose;
 
-  @NotBlank
-  @Column(length = 8192)
-  String description;
+    @NotBlank
+    @Column(length = 8192)
+    @JsonIgnore
+    String description;
 
-  @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-  private Set<StudentOnCourseEntity> students = new HashSet<>();
+    @ManyToOne
+    @JsonIgnore
+    ChapterEntity additionalMaterials;
 
-  @ManyToOne
-  ChapterEntity additionalMaterials;
-
-
-  public CourseEntity() {}
-
-
-  public CourseEntity(String name, String description) {
-    this.name = name;
-    this.description = description;
-  }
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<ChapterEntity> chapters = new ArrayList<>();
 
 
-  public long getId() {
-    return id;
-  }
+    public CourseEntity() {
+    }
 
 
-  public void setId(long id) {
-    this.id = id;
-  }
+    public CourseEntity(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
 
-  public boolean getInactive() {
-    return inactive;
-  }
+    public long getId() {
+        return id;
+    }
 
 
-  public void setInactive(boolean inactive) {
-    this.inactive = inactive;
-  }
-
-  public Set<String> getAuthors() {
-    return authors;
-  }
-
-  public void setAuthors(Set<String> authors) {
-    this.authors = authors;
-  }
-
-  public Set<PersonEntity> getMentors() {
-    return mentors;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
 
-  public void setMentors(Set<PersonEntity> mentors) {
-    this.mentors = mentors;
-  }
-
-  public boolean setMentor(PersonEntity mentor) {
-    return mentors.add(mentor);
-  }
-  
-  
-  public boolean removeMentor(PersonEntity mentor) {
-    return mentors.remove(mentor);
-  }
-  
-  public String getCourseType() {
-    return courseType;
-  }
+    public boolean getInactive() {
+        return inactive;
+    }
 
 
-  public void setCourseType(String courseType) {
-    this.courseType = courseType;
-  }
+    public void setInactive(boolean inactive) {
+        this.inactive = inactive;
+    }
 
 
-  public String getName() {
-    return name;
-  }
+    public String getAuthors() {
+        return authors;
+    }
 
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setAuthors(String authors) {
+        this.authors = authors;
+    }
 
 
-  public String getPurpose() {
-    return purpose;
-  }
+    public Set<PersonEntity> getMentors() {
+        return mentors;
+    }
 
 
-  public void setPurpose(String purpose) {
-    this.purpose = purpose;
-  }
+    public void setMentors(Set<PersonEntity> mentors) {
+        this.mentors = mentors;
+    }
 
 
-  public String getDescription() {
-    return description;
-  }
+    public boolean setMentor(PersonEntity mentor) {
+        return mentors.add(mentor);
+    }
 
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public boolean removeMentor(PersonEntity mentor) {
+        return mentors.remove(mentor);
+    }
+
+
+    public String getCourseType() {
+        return courseType;
+    }
+
+
+    public void setCourseType(String courseType) {
+        this.courseType = courseType;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    public ChapterEntity getAdditionalMaterials() {
+        return additionalMaterials;
+    }
+
+
+    public void setAdditionalMaterials(ChapterEntity additionalMaterials) {
+        this.additionalMaterials = additionalMaterials;
+    }
+
+
+    public List<ChapterEntity> getChapters() {
+        return chapters;
+    }
+
+
+    public void setChapters(List<ChapterEntity> chapters) {
+        this.chapters = chapters;
+    }
 
 }

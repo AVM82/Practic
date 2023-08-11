@@ -11,88 +11,90 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
+
 @Entity
 @Table(name = "sub_sub_chapter")
 public class SubSubChapterEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JsonIgnore
-  SubChapterEntity subChapter;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    SubChapterEntity subChapter;
 
-  int number;
+    int number;
 
-  @NotBlank
-  @Column(length = 1024)
-  String name;
+    @NotBlank
+    @Column(length = 1024)
+    String name;
 
-  @Column(length = 1024)
-  String refs;
-
-
-  public SubSubChapterEntity() {}
+    @Column(length = 1024)
+    String refs;
 
 
-  public SubSubChapterEntity(long id, SubChapterEntity subChapter, int number, String name,
-      String refs) {
-    this.id = id;
-    this.subChapter = subChapter;
-    this.number = number;
-    this.name = name;
-    this.refs = refs;
-  }
+    public SubSubChapterEntity() {
+    }
 
 
-  public long getId() {
-    return id;
-  }
+    public SubSubChapterEntity(long id, SubChapterEntity subChapter, int number, String name,
+            String refs) {
+        this.id = id;
+        this.subChapter = subChapter;
+        this.number = number;
+        this.name = name;
+        this.refs = refs;
+    }
 
 
-  public void setId(int id) {
-    this.id = id;
-  }
+    public long getId() {
+        return id;
+    }
 
 
-  public SubChapterEntity getSubChapter() {
-    return subChapter;
-  }
+    public void setId(int id) {
+        this.id = id;
+    }
 
 
-  public void setSubChapter(SubChapterEntity subChapter) {
-    this.subChapter = subChapter;
-  }
+    public SubChapterEntity getSubChapter() {
+        return subChapter;
+    }
 
 
-  public int getNumber() {
-    return number;
-  }
+    public void setSubChapter(SubChapterEntity subChapter) {
+        this.subChapter = subChapter;
+    }
 
 
-  public void setNumber(int number) {
-    this.number = number;
-  }
+    public int getNumber() {
+        return number;
+    }
 
 
-  public String getName() {
-    return name;
-  }
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public String getName() {
+        return name;
+    }
 
 
-  public String getRefs() {
-    return refs;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
 
-  public void setRefs(String refs) {
-    this.refs = refs;
-  }
+    public String getRefs() {
+        return refs;
+    }
+
+
+    public void setRefs(String refs) {
+        this.refs = refs;
+    }
 
 }
