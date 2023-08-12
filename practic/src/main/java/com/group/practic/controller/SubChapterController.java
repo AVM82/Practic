@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/subchapter")
+@RequestMapping("/api/subchapter")
 public class SubChapterController {
 
     @Autowired

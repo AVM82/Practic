@@ -1,11 +1,17 @@
 <div class="nav">
-    <div class="link-arrow" [style.z-index]="course.chapters.length+1">
-        {{ course.name }}
+    <div class="link-arrow" [style.z-index]="chapters.length+2">
+        {{ course?.name }}
     </div>
-    <ng-container *ngFor="let chapter of course.chapters; let i = index;">
-        <div class="link-arrow"  [style.z-index]="course.chapters.length - i">
-            <span *ngIf="chapter.visible">{{ chapter.title }}</span>
-            <mat-icon *ngIf="!chapter.visible">lock</mat-icon>
+    <ng-container *ngFor="let chapter of chapters; let i = index;">
+        <div class="link-arrow"
+             [style.z-index]="chapters.length - i + 1"
+             [class.locked]="!chapter.isVisible"
+        >
+            <span *ngIf="chapter.isVisible">Розділ {{ chapter.number }}</span>
+            <mat-icon *ngIf="!chapter.isVisible">lock</mat-icon>
         </div>
     </ng-container>
+    <div class="end" [style.z-index]="1">
+        Додаткові матеріали
+    </div>
 </div>

@@ -7,17 +7,34 @@
     background-image: url("/assets/union-darker-icon.svg");
     background-repeat: no-repeat;
     position: relative;
-    width: 160px;
-    height: 59px;
+    background-size: cover;
+    flex: 1;
+    max-width: 150px;
+    height: 50px;
     margin-right: -27px;
     justify-content: center;
     align-items: center;
-    font-size: 18px;
+    font-size: 16px;
 }
 
-.link-arrow:first-child:after{
-    background-image: url("/assets/union-icon.svg");
-    background-repeat: no-repeat;
+.link-arrow:first-child {
     position: relative;
-    cursor: pointer;
+}
+
+.link-arrow.locked {
+    background-image: url("/assets/union-icon.svg");
+}
+
+.end {
+    display: flex;
+    flex: 1;
+    border: 1px solid black;
+    margin-left: -50px;
+    padding-left: 100px;
+    background-color: #989898;
+    max-width: 200px;
+    background-image: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
 }
