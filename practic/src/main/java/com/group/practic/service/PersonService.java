@@ -5,9 +5,13 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.repository.PersonRepository;
 import com.group.practic.util.Converter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
 
 
 @Service
@@ -56,4 +60,32 @@ public class PersonService {
         return Optional.ofNullable(personRepository.save(Converter.convert(personDto)));
     }
 
+    public PersonEntity getCurrentPerson() {
+        OAuth2User authorization = getOauth2User();
+
+        return personRepository.findByLinkedin(authorization.getAttribute("id")).orElse(null);
+    }
+
+    public PersonEntity createUserIfNotExists() {
+        OAuth2User authorization = getOauth2User();
+
+        Map<String, Object> authorizationAttributes = authorization.getAttributes();
+
+        String linkedinId = authorizationAttributes.get("id").toString();
+
+        if (personRepository.findByLinkedin(linkedinId).isPresent()) {
+            return null;
+        }
+
+        PersonEntity personEntity = new PersonEntity(
+                authorizationAttributes.get("localizedFirstName")
+                        + " " + authorizationAttributes.get("localizedLastName"),
+                        linkedinId);
+
+        return personRepository.save(personEntity);
+    }
+
+    private static OAuth2User getOauth2User() {
+        return (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 }
