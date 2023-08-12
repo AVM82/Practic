@@ -2,14 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {CoursesService} from "../../services/courses.service";
 import {Course} from "../../models/course";
 import { MatCardModule } from '@angular/material/card';
-import { NgFor } from '@angular/common';
+import { NgForOf } from '@angular/common';
 
 @Component({
     selector: 'app-courses',
     templateUrl: './courses.component.html',
     styleUrls: ['./courses.component.css'],
     standalone: true,
-    imports: [NgFor, MatCardModule]
+    imports: [NgForOf, MatCardModule]
 })
 export class CoursesComponent implements OnInit{
   courses: Course[] = [];

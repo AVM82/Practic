@@ -8,7 +8,7 @@ mat-toolbar {
 .header-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     margin: 0 16px; /* Add some margin to adjust spacing */
 }

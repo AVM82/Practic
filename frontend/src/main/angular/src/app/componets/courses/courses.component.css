@@ -1,0 +1,22 @@
+.course-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 10px;
+    background-color: #fff;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.course-card:hover {
+     transform: translateY(-5px);
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+ }
+
+/* Style for the content inside the card */
+.course-details {
+    text-align: center;
+}

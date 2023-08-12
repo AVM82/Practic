@@ -1,4 +1,4 @@
-package com.group.practic.controller;
+package com.group.practic.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

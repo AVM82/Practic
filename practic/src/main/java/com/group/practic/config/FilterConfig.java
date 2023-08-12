@@ -1,6 +1,6 @@
 package com.group.practic.config;
 
-import com.group.practic.controller.StaticContentFilter;
+import com.group.practic.filter.StaticContentFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
