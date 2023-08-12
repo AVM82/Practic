@@ -28,7 +28,7 @@ jobs:
           use_existing_version_if_available: true
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }} # Создайте этот секрет в настройках репозитория
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Создайте этот секрет в настройках репозитория
-          region: 'us-west-2' # Замените на ваш регион AWS Elastic Beanstalk
+          region: 'eu-north-1' # Замените на ваш регион AWS Elastic Beanstalk  
           application_name: 'restApiShpp' # Замените на имя вашего приложения в Elastic Beanstalk
           environment_name: 'RestApiShpp-env-1' # Замените на имя вашей среды в Elastic Beanstalk
           version_label: 'v${{ github.sha }}' # Используйте хеш последнего коммита в качестве метки версии
