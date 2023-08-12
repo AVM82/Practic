@@ -1,13 +1,13 @@
-name=### __Java Dev Tools: the first experience.__
+name=Java Dev Tools: the first experience.
 
 author=Пісковий Андрій Віталійович https://www.linkedin.com/in/piskovyy
 
 type=backend
 
-purpose=<font size="2">Програма-мінімум на позицію backend Junior Java Developer.\n\
+purpose=Програма-мінімум на позицію backend Junior Java Developer.\n\
 Як продовження курсу CS від https://programming.org.ua/ua\n\
 мотивація 2021:  підготувати/обрати джава-джуна у команду (done)\n\
-мотивація 2022/23:  підготувати за рік 9+ нових програмістів із гідною з/п - це просто більше ніж донат</font>
+мотивація 2022/23:  підготувати за рік 9+ нових програмістів із гідною з/п - це просто більше ніж донат
 
 description=Краще коли починаєте в понеділок і ідете зі швидкістю розділ за тиждень/два.\n\
 Дуже бажано починати і йти одночасно групою 4+ людей, а ще краще 8 - буде по двоє на тему.\n\
@@ -33,7 +33,7 @@ https://robotdreams.cc/uk/course/477-t-sql-dlya-analitiki\n\
 https://www.javatpoint.com/java-tutorial\n\
 + поради, багато: https://dev.ua/news/java-manual-1667244523\n\n\
 І ще - цей курс умовно безкоштовний - заплатіть будь ласка своїм часом своїм наступникам ;)\n\
-Наостанок порада: тут **читайте всі <font size="2">всі <font size="3">всі</font></font> букви**, не пропускаючи. Успіхів!\n
+Наостанок порада: тут читайте всі всі всі букви, не пропускаючи. Успіхів!\n
 
 level1=1,2
 level2=3
