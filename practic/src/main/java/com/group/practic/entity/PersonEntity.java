@@ -51,6 +51,11 @@ public class PersonEntity {
     public PersonEntity() {
     }
 
+    public PersonEntity(String name, String linkedin) {
+        this.name = name;
+        this.linkedin = linkedin;
+    }
+
 
     public PersonEntity(String name, String discord, String linkedin, String contacts,
             Collection<RoleEntity> roles) {
