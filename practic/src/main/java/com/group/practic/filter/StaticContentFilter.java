@@ -85,6 +85,10 @@ public class StaticContentFilter implements Filter {
             response.setContentType("application/javascript");
         }
 
+        if (resourcePath.endsWith(".svg")) {
+            response.setContentType("image/svg+xml");
+        }
+
         inputStream.transferTo(response.getOutputStream());
     }
 

@@ -12,10 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-
-@Component
 public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
@@ -43,7 +40,6 @@ public class CoursesInitializator {
     public static final int CHAPTER_NESTING_LEVEL_MAX = 3;
 
     CourseService courseService;
-
 
     @Autowired
     CoursesInitializator(CourseService courseService) {
