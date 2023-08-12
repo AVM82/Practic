@@ -27,7 +27,7 @@ public class ChapterEntity {
     @ManyToOne
     @JsonIgnore
     CourseEntity course;
-
+    
     int number;
 
     @NotBlank
