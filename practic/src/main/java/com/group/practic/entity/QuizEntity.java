@@ -1,34 +1,29 @@
 package com.group.practic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
+import java.util.Set;
+
 
 @Entity
-@Table(name = "mentor")
-@Data
-public class MentorEntity {
+@Table(name = "quiz")
+public class QuizEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    Long id;
+    long id;
 
-    Boolean inactive;
+    @OneToMany
+    @JsonIgnore
+    Set<ChapterEntity> chapter;
 
-    String pib;
 
-    String notes;
+    QuizEntity() {
+    }
 
-    String email;
-
-    String phone;
-
-    Long discordId;
-
-    String discordName;
-
-    String linkedInRef;
 }

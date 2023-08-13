@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,16 +18,16 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "chapter")
-public class ChapterEntity {
+@Table(name = "sub_chapter")
+public class SubChapterEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    CourseEntity course;
+    ChapterEntity chapter;
 
     int number;
 
@@ -34,31 +35,31 @@ public class ChapterEntity {
     @Column(length = 1024)
     String name;
 
+    @Column(length = 1024)
+    String refs;
+
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy("number")
-    List<SubChapterEntity> subChapters = new ArrayList<>();
-
-    @ManyToOne
-    QuizEntity quiz;
+    List<SubSubChapterEntity> subSubChapters = new ArrayList<>();
 
 
-    public ChapterEntity() {
+    public SubChapterEntity() {
     }
 
 
-    public ChapterEntity(CourseEntity course, int number, String name) {
-        this.course = course;
-        this.number = number;
+    public SubChapterEntity(ChapterEntity chapter, int number, String name) {
+        this.chapter = chapter;
+        this.number = number == 0 ? chapter.getSubChapterSucceedingNumber() : number;
         this.name = name;
     }
 
 
-    public ChapterEntity(long id, CourseEntity course, int number, String name, QuizEntity quiz) {
+    public SubChapterEntity(int id, ChapterEntity chapter, int number, String name, String refs) {
         this.id = id;
-        this.course = course;
+        this.chapter = chapter;
         this.number = number;
         this.name = name;
-        this.quiz = quiz;
+        this.refs = refs;
     }
 
 
@@ -72,13 +73,13 @@ public class ChapterEntity {
     }
 
 
-    public CourseEntity getCourse() {
-        return course;
+    public ChapterEntity getChapter() {
+        return chapter;
     }
 
 
-    public void setCourse(CourseEntity course) {
-        this.course = course;
+    public void setChapter(ChapterEntity chapter) {
+        this.chapter = chapter;
     }
 
 
@@ -102,34 +103,33 @@ public class ChapterEntity {
     }
 
 
-    public QuizEntity getQuiz() {
-        return quiz;
+    public String getRefs() {
+        return refs;
     }
 
 
-    public void setQuiz(QuizEntity quiz) {
-        this.quiz = quiz;
+    public void setRefs(String refs) {
+        this.refs = refs;
     }
 
 
-    public List<SubChapterEntity> getSubChapters() {
-        return subChapters;
+    public List<SubSubChapterEntity> getSubSubChapters() {
+        return subSubChapters;
     }
 
 
-    public void setSubChapters(List<SubChapterEntity> subChapters) {
-        this.subChapters = subChapters;
+    public void setSubSubChapters(List<SubSubChapterEntity> subSubChapters) {
+        this.subSubChapters = subSubChapters;
     }
 
 
-    public void addSubChapter(SubChapterEntity subChapter) {
-        subChapters.add(subChapter);
+    public void addSubSubChapter(SubSubChapterEntity subSubChapter) {
+        subSubChapters.add(subSubChapter);
     }
 
 
-    @JsonIgnore
-    public int getSubChapterSucceedingNumber() {
-        return subChapters.isEmpty() ? 1 : subChapters.get(subChapters.size() - 1).number + 1;
+    public boolean removeSubSubChapter(SubSubChapterEntity subSubChapter) {
+        return subSubChapters.remove(subSubChapter);
     }
 
 }
