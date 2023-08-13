@@ -1,1 +1,33 @@
-<app-course-navbar></app-course-navbar>
+<app-course-navbar [course]="course" [chapters]="chapters"></app-course-navbar>
+<div class="chapter-card-container">
+    <mat-card *ngFor="let chapter of chapters" class="chapter-card" [class.locked]="!chapter.isVisible">
+        <ng-container *ngIf="chapter.isVisible">
+            <a [routerLink]="['/course', course?.id, 'chapter', chapter.id]">
+                <mat-card-header class="course-details">
+                    <h3>Розділ {{ chapter?.number }}: {{chapter.name}}</h3>
+                </mat-card-header>
+            </a>
+            <mat-card-footer>
+                <div class="info-tags">
+                    <div class="info-tag">
+                        Теорія: не розпочато
+                    </div>
+                    <div class="info-tag">
+                        Практика: не розпочато
+                    </div>
+                    <div class="info-tag">
+                        Доповідь: не проведена
+                    </div>
+                </div>
+            </mat-card-footer>
+        </ng-container>
+        <ng-container *ngIf="!chapter.isVisible">
+            <mat-card-header class="course-details">
+                <h3>Розділ {{ chapter?.number }}: {{chapter.name}}</h3>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-icon class="lock-icon">lock</mat-icon>
+            </mat-card-content>
+        </ng-container>
+    </mat-card>
+</div>

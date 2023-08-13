@@ -52,7 +52,7 @@ public class StaticContentFilter implements Filter {
     ) throws IOException, ServletException {
         String path = request.getServletPath();
 
-        boolean isApi = path.startsWith("/api");
+        boolean isApi = path.startsWith("/api") || path.startsWith("/login");
         boolean isApiDoc = isApiDoc(path);
 
         boolean isResourceFile = !isApiDoc
@@ -80,14 +80,7 @@ public class StaticContentFilter implements Filter {
             response.sendError(404, "File not found");
             return;
         }
-
-        if (resourcePath.endsWith(".js")) {
-            response.setContentType("application/javascript");
-        }
-
-        if (resourcePath.endsWith(".svg")) {
-            response.setContentType("image/svg+xml");
-        }
+        setContentTypeByResourceType(resourcePath, response);
 
         inputStream.transferTo(response.getOutputStream());
     }
@@ -97,4 +90,17 @@ public class StaticContentFilter implements Filter {
                 || pathMatcher.match("/swagger-ui/**", path)
                 || pathMatcher.match("/**/api-docs/**", path);
     }
+
+    private void setContentTypeByResourceType(String resourcePath, HttpServletResponse response) {
+        String contentType = switch (resourcePath.substring(resourcePath.lastIndexOf("."))) {
+            case ".js" -> "application/javascript";
+            case ".svg" -> "image/svg+xml";
+            case ".html" -> "text/html";
+            case ".css" -> "text/css";
+            default -> "application/octet-stream"; // Set a default content type if needed
+        };
+
+        response.setContentType(contentType);
+    }
+
 }

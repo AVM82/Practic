@@ -1,4 +1,4 @@
-.course-card {
+.chapter-card {
     display: flex;
     flex-direction: column;
     border: 1px solid #ccc;
@@ -11,7 +11,7 @@
 }
 
 /* Hover effect */
-.course-card:hover {
+.chapter-card:hover {
      transform: translateY(-5px);
      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
  }

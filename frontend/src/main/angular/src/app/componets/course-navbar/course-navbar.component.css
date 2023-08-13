@@ -1,24 +1,22 @@
 .nav {
     display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
 }
 
 .link-arrow {
     display: flex;
     background-image: url("/assets/union-darker-icon.svg");
     background-repeat: no-repeat;
-    position: relative;
     background-size: cover;
-    flex: 1;
-    max-width: 150px;
+    background-position: center;
+    position: relative;
+    flex-basis: calc(33.33% - 27px);
     height: 50px;
     margin-right: -27px;
     justify-content: center;
     align-items: center;
     font-size: 16px;
-}
-
-.link-arrow:first-child {
-    position: relative;
 }
 
 .link-arrow.locked {
@@ -27,14 +25,10 @@
 
 .end {
     display: flex;
-    flex: 1;
-    border: 1px solid black;
+    flex-basis: calc(33.33% - 50px);
     margin-left: -50px;
-    padding-left: 100px;
     background-color: #989898;
-    max-width: 200px;
-    background-image: none;
+    font-size: 14px;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
 }
