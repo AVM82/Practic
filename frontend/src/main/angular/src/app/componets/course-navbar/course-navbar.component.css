@@ -1,0 +1,34 @@
+.nav {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+}
+
+.link-arrow {
+    display: flex;
+    background-image: url("/assets/union-darker-icon.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    flex-basis: calc(33.33% - 27px);
+    height: 50px;
+    margin-right: -27px;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+.link-arrow.locked {
+    background-image: url("/assets/union-icon.svg");
+}
+
+.end {
+    display: flex;
+    flex-basis: calc(33.33% - 50px);
+    margin-left: -50px;
+    background-color: #989898;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+}

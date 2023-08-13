@@ -1,0 +1,8 @@
+<mat-card *ngFor="let course of courses" class="course-card">
+    <a [routerLink]="['/course', course.id]">
+        <mat-card-content class="course-details">
+            <h3>{{ course.name }}</h3>
+        </mat-card-content>
+    </a>
+</mat-card>
+
