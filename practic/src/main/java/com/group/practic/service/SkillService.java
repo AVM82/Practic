@@ -1,55 +1,60 @@
 package com.group.practic.service;
 
-import com.group.practic.controller.SkillController;
 import com.group.practic.dto.SkillDto;
-import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.SkillEntity;
+import com.group.practic.entity.SubChapterEntity;
 import com.group.practic.repository.SkillRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-@RequiredArgsConstructor
 public class SkillService {
 
-    private final SkillRepository skillRepository;
+    final SkillRepository skillRepository;
+
+    final ChapterService chapterService;
+
+    public SkillService(SkillRepository skillRepository, ChapterService chapterService) {
+        this.skillRepository = skillRepository;
+        this.chapterService = chapterService;
+    }
 
 
     public List<SkillEntity> findAll() {
         return skillRepository.findAll();
     }
 
-    public SkillEntity findByName(String name) {
+    public Optional<SkillEntity> findByName(String name) {
         return skillRepository.findByName(name);
     }
 
-    public SkillEntity save(SkillDto skillDto) {
-        SkillEntity skillEntity = skillRepository.findByName(skillDto.getName());
-        if (skillEntity == null) {
-            skillEntity = new SkillEntity();
-            skillEntity.setName(skillDto.getName());
-            skillRepository.save(skillEntity);
-            return skillEntity;
+    public Optional<SkillEntity> save(SkillDto skillDto) {
+        Optional<SkillEntity> skillEntityOptional = skillRepository.findByName(skillDto.getName());
+        if (skillEntityOptional.isEmpty()) {
+            return Optional.of(skillRepository.save(new SkillEntity(skillDto.getName())));
         }
-        return skillEntity;
+        return Optional.empty();
     }
 
-    public SkillEntity delete(String name) {
+    public Optional<SkillEntity> delete(String name) {
         return skillRepository.deleteByName(name);
     }
 
-    public SkillEntity addSkillToChapter(String name, long chapterId) {
-        SkillEntity skillEntity = skillRepository.findByName(name);
-
-        if (skillEntity != null) {
-//            ChapterEntity chapterEntity = find
-//            skillEntity.addChapter(chapterEntity);
-            skillRepository.save(skillEntity);
-            return skillEntity;
+    public Optional<SkillEntity> addSkillToChapter(String name, long subChapterId) {
+        Optional<SkillEntity> skillEntityOptional = skillRepository.findByName(name);
+        Optional<SubChapterEntity> subChapterEntityOptional = chapterService.getSub(subChapterId);
+        if (skillEntityOptional.isPresent() && subChapterEntityOptional.isPresent()) {
+            SkillEntity skillEntity = skillEntityOptional.get();
+            SubChapterEntity subChapter = subChapterEntityOptional.get();
+            skillEntity.addChapter(subChapter);
+            return Optional.of(skillRepository.save(skillEntity));
         }
 
-        return null;
+        return Optional.empty();
+    }
+
+    public Optional<SkillEntity> findById(long id) {
+        return skillRepository.findById(id);
     }
 }

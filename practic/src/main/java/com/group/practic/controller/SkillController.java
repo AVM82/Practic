@@ -1,46 +1,62 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.deleteResponse;
+import static com.group.practic.util.ResponseUtils.getResponse;
+import static com.group.practic.util.ResponseUtils.postResponse;
+import static com.group.practic.util.ResponseUtils.updateResponse;
+
 import com.group.practic.dto.SkillDto;
 import com.group.practic.entity.SkillEntity;
 import com.group.practic.service.SkillService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import java.util.Collection;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/skills")
-@RequiredArgsConstructor
 public class SkillController {
 
-    private final SkillService skillService;
+    final SkillService skillService;
+
+    public SkillController(SkillService skillService) {
+        this.skillService = skillService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<SkillEntity>> getAllSkills() {
-        return ResponseEntity.ok(skillService.findAll());
+    public ResponseEntity<Collection<SkillEntity>> getAllSkills() {
+        return getResponse(skillService.findAll());
     }
 
 
     @GetMapping("/{name}")
     public ResponseEntity<SkillEntity> getSkillByName(@PathVariable String name) {
-        return new ResponseEntity<>(skillService.findByName(name), HttpStatus.FOUND);
+        return getResponse(skillService.findByName(name));
     }
 
     @PostMapping
     public ResponseEntity<SkillEntity> createSkill(@RequestBody SkillDto skillDto) {
-        return new ResponseEntity<>(skillService.save(skillDto), HttpStatus.CREATED);
+        return postResponse(skillService.save(skillDto));
     }
 
     @DeleteMapping("/{name}")
     public ResponseEntity<SkillEntity> deleteSkill(@PathVariable String name) {
-        return new ResponseEntity<>(skillService.delete(name), HttpStatus.OK);
+        return deleteResponse(skillService.delete(name));
     }
 
-    @PutMapping("/{skillName}")
-    public ResponseEntity<SkillEntity> addSkillToChapter(@RequestBody long chapterId, @PathVariable String skillName) {
-        return new ResponseEntity<>(skillService.addSkillToChapter(skillName, chapterId), HttpStatus.OK);
+    @PutMapping("/{name}")
+    public ResponseEntity<SkillEntity> addSkillToChapter(
+            @RequestParam long chapterId,
+            @PathVariable String name) {
+        return updateResponse(skillService.addSkillToChapter(name, chapterId));
     }
 
 }
