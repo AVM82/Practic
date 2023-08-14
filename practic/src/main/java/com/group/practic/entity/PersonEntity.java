@@ -15,78 +15,152 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 
-@Table(name = "person",
-        uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+
+@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "discord" }))
 @Entity
 public class PersonEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+
+    boolean inactive;
+
+    boolean ban;
+
     @Column
     @NotBlank
     private String name;
+
+    @NotBlank
+    private String discord;
+
     @Column
     @NotBlank
     private String linkedin;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
+    private String contacts;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "persons_roles",
-            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"), 
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<RoleEntity> roles;
 
-    public PersonEntity(String name, String linkedin, Collection<RoleEntity> roles) {
-        this.name = name;
-        this.linkedin = linkedin;
-        this.roles = roles;
-    }
 
     public PersonEntity() {
     }
+
+    public PersonEntity(String name, String linkedin) {
+        this.name = name;
+        this.linkedin = linkedin;
+    }
+
+
+    public PersonEntity(String name, String discord, String linkedin, String contacts,
+            Collection<RoleEntity> roles) {
+        this.name = name;
+        this.discord = discord;
+        this.linkedin = linkedin;
+        this.contacts = contacts;
+        this.roles = roles;
+    }
+
+
+    public long getId() {
+        return id;
+    }
+
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+
+    public boolean isInactive() {
+        return inactive;
+    }
+
+
+    public void setInactive(boolean inactive) {
+        this.inactive = inactive;
+    }
+
+
+    public boolean isBan() {
+        return ban;
+    }
+
+
+    public void setBan(boolean ban) {
+        this.ban = ban;
+    }
+
 
     public String getName() {
         return name;
     }
 
-    public PersonEntity setName(String name) {
+
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
+
+
+    public String getDiscord() {
+        return discord;
+    }
+
+
+    public void setDiscord(String discord) {
+        this.discord = discord;
+    }
+
 
     public String getLinkedin() {
         return linkedin;
     }
 
-    public PersonEntity setLinkedin(String linkedin) {
+
+    public void setLinkedin(String linkedin) {
         this.linkedin = linkedin;
-        return this;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+
+    public String getContacts() {
+        return contacts;
     }
 
-    public Long getId() {
-        return id;
+
+    public void setContacts(String contacts) {
+        this.contacts = contacts;
     }
+
 
     public Collection<RoleEntity> getRoles() {
         return roles;
     }
 
-    public PersonEntity setRoles(Collection<RoleEntity> roles) {
+
+    public void setRoles(Collection<RoleEntity> roles) {
         this.roles = roles;
-        return this;
     }
+
+
+    public void setRole(RoleEntity role) {
+        this.roles.add(role);
+    }
+
+
+    public void removeRole(RoleEntity role) {
+        this.roles.remove(role);
+    }
+
 
     @Override
     public String toString() {
-        return "Person{"
-                + "id=" + id
-                + ", name='" + name + '\''
-                + ", linkedin='" + linkedin + '\''
-                + ", roles=" + roles
-                + '}';
+        return "Person{" + "id=" + id + ", name='" + name + '\'' + ", linkedin='" + linkedin + '\''
+                + ", roles=" + roles + '}';
     }
+
 }

@@ -1,0 +1,102 @@
+name=Java Dev Tools: the first experience.
+
+author=Пісковий Андрій Віталійович https://www.linkedin.com/in/piskovyy
+
+type=backend
+
+purpose=Програма-мінімум на позицію backend Junior Java Developer.\n\
+Як продовження курсу CS від https://programming.org.ua/ua\n\
+мотивація 2021:  підготувати/обрати джава-джуна у команду (done)\n\
+мотивація 2022/23:  підготувати за рік 9+ нових програмістів із гідною з/п - це просто більше ніж донат
+
+description=Краще коли починаєте в понеділок і ідете зі швидкістю розділ за тиждень/два.\n\
+Дуже бажано починати і йти одночасно групою 4+ людей, а ще краще 8 - буде по двоє на тему.\n\
+(є сенс зачекати, щоб розподіляти теми наступного тижня по доповідачам-одногрупникам).\n\n\
+Всі питання задавайте в діскорд-чатах відповідного рівня level#1(2,3,4),\n\
+продивляйтесь історію чатів, там щось уже є. Користуйтесь голосовими чатами в будь-який час.\n\
+Якщо знаходите цікаві лінки - додавайте в цей документ через коментарі.\n\n\
+Кожну неділю демо зробленого за тиждень, 20:00-22:00.\n\
+(в інші дні можу прийти у цей же час, а можу і не з’явитись)\n\
+Use __only__ JDK 11 please.\n\
+Без англійської хоча б А2 рівня - і не починайте, прокачайте English, тоді приходьте.\n\
+Книги https://dou.ua/lenta/articles/dou-books-enterprise-java/\n\
+https://dou.ua/lenta/articles/top-books-2017/#java\n\
+https://nashformat.ua/products/chystyj-kod-stvorennya-analiz-refaktoryng-916337\n\
+https://www.youtube.com/watch?v=stIwXoRaYis\n\
+Порада: гугліть з обмеженням в один рік і не російською.\n\
+Курси - теж проходьте, паралельно з цим\n\
+https://www.youtube.com/channel/UCW1IBhEQlart1KAImKFMmdQ\n\
+https://training.epam.ua/Training/Details/3501?lang=ua\n\
+– ще: – https://www.youtube.com/c/BobocodeUA\n\
+https://www.youtube.com/@java-tkach/playlists\n\
+https://robotdreams.cc/uk/course/477-t-sql-dlya-analitiki\n\
+https://www.javatpoint.com/java-tutorial\n\
++ поради, багато: https://dev.ua/news/java-manual-1667244523\n\n\
+І ще - цей курс умовно безкоштовний - заплатіть будь ласка своїм часом своїм наступникам ;)\n\
+Наостанок порада: тут читайте всі всі всі букви, не пропускаючи. Успіхів!\n
+
+level1=1,2
+level2=3
+level3=4,5
+level4=6,7,8
+
+1.=Запуск java-застосунку з використанням сторонніх бібліотек поза IDE (або демо ключової ідеї java "Write once, run anywhere")
+1.1.=Збірка java-проєктів
+1.1.1.=Компіляція "HelloWorld" вручну в консолі, запуск вручну і в IDE<>https://www.youtube.com/watch?v=FqcJt4_tKEw
+1.1.2.=Maven із консолі, без IDE: створити новий мавен-проект із відповідного архетипу (+ знати як додати залежності, які фази, goals, плагіни, структура репозитаріїв, де шукать публічні репо)<>\
+https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html\n\ 
+https://www.vogella.com/tutorials/ApacheMaven/article.html\n\
+https://www.baeldung.com/maven-goals-phases\n\
+https://www.baeldung.com/ant-maven-gradle\n\
+https://www.jrebel.com/resources/maven-cheat-sheet\n\
+https://www.jrebel.com/blog/what-is-maven
+1.1.3.=Gradle (гляньте хоча б заради інкрементальних збірок мультимодульних проєктів)<>\https://docs.gradle.org/current/userguide/performance.html
+1.1.4.=Версіонування (семантична схема версій “Мажор.Мінор.Патч”)<>https://semver.org/lang/uk/
+1.1.5.=В чому профіт мавенa для девелопера та девопса?
+1.2.=Системи логування, інтерфейс Slf4J - HelloWorld через логгер, не print.<>\
+https://www.baeldung.com/java-logging-rolling-file-appenders\n\
+https://dou.ua/lenta/columns/about-logging\n\
+https://urvanov.ru/2019/07/08/%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81-slf4j-%D0%B8-logback/
+1.2.1.=Налаштувати Logback: зберегти лог за кожний день в окремому файлі
+1.2.2.=Log4j2: зберігати логи в окремих файлах з макс. розміром в 100 кб
+1.2.3.=Плюси-мінуси-підводні камені цих та інших. Чим не влаштував Log4j, що пришлось зробити Log4j2?
+1.3.=Файли properties
+1.3.1.=Використання внутрішніх, що йдуть у складі jar (особливості для UTF-8)<>\
+https://www.baeldung.com/java-properties\n\
+https://brodowsky.it-sky.net/2018/02/02/java-properties-files-and-utf-8/
+1.3.2.=Використання зовнішніх
+1.3.3.=Мавен-плагіни, три основні, для зборок із додатковими файлами (із props включно)<>\
+https://medium.com/@randilfernando/when-to-use-maven-jar-maven-assembly-or-maven-shade-ffc3f76ba7a6 
+1.3.4.=У чому користь зовнішніх налаштувань, якщо девелопер все знає?
+1.4.=Різновиди Exceptions
+1.4.1.=Checked vs Unchecked: означення<>\
+https://docs.oracle.com/javase/tutorial/essential/exceptions/runtime.html\n\
+https://www.baeldung.com/java-checked-unchecked-exceptions
+1.4.2.=Власні ексепшени - чи однакові для опенсорс бібліотеки і для веб-сервісу
+1.5.=Основні види компоновки java-аплікацій з 1.3.3. (неділя, висновки тижня)<>\
+https://blog.frankel.ch/creating-self-contained-executable-jars/
+1.5.1.=Jar лише із Вашим кодом, бібліотеки окремо
+1.5.2.=Fat jar (із бібліотеками включно)\n\
+Деплой(розгортання) як все-таки краще?
+1.6.=Практичне завдання #1 (складність: 2 s.p.) Мета: передача іншому для запуску.
+
+
+2.=Перевірка перед передачею коду іншим
+2.1.=Системи контролю версій
+2.1.1.=Svn (так, застаріла, але все ще використовується)
+2.1.2.=Git - стандарт, гілки git як головна фішка + merge(pull)-requests <>\
+http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/uk/ch02.html\n\
+https://www.educative.io/courses/learn-git-hard-way\n\
+https://dzone.com/refcardz/getting-started-git?chapter=1\n\
+https://www.youtube.com/watch?v=SEvR78OhGtw\n\
+https://girliemac.com/blog/2017/12/26/git-purr/\n\
+https://learngitbranching.js.org/?locale=ua_UA
+2.1.3.=Модель git-репозиторію для підтримки декількох версій коду одночасно <>\
+https://habr.com/ru/post/106912/ і https://habr.com/ru/company/flant/blog/491320/
+2.1.4.=Github vs **Gitlab** vs Bitbacket vs AWS CodeCommit<>\
+https://qna.habr.com/q/641768\n\
+https://jelvix.com/blog/bitbucket-vs-github-vs-gitlab
+2.1.5.=Створити гіт-репозиторій для п.2.5. і запушити його на власний аккаунт GitLab.com
+2.1.6.=Як запобігти мерж-конфліктам?
+2.2.=Тестування
+
