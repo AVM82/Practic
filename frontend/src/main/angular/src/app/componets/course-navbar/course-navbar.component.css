@@ -1,0 +1,23 @@
+.nav {
+    display: flex;
+}
+
+.link-arrow {
+    display: flex;
+    background-image: url("/assets/union-darker-icon.svg");
+    background-repeat: no-repeat;
+    position: relative;
+    width: 160px;
+    height: 59px;
+    margin-right: -27px;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+
+.link-arrow:first-child:after{
+    background-image: url("/assets/union-icon.svg");
+    background-repeat: no-repeat;
+    position: relative;
+    cursor: pointer;
+}

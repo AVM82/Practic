@@ -1,0 +1,14 @@
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Set to 100vh to center vertically in the viewport */
+    background-color: #f0f0f0; /* Set a background color if needed */
+}
+
+h3 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    padding: 20px;
+}
