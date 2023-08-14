@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/**"))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/login", "/api/course",
+                        .requestMatchers("/", "/login", "/api/**",
                                 "/*.js", "/*.html", "/*.css", "/*.woff2", "/*.ico")
                         .permitAll()
                         .anyRequest().authenticated())

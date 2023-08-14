@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/chapter")
+@RequestMapping("/api/chapters")
 public class ChapterController {
 
     @Autowired

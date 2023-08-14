@@ -12,7 +12,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
@@ -41,6 +45,10 @@ public class CoursesInitializator {
 
     CourseService courseService;
 
+    @Value("${spring.datasource.url}")
+    String dbUrl;
+
+
     @Autowired
     CoursesInitializator(CourseService courseService) {
         this.courseService = courseService;
@@ -49,10 +57,12 @@ public class CoursesInitializator {
 
     @PostConstruct
     void initialize() {
-        File[] files = new File(".")
-                .listFiles(f -> f.isFile() && f.getName().endsWith(COURSE_MASK));
-        for (File file : files) {
-            initCourse(file.getName());
+        if (dbUrl.contains("localhost")) {
+            File[] files = new File(".")
+                    .listFiles(f -> f.isFile() && f.getName().endsWith(COURSE_MASK));
+            for (File file : files) {
+                initCourse(file.getName());
+            }
         }
     }
 
