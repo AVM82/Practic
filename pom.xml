@@ -22,6 +22,7 @@
         <modules>
             <module>practic</module>
             <module>frontend</module>
+            <module>loadTesting</module>
         </modules>
 
         <properties>

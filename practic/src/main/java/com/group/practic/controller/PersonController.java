@@ -9,6 +9,7 @@ import com.group.practic.service.PersonService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+<<<<<<< HEAD
 @RequestMapping("/api/persons")
+=======
+@RequestMapping("/api/person")
+>>>>>>> 31682e08e64eb5fede0e70f1a585483191eceda2
 public class PersonController {
 
     @Autowired
@@ -41,6 +46,28 @@ public class PersonController {
     @GetMapping("/{id}")
     public ResponseEntity<PersonEntity> get(@Min(1) @PathVariable long id) {
         return getResponse(personService.get(id));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<PersonEntity> getProfile() {
+        PersonEntity foundPerson = personService.getCurrentPerson();
+
+        if (foundPerson == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(foundPerson);
+    }
+
+    @PostMapping("/profile")
+    public ResponseEntity<PersonEntity> createProfile() {
+        PersonEntity createdUser = personService.createUserIfNotExists();
+
+        if (createdUser == null) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
 

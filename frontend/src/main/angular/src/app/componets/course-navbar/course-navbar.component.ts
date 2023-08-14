@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import {Chapter, Course} from "../../models/course";
-import {CoursesService} from "../../services/courses.service";
+import {Course} from "../../models/course/course";
 import {MatIconModule} from "@angular/material/icon";
+import {Chapter} from "../../models/course/chapter";
 
 @Component({
   selector: 'app-course-navbar',
@@ -11,18 +11,8 @@ import {MatIconModule} from "@angular/material/icon";
   templateUrl: './course-navbar.component.html',
   styleUrls: ['./course-navbar.component.css']
 })
-export class CourseNavbarComponent implements OnInit{
-  course!: Course;
-  chapters: any;
-
-  constructor(private coursesService: CoursesService) {}
-
-  ngOnInit(): void {
-    this.course = this.coursesService.getCourse();
-  }
-
-  navigateToChapter(chapter: Chapter): void {
-    console.log(chapter);
-  }
+export class CourseNavbarComponent {
+  @Input() course: Course | undefined;
+  @Input() chapters: Chapter[] = [];
 }
 
