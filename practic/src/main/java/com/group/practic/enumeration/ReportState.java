@@ -10,9 +10,9 @@ public enum ReportState {
 
     STARTED(false, ANNOUNCED),
 
-    FINISHED(false, STARTED),
+    FINISHED(true, STARTED),
 
-    CANCELLED(false, ANNOUNCED, STARTED);
+    CANCELLED(true, ANNOUNCED, STARTED);
 
 
     public final boolean isFinal;
@@ -20,14 +20,14 @@ public enum ReportState {
     protected final List<ReportState> allowed;
 
 
-    ReportState(boolean isFinal, ReportState ... prevs) {
+    ReportState(boolean isFinal, ReportState... prevs) {
         this.isFinal = isFinal;
         allowed = Arrays.asList(prevs);
     }
 
 
     public boolean changeAllowed(ReportState newState) {
-        return this == newState || newState.allowed.contains(this);
+        return this == newState || (!isFinal && newState.allowed.contains(this));
     }
 
 }
