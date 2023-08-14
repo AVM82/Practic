@@ -21,7 +21,7 @@ export class CoursesService {
         return of(cachedCourse);
       }
     }
-    return this.http.get<Course>("/api/course/"+id).pipe(
+    return this.http.get<Course>("/api/courses/"+id).pipe(
         catchError(this.handleError<Course>(`getCourse id=${id}`))
     );
   }
@@ -33,7 +33,7 @@ export class CoursesService {
         return of(cachedChapters);
       }
     }
-    return this.http.get<Chapter[]>("/api/course/"+id+"/chapters");
+    return this.http.get<Chapter[]>("/api/courses/"+id+"/chapters");
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {
@@ -43,7 +43,7 @@ export class CoursesService {
   }
 
   getAllCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>("/api/course");
+    return this.http.get<Course[]>("/api/courses");
   }
 
   /**
