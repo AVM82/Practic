@@ -44,7 +44,6 @@ public class CourseEntity {
 
     @NotBlank
     @Column(length = 8192)
-    @JsonIgnore
     String description;
 
     @ManyToOne
