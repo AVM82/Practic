@@ -1,6 +1,5 @@
-package com.group.practic.preload;
+package com.group.practic;
 
-import com.group.practic.PropertyLoader;
 import com.group.practic.service.CourseService;
 import com.group.practic.structure.SimpleChapterStructure;
 import jakarta.annotation.PostConstruct;
@@ -13,12 +12,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD:practic/src/main/java/com/group/practic/preload/CoursesInitializator.java
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-=======
->>>>>>> origin/PRAC-9:practic/src/main/java/com/group/practic/CoursesInitializator.java
 
+
+@Component
 public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
@@ -47,13 +45,10 @@ public class CoursesInitializator {
 
     CourseService courseService;
 
-<<<<<<< HEAD:practic/src/main/java/com/group/practic/preload/CoursesInitializator.java
     @Value("${spring.datasource.url}")
     String dbUrl;
 
-    
-=======
->>>>>>> origin/PRAC-9:practic/src/main/java/com/group/practic/CoursesInitializator.java
+
     @Autowired
     CoursesInitializator(CourseService courseService) {
         this.courseService = courseService;

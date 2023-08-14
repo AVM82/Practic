@@ -1,10 +1,10 @@
 package com.group.practic.service;
 
+import com.group.practic.CoursesInitializator;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.SubChapterEntity;
 import com.group.practic.entity.SubSubChapterEntity;
-import com.group.practic.preload.CoursesInitializator;
 import com.group.practic.repository.ChapterRepository;
 import com.group.practic.repository.SubChapterRepository;
 import com.group.practic.repository.SubSubChapterRepository;
