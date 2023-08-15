@@ -57,7 +57,7 @@ public class CoursesInitializator {
 
     @PostConstruct
     void initialize() {
-        if (dbUrl.contains("localhost")) {
+        if (dbUrl.contains("localhost") || dbUrl.contains("h2:")) {
             File[] files = new File(".")
                     .listFiles(f -> f.isFile() && f.getName().endsWith(COURSE_MASK));
             for (File file : files) {

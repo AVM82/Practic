@@ -6,28 +6,25 @@ import java.util.List;
 
 public enum ReportState {
 
-    ANNOUNCED(false),
+    CANCELLED(),
 
-    STARTED(false, ANNOUNCED),
+    FINISHED(),
 
-    FINISHED(true, STARTED),
+    STARTED(FINISHED, CANCELLED),
 
-    CANCELLED(true, ANNOUNCED, STARTED);
+    ANNOUNCED(STARTED, CANCELLED);
 
-
-    public final boolean isFinal;
 
     protected final List<ReportState> allowed;
 
 
-    ReportState(boolean isFinal, ReportState... prevs) {
-        this.isFinal = isFinal;
-        allowed = Arrays.asList(prevs);
+    ReportState(ReportState ... next) {
+        allowed = Arrays.asList(next);
     }
 
 
     public boolean changeAllowed(ReportState newState) {
-        return this == newState || (!isFinal && newState.allowed.contains(this));
+        return this == newState || allowed.contains(newState);
     }
 
 }
