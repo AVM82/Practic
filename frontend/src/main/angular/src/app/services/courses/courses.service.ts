@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
+import {ApiUrls, getChaptersUrl} from "../../enums/api-urls";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class CoursesService {
         return of(cachedCourse);
       }
     }
-    return this.http.get<Course>("/api/courses/"+id).pipe(
+    return this.http.get<Course>(ApiUrls.Course+id).pipe(
         catchError(this.handleError<Course>(`getCourse id=${id}`))
     );
   }
@@ -33,7 +34,7 @@ export class CoursesService {
         return of(cachedChapters);
       }
     }
-    return this.http.get<Chapter[]>("/api/courses/"+id+"/chapters");
+    return this.http.get<Chapter[]>(getChaptersUrl(id));
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {
@@ -43,7 +44,7 @@ export class CoursesService {
   }
 
   getAllCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>("/api/courses");
+    return this.http.get<Course[]>(ApiUrls.Courses);
   }
 
   /**

@@ -1,22 +1,56 @@
-.chapter-card {
+.course-container {
     display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin: 10px;
-    background-color: #fff;
-    transition: transform 0.2s ease-in-out;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px; /* Задайте вашу бажану максимальну ширину */
+    margin: 0 auto;
 }
 
-/* Hover effect */
-.chapter-card:hover {
-     transform: translateY(-5px);
-     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
- }
+.course-card {
+    width: 75%;
+    margin: 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s, background-color 0.3s;
+}
 
-/* Style for the content inside the card */
+.course-card:hover {
+    transform: translateY(-5px);
+    background-color: #f0f0f0;
+}
+
+.card-link {
+    width: 100%;
+    text-decoration: none;
+}
+
 .course-details {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.icon {
+    width: 30px; /* Задайте розмір іконки за вашим бажанням */
+    height: 30px;
+    margin-right: 10px;
+}
+
+.course-card:hover .icon {
+    animation: bounceAndScale 1s infinite alternate; /* Анімація іконки при наведенні */
+}
+
+@keyframes bounceAndScale {
+    0%, 100% {
+        transform: translateX(0) scale(1);
+    }
+    50% {
+        transform: translateX(5px) scale(1.2);
+    }
+}
+
+.course-name {
     text-align: center;
+    flex: 1;
 }
