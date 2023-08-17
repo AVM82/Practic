@@ -9,12 +9,13 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { CoursesService } from './app/services/courses/courses.service';
+import {StudentMetricsService} from "./app/services/admin/student-metrics.service";
 
 
 bootstrapApplication(AppComponent, {
     providers: [
         importProvidersFrom(BrowserModule, AppRoutingModule, TranslocoRootModule, MatCardModule, MatIconModule, MatToolbarModule),
-        CoursesService,
+        CoursesService, StudentMetricsService,
         provideAnimations(),
         provideHttpClient(withInterceptorsFromDi())
     ]

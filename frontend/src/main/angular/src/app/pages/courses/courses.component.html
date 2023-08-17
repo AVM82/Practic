@@ -1,8 +1,10 @@
-<mat-card *ngFor="let course of courses" class="course-card">
-    <a [routerLink]="['/course', course.id]">
-        <mat-card-content class="course-details">
-            <h3>{{ course.name }}</h3>
-        </mat-card-content>
-    </a>
-</mat-card>
-
+<div class="course-container">
+    <mat-card *ngFor="let course of courses" class="course-card">
+        <a [routerLink]="['/course', course.id]">
+            <mat-card-content class="course-details">
+                <mat-icon class="icon">coffee</mat-icon>
+                <h3 class="course-name">{{ course.name }}</h3>
+            </mat-card-content>
+        </a>
+    </mat-card>
+</div>
