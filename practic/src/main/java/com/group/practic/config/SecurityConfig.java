@@ -31,7 +31,8 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/**"))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/", "/login", "/api/**",
-                                "/*.js", "/*.html", "/*.css", "/*.woff2", "/*.ico")
+                                "/*.js", "/*.html", "/*.css", "/*.woff2", "/*.ico", 
+                                "/actuator/prometheus")
                         .permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
