@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
@@ -22,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -30,14 +33,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/**"))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/login", "/api/**",
-                                "/*.js", "/*.html", "/*.css", "/*.woff2", "/*.ico")
-                        .permitAll()
+                        .requestMatchers("/login", "/statistics/**", "/*.js", "/*.html", "/*.css",
+                                "/*.woff2", "/*.ico").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login").permitAll())
                 .oauth2Login(oauth ->
                         oauth
+                                .defaultSuccessUrl("/api/persons/profile", true)
                                 .tokenEndpoint(token -> {
                                     DefaultMapOAuth2AccessTokenResponseConverter defaultMapConverter
                                             = new DefaultMapOAuth2AccessTokenResponseConverter();
