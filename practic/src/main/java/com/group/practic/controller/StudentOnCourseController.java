@@ -4,11 +4,13 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.entity.StudentOnCourseEntity;
+import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentOnCourseService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,11 @@ public class StudentOnCourseController {
     @Autowired
     StudentOnCourseService studentOnCourseService;
 
+    private final PersonService personService;
+
+    public StudentOnCourseController(PersonService personService) {
+        this.personService = personService;
+    }
 
     @GetMapping
     public ResponseEntity<Collection<StudentOnCourseEntity>> get(
@@ -32,6 +39,10 @@ public class StudentOnCourseController {
             @RequestParam(required = false) Optional<Long> studentId,
             @RequestParam(required = false) boolean inactive,
             @RequestParam(required = false) boolean ban) {
+        if (!isCurrentPersonMentor()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         if (courseId.isEmpty()) {
             if (studentId.isEmpty()) {
                 return getResponse(studentOnCourseService.get(inactive, ban));
@@ -50,6 +61,9 @@ public class StudentOnCourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentOnCourseEntity> get(@Min(1) @PathVariable long id) {
+        if (!isCurrentPersonMentor()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return getResponse(studentOnCourseService.get(id));
     }
 
@@ -57,7 +71,14 @@ public class StudentOnCourseController {
     @PostMapping
     public ResponseEntity<StudentOnCourseEntity> create(@Min(1) @RequestParam long courseId,
             @Min(1) @RequestParam long studentId) {
+        if (!isCurrentPersonMentor()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return postResponse(studentOnCourseService.create(courseId, studentId));
+    }
+
+    private boolean isCurrentPersonMentor() {
+        return personService.isCurrentPersonMentor();
     }
 
 }
