@@ -9,8 +9,9 @@ import {MatTableModule} from "@angular/material/table";
   templateUrl: './table-widget.component.html',
   styleUrls: ['./table-widget.component.css']
 })
+
 export class TableWidgetComponent {
   @Input() displayedColumns: string[]=[];
   @Input() dataSource: any[]=[];
-  @Input() columnMap: { [key: string]: string }={};
+  @Input() columnNameMap: { [key: string]: string }={};
 }

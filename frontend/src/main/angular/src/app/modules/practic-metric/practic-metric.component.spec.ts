@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReadyPracticMetricComponent } from './ready-practic-metric.component';
+import { PracticMetricComponent } from './practic-metric.component';
 
 describe('ReadyPracticMetricComponent', () => {
-  let component: ReadyPracticMetricComponent;
-  let fixture: ComponentFixture<ReadyPracticMetricComponent>;
+  let component: PracticMetricComponent;
+  let fixture: ComponentFixture<PracticMetricComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReadyPracticMetricComponent]
+      imports: [PracticMetricComponent]
     });
-    fixture = TestBed.createComponent(ReadyPracticMetricComponent);
+    fixture = TestBed.createComponent(PracticMetricComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,15 +1,38 @@
-/* dashboard.component.css */
-
 .dashboard-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(25%, 1fr)); /* Один квартал екрана */
-    grid-gap: 20px; /* Відступ між квадратами */
+    grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+    grid-gap: 10px;
+    margin: 2% 1% 1% 1%;
 }
 
 .metric-card {
-    background-color: #f0f0f0; /* Колір фону картки */
-    padding: 20px;
-    border-radius: 10px; /* Закруглені кути */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Тінь картки */
-    /* Додайте інші стилі за потребою */
+    display: flex;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.metric-card.clickable {
+    cursor: pointer;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.metric-card .metric-title {
+    font-size: 14px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.widget {
+    flex: 1;
+    margin: 0 -12.5% 0 -12.5%;
 }

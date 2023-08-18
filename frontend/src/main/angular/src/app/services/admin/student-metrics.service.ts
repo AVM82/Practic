@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
 import {Observable, of} from "rxjs";
+import {Course} from "../../models/course/course";
+import {ApiUrls} from "../../enums/api-urls";
+import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class StudentMetricsService {
 
-  getStudents(): Observable<any[]>{
-    return of(studentsData);
+  constructor(private http: HttpClient) {}
+
+  getAllPracticesByState(state: string): Observable<any[]>{
+    return this.http.get<Course[]>(ApiUrls.Practices + state);
+  }
+
+  getPracticeStates(): Observable<any[]>{
+    return this.http.get<any[]>(ApiUrls.PracticeStates);
   }
 }
-
-export const studentsData = [
-  { id: 1, name: 'Oleksandr Talavas', chapterId: 1 },
-  { id: 2, name: 'Student 2', chapterId: 2 },
-  { id: 3, name: 'Student 3', chapterId: 1 },
-
-];
