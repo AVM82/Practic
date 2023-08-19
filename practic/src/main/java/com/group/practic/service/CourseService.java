@@ -57,14 +57,14 @@ public class CourseService {
 
     public Optional<String> getDescription(long id) {
         Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? Optional.empty() : 
-            Optional.ofNullable(course.get().getDescription());
+        return course.isEmpty() ? Optional.empty() :
+                Optional.ofNullable(course.get().getDescription());
     }
 
 
     public Optional<ChapterEntity> getAdditional(long id) {
         Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? Optional.empty() 
+        return course.isEmpty() ? Optional.empty()
                 : Optional.ofNullable(course.get().getAdditionalMaterials());
     }
 
@@ -80,7 +80,7 @@ public class CourseService {
 
 
     public long create(String authors, String type, String name, String purpose, String description,
-            Map<Integer, List<Integer>> levels, List<SimpleChapterStructure> chapters) {
+                       Map<Integer, List<Integer>> levels, List<SimpleChapterStructure> chapters) {
         if (levels == null || chapters == null) {
             return 0L;
         }
@@ -96,4 +96,18 @@ public class CourseService {
         return (levelList != null && chapterList != null) ? result : 0;
     }
 
+    public Optional<CourseEntity> addShortName(long id, String shortName) {
+        Optional<CourseEntity> course = courseRepository.findById(id);
+        CourseEntity courseEntity;
+        if (course.isPresent()) {
+            courseEntity = course.get();
+            courseEntity.setShortName(shortName);
+            return Optional.of(courseRepository.save(courseEntity));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<CourseEntity> getByShortName(String shortName) {
+        return Optional.ofNullable(courseRepository.findByShortName(shortName));
+    }
 }

@@ -9,6 +9,8 @@ public final class CourseDto {
 
     private String description;
 
+    private String shortName;
+
 
     CourseDto() {
     }
@@ -19,6 +21,11 @@ public final class CourseDto {
         this.description = description;
     }
 
+    public CourseDto(String name, String description, String shortName) {
+        this.name = name;
+        this.description = description;
+        this.shortName = shortName;
+    }
 
     public String getName() {
         return name;
@@ -39,6 +46,14 @@ public final class CourseDto {
         this.description = description;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -47,19 +62,21 @@ public final class CourseDto {
         }
         CourseDto that = (CourseDto) obj;
         return this == that || (Objects.equals(this.name, that.name)
-                && Objects.equals(this.description, that.description));
+                && Objects.equals(this.description, that.description)
+                && Objects.equals(this.shortName, that.shortName));
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description);
+        return Objects.hash(name, description, shortName);
     }
 
 
     @Override
     public String toString() {
-        return "CourseDto[" + "name=" + name + ", " + "description=" + description + ']';
+        return "CourseDto[" + "name=" + name + ", " + "description=" + description
+                + ", " + "shortName=" + shortName + ']';
     }
 
 }
