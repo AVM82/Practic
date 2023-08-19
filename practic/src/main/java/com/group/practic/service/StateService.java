@@ -25,13 +25,13 @@ public class StateService {
     }
 
 
-    public List<StateEntity> get(int uniqueId) {
-        return stateRepository.findAllByUniqueId(uniqueId);
+    public List<StateEntity> get(int cluster) {
+        return stateRepository.findAllByCluster(cluster);
     }
 
 
-    public Optional<StateEntity> get(int uniqueId, String name) {
-        return stateRepository.findAllByUniqueIdAndName(uniqueId, name);
+    public Optional<StateEntity> get(int cluster, String name) {
+        return stateRepository.findAllByClusterAndName(cluster, name);
     }
 
 
@@ -45,10 +45,10 @@ public class StateService {
     }
 
 
-    public Optional<StateEntity> update(long id, int uniqueId) {
+    public Optional<StateEntity> update(long id, int cluster) {
         Optional<StateEntity> stateEntity = get(id);
         if (stateEntity.isPresent()) {
-            stateEntity.get().setUnique(uniqueId);
+            stateEntity.get().setCluster(cluster);
             return Optional.ofNullable(stateRepository.saveAndFlush(stateEntity.get()));
         }
         return Optional.empty();
@@ -65,8 +65,8 @@ public class StateService {
     }
 
 
-    public Optional<StateEntity> update(int uniqueId, String oldName, String newName) {
-        Optional<StateEntity> stateEntity = get(uniqueId, oldName);
+    public Optional<StateEntity> update(int cluster, String oldName, String newName) {
+        Optional<StateEntity> stateEntity = get(cluster, oldName);
         if (stateEntity.isPresent()) {
             stateEntity.get().setName(newName);
             return Optional.ofNullable(stateRepository.saveAndFlush(stateEntity.get()));

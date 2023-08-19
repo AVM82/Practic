@@ -1,17 +1,18 @@
+import {SubSubChapter} from "./subsubchapter";
+
+
 export class SubChapter {
   id: number;
   number: number;
   name: string;
-  refs: string;
-  subchapters : SubSubChapter[];
-  isVisible: boolean;
+  refs: string | undefined;
+  subsubchapters : SubSubChapter[];
 
-  constructor(id: number, number: number, name: string, refs: string, subchapters : SubSubChapter[]) {
+  constructor(id: number, number: number, name: string, refs: string, subsubchapters : SubSubChapter[]) {
     this.id = id;
     this.number = number;
     this.name = name;
     this.refs = refs;
-    this.subchapters = subchapters;
-    this.isVisible = false;
+    this.subsubchapters = subsubchapters;
   }
 }

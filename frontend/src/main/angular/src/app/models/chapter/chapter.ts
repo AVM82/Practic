@@ -10,7 +10,6 @@ export class Chapter {
     this.id = id;
     this.number = number;
     this.name = name;
-    this.isVisible = false;
     this.subchapters = subchapters;
   }
 }

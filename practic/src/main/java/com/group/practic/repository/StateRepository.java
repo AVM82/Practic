@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StateRepository extends JpaRepository<StateEntity, Long> {
 
-    List<StateEntity> findAllByUniqueId(int uniqueId);
+    List<StateEntity> findAllByCluster(int cluster);
 
-    Optional<StateEntity> findAllByUniqueIdAndName(int uniqueId, String name);
+    Optional<StateEntity> findAllByClusterAndName(int cluster, String name);
 
 }

@@ -10,7 +10,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
@@ -19,20 +18,20 @@ import java.util.Set;
 
 @Entity
 @Table(name = "state", uniqueConstraints = {
-        @UniqueConstraint(name = "UniqueState", columnNames = { "inique_id", "name" }) })
+        @UniqueConstraint(name = "UniqueState", columnNames = { "cluster", "name" }) })
 public class StateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
-    int uniqueId;
+    int cluster;
 
     @NotBlank
     @Column(unique = true, nullable = false)
     String name;
 
-    @OneToMany(mappedBy = "state", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     Set<StateEntity> changes = new HashSet<>();
 
 
@@ -40,15 +39,15 @@ public class StateEntity {
     }
 
 
-    public StateEntity(int uniqueId, String name) {
-        this.uniqueId = uniqueId;
+    public StateEntity(int cluster, String name) {
+        this.cluster = cluster;
         this.name = name;
     }
 
 
-    public StateEntity(long id, int uniqueId, String name, Set<StateEntity> changes) {
+    public StateEntity(long id, int cluster, String name, Set<StateEntity> changes) {
         this.id = id;
-        this.uniqueId = uniqueId;
+        this.cluster = cluster;
         this.name = name;
         this.changes = changes;
     }
@@ -56,7 +55,7 @@ public class StateEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(changes, id, name, uniqueId);
+        return Objects.hash(changes, id, name, cluster);
     }
 
 
@@ -65,7 +64,7 @@ public class StateEntity {
         if (obj == null || getClass() != obj.getClass())
             return false;
         StateEntity other = (StateEntity) obj;
-        return this == other || (uniqueId == other.uniqueId && Objects.equals(name, other.name));
+        return this == other || (cluster == other.cluster && Objects.equals(name, other.name));
     }
 
 
@@ -79,13 +78,13 @@ public class StateEntity {
     }
 
 
-    public int getUnique() {
-        return uniqueId;
+    public int getGroup() {
+        return cluster;
     }
 
 
-    public void setUnique(int uniqueId) {
-        this.uniqueId = uniqueId;
+    public void setGroup(int cluster) {
+        this.cluster = cluster;
     }
 
 
@@ -99,13 +98,13 @@ public class StateEntity {
     }
 
 
-    public int getUniqueId() {
-        return uniqueId;
+    public int getCluster() {
+        return cluster;
     }
 
 
-    public void setUniqueId(int uniqueId) {
-        this.uniqueId = uniqueId;
+    public void setCluster(int cluster) {
+        this.cluster = cluster;
     }
 
 
@@ -120,7 +119,7 @@ public class StateEntity {
 
 
     public boolean addChange(StateEntity stateEntity) {
-        if (uniqueId == stateEntity.uniqueId && !hasName(stateEntity.name)) {
+        if (cluster == stateEntity.cluster && !hasName(stateEntity.name)) {
             changes.add(stateEntity);
             return true;
         }
@@ -129,7 +128,7 @@ public class StateEntity {
 
 
     public synchronized boolean removeChange(StateEntity stateEntity) {
-        if (uniqueId == stateEntity.uniqueId) {
+        if (cluster == stateEntity.cluster) {
             Iterator<StateEntity> it = changes.iterator();
             while (it.hasNext()) {
                 if (name.equals(it.next().name)) {
@@ -148,7 +147,7 @@ public class StateEntity {
 
 
     public boolean allowStateChange(StateEntity newState, boolean backward) {
-        return uniqueId == newState.uniqueId
+        return cluster == newState.cluster
                 && (hasName(newState.name) || (backward && newState.hasName(this.name)));
     }
 
