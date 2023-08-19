@@ -16,11 +16,12 @@ import {MatIconModule} from "@angular/material/icon";
 export class PracticMetricComponent implements OnInit {
   @Input() shouldShowHeader: boolean = true;
 
-  displayedColumns: string[] = ['personName', 'chapterName', 'state'];
+  displayedColumns: string[] = ['personName', 'chapterName', 'state', 'updatedAt'];
   columnNameConverterMap: { [key: string]: string } = {
     'personName': 'ПІБ',
     'chapterName': 'Розділ',
-    'state': 'Стан'
+    'state': 'Стан',
+    'updatedAt': 'Останнє оновлення'
   };
 
   dataSource: any[] = [];

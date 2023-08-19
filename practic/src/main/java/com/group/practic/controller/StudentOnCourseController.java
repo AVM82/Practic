@@ -5,9 +5,9 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.entity.StudentOnCourseEntity;
-import com.group.practic.service.PersonService;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
+import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentOnCourseService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.util.Converter;
@@ -31,19 +31,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/students")
 public class StudentOnCourseController {
 
-    StudentOnCourseService studentOnCourseService;
-    StudentPracticeService studentPracticeService;
-
-    @Autowired
-    public StudentOnCourseController(StudentOnCourseService studentOnCourseService,
-                                     StudentPracticeService studentPracticeService) {
-        this.studentOnCourseService = studentOnCourseService;
-        this.studentPracticeService = studentPracticeService;
-    }
-
+    private final StudentOnCourseService studentOnCourseService;
+    private final StudentPracticeService studentPracticeService;
     private final PersonService personService;
 
-    public StudentOnCourseController(PersonService personService) {
+    @Autowired
+    public StudentOnCourseController(
+            StudentOnCourseService studentOnCourseService,
+            StudentPracticeService studentPracticeService,
+            PersonService personService
+    ) {
+        this.studentOnCourseService = studentOnCourseService;
+        this.studentPracticeService = studentPracticeService;
         this.personService = personService;
     }
 

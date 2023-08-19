@@ -14,4 +14,8 @@ export class TableWidgetComponent {
   @Input() displayedColumns: string[]=[];
   @Input() dataSource: any[]=[];
   @Input() columnNameMap: { [key: string]: string }={};
+
+  isCreatedAtOrUpdatedAt(column: string): boolean {
+    return column === 'createdAt' || column === 'updatedAt';
+  }
 }

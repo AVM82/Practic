@@ -5,17 +5,23 @@ import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
 import {ApiUrls, getChapterByIdUrl} from "../../enums/api-urls";
+import {SlugifyPipe} from "../../pipes/slugify.pipe"
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoursesService {
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+      private http: HttpClient,
+      private router: Router,
+      private slugify: SlugifyPipe
+      ) {}
 
-  getCourse(id: number): Observable<Course> {
-    return this.http.get<Course>(ApiUrls.Course+id).pipe(
-        catchError(this.handleError<Course>(`getCourse id=${id}`))
+  getCourse(slug: string): Observable<Course> {
+    const shortName = this.slugify.transform(slug, false);
+    return this.http.get<Course>(ApiUrls.Course+shortName).pipe(
+        catchError(this.handleError<Course>(`getCourse name=${slug}`))
     );
   }
 

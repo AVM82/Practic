@@ -16,14 +16,10 @@ public interface Converter {
     static ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        modelMapper.createTypeMap(StudentPracticeEntity.class, StudentPracticeDto.class)
-                .addMapping(src -> src.getStudent().getName(), StudentPracticeDto::setPersonName)
-                .addMapping(src -> src.getChapter().getName(), StudentPracticeDto::setChapterName)
-                .addMapping(StudentPracticeEntity::getState, StudentPracticeDto::setState);
+        applyStudentPracticeMap(modelMapper);
 
         return modelMapper;
     }
-
 
     static CourseDto convert(CourseEntity courseEntity) {
         return modelMapper().map(courseEntity, CourseDto.class);
@@ -48,5 +44,11 @@ public interface Converter {
         return modelMapper().map(studentPracticeEntity, StudentPracticeDto.class);
     }
 
-
+    private static void applyStudentPracticeMap(ModelMapper modelMapper) {
+        modelMapper.createTypeMap(StudentPracticeEntity.class, StudentPracticeDto.class)
+                .addMapping(src -> src.getStudent().getName(), StudentPracticeDto::setPersonName)
+                .addMapping(src ->
+                        src.getChapter().getShortName(), StudentPracticeDto::setChapterName)
+                .addMapping(StudentPracticeEntity::getState, StudentPracticeDto::setState);
+    }
 }

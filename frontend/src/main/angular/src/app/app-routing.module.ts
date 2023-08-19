@@ -10,7 +10,7 @@ import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.co
 const routes: Routes = [
   {path: '', component: CoursesComponent},
   {path: 'courses', component: CoursesComponent},
-  {path: 'course/:id', component: CourseDetailsComponent},
+  {path: 'course/:slug', component: CourseDetailsComponent},
   {
     path: 'admin',
     component: AdminDashboardComponent,
