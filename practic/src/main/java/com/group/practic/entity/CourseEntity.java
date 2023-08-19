@@ -54,6 +54,9 @@ public class CourseEntity {
     @JsonIgnore
     List<ChapterEntity> chapters = new ArrayList<>();
 
+    @Column(unique = true)
+    String shortName;
+
 
     public CourseEntity() {
     }
@@ -64,6 +67,11 @@ public class CourseEntity {
         this.description = description;
     }
 
+    public CourseEntity(String name, String description, String shortName) {
+        this.name = name;
+        this.description = description;
+        this.shortName = shortName;
+    }
 
     public long getId() {
         return id;
@@ -174,4 +182,11 @@ public class CourseEntity {
         this.chapters = chapters;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
 }

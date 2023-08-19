@@ -41,6 +41,8 @@ public class ChapterEntity {
     @ManyToOne
     QuizEntity quiz;
 
+    @Column(unique = true)
+    String shortName;
 
     public ChapterEntity() {
     }
@@ -121,6 +123,13 @@ public class ChapterEntity {
         this.subChapters = subChapters;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
 
     public void addSubChapter(SubChapterEntity subChapter) {
         subChapters.add(subChapter);
