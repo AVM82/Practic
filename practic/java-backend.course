@@ -1,4 +1,7 @@
+slug=java-dev-tools
+
 name=Java Dev Tools: the first experience.
+shortname=Java Development
 
 author=Пісковий Андрій Віталійович https://www.linkedin.com/in/piskovyy
 
@@ -40,7 +43,7 @@ level2=3
 level3=4,5
 level4=6,7,8
 
-1.=Запуск java-застосунку з використанням сторонніх бібліотек поза IDE (або демо ключової ідеї java "Write once, run anywhere")
+1.=Запуск java-застосунку<>Запуск java-застосунку з використанням сторонніх бібліотек поза IDE (або демо ключової ідеї java "Write once, run anywhere")
 1.1.=Збірка java-проєктів
 1.1.1.=Компіляція "HelloWorld" вручну в консолі, запуск вручну і в IDE<>https://www.youtube.com/watch?v=FqcJt4_tKEw
 1.1.2.=Maven із консолі, без IDE: створити новий мавен-проект із відповідного архетипу (+ знати як додати залежності, які фази, goals, плагіни, структура репозитаріїв, де шукать публічні репо)<>\
@@ -81,7 +84,7 @@ https://blog.frankel.ch/creating-self-contained-executable-jars/
 1.6.=Практичне завдання #1 (складність: 2 s.p.) Мета: передача іншому для запуску.
 
 
-2.=Перевірка перед передачею коду іншим
+2.=Перевірка коду<>Перевірка перед передачею коду іншим
 2.1.=Системи контролю версій
 2.1.1.=Svn (так, застаріла, але все ще використовується)
 2.1.2.=Git - стандарт, гілки git як головна фішка + merge(pull)-requests <>\
@@ -99,4 +102,24 @@ https://jelvix.com/blog/bitbucket-vs-github-vs-gitlab
 2.1.5.=Створити гіт-репозиторій для п.2.5. і запушити його на власний аккаунт GitLab.com
 2.1.6.=Як запобігти мерж-конфліктам?
 2.2.=Тестування
+2.2.1.=Види тестів<>https://qagroup.com.ua/publications/vydy-testuvannya-ta-vidminnosti-mizh-nymy/ 
+2.2.2.=Піраміда тестування і чому тестувальник Вам не дуже допоможе ;)<>\
+https://qastart.by/mainterms/64-piramida-testov-testirovaniya\n\
+https://highload.today/blogs/chto-nado-znat-o-tdd-i-bdd-kak-testy-pomogayut-razrabotchikam-rabotat-v-komande-i-ponyat-zakazchika/ 
+2.2.3.=Junit vs TestNg (but junit5 is the must)<>https://mkyong.com/unittest/junit-4-vs-testng-comparison/ 
+2.2.4.=Mocking (Mockito)<>https://habr.com/ru/post/444982/ 
+2.2.5.=Написати тести на Junit5, які перевірять методи, що виконують множення і ділення двох чисел
+2.2.6.=TDD - допомагає почати реалізацію, особливо якщо незрозуміло як<>https://www.youtube.com/watch?v=SQUI9Ixb790 
+2.2.7.=Рефакторинг. Програми не пишуться з першого разу і назавжди, програми "розвиваються" за допомогою рефакторингу.    Найважчий виклик у тому, щоб програмісти не боялись змінювать код навіть у величезному проєкті.   Але це єдиний спосіб щоб проєкт не "протух" набравшись технічного боргу і "вонючок".<>\
+https://dou.ua/lenta/columns/why-refactoring-is-important/
+2.2.8.=Що таке покриття тестами і як його перевірити. Який % достатній?
+2.3.=Системи CI/CD<>Системи CI/CD
+2.3.1.=Gitlab (теорія СІ + практика на Gitlab.com)<>https://about.gitlab.com/pricing/ 
+2.3.2.=Jenkins (теорія + практика на своєму Jenkins)<>https://aws.amazon.com/ru/getting-started/hands-on/setup-jenkins-build-server/ 
+2.3.3.=Teamcity (загальна інфа, порівняння)<>https://dzone.com/articles/jenkins-vs-gitlab-ci-battle-of-cicd-tools 
+2.3.4.=AWS DevOps<>https://aws.amazon.com/ru/devops/what-is-devops/#iac
+2.3.5.=Налаштувати Jenkins job, що збілдить Ваш проєкт із Вашого гіт-репо<>https://geekflare.com/jenkins-hosting-platform/ 
+2.3.6.=Так чим відрізняється СІ та CD?<>https://habr.com/ru/company/piter/blog/343270/ 
+2.4.=Code review<>Code review & авто валідація коду
 
+3.=DTO, POJO, MQ, Validation<>DTO, POJO, Validation, черги повідомлень

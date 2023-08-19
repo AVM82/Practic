@@ -79,17 +79,19 @@ public class CourseService {
     }
 
 
-    public long create(String authors, String type, String name, String purpose, String description,
-            Map<Integer, List<Integer>> levels, List<SimpleChapterStructure> chapters) {
+    public long create(String authors, String type, String shortname, String name, String purpose, String description,
+            Map<Integer, List<Integer>> levels, List<SimpleChapterStructure> chapters, String slug) {
         if (levels == null || chapters == null) {
             return 0L;
         }
         CourseEntity course = new CourseEntity();
         course.setAuthors(authors);
         course.setCourseType(type);
+        course.setShortName(shortname);
         course.setName(name);
         course.setPurpose(purpose);
         course.setDescription(description);
+        course.setSlug(slug);
         Long result = courseRepository.saveAndFlush(course).getId();
         List<LevelEntity> levelList = levelService.createMany(course, levels);
         List<ChapterEntity> chapterList = chapterService.createMany(course, chapters);

@@ -4,7 +4,7 @@ import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar
 import {Course} from "../../models/course/course";
 import {Chapter} from "../../models/course/chapter";
 import {CoursesService} from "../../services/courses/courses.service";
-import {ActivatedRoute, RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 
@@ -26,21 +26,21 @@ export class CourseDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const idParam = params.get('id');
-      const courseId = idParam ? +idParam : null;
-
-      console.log("Course id = "+ courseId);
+      const courseId = Number(params.get('id'))
 
       if(courseId) {
+
         this.coursesService.getCourse(courseId).subscribe(course =>
         {
           this.course = course;
         });
+
         this.coursesService.getChapters(courseId).subscribe(chapters =>
         {
           this.coursesService.setFirstChapterVisible(chapters);
           this.chapters = chapters;
         });
+
       }
     })
   }

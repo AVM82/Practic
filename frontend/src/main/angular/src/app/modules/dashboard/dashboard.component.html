@@ -1,8 +1,7 @@
-<!-- dashboard.component.html -->
 <div class="dashboard-container">
-    <div class="metric-card">
-        <app-ready-practic-metric></app-ready-practic-metric>
+    <div class="metric-card clickable" [routerLink]="'students/practices'">
+        <div class="metric-title">Практичні готові до здачі</div>
+        <app-ready-practic-metric [shouldShowHeader]="false" class="widget"></app-ready-practic-metric>
     </div>
-    <!-- Додайте інші компоненти метрик як карточки тут -->
 </div>
 

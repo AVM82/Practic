@@ -12,6 +12,6 @@ public interface ChapterRepository extends JpaRepository<ChapterEntity, Long> {
 
     List<ChapterEntity> findAllByCourse(CourseEntity course);
 
-    List<ChapterEntity> findAllByCourseAndName(CourseEntity courseEntity, String name);
+    List<ChapterEntity> findAllByCourseAndShortName(CourseEntity course, String shortname);
 
 }

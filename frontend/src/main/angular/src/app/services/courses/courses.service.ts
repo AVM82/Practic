@@ -4,37 +4,23 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl} from "../../enums/api-urls";
+import {ApiUrls, getChapterByIdUrl} from "../../enums/api-urls";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoursesService {
-  private coursesCache: Map<number, Course> = new Map<number, Course>();
-  private chaptersCache: Map<number, Chapter[]> = new Map<number, Chapter[]>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
   getCourse(id: number): Observable<Course> {
-    if (this.coursesCache.has(id)) {
-      const cachedCourse = this.coursesCache.get(id);
-      if (cachedCourse) {
-        return of(cachedCourse);
-      }
-    }
     return this.http.get<Course>(ApiUrls.Course+id).pipe(
         catchError(this.handleError<Course>(`getCourse id=${id}`))
     );
   }
 
   getChapters(id: number): Observable<Chapter[]> {
-    if (this.chaptersCache.has(id)) {
-      const cachedChapters = this.chaptersCache.get(id);
-      if (cachedChapters) {
-        return of(cachedChapters);
-      }
-    }
-    return this.http.get<Chapter[]>(getChaptersUrl(id));
+    return this.http.get<Chapter[]>(getChapterByIdUrl(id));
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {

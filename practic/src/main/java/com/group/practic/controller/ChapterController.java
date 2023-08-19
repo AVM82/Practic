@@ -35,8 +35,8 @@ public class ChapterController {
 
     @PostMapping()
     public ResponseEntity<ChapterEntity> create(@Min(1) @RequestParam long courseId,
-            @RequestBody @NotBlank String name, @RequestParam(required = false) Integer number) {
-        return postResponse(chapterService.create(courseId, number == null ? 0 : number, name));
+            @RequestBody @NotBlank String shortname, @RequestParam(required = false) Integer number) {
+        return postResponse(chapterService.create(courseId, number == null ? 0 : number, shortname, shortname));
     }
 
 
