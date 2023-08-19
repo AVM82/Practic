@@ -19,7 +19,7 @@ public class EmailSenderService implements Sender {
     @Value("${spring.mail.username}")
     private String sender;
 
-    public void sendMessage(SendMessageDto messageDto) {
+    public boolean sendMessage(SendMessageDto messageDto) {
         try {
             SimpleMailMessage mailMessage
                     = new SimpleMailMessage();
@@ -30,8 +30,10 @@ public class EmailSenderService implements Sender {
 
             mailSender.send(mailMessage);
             logger.info("Yor email is sent to {}", messageDto.getAddress());
+            return true;
         } catch (Exception e) {
             logger.error("Yor email is not sent to {}", messageDto.getAddress(), e);
         }
+        return false;
     }
 }
