@@ -16,7 +16,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 
 
-@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "discord" }))
+@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "discord"}))
 @Entity
 public class PersonEntity {
 
@@ -43,7 +43,7 @@ public class PersonEntity {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "persons_roles",
-            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"), 
+            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<RoleEntity> roles;
 
@@ -56,9 +56,14 @@ public class PersonEntity {
         this.linkedin = linkedin;
     }
 
+    public PersonEntity(String name, String linkedin, String contacts) {
+        this.name = name;
+        this.linkedin = linkedin;
+        this.contacts = contacts;
+    }
 
     public PersonEntity(String name, String discord, String linkedin, String contacts,
-            Collection<RoleEntity> roles) {
+                        Collection<RoleEntity> roles) {
         this.name = name;
         this.discord = discord;
         this.linkedin = linkedin;
