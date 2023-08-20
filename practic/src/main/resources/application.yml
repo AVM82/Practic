@@ -1,0 +1,13 @@
+email:
+  calendar:
+    header: |+
+      Доповідь на тему - %s
+    location: discord m-java
+  message:
+    body: |+
+      Привіт, на менторському курсі по Java %s о %s
+      Відбудеться доповідь на тему "%s". Запрошуємо тебе долучитися до нас у
+      Discord кімнату m-java -> https://discord.com/channels/534496884849639455/843878435067002930
+      link на додання події у google Calendar -> %s
+    header: |
+      Заходь послухати доповідь

@@ -10,19 +10,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CalendarEventService {
 
     PersonService personService;
+    @Value("${email.message.body}")
+    private String emailMessage;
 
-    public static final String ANNOUNCE_MESSAGE = """
-            Привіт, на менторському курсі по Java %s о %s 
-            Відбудеться доповідь на тему "%s". Запрошуємо тебе долучитися до нас у 
-            Discord кімнату m-java -> https://discord.com/channels/534496884849639455/843878435067002930
-            link на додання події у google Calendar -> %s
-            """;
+    @Value("${email.message.header}")
+    private String emailMessageHeader;
+
+    @Value("${email.calendar.header}")
+    private String calendarHeader;
+
+    @Value("${email.calendar.location}")
+    private String calendarLocation;
 
     @Autowired
     CalendarEventService(PersonService personService) {
@@ -35,11 +40,11 @@ public class CalendarEventService {
         int counter = 0;
         for (PersonEntity person : allPerson) {
             if (sender.sendMessage(new SendMessageDto(person.getContacts(), eventMessage,
-                    "Запрошуємо послухати доповідь"))) {
+                    emailMessageHeader))) {
                 counter++;
             }
         }
-        return new MessageSendingResultDto(eventMessage,counter);
+        return new MessageSendingResultDto(eventMessage, counter);
     }
 
     private String getEventMessage(EventDto eventDto) {
@@ -52,17 +57,19 @@ public class CalendarEventService {
         String startDate = startLocalDate.getDayOfMonth() + " " + month;
         String startTime =
                 String.format("%02d:%02d", startLocalDate.getHour(), startLocalDate.getMinute());
-        return String.format(ANNOUNCE_MESSAGE, startDate, startTime,
+        return String.format(emailMessage, startDate, startTime,
                 eventDto.getSubjectReport(), linkCalendar);
     }
 
     private String getLink(EventDto eventDto) {
-        String header = ("Доповідь на тему: " + eventDto.getSubjectReport()).replace(" ", "+");
+        String headerMessage = String.format(calendarHeader, eventDto.getSubjectReport());
+        String header = headerMessage.replace(" ", "+");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
         String startDate = eventDto.getStartEvent().format(formatter);
         String endDate = eventDto.getEndEvent().format(formatter);
         String description = eventDto.getDescription().replace(" ", "+");
+        String location = calendarLocation.replace(" ", "+");
         return String.format("https://calendar.google.com/calendar/r/eventedit?text=%s&dates=%s/%s&"
-                + "details=%s&location=discord+m-java", header, startDate, endDate, description);
+                + "details=%s&location=%s", header, startDate, endDate, description, location);
     }
 }

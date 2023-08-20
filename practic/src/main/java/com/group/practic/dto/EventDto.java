@@ -19,10 +19,10 @@ public class EventDto {
     private LocalDateTime endEvent;
     @NotBlank
     @Min(5)
-    @Pattern(regexp = "^[A-Za-z0-9.,-]*$", message = "Only letters, numbers, and . , - characters are allowed")
+    @Pattern(regexp = "^[A-Za-z0-9.,-]*$")
     private String subjectReport;
     @NotBlank
     @Min(5)
-    @Pattern(regexp = "^[A-Za-z0-9.,-]*$", message = "Only letters, numbers, and . , - characters are allowed")
+    @Pattern(regexp = "^[A-Za-z0-9.,-]*$")
     private String description;
 }

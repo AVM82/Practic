@@ -16,7 +16,7 @@ public class EmailSenderService implements Sender {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
+    @Value("${MAIL_USERNAME}")
     private String sender;
 
     public boolean sendMessage(SendMessageDto messageDto) {
