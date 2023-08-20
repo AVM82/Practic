@@ -57,14 +57,14 @@ public class CourseService {
 
     public Optional<String> getDescription(long id) {
         Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? Optional.empty() :
-                Optional.ofNullable(course.get().getDescription());
+        return course.isEmpty() ? Optional.empty() : 
+            Optional.ofNullable(course.get().getDescription());
     }
 
 
     public Optional<ChapterEntity> getAdditional(long id) {
         Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? Optional.empty()
+        return course.isEmpty() ? Optional.empty() 
                 : Optional.ofNullable(course.get().getAdditionalMaterials());
     }
 
@@ -79,17 +79,19 @@ public class CourseService {
     }
 
 
-    public long create(String authors, String type, String name, String purpose, String description,
-                       Map<Integer, List<Integer>> levels, List<SimpleChapterStructure> chapters) {
+    public long create(String authors, String type, String shortname, String name, String purpose, String description,
+            Map<Integer, List<Integer>> levels, List<SimpleChapterStructure> chapters, String slug) {
         if (levels == null || chapters == null) {
             return 0L;
         }
         CourseEntity course = new CourseEntity();
         course.setAuthors(authors);
         course.setCourseType(type);
+        course.setShortName(shortname);
         course.setName(name);
         course.setPurpose(purpose);
         course.setDescription(description);
+        course.setSlug(slug);
         Long result = courseRepository.saveAndFlush(course).getId();
         List<LevelEntity> levelList = levelService.createMany(course, levels);
         List<ChapterEntity> chapterList = chapterService.createMany(course, chapters);

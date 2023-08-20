@@ -47,17 +47,20 @@ public class ChapterService {
     }
 
 
-    public Optional<ChapterEntity> create(long courseId, int number, String name) {
+    public Optional<ChapterEntity> create(long courseId, int number, String shortname,
+            String name) {
         Optional<CourseEntity> course = courseService.get(courseId);
         if (course.isEmpty()) {
             return Optional.empty();
         }
-        return create(course.get(), number, name);
+        return create(course.get(), number, shortname, name);
     }
 
 
-    public Optional<ChapterEntity> create(CourseEntity course, int number, String name) {
-        List<ChapterEntity> chapterList = chapterRepository.findAllByCourseAndName(course, name);
+    public Optional<ChapterEntity> create(CourseEntity course, int number, String shortname,
+            String name) {
+        List<ChapterEntity> chapterList = chapterRepository.findAllByCourseAndShortName(course,
+                shortname);
         if (!chapterList.isEmpty()) {
             return Optional.empty();
         }
@@ -65,7 +68,8 @@ public class ChapterService {
         if ((number = getChapterListSuitNumber(chapterList, number)) == 0) {
             return Optional.empty();
         }
-        return Optional.ofNullable(chapterRepository.save(new ChapterEntity(course, number, name)));
+        return Optional.ofNullable(
+                chapterRepository.save(new ChapterEntity(course, number, shortname, name)));
     }
 
 
@@ -97,8 +101,9 @@ public class ChapterService {
                                           List<SimpleChapterStructure> chapters) {
         List<ChapterEntity> result = new ArrayList<>();
         for (SimpleChapterStructure chapterSource : chapters) {
+            List<String> names = extractParts(chapterSource.getHeader());
             Optional<ChapterEntity> chapter = create(course, chapterSource.getNumber(),
-                    chapterSource.getHeader());
+                    names.get(0), names.get(1));
             if (chapter.isPresent()) {
                 addSubChapters(chapter.get(), chapterSource.getOffsprings());
                 result.add(chapterRepository.save(chapter.get()));
@@ -112,7 +117,7 @@ public class ChapterService {
                                   List<SimpleChapterStructure> subChapterList) {
         for (SimpleChapterStructure subChapterSource : subChapterList) {
             SubChapterEntity subChapter = createSub(chapter, subChapterSource.getNumber(),
-                    extractNameAndRefs(subChapterSource.getHeader()));
+                    extractParts(subChapterSource.getHeader()));
             addSubSubChapters(subChapter, subChapterSource.getOffsprings());
             chapter.addSubChapter(subChapter);
         }
@@ -123,14 +128,13 @@ public class ChapterService {
                                      List<SimpleChapterStructure> subSubChapterList) {
         for (SimpleChapterStructure subSubChapterSource : subSubChapterList) {
             SubSubChapterEntity subSubChapter = createSubSub(subChapter,
-                    subSubChapterSource.getNumber(),
-                    extractNameAndRefs(subSubChapterSource.getHeader()));
+                    subSubChapterSource.getNumber(), extractParts(subSubChapterSource.getHeader()));
             subChapter.addSubSubChapter(subSubChapter);
         }
     }
 
 
-    protected List<String> extractNameAndRefs(String source) {
+    protected List<String> extractParts(String source) {
         List<String> result = new ArrayList<>();
         String[] part = source.split(CoursesInitializator.REFERENCE_SEPARATOR);
         result.add(part[0]);

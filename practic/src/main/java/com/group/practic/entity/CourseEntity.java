@@ -44,6 +44,7 @@ public class CourseEntity {
 
     @NotBlank
     @Column(length = 8192)
+    @JsonIgnore
     String description;
 
     @ManyToOne
@@ -57,6 +58,9 @@ public class CourseEntity {
     @Column(unique = true)
     String shortName;
 
+    @Column(unique = true)
+    String slug;
+
 
     public CourseEntity() {
     }
@@ -67,11 +71,6 @@ public class CourseEntity {
         this.description = description;
     }
 
-    public CourseEntity(String name, String description, String shortName) {
-        this.name = name;
-        this.description = description;
-        this.shortName = shortName;
-    }
 
     public long getId() {
         return id;
@@ -182,11 +181,24 @@ public class CourseEntity {
         this.chapters = chapters;
     }
 
+
     public String getShortName() {
         return shortName;
     }
 
+
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
+
+
+    public String getSlug() {
+        return slug;
+    }
+
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
 }

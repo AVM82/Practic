@@ -4,7 +4,7 @@ import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar
 import {Course} from "../../models/course/course";
 import {Chapter} from "../../models/course/chapter";
 import {CoursesService} from "../../services/courses/courses.service";
-import {ActivatedRoute, RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 

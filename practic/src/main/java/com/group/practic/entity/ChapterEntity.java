@@ -27,7 +27,7 @@ public class ChapterEntity {
     @ManyToOne
     @JsonIgnore
     CourseEntity course;
-    
+
     int number;
 
     @NotBlank
@@ -44,14 +44,16 @@ public class ChapterEntity {
     @Column(unique = true)
     String shortName;
 
+
     public ChapterEntity() {
     }
 
 
-    public ChapterEntity(CourseEntity course, int number, String name) {
+    public ChapterEntity(CourseEntity course, int number, String shortName, String name) {
         this.course = course;
         this.number = number;
         this.name = name;
+        this.shortName = shortName;
     }
 
 
@@ -114,6 +116,16 @@ public class ChapterEntity {
     }
 
 
+    public String getShortName() {
+        return shortName;
+    }
+
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+
     public List<SubChapterEntity> getSubChapters() {
         return subChapters;
     }
@@ -123,13 +135,6 @@ public class ChapterEntity {
         this.subChapters = subChapters;
     }
 
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
 
     public void addSubChapter(SubChapterEntity subChapter) {
         subChapters.add(subChapter);

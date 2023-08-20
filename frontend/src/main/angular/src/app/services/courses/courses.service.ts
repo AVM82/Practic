@@ -5,7 +5,7 @@ import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
 import {SlugifyPipe} from "../../pipes/slugify.pipe"
-import {ApiUrls, getChaptersUrl} from "../../enums/api-urls";
+import {ApiUrls, getChapterByIdUrl} from "../../enums/api-urls";
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class CoursesService {
   }
 
   getChapters(id: number): Observable<Chapter[]> {
-    return this.http.get<Chapter[]>(getChaptersUrl(id));
+    return this.http.get<Chapter[]>(getChapterByIdUrl(id));
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {
