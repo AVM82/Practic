@@ -79,8 +79,11 @@ public class CourseService {
     }
 
 
-    public long create(String authors, String type, String shortname, String name, String purpose, String description,
-            Map<Integer, List<Integer>> levels, List<SimpleChapterStructure> chapters, String slug) {
+    public long create(
+            String authors, String type, String shortname, String name,
+            String purpose, String description, Map<Integer, List<Integer>> levels,
+            List<SimpleChapterStructure> chapters, String slug
+    ) {
         if (levels == null || chapters == null) {
             return 0L;
         }
@@ -111,5 +114,9 @@ public class CourseService {
 
     public Optional<CourseEntity> getByShortName(String shortName) {
         return Optional.ofNullable(courseRepository.findByShortName(shortName));
+    }
+
+    public Optional<CourseEntity> getBySlug(String slug) {
+        return Optional.ofNullable(courseRepository.findBySlug(slug));
     }
 }

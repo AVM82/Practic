@@ -11,7 +11,7 @@ import {MatIconModule} from "@angular/material/icon";
     templateUrl: './courses.component.html',
     styleUrls: ['./courses.component.css'],
     standalone: true,
-    imports: [NgForOf, MatCardModule, RouterLink, MatIconModule, SlugifyPipe]
+    imports: [NgForOf, MatCardModule, RouterLink, MatIconModule]
 })
 export class CoursesComponent implements OnInit{
   courses: Course[] = [];

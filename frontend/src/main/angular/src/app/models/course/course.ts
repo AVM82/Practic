@@ -7,5 +7,6 @@ export interface Course {
   courseType?: string;
   name: string;
   shortName: string;
+  slug: string;
   chapters: Chapter[];
 }

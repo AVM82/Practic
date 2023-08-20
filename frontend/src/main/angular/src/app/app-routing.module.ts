@@ -7,12 +7,10 @@ import {AdminDashboardComponent} from "./pages/admin-dashboard/admin-dashboard.c
 import {DashboardComponent} from "./modules/dashboard/dashboard.component";
 import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
-import {ReadyPracticMetricComponent} from "./modules/ready-practic-metric/ready-practic-metric.component";
 
 const routes: Routes = [
   {path: '', component: CoursesComponent},
   {path: 'courses', component: CoursesComponent},
-  {path: 'course/:slug', component: CourseDetailsComponent},
   {
     path: 'admin',
     component: AdminDashboardComponent,
@@ -21,16 +19,8 @@ const routes: Routes = [
       {path: 'students/practices', component: PracticMetricComponent}
     ]
   },
-  {path: 'courses/:id', component: CourseDetailsComponent},
+  {path: 'courses/:slug', component: CourseDetailsComponent},
   {path: 'courses/:courseId/chapters/:chapterId', component: ChapterDetailsComponent},
-  {
-    path: 'admin',
-    component: AdminDashboardComponent,
-    children: [
-      {path: '', component: DashboardComponent},
-      {path: 'ready-practic-students', component: ReadyPracticMetricComponent}
-    ]
-  },
   {path: '**', component: PageNotFoundComponent}
 ];
 

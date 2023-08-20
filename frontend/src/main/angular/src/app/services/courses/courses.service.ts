@@ -4,7 +4,6 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {SlugifyPipe} from "../../pipes/slugify.pipe"
 import {ApiUrls, getChapterByIdUrl} from "../../enums/api-urls";
 
 @Injectable({
@@ -14,13 +13,12 @@ export class CoursesService {
 
   constructor(
       private http: HttpClient,
-      private router: Router,
-      private slugify: SlugifyPipe
+      private _router: Router
       ) {}
 
-  getCourse(id: number): Observable<Course> {
-    return this.http.get<Course>(ApiUrls.Course+id).pipe(
-        catchError(this.handleError<Course>(`get course = ${id}`))
+  getCourse(slug: string): Observable<Course> {
+    return this.http.get<Course>(ApiUrls.Course+slug).pipe(
+        catchError(this.handleError<Course>(`get course = ${slug}`))
     )
   }
 
@@ -38,6 +36,7 @@ export class CoursesService {
     return this.http.get<Course[]>(ApiUrls.Courses);
   }
 
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.
@@ -51,8 +50,7 @@ export class CoursesService {
       console.error(error);
       console.error(`${operation} failed: ${error.message}`);
 
-      this.router.navigateByUrl('/404');
-
+      this._router.navigateByUrl('/404');
       return of(result as T);
     };
   }

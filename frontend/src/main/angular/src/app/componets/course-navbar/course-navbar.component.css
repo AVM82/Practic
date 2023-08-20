@@ -53,7 +53,12 @@
     -moz-transform: skew(-45deg);
     transform: skew(-45deg);
 }
-.progress:hover:before,
-.progress:hover:after {
+
+.progress:hover:not(.icon) {
+    cursor: pointer;
+}
+.progress:hover:not(.icon):before,
+.progress:hover:not(.icon):after {
     background: #3cff9e;
+    cursor: pointer;
 }

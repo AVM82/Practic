@@ -70,8 +70,8 @@ public class CourseController {
         return postResponse(courseService.addShortName(id, shortName));
     }
 
-    @GetMapping("/{shortName}")
-    public ResponseEntity<CourseEntity> getByShortName(@PathVariable String shortName) {
-        return getResponse(courseService.getByShortName(shortName));
+    @GetMapping("/{slug}")
+    public ResponseEntity<CourseEntity> getBySlug(@PathVariable String slug) {
+        return getResponse(courseService.getBySlug(slug));
     }
 }
