@@ -1,5 +1,6 @@
+<div class="mat-elevation-z8">
 <table
-        mat-table *ngIf="dataSource.length > 0"
+        mat-table *ngIf="data"
         [dataSource]="dataSource"
         aria-describedby="Table report"
         class="mat-elevation-z8">
@@ -17,3 +18,8 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+<mat-paginator [pageSizeOptions]="[5, 10, 20]"
+               showFirstLastButtons
+               aria-label="Select page">
+</mat-paginator>
+</div>

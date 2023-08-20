@@ -24,7 +24,7 @@ export class PracticMetricComponent implements OnInit {
     'updatedAt': 'Останнє оновлення'
   };
 
-  dataSource: any[] = [];
+  data: any[] = [];
   practicStates: any[] = [];
   defaultState: string = 'ready_to_review';
 
@@ -48,12 +48,12 @@ export class PracticMetricComponent implements OnInit {
     if (index === -1) {
       this.showState.push(state);
       this.studentMetricService.getAllPracticesByState(state).subscribe(students => {
-        this.dataSource.push(...students);
-        this.dataSource = [...this.dataSource];
+        this.data.push(...students);
+        this.data = [...this.data];
       });
     } else {
       this.showState.splice(index, 1);
-      this.dataSource = this.dataSource.filter(student => student.state !== state);
+      this.data = this.data.filter(student => student.state !== state);
     }
   }
 

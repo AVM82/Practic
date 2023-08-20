@@ -22,12 +22,9 @@ export class ApiCacheInterceptor implements HttpInterceptor {
     const url = request.url.replace(environment.appApi, '');
     console.log("Request url = " + url);
 
-    const shouldCache = this.endPointsToCachePatterns.some(pattern => {
-      console.log("pattern = " + pattern);
-      return pattern.test(url);
-    });
+    const shouldCache = this.endPointsToCachePatterns.some(pattern => pattern.test(url));
     if (shouldCache) {
-      console.log("Should cache");
+
       const cachedResponse = this.cache.get(request.url);
 
       if (cachedResponse) {

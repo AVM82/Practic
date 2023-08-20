@@ -11,12 +11,13 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { CoursesService } from './app/services/courses/courses.service';
 import {StudentMetricsService} from "./app/services/admin/student-metrics.service";
 import {ApiCacheInterceptor} from "./app/services/api-cache.interceptor";
+import {MatPaginator} from "@angular/material/paginator";
 
 
 bootstrapApplication(AppComponent, {
     providers: [
         importProvidersFrom(BrowserModule, AppRoutingModule, TranslocoRootModule, MatCardModule, MatIconModule, MatToolbarModule),
-        CoursesService, StudentMetricsService,
+        CoursesService, StudentMetricsService, MatPaginator,
         provideAnimations(),
         provideHttpClient(withInterceptorsFromDi()),
       {provide: HTTP_INTERCEPTORS, useClass: ApiCacheInterceptor, multi: true}
