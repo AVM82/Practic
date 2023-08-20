@@ -6,6 +6,8 @@ import {CourseDetailsComponent} from "./pages/course-details/course-details.comp
 import {AdminDashboardComponent} from "./pages/admin-dashboard/admin-dashboard.component";
 import {DashboardComponent} from "./modules/dashboard/dashboard.component";
 import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
+import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
+import {ReadyPracticMetricComponent} from "./modules/ready-practic-metric/ready-practic-metric.component";
 
 const routes: Routes = [
   {path: '', component: CoursesComponent},
@@ -17,6 +19,16 @@ const routes: Routes = [
     children: [
       {path: '', component: DashboardComponent},
       {path: 'students/practices', component: PracticMetricComponent}
+    ]
+  },
+  {path: 'courses/:id', component: CourseDetailsComponent},
+  {path: 'courses/:courseId/chapters/:chapterId', component: ChapterDetailsComponent},
+  {
+    path: 'admin',
+    component: AdminDashboardComponent,
+    children: [
+      {path: '', component: DashboardComponent},
+      {path: 'ready-practic-students', component: ReadyPracticMetricComponent}
     ]
   },
   {path: '**', component: PageNotFoundComponent}
