@@ -7,7 +7,6 @@ import {
 } from '@angular/common/http';
 import {Observable, of, tap} from 'rxjs';
 import {ApiUrls} from "../enums/api-urls";
-import {environment} from "../../enviroments/enviroment";
 
 @Injectable()
 export class ApiCacheInterceptor implements HttpInterceptor {
@@ -19,8 +18,7 @@ export class ApiCacheInterceptor implements HttpInterceptor {
   ];
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const url = request.url.replace(environment.appApi, '');
-    console.log("Request url = " + url);
+    const url = request.url;
 
     const shouldCache = this.endPointsToCachePatterns.some(pattern => pattern.test(url));
     if (shouldCache) {
