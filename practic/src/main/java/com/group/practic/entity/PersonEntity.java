@@ -1,5 +1,6 @@
 package com.group.practic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,11 +15,16 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 
 @Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "discord"}))
 @Entity
-public class PersonEntity {
+public class PersonEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -45,7 +51,7 @@ public class PersonEntity {
     @JoinTable(name = "persons_roles",
             joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Collection<RoleEntity> roles;
+    private Set<RoleEntity> roles = new HashSet<>();
 
 
     public PersonEntity() {
@@ -63,7 +69,7 @@ public class PersonEntity {
     }
 
     public PersonEntity(String name, String discord, String linkedin, String contacts,
-                        Collection<RoleEntity> roles) {
+                        Set<RoleEntity> roles) {
         this.name = name;
         this.discord = discord;
         this.linkedin = linkedin;
@@ -142,17 +148,17 @@ public class PersonEntity {
     }
 
 
-    public Collection<RoleEntity> getRoles() {
+    public Set<RoleEntity> getRoles() {
         return roles;
     }
 
 
-    public void setRoles(Collection<RoleEntity> roles) {
+    public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
     }
 
 
-    public void setRole(RoleEntity role) {
+    public void addRole(RoleEntity role) {
         this.roles.add(role);
     }
 
@@ -168,4 +174,51 @@ public class PersonEntity {
                 + ", roles=" + roles + '}';
     }
 
+    @JsonIgnore
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
+    @JsonIgnore
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getUsername() {
+        return getName();
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public boolean containsRole(String role) {
+        return roles.stream()
+                .anyMatch(personRole ->
+                        personRole.getName().equals(role));
+    }
 }

@@ -86,7 +86,7 @@ public class ChapterService {
 
 
     public SubSubChapterEntity createSubSub(SubChapterEntity subChapter, int number,
-            List<String> p) {
+                                            List<String> p) {
         SubSubChapterEntity subSubChapter = new SubSubChapterEntity(0, subChapter, number, p.get(0),
                 p.get(1));
         return subSubChapterRepository.save(subSubChapter);
@@ -94,7 +94,7 @@ public class ChapterService {
 
 
     public List<ChapterEntity> createMany(CourseEntity course,
-            List<SimpleChapterStructure> chapters) {
+                                          List<SimpleChapterStructure> chapters) {
         List<ChapterEntity> result = new ArrayList<>();
         for (SimpleChapterStructure chapterSource : chapters) {
             Optional<ChapterEntity> chapter = create(course, chapterSource.getNumber(),
@@ -109,7 +109,7 @@ public class ChapterService {
 
 
     protected void addSubChapters(ChapterEntity chapter,
-            List<SimpleChapterStructure> subChapterList) {
+                                  List<SimpleChapterStructure> subChapterList) {
         for (SimpleChapterStructure subChapterSource : subChapterList) {
             SubChapterEntity subChapter = createSub(chapter, subChapterSource.getNumber(),
                     extractNameAndRefs(subChapterSource.getHeader()));
@@ -120,7 +120,7 @@ public class ChapterService {
 
 
     protected void addSubSubChapters(SubChapterEntity subChapter,
-            List<SimpleChapterStructure> subSubChapterList) {
+                                     List<SimpleChapterStructure> subSubChapterList) {
         for (SimpleChapterStructure subSubChapterSource : subSubChapterList) {
             SubSubChapterEntity subSubChapter = createSubSub(subChapter,
                     subSubChapterSource.getNumber(),
@@ -178,4 +178,18 @@ public class ChapterService {
         return number + 1;
     }
 
+    public Optional<ChapterEntity> addShortName(long id, String shortName) {
+        Optional<ChapterEntity> chapter = chapterRepository.findById(id);
+        ChapterEntity chapterEntity;
+        if (chapter.isPresent()) {
+            chapterEntity = chapter.get();
+            chapterEntity.setShortName(shortName);
+            return Optional.of(chapterRepository.save(chapterEntity));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ChapterEntity> getByShortName(String shortName) {
+        return Optional.ofNullable(chapterRepository.findByShortName(shortName));
+    }
 }
