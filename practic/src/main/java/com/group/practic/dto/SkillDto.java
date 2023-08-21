@@ -28,10 +28,11 @@ public class SkillDto {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SkillDto skillDto)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return Objects.equals(getName(), skillDto.getName());
+        SkillDto skillDto = (SkillDto) o;
+        return name.equals(skillDto.name);
     }
 
     @Override

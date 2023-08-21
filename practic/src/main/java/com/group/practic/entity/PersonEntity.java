@@ -21,7 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "discord" }))
+@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "discord"}))
 @Entity
 public class PersonEntity implements UserDetails {
 
@@ -50,7 +50,7 @@ public class PersonEntity implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "persons_roles",
-            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"), 
+            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
@@ -64,6 +64,11 @@ public class PersonEntity implements UserDetails {
         this.linkedin = linkedin;
     }
 
+    public PersonEntity(String name, String linkedin, String contacts) {
+        this.name = name;
+        this.linkedin = linkedin;
+        this.contacts = contacts;
+    }
 
     public PersonEntity(String name, String discord, String linkedin, String contacts,
                         Set<RoleEntity> roles) {
