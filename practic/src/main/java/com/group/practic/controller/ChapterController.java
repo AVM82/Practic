@@ -29,27 +29,33 @@ public class ChapterController {
     ChapterService chapterService;
 
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ChapterEntity> get(@Min(1) @PathVariable long id) {
+        return getResponse(chapterService.get(id));
+    }
+
+
     @PostMapping()
-    public ResponseEntity<ChapterEntity> create(@Min(1) @RequestParam long courseId,
-                                                @RequestBody @NotBlank String name,
-                                                @RequestParam(required = false) Integer number) {
-        return postResponse(chapterService.create(courseId, number == null ? 0 : number, name));
+    public ResponseEntity<ChapterEntity> create(
+            @Min(1) @RequestParam long courseId,
+            @RequestBody @NotBlank String shortname,
+            @RequestParam(required = false) Integer number) {
+        return postResponse(chapterService.create(
+                courseId, number == null ? 0 : number, shortname, shortname)
+        );
     }
 
 
     @PostMapping("/{chapterId}")
     public ResponseEntity<SubChapterEntity> createSub(@Min(1) @PathVariable long chapterId,
-                                                      @RequestBody @NotBlank String name,
-                                                      @RequestParam(required = false) int number) {
+            @RequestBody @NotBlank String name, @RequestParam(required = false) int number) {
         return postResponse(chapterService.createSub(chapterId, number, name));
     }
 
 
     @PostMapping("/subChapter/{id}")
     public ResponseEntity<SubChapterEntity> createSubSub(@Min(1) @PathVariable long subChapterId,
-                                                         @RequestBody @NotBlank String name,
-                                                         @RequestParam(required = false)
-                                                         int number) {
+            @RequestBody @NotBlank String name, @RequestParam(required = false) int number) {
         return postResponse(chapterService.createSub(subChapterId, number, name));
     }
 

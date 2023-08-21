@@ -3,11 +3,18 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
+import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.entity.StudentOnCourseEntity;
+import com.group.practic.entity.StudentPracticeEntity;
+import com.group.practic.enumeration.PracticeState;
 import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentOnCourseService;
+import com.group.practic.service.StudentPracticeService;
+import com.group.practic.util.Converter;
 import jakarta.validation.constraints.Min;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,12 +31,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/students")
 public class StudentOnCourseController {
 
-    @Autowired
-    StudentOnCourseService studentOnCourseService;
-
+    private final StudentOnCourseService studentOnCourseService;
+    private final StudentPracticeService studentPracticeService;
     private final PersonService personService;
 
-    public StudentOnCourseController(PersonService personService) {
+    @Autowired
+    public StudentOnCourseController(
+            StudentOnCourseService studentOnCourseService,
+            StudentPracticeService studentPracticeService,
+            PersonService personService
+    ) {
+        this.studentOnCourseService = studentOnCourseService;
+        this.studentPracticeService = studentPracticeService;
         this.personService = personService;
     }
 
@@ -81,4 +94,25 @@ public class StudentOnCourseController {
         return personService.isCurrentPersonMentor();
     }
 
+    @GetMapping("/practices/{practiceState}")
+    public ResponseEntity<List<StudentPracticeDto>> getPracticeWithStateFilter(
+            @PathVariable String practiceState
+    ) {
+        PracticeState state = PracticeState.fromString(practiceState);
+        List<StudentPracticeEntity> students =
+                studentPracticeService.getAllStudentsByState(state);
+
+        return ResponseEntity.ok(students.stream()
+                .map(Converter::convert)
+                .toList());
+    }
+
+    @GetMapping("/practices/states")
+    public ResponseEntity<List<String>> getPracticeStates() {
+        List<String> practiceStates = Arrays.stream(PracticeState.values())
+                .map(state -> state.name().toLowerCase())
+                .toList();
+
+        return ResponseEntity.ok(practiceStates);
+    }
 }

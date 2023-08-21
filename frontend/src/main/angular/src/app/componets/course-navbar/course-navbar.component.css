@@ -1,34 +1,64 @@
-.nav {
+.nav-wrap {
+    width: 104%;
+    height: 40px;
+    z-index:-2;
+    white-space: nowrap;
+    overflow: hidden;
     display: flex;
-    justify-content: space-between;
-    border: 1px solid black;
+    align-items: center;
+    justify-content: center;
 }
-
-.link-arrow {
-    display: flex;
-    background-image: url("/assets/union-darker-icon.svg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+.nav-wrap:first-child{margin-left: -2%;}
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5%;
+}
+.progress {
+    display: inline-flex;
+    margin: 0 0 0 0.5%;
+    height: 30px;
+    width: 25%;
     position: relative;
-    flex-basis: calc(33.33% - 27px);
-    height: 50px;
-    margin-right: -27px;
+    text-align: center;
     justify-content: center;
-    align-items: center;
-    font-size: 16px;
+    line-height: 30px;
+    transition: all 0.8s;
+}
+.progress:before,
+.progress:after {
+    content: "";
+    position: absolute;
+    transition: all 0.8s;
+    z-index:-1;
+}
+.progress:before {
+    height: 50%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.2);
+    -webkit-transform: skew(45deg);
+    -moz-transform: skew(45deg);
+    transform: skew(45deg);
+}
+.progress:after {
+    height: 50%;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.2);
+    -webkit-transform: skew(-45deg);
+    -moz-transform: skew(-45deg);
+    transform: skew(-45deg);
 }
 
-.link-arrow.locked {
-    background-image: url("/assets/union-icon.svg");
+.progress:hover:not(.icon) {
+    cursor: pointer;
 }
-
-.end {
-    display: flex;
-    flex-basis: calc(33.33% - 50px);
-    margin-left: -50px;
-    background-color: #989898;
-    font-size: 14px;
-    justify-content: center;
-    align-items: center;
+.progress:hover:not(.icon):before,
+.progress:hover:not(.icon):after {
+    background: #3cff9e;
+    cursor: pointer;
 }

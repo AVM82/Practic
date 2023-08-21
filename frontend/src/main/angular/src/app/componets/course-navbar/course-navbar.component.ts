@@ -1,8 +1,10 @@
-import {Component, Input} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import {Course} from "../../models/course/course";
 import {MatIconModule} from "@angular/material/icon";
 import {Chapter} from "../../models/course/chapter";
+import {CoursesService} from "../../services/courses/courses.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-course-navbar',
@@ -11,8 +13,31 @@ import {Chapter} from "../../models/course/chapter";
   templateUrl: './course-navbar.component.html',
   styleUrls: ['./course-navbar.component.css']
 })
-export class CourseNavbarComponent {
-  @Input() course: Course | undefined;
-  @Input() chapters: Chapter[] = [];
+export class CourseNavbarComponent implements OnInit{
+  course: Course | undefined;
+  chapters: Chapter[] = [];
+
+  constructor(
+      private coursesService :CoursesService,
+      private route :ActivatedRoute
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const slug = params.get('slug')
+
+      if (slug) {
+
+        this.coursesService.getCourse(slug).subscribe(course => {
+          this.course = course;
+          this.coursesService.getChapters(course.id).subscribe(chapters => {
+            this.coursesService.setFirstChapterVisible(chapters);
+            this.chapters = chapters;
+          });
+        });
+      }
+    })
+  }
 }
 
