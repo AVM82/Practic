@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class CalendarEventService {
 
     PersonService personService;
+
     @Value("${email.message.body}")
     private String emailMessage;
 
