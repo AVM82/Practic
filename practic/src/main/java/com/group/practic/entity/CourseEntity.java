@@ -44,6 +44,7 @@ public class CourseEntity {
 
     @NotBlank
     @Column(length = 8192)
+    @JsonIgnore
     String description;
 
     @ManyToOne
@@ -53,6 +54,12 @@ public class CourseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @JsonIgnore
     List<ChapterEntity> chapters = new ArrayList<>();
+
+    @Column(unique = true)
+    String shortName;
+
+    @Column(unique = true)
+    String slug;
 
 
     public CourseEntity() {
@@ -172,6 +179,26 @@ public class CourseEntity {
 
     public void setChapters(List<ChapterEntity> chapters) {
         this.chapters = chapters;
+    }
+
+
+    public String getShortName() {
+        return shortName;
+    }
+
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+
+    public String getSlug() {
+        return slug;
+    }
+
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
 }

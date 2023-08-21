@@ -10,7 +10,7 @@ mat-toolbar {
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    margin: 0 16px; /* Add some margin to adjust spacing */
+    margin: 0 16px;
 }
 
 .header-logo {
@@ -18,6 +18,26 @@ mat-toolbar {
     font-weight: bold;
 }
 
+.header-container a {
+    text-decoration: none;
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+}
+
 .spacer {
     flex: 1 1 auto;
+}
+
+.admin-button {
+    background-color: #E0E0E0;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
 }

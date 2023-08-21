@@ -5,9 +5,11 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.PersonDto;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.PersonService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,14 +58,8 @@ public class PersonController {
     }
 
     @PostMapping("/profile")
-    public ResponseEntity<PersonEntity> createProfile() {
-        PersonEntity createdUser = personService.createUserIfNotExists();
-
-        if (createdUser == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    public ResponseEntity<PersonEntity> createProfile(@RequestParam String email) {
+        return new ResponseEntity<>(personService.addEmailToCurrentUser(email), HttpStatus.CREATED);
     }
 
 
@@ -72,4 +68,21 @@ public class PersonController {
         return postResponse(personService.create(personDto));
     }
 
+
+    @GetMapping("/{id}/roles")
+    public ResponseEntity<Set<RoleEntity>> findAllRoles(@PathVariable long id) {
+        return ResponseEntity.ok(personService.findUserRolesById(id));
+    }
+
+    @PostMapping("/{id}/roles")
+    public ResponseEntity<PersonEntity> addRole(@PathVariable long id,
+                                                @RequestParam String newRole) {
+        PersonEntity personEntity = personService.addRoleToUserById(id, newRole);
+
+        if (personEntity == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return new ResponseEntity<>(personEntity, HttpStatus.CREATED);
+    }
 }

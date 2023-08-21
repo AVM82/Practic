@@ -1,16 +1,12 @@
 import {Chapter} from "./chapter";
 
-export class Course {
+export interface Course {
   id: number;
-  inactive: boolean | undefined;
-  authors: string | undefined;
-  courseType: string | undefined;
+  inactive?: boolean;
+  authors?: string;
+  courseType?: string;
   name: string;
+  shortName: string;
+  slug: string;
   chapters: Chapter[];
-
-  constructor(id: number, name: string, chapters: Chapter[]) {
-    this.id = id;
-    this.name = name;
-    this.chapters = chapters;
-  }
 }

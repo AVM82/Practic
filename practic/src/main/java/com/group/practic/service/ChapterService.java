@@ -47,17 +47,20 @@ public class ChapterService {
     }
 
 
-    public Optional<ChapterEntity> create(long courseId, int number, String name) {
+    public Optional<ChapterEntity> create(long courseId, int number, String shortname,
+            String name) {
         Optional<CourseEntity> course = courseService.get(courseId);
         if (course.isEmpty()) {
             return Optional.empty();
         }
-        return create(course.get(), number, name);
+        return create(course.get(), number, shortname, name);
     }
 
 
-    public Optional<ChapterEntity> create(CourseEntity course, int number, String name) {
-        List<ChapterEntity> chapterList = chapterRepository.findAllByCourseAndName(course, name);
+    public Optional<ChapterEntity> create(CourseEntity course, int number, String shortname,
+            String name) {
+        List<ChapterEntity> chapterList = chapterRepository.findAllByCourseAndShortName(course,
+                shortname);
         if (!chapterList.isEmpty()) {
             return Optional.empty();
         }
@@ -65,7 +68,8 @@ public class ChapterService {
         if ((number = getChapterListSuitNumber(chapterList, number)) == 0) {
             return Optional.empty();
         }
-        return Optional.ofNullable(chapterRepository.save(new ChapterEntity(course, number, name)));
+        return Optional.ofNullable(
+                chapterRepository.save(new ChapterEntity(course, number, shortname, name)));
     }
 
 
@@ -86,7 +90,7 @@ public class ChapterService {
 
 
     public SubSubChapterEntity createSubSub(SubChapterEntity subChapter, int number,
-            List<String> p) {
+                                            List<String> p) {
         SubSubChapterEntity subSubChapter = new SubSubChapterEntity(0, subChapter, number, p.get(0),
                 p.get(1));
         return subSubChapterRepository.save(subSubChapter);
@@ -94,11 +98,12 @@ public class ChapterService {
 
 
     public List<ChapterEntity> createMany(CourseEntity course,
-            List<SimpleChapterStructure> chapters) {
+                                          List<SimpleChapterStructure> chapters) {
         List<ChapterEntity> result = new ArrayList<>();
         for (SimpleChapterStructure chapterSource : chapters) {
+            List<String> names = extractParts(chapterSource.getHeader());
             Optional<ChapterEntity> chapter = create(course, chapterSource.getNumber(),
-                    chapterSource.getHeader());
+                    names.get(0), names.get(1));
             if (chapter.isPresent()) {
                 addSubChapters(chapter.get(), chapterSource.getOffsprings());
                 result.add(chapterRepository.save(chapter.get()));
@@ -109,10 +114,10 @@ public class ChapterService {
 
 
     protected void addSubChapters(ChapterEntity chapter,
-            List<SimpleChapterStructure> subChapterList) {
+                                  List<SimpleChapterStructure> subChapterList) {
         for (SimpleChapterStructure subChapterSource : subChapterList) {
             SubChapterEntity subChapter = createSub(chapter, subChapterSource.getNumber(),
-                    extractNameAndRefs(subChapterSource.getHeader()));
+                    extractParts(subChapterSource.getHeader()));
             addSubSubChapters(subChapter, subChapterSource.getOffsprings());
             chapter.addSubChapter(subChapter);
         }
@@ -120,17 +125,16 @@ public class ChapterService {
 
 
     protected void addSubSubChapters(SubChapterEntity subChapter,
-            List<SimpleChapterStructure> subSubChapterList) {
+                                     List<SimpleChapterStructure> subSubChapterList) {
         for (SimpleChapterStructure subSubChapterSource : subSubChapterList) {
             SubSubChapterEntity subSubChapter = createSubSub(subChapter,
-                    subSubChapterSource.getNumber(),
-                    extractNameAndRefs(subSubChapterSource.getHeader()));
+                    subSubChapterSource.getNumber(), extractParts(subSubChapterSource.getHeader()));
             subChapter.addSubSubChapter(subSubChapter);
         }
     }
 
 
-    protected List<String> extractNameAndRefs(String source) {
+    protected List<String> extractParts(String source) {
         List<String> result = new ArrayList<>();
         String[] part = source.split(CoursesInitializator.REFERENCE_SEPARATOR);
         result.add(part[0]);
@@ -178,4 +182,18 @@ public class ChapterService {
         return number + 1;
     }
 
+    public Optional<ChapterEntity> addShortName(long id, String shortName) {
+        Optional<ChapterEntity> chapter = chapterRepository.findById(id);
+        ChapterEntity chapterEntity;
+        if (chapter.isPresent()) {
+            chapterEntity = chapter.get();
+            chapterEntity.setShortName(shortName);
+            return Optional.of(chapterRepository.save(chapterEntity));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ChapterEntity> getByShortName(String shortName) {
+        return Optional.ofNullable(chapterRepository.findByShortName(shortName));
+    }
 }

@@ -26,20 +26,18 @@ export class CourseDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const idParam = params.get('id');
-      const courseId = idParam ? +idParam : null;
+      const courseShortName = params.get('slug')
 
-      console.log("Course id = "+ courseId);
+      if(courseShortName) {
 
-      if(courseId) {
-        this.coursesService.getCourse(courseId).subscribe(course =>
+        this.coursesService.getCourse(courseShortName).subscribe(course =>
         {
           this.course = course;
-        });
-        this.coursesService.getChapters(courseId).subscribe(chapters =>
-        {
-          this.coursesService.setFirstChapterVisible(chapters);
-          this.chapters = chapters;
+          this.coursesService.getChapters(course.id).subscribe(chapters =>
+          {
+            this.coursesService.setFirstChapterVisible(chapters);
+            this.chapters = chapters;
+          });
         });
       }
     })

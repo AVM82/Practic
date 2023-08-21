@@ -79,21 +79,44 @@ public class CourseService {
     }
 
 
-    public long create(String authors, String type, String name, String purpose, String description,
-            Map<Integer, List<Integer>> levels, List<SimpleChapterStructure> chapters) {
+    public long create(
+            String authors, String type, String shortname, String name,
+            String purpose, String description, Map<Integer, List<Integer>> levels,
+            List<SimpleChapterStructure> chapters, String slug
+    ) {
         if (levels == null || chapters == null) {
             return 0L;
         }
         CourseEntity course = new CourseEntity();
         course.setAuthors(authors);
         course.setCourseType(type);
+        course.setShortName(shortname);
         course.setName(name);
         course.setPurpose(purpose);
         course.setDescription(description);
+        course.setSlug(slug);
         Long result = courseRepository.saveAndFlush(course).getId();
         List<LevelEntity> levelList = levelService.createMany(course, levels);
         List<ChapterEntity> chapterList = chapterService.createMany(course, chapters);
         return (levelList != null && chapterList != null) ? result : 0;
     }
 
+    public Optional<CourseEntity> addShortName(long id, String shortName) {
+        Optional<CourseEntity> course = courseRepository.findById(id);
+        CourseEntity courseEntity;
+        if (course.isPresent()) {
+            courseEntity = course.get();
+            courseEntity.setShortName(shortName);
+            return Optional.of(courseRepository.save(courseEntity));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<CourseEntity> getByShortName(String shortName) {
+        return Optional.ofNullable(courseRepository.findByShortName(shortName));
+    }
+
+    public Optional<CourseEntity> getBySlug(String slug) {
+        return Optional.ofNullable(courseRepository.findBySlug(slug));
+    }
 }

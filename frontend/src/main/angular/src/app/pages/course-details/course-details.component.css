@@ -19,6 +19,10 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.chapter-card:not(.locked) {
+    cursor: pointer;
+}
+
 .chapter-card:last-child {
     border-bottom: 1px solid #6d5f5f; /* Лінія знизу останнього елемента */
 }
@@ -29,7 +33,7 @@
     display: block;
     transition: background-color 0.3s ease;
 }
-.chapter-card:hover {
+.chapter-card:hover:not(.locked) {
     background-color: #f8f8f8; /* Зміна тону фону при наведенні */
     transform: translateY(-3px); /* Зсув компонента при наведенні */
 }
@@ -48,7 +52,8 @@
 }
 
 .mat-card-content {
-    padding: 10px;
+    margin-right: auto;
+    margin-bottom: 2%;
 }
 
 .lock-icon {

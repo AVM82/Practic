@@ -16,12 +16,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
-@Component
+
 public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
 
     public static final String NAME_KEY = "name";
+
+    public static final String SHORT_NAME_KEY = "shortname";
 
     public static final String AUTHOR_KEY = "author";
 
@@ -32,6 +34,8 @@ public class CoursesInitializator {
     public static final String PURPOSE_KEY = "purpose";
 
     public static final String LEVEL_KEY = "level";
+
+    public static final String SLUG_KEY = "slug";
 
     private static final int LEVEL_KEY_LENGTH = LEVEL_KEY.length();
 
@@ -45,8 +49,8 @@ public class CoursesInitializator {
 
     CourseService courseService;
 
-    @Value("${spring.datasource.url}")
-    String dbUrl;
+    @Value("${refreshDB_on_start}")
+    boolean refresh;
 
 
     @Autowired
@@ -57,7 +61,7 @@ public class CoursesInitializator {
 
     @PostConstruct
     void initialize() {
-        if (dbUrl.contains("localhost")) {
+        if (refresh) {
             File[] files = new File(".")
                     .listFiles(f -> f.isFile() && f.getName().endsWith(COURSE_MASK));
             for (File file : files) {
@@ -72,9 +76,10 @@ public class CoursesInitializator {
             PropertyLoader prop = new PropertyLoader(filename);
             if (prop.initialized) {
                 Long courseId = courseService.create(getAuthorSet(prop),
-                        prop.getProperty(TYPE_KEY, ""), prop.getProperty(NAME_KEY, ""),
+                        prop.getProperty(TYPE_KEY, ""),
+                        prop.getProperty(SHORT_NAME_KEY, ""), prop.getProperty(NAME_KEY, ""),
                         prop.getProperty(PURPOSE_KEY, ""), prop.getProperty(DESCRIPTION_KEY, ""),
-                        getLevelMap(prop), getChapterList(prop));
+                        getLevelMap(prop), getChapterList(prop), prop.getProperty(SLUG_KEY, ""));
                 return courseId > 0;
             }
         }
