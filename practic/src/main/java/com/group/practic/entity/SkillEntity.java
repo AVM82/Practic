@@ -71,10 +71,12 @@ public class SkillEntity {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SkillEntity that)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return getId() == that.getId() && Objects.equals(getName(), that.getName());
+        SkillEntity that = (SkillEntity) o;
+        return id == that.id && Objects.equals(name, that.name)
+                && Objects.equals(subChapters, that.subChapters);
     }
 
     @Override
