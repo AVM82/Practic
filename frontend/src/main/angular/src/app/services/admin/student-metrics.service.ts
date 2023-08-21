@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {Course} from "../../models/course/course";
 import {ApiUrls} from "../../enums/api-urls";
 import {HttpClient} from "@angular/common/http";
-import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'

@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
-    max-width: 85%;
+    max-width: 75%;
     margin: 10px auto;
 }
 
@@ -11,6 +11,11 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    width: 100%;
+}
+
+.app-table-widget {
+    width: 100%;
 }
 
 .header {
