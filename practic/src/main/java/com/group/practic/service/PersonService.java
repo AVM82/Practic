@@ -123,4 +123,12 @@ public class PersonService {
     public boolean isCurrentPersonMentor() {
         return getCurrentPerson().containsRole("MENTOR");
     }
+
+    public PersonEntity addEmailToCurrentUser(String email) {
+        PersonEntity currentPerson = getCurrentPerson();
+
+        currentPerson.setContacts(email);
+
+        return personRepository.save(currentPerson);
+    }
 }

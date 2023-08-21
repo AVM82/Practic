@@ -58,14 +58,8 @@ public class PersonController {
     }
 
     @PostMapping("/profile")
-    public ResponseEntity<PersonEntity> createProfile() {
-        PersonEntity createdUser = personService.createUserIfNotExists();
-
-        if (createdUser == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    public ResponseEntity<PersonEntity> createProfile(@RequestParam String email) {
+        return new ResponseEntity<>(personService.addEmailToCurrentUser(email), HttpStatus.CREATED);
     }
 
 
