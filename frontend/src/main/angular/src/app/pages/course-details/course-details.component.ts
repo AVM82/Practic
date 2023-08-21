@@ -39,7 +39,6 @@ export class CourseDetailsComponent implements OnInit {
             this.chapters = chapters;
           });
         });
-
       }
     })
   }

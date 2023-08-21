@@ -1,6 +1,6 @@
 <div class="course-container">
     <mat-card *ngFor="let course of courses" class="course-card">
-        <a [routerLink]="['/course', course.shortName | slugify]">
+        <a [routerLink]="['/courses', course.slug]">
             <mat-card-content class="course-details">
                 <mat-icon class="icon">coffee</mat-icon>
                 <h3 class="course-name">{{ course.name }}</h3>

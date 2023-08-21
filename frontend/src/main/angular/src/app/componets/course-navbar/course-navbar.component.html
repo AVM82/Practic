@@ -2,7 +2,7 @@
     <div class="progress">
         {{ course?.shortName }}
     </div>
-    <div class="progress" *ngFor="let chapter of chapters;">
+    <div class="progress" [class.icon]="!chapter.isVisible" *ngFor="let chapter of chapters;">
         <span *ngIf="chapter.isVisible">{{ chapter.shortName }}</span>
         <mat-icon class="icon" *ngIf="!chapter.isVisible">lock</mat-icon>
     </div>
