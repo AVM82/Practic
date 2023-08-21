@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/events")
 public class CalendarEventController {
-    Logger logger = LoggerFactory.getLogger(CalendarEventController.class);
 
     @Autowired
     CalendarEventService eventService;

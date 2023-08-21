@@ -68,10 +68,15 @@ public class SkillEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         SkillEntity that = (SkillEntity) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(subChapters, that.subChapters);
+        return id == that.id && Objects.equals(name, that.name)
+                && Objects.equals(subChapters, that.subChapters);
     }
 
     @Override
