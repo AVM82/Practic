@@ -8,7 +8,7 @@
             <div *ngIf="subchapter?.refs">
             	<h2>{{subchapter?.refs}}</h2>
             </div>
-            <div *ngFor="let subsubchapter of subsubchapters" class="chapter-part">
+            <div *ngFor="let subsubchapter of subchapter.subsubchapters" class="chapter-part">
             	<h2>{{chapter?.number}}.{{subchapter?.number}}.{{subsubchapter?.number}}. {{subsubchapter?.name}}</h2>
             	<div *ngIf="subsubchapter?.refs">
             		<h2>{{subsubchapter?.refs}}</h2>

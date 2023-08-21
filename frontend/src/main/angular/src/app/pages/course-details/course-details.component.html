@@ -4,9 +4,12 @@
         <ng-container *ngIf="chapter.isVisible">
             <a [routerLink]="['/course', course?.id, 'chapter', chapter.id]">
                 <mat-card-header class="course-details">
-                    <h3>Розділ {{ chapter?.number }}: {{chapter.name}}</h3>
+                    <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
                 </mat-card-header>
             </a>
+            <mat-card-content class="mat-card-content">
+                {{chapter.name}}
+            </mat-card-content>
             <mat-card-footer>
                 <div class="info-tags">
                     <div class="info-tag">

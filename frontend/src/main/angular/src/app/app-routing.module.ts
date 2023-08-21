@@ -11,14 +11,14 @@ import {ReadyPracticMetricComponent} from "./modules/ready-practic-metric/ready-
 const routes: Routes = [
   {path: '', component: CoursesComponent},
   {path: 'courses', component: CoursesComponent},
-  {path: 'courses/:id', component: CourseDetailsComponent},
+  {path: 'course/:slug', component: CourseDetailsComponent},
   {path: 'courses/:courseId/chapters/:chapterId', component: ChapterDetailsComponent},
   {
     path: 'admin',
     component: AdminDashboardComponent,
     children: [
       {path: '', component: DashboardComponent},
-      {path: 'ready-practic-students', component: ReadyPracticMetricComponent}
+      {path: 'students/practices', component: ReadyPracticMetricComponent}
     ]
   },
   {path: '**', component: PageNotFoundComponent}

@@ -8,6 +8,7 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.service.CourseService;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CourseEntity> get(@Min(1) @PathVariable long id) {
-        return getResponse(courseService.get(id));
+    @GetMapping("/{slug}")
+    public ResponseEntity<CourseEntity> get(@NotBlank @PathVariable String slug) {
+        return getResponse(courseService.get(slug));
     }
 
 

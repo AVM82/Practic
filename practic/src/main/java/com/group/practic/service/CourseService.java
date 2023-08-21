@@ -37,8 +37,8 @@ public class CourseService {
     }
 
 
-    public Optional<CourseEntity> get(String name) {
-        return Optional.ofNullable(courseRepository.findByName(name));
+    public Optional<CourseEntity> get(String slug) {
+        return courseRepository.findBySlug(slug);
     }
 
 

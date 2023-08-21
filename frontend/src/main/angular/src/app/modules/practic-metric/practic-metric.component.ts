@@ -7,7 +7,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 
 @Component({
-  selector: 'app-ready-practic-metric',
+  selector: 'app-practic-metric',
   standalone: true,
   imports: [CommonModule, TableWidgetComponent, RouterLink, ReactiveFormsModule, MatIconModule],
   templateUrl: './practic-metric.component.html',
@@ -16,14 +16,15 @@ import {MatIconModule} from "@angular/material/icon";
 export class PracticMetricComponent implements OnInit {
   @Input() shouldShowHeader: boolean = true;
 
-  displayedColumns: string[] = ['personName', 'chapterName', 'state'];
+  displayedColumns: string[] = ['personName', 'chapterName', 'state', 'updatedAt'];
   columnNameConverterMap: { [key: string]: string } = {
     'personName': 'ПІБ',
     'chapterName': 'Розділ',
-    'state': 'Стан'
+    'state': 'Стан',
+    'updatedAt': 'Останнє оновлення'
   };
 
-  dataSource: any[] = [];
+  data: any[] = [];
   practicStates: any[] = [];
   defaultState: string = 'ready_to_review';
 
@@ -47,12 +48,12 @@ export class PracticMetricComponent implements OnInit {
     if (index === -1) {
       this.showState.push(state);
       this.studentMetricService.getAllPracticesByState(state).subscribe(students => {
-        this.dataSource.push(...students);
-        this.dataSource = [...this.dataSource];
+        this.data.push(...students);
+        this.data = [...this.data];
       });
     } else {
       this.showState.splice(index, 1);
-      this.dataSource = this.dataSource.filter(student => student.state !== state);
+      this.data = this.data.filter(student => student.state !== state);
     }
   }
 

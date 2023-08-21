@@ -18,10 +18,9 @@ import {MatIconModule} from "@angular/material/icon";
   styleUrls: ['./chapter-details.component.css']
 })
 export class ChapterDetailsComponent implements OnInit {
-    course: Course | undefined;
     chapter: Chapter | undefined;
     subchapters: SubChapter[] = [];
-    subsubchapters: SubSubChapter[] = [];
+    //subsubchapters: SubSubChapter[] = [];
 
   constructor(
       private chaptersService: ChaptersService,
@@ -33,12 +32,12 @@ export class ChapterDetailsComponent implements OnInit {
       const courseId = Number(params.get('courseId'));
       const chapterId =  Number(params.get('chapterId'));
 
-      console.log("Chapter id = "+ chapterId);
-
       if(chapterId) {
-        this.chaptersService.getChapter(courseId, chapterId).subscribe(chapter =>
+          this.chaptersService.getChapter(courseId, chapterId).subscribe(chapter =>
         {
           this.chapter = chapter;
+          this.subchapters = chapter.subchapters;
+      //    this.subsubchapters = chapter.subsubchapters;
         });
       }
     })

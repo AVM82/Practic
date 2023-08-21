@@ -48,7 +48,8 @@
 }
 
 .mat-card-content {
-    padding: 10px;
+    margin-right: auto;
+    margin-bottom: 2%;
 }
 
 .lock-icon {
