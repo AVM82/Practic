@@ -15,6 +15,7 @@ export class TableWidgetComponent implements OnChanges, AfterViewInit {
   @Input() displayedColumns: string[]=[];
   @Input() data: any[]=[];
   @Input() columnNameMap: { [key: string]: string }={};
+  @Input() showPaginator: boolean = true;
 
   dataSource = new MatTableDataSource<any>(this.data);
 

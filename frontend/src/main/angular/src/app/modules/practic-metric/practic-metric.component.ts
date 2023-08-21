@@ -7,7 +7,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 
 @Component({
-  selector: 'app-ready-practic-metric',
+  selector: 'app-practic-metric',
   standalone: true,
   imports: [CommonModule, TableWidgetComponent, RouterLink, ReactiveFormsModule, MatIconModule],
   templateUrl: './practic-metric.component.html',

@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/chapter/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getChapterUrl} from "../../enums/api-urls";
+import {getChapterUrl} from "../../enums/api-urls";
 
 @Injectable({
   providedIn: 'root'

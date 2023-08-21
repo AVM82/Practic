@@ -1,8 +1,10 @@
 .dashboard-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
-    grid-gap: 10px;
-    margin: 2% 1% 1% 1%;
+    grid-gap: 2px;
+    margin: 2% 2% 1% 2%;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .metric-card {
@@ -33,6 +35,10 @@
 }
 
 .widget {
-    flex: 1;
-    margin: 0 -12.5% 0 -12.5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-right: 5%;
+    margin-left: -10%;
 }
