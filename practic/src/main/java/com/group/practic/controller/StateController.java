@@ -1,6 +1,7 @@
 package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.getResponse;
+
 import com.group.practic.entity.StateEntity;
 import com.group.practic.service.StateService;
 import java.util.Collection;

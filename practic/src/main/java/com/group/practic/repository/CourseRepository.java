@@ -13,4 +13,6 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
 
     Optional<CourseEntity> findBySlug(String slug);
 
+    CourseEntity findByShortName(String shortName);
+
 }

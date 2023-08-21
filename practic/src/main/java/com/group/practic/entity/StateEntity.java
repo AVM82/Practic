@@ -61,8 +61,10 @@ public class StateEntity {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass())
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
+
         StateEntity other = (StateEntity) obj;
         return this == other || (cluster == other.cluster && Objects.equals(name, other.name));
     }
@@ -154,8 +156,10 @@ public class StateEntity {
 
     public boolean hasName(String name) {
         for (StateEntity state : changesTo) {
-            if (name.equals(state.name))
+            if (name.equals(state.name)) {
                 return true;
+            }
+
         }
         return false;
     }

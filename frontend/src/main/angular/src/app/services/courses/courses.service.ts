@@ -5,7 +5,6 @@ import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
 import {ApiUrls, getChapterByIdUrl} from "../../enums/api-urls";
-import {SlugifyPipe} from "../../pipes/slugify.pipe"
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +13,13 @@ export class CoursesService {
 
   constructor(
       private http: HttpClient,
-      private router: Router,
-      private slugify: SlugifyPipe
+      private _router: Router
       ) {}
 
   getCourse(slug: string): Observable<Course> {
-    const shortName = this.slugify.transform(slug, false);
-    return this.http.get<Course>(ApiUrls.Course+shortName).pipe(
-        catchError(this.handleError<Course>(`getCourse name=${slug}`))
-    );
+    return this.http.get<Course>(ApiUrls.Course+slug).pipe(
+        catchError(this.handleError<Course>(`get course = ${slug}`))
+    )
   }
 
   getChapters(id: number): Observable<Chapter[]> {
@@ -39,6 +36,7 @@ export class CoursesService {
     return this.http.get<Course[]>(ApiUrls.Courses);
   }
 
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.
@@ -52,8 +50,7 @@ export class CoursesService {
       console.error(error);
       console.error(`${operation} failed: ${error.message}`);
 
-      this.router.navigateByUrl('/404');
-
+      this._router.navigateByUrl('/404');
       return of(result as T);
     };
   }

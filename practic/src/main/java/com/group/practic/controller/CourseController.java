@@ -8,15 +8,16 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.service.CourseService;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -31,12 +32,6 @@ public class CourseController {
     @GetMapping
     public ResponseEntity<Collection<CourseEntity>> get() {
         return getResponse(courseService.get());
-    }
-
-
-    @GetMapping("/{slug}")
-    public ResponseEntity<CourseEntity> get(@NotBlank @PathVariable String slug) {
-        return getResponse(courseService.get(slug));
     }
 
 
@@ -69,5 +64,14 @@ public class CourseController {
         return postResponse(courseService.create(courseDto));
     }
 
+    @PutMapping("/{id}/change/shortNname")
+    public ResponseEntity<CourseEntity> addShortName(@PathVariable long id,
+                                                     @RequestParam String shortName) {
+        return postResponse(courseService.addShortName(id, shortName));
+    }
 
+    @GetMapping("/{slug}")
+    public ResponseEntity<CourseEntity> getBySlug(@PathVariable String slug) {
+        return getResponse(courseService.getBySlug(slug));
+    }
 }

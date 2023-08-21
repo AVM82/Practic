@@ -49,7 +49,9 @@ public class PersonEntity implements UserDetails {
     private String contacts;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "persons_roles",
+            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"), 
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
 
@@ -64,7 +66,7 @@ public class PersonEntity implements UserDetails {
 
 
     public PersonEntity(String name, String discord, String linkedin, String contacts,
-            Set<RoleEntity> roles) {
+                        Set<RoleEntity> roles) {
         this.name = name;
         this.discord = discord;
         this.linkedin = linkedin;

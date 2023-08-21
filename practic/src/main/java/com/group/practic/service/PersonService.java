@@ -88,6 +88,8 @@ public class PersonService {
 
         personEntity.addRole(new RoleEntity("USER"));
 
+        personEntity.addRole(new RoleEntity("USER"));
+
         return personRepository.save(personEntity);
     }
 
