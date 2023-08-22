@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/**"))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/login", "/statistics/**", "/*.js", "/*.html", "/*.css",
-                                "/*.woff2", "/*.ico", "/actuator/prometheus").permitAll()
+                                "/*.woff2", "/*.ico", "/api/actuator/prometheus").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login").permitAll())
