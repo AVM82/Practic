@@ -6,6 +6,7 @@ import {CourseDetailsComponent} from "./pages/course-details/course-details.comp
 import {AdminDashboardComponent} from "./pages/admin-dashboard/admin-dashboard.component";
 import {DashboardComponent} from "./modules/dashboard/dashboard.component";
 import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
+import {ReportMetricComponent} from "./modules/report-metric/report-metric.component";
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
 
 const routes: Routes = [
@@ -18,6 +19,11 @@ const routes: Routes = [
       {path: '', component: DashboardComponent},
       {path: 'students/practices', component: PracticMetricComponent}
     ]
+  },
+  {
+    path: 'reports',
+    component: ReportMetricComponent
+
   },
   {path: 'courses/:slug', component: CourseDetailsComponent},
   {path: 'courses/:courseId/chapters/:chapterId', component: ChapterDetailsComponent},
