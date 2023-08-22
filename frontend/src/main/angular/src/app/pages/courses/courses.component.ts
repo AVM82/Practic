@@ -5,7 +5,6 @@ import { MatCardModule } from '@angular/material/card';
 import { NgForOf } from '@angular/common';
 import {RouterLink} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
-import {SlugifyPipe} from "../../pipes/slugify.pipe";
 
 @Component({
     selector: 'app-courses',
