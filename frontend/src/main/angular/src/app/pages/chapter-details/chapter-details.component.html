@@ -1,15 +1,19 @@
 <div class="chapter-details-container">
 	<h2>Розділ {{ chapter?.number }}: {{chapter?.name}}</h2>
-    <mat-card *ngFor="let subchapter of chapter?.subChapters" class="chapter-card">
-        <h3>{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}</h3>
-            <div>
-            	<h3>{{subchapter.refs}}</h3>
-            </div>
-            <div *ngFor="let subsubchapter of subchapter.subSubChapters">
-            	<h3>{{chapter?.number}}.{{subchapter.number}}.{{subsubchapter.number}}. {{subsubchapter.name}}</h3>
-            	<div *ngIf="subsubchapter.refs">
-            		<h3>{{subsubchapter?.refs}}</h3>
+    <div *ngFor="let subchapter of chapter?.subChapters" class="row">
+        <div class="column">{{chapter?.number}}.{{subchapter.number}}. </div>
+        <div class="column">{{subchapter.name}}
+           	<div *ngIf="subchapter.refs">
+           		<a href={{subchapter.refs}} target=_blank>{{subchapter.refs}}</a>
+           	</div>
+            <div *ngFor="let subsubchapter of subchapter.subSubChapters" class="row">
+            	<div class="column">{{chapter?.number}}.{{subchapter.number}}.{{subsubchapter.number}}. </div>
+            	<div class="column">{{subsubchapter.name}}
+            		<div *ngIf="subsubchapter.refs">
+            			<a href={{subsubchapter.refs}} target=_blank>{{subsubchapter.refs}}</a>
+            		</div>
             	</div>
             </div>
-    </mat-card>
+         </div>
+    </div>
 </div>

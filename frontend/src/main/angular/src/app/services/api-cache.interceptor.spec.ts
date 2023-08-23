@@ -13,8 +13,5 @@ describe('ApiCacheInterceptor', () => {
     const interceptor: ApiCacheInterceptor = TestBed.inject(ApiCacheInterceptor);
     expect(interceptor).toBeTruthy();
   });
-<<<<<<< HEAD
+
 });
-=======
-});
->>>>>>> refs/remotes/origin/PRAC-24
