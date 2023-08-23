@@ -4,13 +4,13 @@
         <div class="column">{{chapter?.number}}.{{subchapter.number}}. </div>
         <div class="column">{{subchapter.name}}
            	<div *ngIf="subchapter.refs">
-           		<a href={{subchapter.refs}} target=_blank>{{subchapter.refs}}</a>
+           		<a href={{subchapter.refs}} target="_blank" rel="noopener">{{subchapter.refs}}</a>
            	</div>
             <div *ngFor="let subsubchapter of subchapter.subSubChapters" class="row">
             	<div class="column">{{chapter?.number}}.{{subchapter.number}}.{{subsubchapter.number}}. </div>
             	<div class="column">{{subsubchapter.name}}
             		<div *ngIf="subsubchapter.refs">
-            			<a href={{subsubchapter.refs}} target=_blank>{{subsubchapter.refs}}</a>
+            			<a href={{subsubchapter.refs}} target="_blank" rel="noopener">{{subsubchapter.refs}}</a>
             		</div>
             	</div>
             </div>
