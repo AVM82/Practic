@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {Chapter} from "../../models/chapter/chapter";
-import {SubChapter} from "../../models/chapter/subchapter";
 import {ChaptersService} from "../../services/chapters/chapters.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";

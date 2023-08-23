@@ -1,6 +1,9 @@
 package com.group.practic;
 
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.service.ChapterService;
 import com.group.practic.service.CourseService;
+import com.group.practic.service.LevelService;
 import com.group.practic.structure.SimpleChapterStructure;
 import jakarta.annotation.PostConstruct;
 import java.io.File;
@@ -10,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +51,14 @@ public class CoursesInitializator {
 
     public static final int CHAPTER_NESTING_LEVEL_MAX = 3;
 
+    @Autowired
     CourseService courseService;
+
+    @Autowired
+    private ChapterService chapterService;
+
+    @Autowired
+    private LevelService levelService;
 
     @Value("${refreshDB_on_start}")
     boolean refresh;
@@ -75,12 +86,20 @@ public class CoursesInitializator {
         if (PropertyLoader.isComprehendedString(filename)) {
             PropertyLoader prop = new PropertyLoader(filename);
             if (prop.initialized) {
-                Long courseId = courseService.create(getAuthorSet(prop),
-                        prop.getProperty(TYPE_KEY, ""),
-                        prop.getProperty(SHORT_NAME_KEY, ""), prop.getProperty(NAME_KEY, ""),
-                        prop.getProperty(PURPOSE_KEY, ""), prop.getProperty(DESCRIPTION_KEY, ""),
-                        getLevelMap(prop), getChapterList(prop), prop.getProperty(SLUG_KEY, ""));
-                return courseId > 0;
+                CourseEntity courseEntity = new CourseEntity();
+                courseEntity.setAuthors(getAuthorSet(prop));
+                courseEntity.setCourseType(prop.getProperty(TYPE_KEY, ""));
+                courseEntity.setShortName(prop.getProperty(SHORT_NAME_KEY, ""));
+                courseEntity.setName(prop.getProperty(NAME_KEY, ""));
+                courseEntity.setPurpose(prop.getProperty(PURPOSE_KEY, ""));
+                courseEntity.setDescription(prop.getProperty(DESCRIPTION_KEY, ""));
+                courseEntity.setSlug(prop.getProperty(SLUG_KEY, ""));
+                Optional<CourseEntity> course = courseService.create(courseEntity);
+                if (course.isPresent()) {
+                    chapterService.createMany(course.get(), getChapterList(prop));
+                    levelService.createMany(course.get(), getLevelMap(prop));
+                }
+                return course.isPresent();
             }
         }
         return false;
