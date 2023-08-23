@@ -48,23 +48,29 @@ public class CourseService {
     }
 
 
+    public Optional<ChapterEntity> getChapterByNumber(String slug, int number) {
+        Optional<CourseEntity> course = get(slug);
+        return course.isEmpty() ? Optional.empty()
+                : ChapterService.getChapterByNumber(course.get().getChapters(), number);
+    }
+
+
     public Optional<String> getPurpose(long id) {
         Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? Optional.empty()
-                : Optional.ofNullable(course.get().getPurpose());
+        return course.isEmpty() ? Optional.empty() : Optional.ofNullable(course.get().getPurpose());
     }
 
 
     public Optional<String> getDescription(long id) {
         Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? Optional.empty() : 
-            Optional.ofNullable(course.get().getDescription());
+        return course.isEmpty() ? Optional.empty()
+                : Optional.ofNullable(course.get().getDescription());
     }
 
 
     public Optional<ChapterEntity> getAdditional(long id) {
         Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? Optional.empty() 
+        return course.isEmpty() ? Optional.empty()
                 : Optional.ofNullable(course.get().getAdditionalMaterials());
     }
 
@@ -79,11 +85,9 @@ public class CourseService {
     }
 
 
-    public long create(
-            String authors, String type, String shortname, String name,
-            String purpose, String description, Map<Integer, List<Integer>> levels,
-            List<SimpleChapterStructure> chapters, String slug
-    ) {
+    public long create(String authors, String type, String shortname, String name, String purpose,
+            String description, Map<Integer, List<Integer>> levels,
+            List<SimpleChapterStructure> chapters, String slug) {
         if (levels == null || chapters == null) {
             return 0L;
         }
@@ -101,6 +105,7 @@ public class CourseService {
         return (levelList != null && chapterList != null) ? result : 0;
     }
 
+
     public Optional<CourseEntity> addShortName(long id, String shortName) {
         Optional<CourseEntity> course = courseRepository.findById(id);
         CourseEntity courseEntity;
@@ -112,11 +117,14 @@ public class CourseService {
         return Optional.empty();
     }
 
+
     public Optional<CourseEntity> getByShortName(String shortName) {
         return Optional.ofNullable(courseRepository.findByShortName(shortName));
     }
 
+
     public Optional<CourseEntity> getBySlug(String slug) {
         return courseRepository.findBySlug(slug);
     }
+
 }
