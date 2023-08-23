@@ -2,10 +2,10 @@
 <div class="chapter-card-container">
     <mat-card *ngFor="let chapter of chapters" class="chapter-card" [class.locked]="!chapter.isVisible">
         <ng-container *ngIf="chapter.isVisible">
+            <report-button></report-button>
             <a [routerLink]="['/course', course?.id, 'chapter', chapter.id]">
                 <mat-card-header class="course-details">
                     <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
-                    <a mat-button class="report-button" routerLink="/reports">Reports</a>
                 </mat-card-header>
             </a>
             <mat-card-content class="mat-card-content">

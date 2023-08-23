@@ -8,11 +8,12 @@ import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
+import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
