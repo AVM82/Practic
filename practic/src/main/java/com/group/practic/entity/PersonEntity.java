@@ -21,10 +21,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-
 @Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "discord"}))
 @Entity
 public class PersonEntity implements UserDetails {
+
+    private static final long serialVersionUID = 1801144471755530968L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -56,6 +57,7 @@ public class PersonEntity implements UserDetails {
 
     public PersonEntity() {
     }
+
 
     public PersonEntity(String name, String linkedin) {
         this.name = name;
@@ -174,11 +176,13 @@ public class PersonEntity implements UserDetails {
                 + ", roles=" + roles + '}';
     }
 
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }
+
 
     @JsonIgnore
     @Override
@@ -186,11 +190,13 @@ public class PersonEntity implements UserDetails {
         return null;
     }
 
+
     @JsonIgnore
     @Override
     public String getUsername() {
         return getName();
     }
+
 
     @JsonIgnore
     @Override
@@ -198,11 +204,13 @@ public class PersonEntity implements UserDetails {
         return true;
     }
 
+
     @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
+
 
     @JsonIgnore
     @Override
@@ -210,15 +218,16 @@ public class PersonEntity implements UserDetails {
         return true;
     }
 
+
     @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
     }
 
+
     public boolean containsRole(String role) {
-        return roles.stream()
-                .anyMatch(personRole ->
-                        personRole.getName().equals(role));
+        return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
     }
+
 }

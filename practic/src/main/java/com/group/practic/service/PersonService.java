@@ -16,7 +16,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 
-
 @Service
 public class PersonService {
 
@@ -63,11 +62,13 @@ public class PersonService {
         return Optional.ofNullable(personRepository.save(Converter.convert(personDto)));
     }
 
+
     public PersonEntity getCurrentPerson() {
         OAuth2User authorization = getOauth2User();
 
         return personRepository.findByLinkedin(authorization.getAttribute("id")).orElse(null);
     }
+
 
     public PersonEntity createUserIfNotExists() {
         OAuth2User authorization = getOauth2User();
@@ -81,18 +82,22 @@ public class PersonService {
         }
 
         PersonEntity personEntity = new PersonEntity(
-                authorizationAttributes.get("localizedFirstName")
-                        + " " + authorizationAttributes.get("localizedLastName"),
-                        linkedinId);
+                authorizationAttributes.get("localizedFirstName") + " "
+                        + authorizationAttributes.get("localizedLastName"),
+                linkedinId);
+
+        personEntity.addRole(new RoleEntity("USER"));
 
         personEntity.addRole(new RoleEntity("USER"));
 
         return personRepository.save(personEntity);
     }
 
+
     private static OAuth2User getOauth2User() {
         return (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
 
     public Set<RoleEntity> findUserRolesById(long id) {
         PersonEntity foundPerson = personRepository.findById(id).orElse(null);
@@ -103,6 +108,7 @@ public class PersonService {
 
         return foundPerson.getRoles();
     }
+
 
     public PersonEntity addRoleToUserById(long id, String newRole) {
         PersonEntity foundPerson = personRepository.findById(id).orElse(null);
@@ -120,10 +126,12 @@ public class PersonService {
         return personRepository.save(foundPerson);
     }
 
+
     public boolean isCurrentPersonMentor() {
         return getCurrentPerson().containsRole("MENTOR");
     }
 
+  
     public PersonEntity addEmailToCurrentUser(String email) {
         PersonEntity currentPerson = getCurrentPerson();
 

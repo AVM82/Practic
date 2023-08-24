@@ -20,7 +20,7 @@ const routes: Routes = [
     ]
   },
   {path: 'courses/:slug', component: CourseDetailsComponent},
-  {path: 'courses/:courseId/chapters/:chapterId', component: ChapterDetailsComponent},
+  {path: 'chapters/:chapterId', component: ChapterDetailsComponent},
   {path: '**', component: PageNotFoundComponent}
 ];
 

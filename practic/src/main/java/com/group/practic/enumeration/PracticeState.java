@@ -2,7 +2,9 @@ package com.group.practic.enumeration;
 
 import java.util.Set;
 
+
 public enum PracticeState {
+
     NOT_STARTED(),
 
     IN_PROCESS(NOT_STARTED),
@@ -13,15 +15,19 @@ public enum PracticeState {
 
     APPROVED(READY_TO_REVIEW);
 
+
     private final Set<PracticeState> allowed;
 
-    PracticeState(PracticeState ... next) {
+
+    PracticeState(PracticeState... next) {
         allowed = Set.of(next);
     }
+
 
     public boolean changeAllowed(PracticeState newState) {
         return this == newState || allowed.contains(newState);
     }
+
 
     public static PracticeState fromString(String value) {
         for (PracticeState state : values()) {
@@ -31,4 +37,5 @@ public enum PracticeState {
         }
         throw new IllegalArgumentException("Unknown PracticeState: " + value);
     }
+
 }

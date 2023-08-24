@@ -13,6 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 @Table(name = "role")
 public class RoleEntity implements GrantedAuthority {
 
+    private static final long serialVersionUID = 2978243562527482541L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
@@ -50,13 +52,14 @@ public class RoleEntity implements GrantedAuthority {
     }
 
     @Override
-    public String getAuthority() {
-        return getName();
-    }
-
-    @Override
     public String toString() {
         return "Role{" + "name='" + name + '\'' + '}';
+    }
+
+
+    @Override
+    public String getAuthority() {
+        return "ROLE_" + name;
     }
 
 }
