@@ -35,6 +35,9 @@ public class PersonEntity implements UserDetails {
 
     boolean ban;
 
+    @Column(unique = true)
+    private String email;
+
     @Column
     @NotBlank
     private String name;
@@ -167,6 +170,14 @@ public class PersonEntity implements UserDetails {
 
     public void removeRole(RoleEntity role) {
         this.roles.remove(role);
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 
