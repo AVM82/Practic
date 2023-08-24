@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './componets/header/header.component';
 import {CourseNavbarComponent} from "./componets/course-navbar/course-navbar.component";
 
-
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',

@@ -6,11 +6,12 @@ import {ChaptersService} from "../../services/chapters/chapters.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
+import {SplitPipe} from "../../pipes/split.pipe";
 
 @Component({
   selector: 'app-chapter-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, SplitPipe],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
