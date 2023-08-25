@@ -184,10 +184,11 @@ public class ChapterService {
 
 
     static Optional<ChapterEntity> getChapterByNumber(List<ChapterEntity> chapterList, int number) {
-        for (ChapterEntity chapter : chapterList)
-            if (chapter.getNumber() == number){
+        for (ChapterEntity chapter : chapterList) {
+            if (chapter.getNumber() == number) {
                 return Optional.of(chapter);
             }
+        }
         return Optional.empty();
     }
 
