@@ -131,16 +131,13 @@ public class StudentOnCourseController {
         return ResponseEntity.ok(reportStates);
     }
 
-    @GetMapping("/reports/{chapterId}/{reportState}")
-    public ResponseEntity<List<StudentReportDto>> getReportsWithStateAndChapterFilter(
-        @PathVariable Long chapterId,
-        @PathVariable String reportState) {
-        ReportState state = ReportState.fromString(reportState);
-        List<StudentReportEntity> students =
-            studentReportService.getAllStudentsReportsByStateAndChapter(state, chapterId);
-
-        return ResponseEntity.ok(students.stream()
-            .map(Converter::convert)
-            .toList());
+    @GetMapping("/reports/course/{slug}")
+    public ResponseEntity<Collection<List<StudentReportDto>>> getReportsWithStateAndChapterFilter(
+        @PathVariable String slug) {
+        List<List<StudentReportEntity>> students =
+            studentReportService.getAllStudentsActualReports(slug);
+        return students == null
+            ? (ResponseEntity<Collection<List<StudentReportDto>>>) ResponseEntity.badRequest()
+            : ResponseEntity.ok(Converter.convertListOfLists(students));
     }
 }

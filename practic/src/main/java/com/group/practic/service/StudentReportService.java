@@ -4,7 +4,6 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.enumeration.ReportState;
-import com.group.practic.repository.ChapterRepository;
 import com.group.practic.repository.StudentReportRepository;
 import java.util.ArrayList;
 import java.util.List;
