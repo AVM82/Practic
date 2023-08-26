@@ -40,7 +40,7 @@ public class CalendarEventService {
         List<PersonEntity> allPerson = personService.get();
         int counter = 0;
         for (PersonEntity person : allPerson) {
-            if (sender.sendMessage(new SendMessageDto(person.getContacts(), eventMessage,
+            if (sender.sendMessage(new SendMessageDto(person.getEmail(), eventMessage,
                     emailMessageHeader))) {
                 counter++;
             }
