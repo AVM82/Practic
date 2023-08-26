@@ -8,6 +8,8 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
+import java.util.ArrayList;
+import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 
@@ -47,6 +49,27 @@ public interface Converter {
     }
     static StudentReportDto convert(StudentReportEntity studentReportEntity) {
         return modelMapper().map(studentReportEntity, StudentReportDto.class);
+    }
+    static List<StudentReportDto> convertList(List<StudentReportEntity> studentReportEntityList ){
+        if(studentReportEntityList == null){
+            return null;
+        }
+        List<StudentReportDto> result = new ArrayList<>();
+        for (StudentReportEntity reportEntity: studentReportEntityList){
+            result.add(convert(reportEntity));
+        }
+        return result;
+    }
+    static List<List<StudentReportDto>> convertListOfLists(List<List<StudentReportEntity>> studentReportEntityList ){
+        if(studentReportEntityList == null){
+            return null;
+        }
+        List<List<StudentReportDto>> result = new ArrayList<>();
+        for (List<StudentReportEntity> reportEntityList: studentReportEntityList){
+            result.add(convertList(reportEntityList));
+        }
+        return result;
+
     }
 
     private static void applyStudentPracticeMap(ModelMapper modelMapper) {
