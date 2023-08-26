@@ -5,11 +5,14 @@ import {TableWidgetComponent} from "../../componets/table-widget/table-widget.co
 import { RouterLink} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
+import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
+import {ReportCardComponent} from "../../componets/report-card/report-card.component";
+
 
 @Component({
-  selector: 'app-practic-metric',
+  selector: 'app-report-metric',
   standalone: true,
-  imports: [CommonModule, TableWidgetComponent, RouterLink, ReactiveFormsModule, MatIconModule],
+  imports: [CommonModule, TableWidgetComponent, RouterLink, ReactiveFormsModule, MatIconModule, ReportButtonComponent, ReportCardComponent],
   templateUrl: './report-metric.component.html',
   styleUrls: ['./report-metric.component.css']
 })

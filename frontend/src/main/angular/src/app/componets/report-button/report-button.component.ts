@@ -1,6 +1,5 @@
 import {Component} from "@angular/core";
 import {Router, RouterLink} from "@angular/router";
-/*import {MatBadge, MatBadgeModule} from "@angular/material/badge";*/
 import {CommonModule, NgFor, NgIf} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
