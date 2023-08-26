@@ -27,4 +27,13 @@ public enum ReportState {
         return this == newState || allowed.contains(newState);
     }
 
+    public static ReportState fromString(String value) {
+        for (ReportState state : values()) {
+            if (state.name().equalsIgnoreCase(value)) {
+                return state;
+            }
+        }
+        throw new IllegalArgumentException("Unknown ReportState: " + value);
+    }
+
 }
