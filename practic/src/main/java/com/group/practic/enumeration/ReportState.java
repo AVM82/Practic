@@ -2,16 +2,17 @@ package com.group.practic.enumeration;
 
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.core.annotation.Order;
 
 
 public enum ReportState {
-
+    @Order(0)
     CANCELLED(),
-
+    @Order(1)
     FINISHED(),
-
+    @Order(2)
     STARTED(FINISHED, CANCELLED),
-
+    @Order(3)
     ANNOUNCED(STARTED, CANCELLED);
 
 
