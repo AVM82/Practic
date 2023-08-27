@@ -1,14 +1,14 @@
 package com.group.practic.dto;
 
 import java.util.Objects;
+import lombok.Builder;
 
-
+@Builder
 public class PersonDto {
 
     private String name;
 
     private String discord;
-
 
     PersonDto() {
     }

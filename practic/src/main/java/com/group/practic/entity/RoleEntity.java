@@ -6,12 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import org.springframework.security.core.GrantedAuthority;
 
 
 @Entity
 @Table(name = "role")
-public class RoleEntity implements GrantedAuthority {
+public class RoleEntity {
 
     private static final long serialVersionUID = 2978243562527482541L;
 
@@ -51,15 +50,6 @@ public class RoleEntity implements GrantedAuthority {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Role{" + "name='" + name + '\'' + '}';
-    }
 
-
-    @Override
-    public String getAuthority() {
-        return "ROLE_" + name;
-    }
 
 }

@@ -52,7 +52,7 @@ public class StaticContentFilter implements Filter {
     ) throws IOException, ServletException {
         String path = request.getServletPath();
 
-        boolean isApi = path.startsWith("/api") || path.startsWith("/login");
+        boolean isApi = path.startsWith("/api");
         boolean isApiDoc = isApiDoc(path);
 
         boolean isResourceFile = !isApiDoc
