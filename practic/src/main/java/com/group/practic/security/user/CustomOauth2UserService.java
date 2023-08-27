@@ -58,11 +58,13 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         ResponseEntity<Map> response = restTemplate
                 .exchange(emailEndpointUri, HttpMethod.GET, entity, Map.class);
 
-        if (response.getBody() != null) {
-            List<?> list = (List<?>) response.getBody().get("elements");
-            Map map = (Map<?, ?>) ((Map<?, ?>) list.get(0)).get("handle~");
-            attributes.putAll(map);
+        Map<?, ?> responseBody = response.getBody();
+        if (responseBody != null) {
+            List<?> list = (List<?>) responseBody.get("elements");
+            if (list != null) {
+                Map map = (Map<?, ?>) ((Map<?, ?>) list.get(0)).get("handle~");
+                attributes.putAll(map);
+            }
         }
-
     }
 }

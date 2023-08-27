@@ -61,9 +61,6 @@ public class SecurityConfig {
     private PersonService personService;
 
     @Autowired
-    private Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
-
-    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(personService).passwordEncoder(passwordEncoder());
     }
