@@ -9,8 +9,10 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class EmailSenderService implements Sender {
+
     Logger logger = LoggerFactory.getLogger(EmailSenderService.class);
 
     @Autowired
@@ -19,15 +21,14 @@ public class EmailSenderService implements Sender {
     @Value("${MAIL_USERNAME}")
     private String sender;
 
+
     public boolean sendMessage(SendMessageDto messageDto) {
         try {
-            SimpleMailMessage mailMessage
-                    = new SimpleMailMessage();
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setFrom(sender);
             mailMessage.setTo(messageDto.getAddress());
             mailMessage.setText(messageDto.getMessage());
             mailMessage.setSubject(messageDto.getHeader());
-
             mailSender.send(mailMessage);
             logger.info("Yor email is sent to {}", messageDto.getAddress());
             return true;
@@ -36,4 +37,5 @@ public class EmailSenderService implements Sender {
         }
         return false;
     }
+
 }

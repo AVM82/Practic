@@ -12,9 +12,9 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,14 +35,18 @@ public class ChapterController {
     }
 
 
+    @GetMapping("/shortName/{shortName}")
+    public ResponseEntity<ChapterEntity> getByShortName(@PathVariable String shortName) {
+        return getResponse(chapterService.getByShortName(shortName));
+    }
+
+
     @PostMapping()
-    public ResponseEntity<ChapterEntity> create(
-            @Min(1) @RequestParam long courseId,
+    public ResponseEntity<ChapterEntity> create(@Min(1) @RequestParam long courseId,
             @RequestBody @NotBlank String shortname,
             @RequestParam(required = false) Integer number) {
-        return postResponse(chapterService.create(
-                courseId, number == null ? 0 : number, shortname, shortname)
-        );
+        return postResponse(
+                chapterService.create(courseId, number == null ? 0 : number, shortname, shortname));
     }
 
 
@@ -59,14 +63,11 @@ public class ChapterController {
         return postResponse(chapterService.createSub(subChapterId, number, name));
     }
 
-    @PutMapping("/{id}/change/shortName")
+
+    @PatchMapping("/{id}/shortName")
     public ResponseEntity<ChapterEntity> addShortName(@PathVariable long id,
-                                                      @RequestParam String shortName) {
+            @RequestParam String shortName) {
         return updateResponse(chapterService.addShortName(id, shortName));
     }
 
-    @GetMapping("/{shortName}")
-    public ResponseEntity<ChapterEntity> getByShortName(@PathVariable String shortName) {
-        return getResponse(chapterService.getByShortName(shortName));
-    }
 }

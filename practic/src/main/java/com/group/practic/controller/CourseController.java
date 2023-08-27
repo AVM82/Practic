@@ -64,14 +64,24 @@ public class CourseController {
         return postResponse(courseService.create(courseDto));
     }
 
+
     @PutMapping("/{id}/change/shortNname")
     public ResponseEntity<CourseEntity> addShortName(@PathVariable long id,
-                                                     @RequestParam String shortName) {
+            @RequestParam String shortName) {
         return postResponse(courseService.addShortName(id, shortName));
     }
+
 
     @GetMapping("/{slug}")
     public ResponseEntity<CourseEntity> getBySlug(@PathVariable String slug) {
         return getResponse(courseService.getBySlug(slug));
     }
+
+
+    @GetMapping("/{slug}/chapters/{number}")
+    public ResponseEntity<ChapterEntity> getChapterByNumber(@PathVariable String slug,
+            @PathVariable int number) {
+        return getResponse(courseService.getChapterByNumber(slug, number));
+    }
+
 }

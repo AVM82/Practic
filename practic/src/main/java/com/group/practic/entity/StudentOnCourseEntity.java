@@ -24,6 +24,9 @@ public class StudentOnCourseEntity {
     PersonEntity student;
 
     @ManyToOne
+    ChapterEntity activeChapter;
+
+    @ManyToOne
     CourseEntity course;
 
     boolean inactive;
@@ -59,7 +62,7 @@ public class StudentOnCourseEntity {
 
 
     public StudentOnCourseEntity(PersonEntity student, CourseEntity course, String skills,
-            String os, String english, String purpose) {
+            String os, String english, String purpose, ChapterEntity activeChapter) {
         this(student, course);
         this.skills = skills;
         this.os = os;
@@ -192,4 +195,12 @@ public class StudentOnCourseEntity {
         return registered;
     }
 
+    public ChapterEntity getActiveChapter() {
+        return activeChapter;
+    }
+
+    public StudentOnCourseEntity setActiveChapter(ChapterEntity activeChapter) {
+        this.activeChapter = activeChapter;
+        return this;
+    }
 }

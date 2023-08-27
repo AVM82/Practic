@@ -13,5 +13,5 @@ export const getChapterByIdUrl = (courseId: number): string =>
 export const getChaptersUrl = (courseId: number): string =>
     `/api/courses/${courseId}/chapters`;
 
-export const getChapterUrl = (courseId: number, chapterId: number): string =>
-    `/api/courses/${courseId}/chapters/${chapterId}`;
+export const getChapterUrl = (chapterId: number): string =>
+    `/api/chapters/${chapterId}`;

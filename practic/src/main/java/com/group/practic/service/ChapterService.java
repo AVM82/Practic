@@ -90,7 +90,7 @@ public class ChapterService {
 
 
     public SubSubChapterEntity createSubSub(SubChapterEntity subChapter, int number,
-                                            List<String> p) {
+            List<String> p) {
         SubSubChapterEntity subSubChapter = new SubSubChapterEntity(0, subChapter, number, p.get(0),
                 p.get(1));
         return subSubChapterRepository.save(subSubChapter);
@@ -98,7 +98,7 @@ public class ChapterService {
 
 
     public List<ChapterEntity> createMany(CourseEntity course,
-                                          List<SimpleChapterStructure> chapters) {
+            List<SimpleChapterStructure> chapters) {
         List<ChapterEntity> result = new ArrayList<>();
         for (SimpleChapterStructure chapterSource : chapters) {
             List<String> names = extractParts(chapterSource.getHeader());
@@ -114,7 +114,7 @@ public class ChapterService {
 
 
     protected void addSubChapters(ChapterEntity chapter,
-                                  List<SimpleChapterStructure> subChapterList) {
+            List<SimpleChapterStructure> subChapterList) {
         for (SimpleChapterStructure subChapterSource : subChapterList) {
             SubChapterEntity subChapter = createSub(chapter, subChapterSource.getNumber(),
                     extractParts(subChapterSource.getHeader()));
@@ -125,7 +125,7 @@ public class ChapterService {
 
 
     protected void addSubSubChapters(SubChapterEntity subChapter,
-                                     List<SimpleChapterStructure> subSubChapterList) {
+            List<SimpleChapterStructure> subSubChapterList) {
         for (SimpleChapterStructure subSubChapterSource : subSubChapterList) {
             SubSubChapterEntity subSubChapter = createSubSub(subChapter,
                     subSubChapterSource.getNumber(), extractParts(subSubChapterSource.getHeader()));
@@ -172,7 +172,7 @@ public class ChapterService {
     }
 
 
-    protected int getChapterSucceedingNumber(List<ChapterEntity> chapterList) {
+    static int getChapterSucceedingNumber(List<ChapterEntity> chapterList) {
         int number = 0;
         for (ChapterEntity chapter : chapterList) {
             if (number < chapter.getNumber()) {
@@ -181,6 +181,17 @@ public class ChapterService {
         }
         return number + 1;
     }
+
+
+    static Optional<ChapterEntity> getChapterByNumber(List<ChapterEntity> chapterList, int number) {
+        for (ChapterEntity chapter : chapterList) {
+            if (chapter.getNumber() == number) {
+                return Optional.of(chapter);
+            }
+        }
+        return Optional.empty();
+    }
+
 
     public Optional<ChapterEntity> addShortName(long id, String shortName) {
         Optional<ChapterEntity> chapter = chapterRepository.findById(id);
@@ -193,7 +204,9 @@ public class ChapterService {
         return Optional.empty();
     }
 
+
     public Optional<ChapterEntity> getByShortName(String shortName) {
         return Optional.ofNullable(chapterRepository.findByShortName(shortName));
     }
+
 }
