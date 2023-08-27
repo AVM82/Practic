@@ -31,7 +31,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @NoArgsConstructor
 @AllArgsConstructor
@@ -83,11 +82,13 @@ public class PersonService implements UserDetailsService {
         return Optional.of(personRepository.save(Converter.convert(personDto)));
     }
 
+
     public PersonEntity getCurrentPerson() {
         OAuth2User authorization = getOauth2User();
 
         return personRepository.findByLinkedin(authorization.getAttribute("id")).orElse(null);
     }
+
 
     public PersonEntity createUserIfNotExists() {
         OAuth2User authorization = getOauth2User();
@@ -105,14 +106,17 @@ public class PersonService implements UserDetailsService {
                         + " " + authorizationAttributes.get("localizedLastName"),
                 linkedinId);
 
+
         personEntity.setRoles(Set.of(new RoleEntity("USER")));
 
         return personRepository.save(personEntity);
     }
 
+
     private static OAuth2User getOauth2User() {
         return (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
 
     public Set<RoleEntity> findUserRolesById(long id) {
         PersonEntity foundPerson = personRepository.findById(id).orElse(null);
@@ -123,6 +127,7 @@ public class PersonService implements UserDetailsService {
 
         return foundPerson.getRoles();
     }
+
 
     public PersonEntity addRoleToUserById(long id, String newRole) {
         PersonEntity foundPerson = personRepository.findById(id).orElse(null);
@@ -140,10 +145,12 @@ public class PersonService implements UserDetailsService {
         return personRepository.save(foundPerson);
     }
 
+
     public boolean isCurrentPersonMentor() {
         return getCurrentPerson().containsRole("MENTOR");
     }
 
+  
     public PersonEntity addEmailToCurrentUser(String email) {
         PersonEntity currentPerson = getCurrentPerson();
 

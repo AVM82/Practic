@@ -30,12 +30,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 @Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}))
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class PersonEntity implements UserDetails {
+
+    private static final long serialVersionUID = 1801144471755530968L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -68,10 +71,12 @@ public class PersonEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private transient Set<RoleEntity> roles;
 
+
     public PersonEntity(String name, String linkedin) {
         this.name = name;
         this.linkedin = linkedin;
     }
+
 
     @JsonIgnore
     @Override
@@ -86,11 +91,13 @@ public class PersonEntity implements UserDetails {
         return authorities;
     }
 
+
     @JsonIgnore
     @Override
     public String getPassword() {
         return null;
     }
+
 
     @JsonIgnore
     @Override
@@ -98,11 +105,13 @@ public class PersonEntity implements UserDetails {
         return getName();
     }
 
+
     @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
+
 
     @JsonIgnore
     @Override
@@ -110,11 +119,13 @@ public class PersonEntity implements UserDetails {
         return true;
     }
 
+
     @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
 
     @JsonIgnore
     @Override
@@ -122,9 +133,9 @@ public class PersonEntity implements UserDetails {
         return true;
     }
 
+
     public boolean containsRole(String role) {
-        return roles.stream()
-                .anyMatch(personRole ->
-                        personRole.getName().equals(role));
+        return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
     }
+
 }

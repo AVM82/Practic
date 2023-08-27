@@ -32,7 +32,7 @@ public class StateEntity {
     String name;
 
     @OneToMany(cascade = CascadeType.ALL)
-    Set<StateEntity> changes = new HashSet<>();
+    Set<StateEntity> changesTo = new HashSet<>();
 
 
     public StateEntity() {
@@ -45,17 +45,17 @@ public class StateEntity {
     }
 
 
-    public StateEntity(long id, int cluster, String name, Set<StateEntity> changes) {
+    public StateEntity(long id, int cluster, String name, Set<StateEntity> changesTo) {
         this.id = id;
         this.cluster = cluster;
         this.name = name;
-        this.changes = changes;
+        this.changesTo = changesTo;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(changes, id, name, cluster);
+        return Objects.hash(changesTo, id, name, cluster);
     }
 
 
@@ -110,28 +110,28 @@ public class StateEntity {
     }
 
 
-    public Set<StateEntity> getChanges() {
-        return changes;
+    public Set<StateEntity> getChangesTo() {
+        return changesTo;
     }
 
 
-    public void setChanges(Set<StateEntity> changes) {
-        this.changes = changes;
+    public void setChangesTo(Set<StateEntity> changesTo) {
+        this.changesTo = changesTo;
     }
 
 
-    public boolean addChange(StateEntity stateEntity) {
+    public boolean addChangeTo(StateEntity stateEntity) {
         if (cluster == stateEntity.cluster && !hasName(stateEntity.name)) {
-            changes.add(stateEntity);
+            changesTo.add(stateEntity);
             return true;
         }
         return false;
     }
 
 
-    public synchronized boolean removeChange(StateEntity stateEntity) {
+    public synchronized boolean removeChangeTo(StateEntity stateEntity) {
         if (cluster == stateEntity.cluster) {
-            Iterator<StateEntity> it = changes.iterator();
+            Iterator<StateEntity> it = changesTo.iterator();
             while (it.hasNext()) {
                 if (name.equals(it.next().name)) {
                     it.remove();
@@ -155,7 +155,7 @@ public class StateEntity {
 
 
     public boolean hasName(String name) {
-        for (StateEntity state : changes) {
+        for (StateEntity state : changesTo) {
             if (name.equals(state.name)) {
                 return true;
             }
