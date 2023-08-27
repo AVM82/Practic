@@ -10,7 +10,12 @@
     nmp start
 (по замовчуванню запускається сервер http://localhost:4200, до команди npm start дописаний
 проксі сервер для запитів на бекенд за адресою http://localhost:5000/,
-для повноцінної роботи треба запустити Spring Application)
+для повноцінної роботи треба запустити Spring Application).
+
+Налаштування авторизації під час розробки:
+Фронтенд: в файлі app-constant.ts треба вказати REDIRECT_URI localhost:4200 (порт фронтенту)
+Бекенд: в application.properties треба для параметра app.oauth2.authorizedRedirectUris вказати
+localhost:4200
 
 Збірка проекту:
     mvn clean install

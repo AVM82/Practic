@@ -20,4 +20,8 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     Optional<PersonEntity> findByLinkedin(String linkedin);
 
+    Optional<PersonEntity> findPersonEntityByEmail(String email);
+
+    Optional<PersonEntity> findById(Long id);
+
 }

@@ -17,13 +17,24 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
 
-@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "discord"}))
+@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}))
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class PersonEntity implements UserDetails {
 
     @Id
@@ -34,7 +45,6 @@ public class PersonEntity implements UserDetails {
 
     boolean ban;
 
-    @Column(unique = true)
     private String email;
 
     @Column
@@ -50,145 +60,30 @@ public class PersonEntity implements UserDetails {
 
     private String contacts;
 
+    private String password;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "persons_roles",
-            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<RoleEntity> roles = new HashSet<>();
-
-
-    public PersonEntity() {
-    }
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private transient Set<RoleEntity> roles;
 
     public PersonEntity(String name, String linkedin) {
         this.name = name;
         this.linkedin = linkedin;
     }
 
-    public PersonEntity(String name, String linkedin, String contacts) {
-        this.name = name;
-        this.linkedin = linkedin;
-        this.contacts = contacts;
-    }
-
-    public PersonEntity(String name, String discord, String linkedin, String contacts,
-                        Set<RoleEntity> roles) {
-        this.name = name;
-        this.discord = discord;
-        this.linkedin = linkedin;
-        this.contacts = contacts;
-        this.roles = roles;
-    }
-
-
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public boolean isInactive() {
-        return inactive;
-    }
-
-
-    public void setInactive(boolean inactive) {
-        this.inactive = inactive;
-    }
-
-
-    public boolean isBan() {
-        return ban;
-    }
-
-
-    public void setBan(boolean ban) {
-        this.ban = ban;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public String getDiscord() {
-        return discord;
-    }
-
-
-    public void setDiscord(String discord) {
-        this.discord = discord;
-    }
-
-
-    public String getLinkedin() {
-        return linkedin;
-    }
-
-
-    public void setLinkedin(String linkedin) {
-        this.linkedin = linkedin;
-    }
-
-
-    public String getContacts() {
-        return contacts;
-    }
-
-
-    public void setContacts(String contacts) {
-        this.contacts = contacts;
-    }
-
-
-    public Set<RoleEntity> getRoles() {
-        return roles;
-    }
-
-
-    public void setRoles(Set<RoleEntity> roles) {
-        this.roles = roles;
-    }
-
-
-    public void addRole(RoleEntity role) {
-        this.roles.add(role);
-    }
-
-
-    public void removeRole(RoleEntity role) {
-        this.roles.remove(role);
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Person{" + "id=" + id + ", name='" + name + '\'' + ", linkedin='" + linkedin + '\''
-                + ", roles=" + roles + '}';
-    }
-
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        Collection<SimpleGrantedAuthority> authorities = new HashSet<>();
+        if (roles != null) {
+            authorities = roles.stream()
+                    .map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
+                    .collect(Collectors.toUnmodifiableSet());
+        }
+
+        return authorities;
     }
 
     @JsonIgnore

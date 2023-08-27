@@ -13,6 +13,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,5 +85,13 @@ public class PersonController {
         }
 
         return new ResponseEntity<>(personEntity, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<PersonEntity> getCurrentUser() {
+        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        return ResponseEntity.ok(person);
     }
 }
