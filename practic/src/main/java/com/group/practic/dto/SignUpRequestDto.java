@@ -1,7 +1,6 @@
 package com.group.practic.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import java.net.URL;
 import lombok.Builder;
 import lombok.Data;
 
