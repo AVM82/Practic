@@ -1,6 +1,7 @@
 package com.group.practic.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import java.net.URL;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,6 +18,8 @@ public class SignUpRequestDto {
 
     @NotEmpty
     private String email;
+
+    private String profilePictureUrl;
 
     private String password;
 

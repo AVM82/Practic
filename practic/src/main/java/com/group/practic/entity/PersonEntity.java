@@ -14,6 +14,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
+
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -64,6 +66,9 @@ public class PersonEntity implements UserDetails {
     private String contacts;
 
     private String password;
+   
+    @Column
+    private String profilePictureUrl;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "persons_roles",
