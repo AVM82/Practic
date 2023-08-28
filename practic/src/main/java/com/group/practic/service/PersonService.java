@@ -195,6 +195,7 @@ public class PersonService implements UserDetailsService {
     ) {
         existingUser.setName(oauth2UserInfo.getName());
         existingUser.setLinkedin(oauth2UserInfo.getId());
+        existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());
         return personRepository.save(existingUser);
     }
 

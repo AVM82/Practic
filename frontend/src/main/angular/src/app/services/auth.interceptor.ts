@@ -28,11 +28,18 @@ export class AuthInterceptor implements HttpInterceptor {
           next: () => {},
           error: (err: any) => {
             if (err instanceof HttpErrorResponse) {
-              if (err.status !== 401 || window.location.pathname === loginPath) {
+              const statusCode = err.status as number;
+
+              if (statusCode !== 401 && statusCode !== 403  || window.location.pathname === loginPath) {
                 return;
               }
-              this.token.signOut();
-              window.location.href = loginPath;
+              if (statusCode === 403) {
+                window.history.back();
+                return;
+              }
+                this.token.signOut();
+                window.location.href = loginPath;
+
             }
           }
         })
