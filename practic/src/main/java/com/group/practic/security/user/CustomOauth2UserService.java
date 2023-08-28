@@ -33,9 +33,9 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     @Autowired
     private Environment env;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    private static RestTemplate restTemplate = new RestTemplate();
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oauth2UserRequest)
