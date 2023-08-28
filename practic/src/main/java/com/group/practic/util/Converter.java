@@ -66,9 +66,6 @@ public interface Converter {
 
     static List<List<StudentReportDto>> convertListOfLists(
             List<List<StudentReportEntity>> studentReportEntityList) {
-        if (studentReportEntityList == null) {
-            return null;
-        }
         List<List<StudentReportDto>> result = new ArrayList<>();
         for (List<StudentReportEntity> reportEntityList : studentReportEntityList) {
             result.add(convert(reportEntityList));

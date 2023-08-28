@@ -13,9 +13,9 @@ import {RouterLink} from "@angular/router";
   styleUrls: ['/report-card.component.css']
 })
 export class ReportCardComponent{
-  @Input() reportTopic!: String
-  @Input() studentName!: String
-  @Input() dateTimeValue!: String
+  @Input() reportTopic!: string
+  @Input() studentName!: string
+  @Input() dateTimeValue!: string
 
   get datePart(): string {
     return this.dateTimeValue.split('T')[0];
