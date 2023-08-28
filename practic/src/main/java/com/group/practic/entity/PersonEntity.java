@@ -37,8 +37,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Setter
 public class PersonEntity implements UserDetails {
 
-    private static final long serialVersionUID = 1801144471755530968L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
@@ -63,15 +61,14 @@ public class PersonEntity implements UserDetails {
     private String contacts;
 
     private String password;
-   
-    @Column
+
     private String profilePictureUrl;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "persons_roles",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private transient Set<RoleEntity> roles;
+    private Set<RoleEntity> roles;
 
 
     public PersonEntity(String name, String linkedin) {

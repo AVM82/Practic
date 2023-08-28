@@ -14,13 +14,13 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Builder
-public class AuthUserDto implements OAuth2User, OidcUser, Serializable {
+public class AuthUserDto implements OAuth2User, OidcUser {
 
     @Serial
     private static final long serialVersionUID = -2845160792248762779L;
     private final OidcIdToken idToken;
     private final OidcUserInfo userInfo;
-    private transient Map<String, Object> attributes;
+    private Map<String, Object> attributes;
 
     @Getter
     private PersonEntity person;
