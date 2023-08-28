@@ -21,6 +21,7 @@ public interface Converter {
         ModelMapper modelMapper = new ModelMapper();
 
         applyStudentPracticeMap(modelMapper);
+        applyStudentReportMap(modelMapper);
 
         return modelMapper;
     }
@@ -47,26 +48,30 @@ public interface Converter {
     static StudentPracticeDto convert(StudentPracticeEntity studentPracticeEntity) {
         return modelMapper().map(studentPracticeEntity, StudentPracticeDto.class);
     }
+
     static StudentReportDto convert(StudentReportEntity studentReportEntity) {
         return modelMapper().map(studentReportEntity, StudentReportDto.class);
     }
-    static List<StudentReportDto> convertList(List<StudentReportEntity> studentReportEntityList ){
-        if(studentReportEntityList == null){
+
+    static List<StudentReportDto> convert(List<StudentReportEntity> studentReportEntityList) {
+        if (studentReportEntityList == null) {
             return null;
         }
         List<StudentReportDto> result = new ArrayList<>();
-        for (StudentReportEntity reportEntity: studentReportEntityList){
+        for (StudentReportEntity reportEntity : studentReportEntityList) {
             result.add(convert(reportEntity));
         }
         return result;
     }
-    static List<List<StudentReportDto>> convertListOfLists(List<List<StudentReportEntity>> studentReportEntityList ){
-        if(studentReportEntityList == null){
+
+    static List<List<StudentReportDto>> convertListOfLists(
+            List<List<StudentReportEntity>> studentReportEntityList) {
+        if (studentReportEntityList == null) {
             return null;
         }
         List<List<StudentReportDto>> result = new ArrayList<>();
-        for (List<StudentReportEntity> reportEntityList: studentReportEntityList){
-            result.add(convertList(reportEntityList));
+        for (List<StudentReportEntity> reportEntityList : studentReportEntityList) {
+            result.add(convert(reportEntityList));
         }
         return result;
 
@@ -74,9 +79,17 @@ public interface Converter {
 
     private static void applyStudentPracticeMap(ModelMapper modelMapper) {
         modelMapper.createTypeMap(StudentPracticeEntity.class, StudentPracticeDto.class)
-                .addMapping(src -> src.getStudent().getName(), StudentPracticeDto::setPersonName)
-                .addMapping(src ->
-                        src.getChapter().getShortName(), StudentPracticeDto::setChapterName)
+            .addMapping(src -> src.getStudent().getName(), StudentPracticeDto::setPersonName)
+            .addMapping(src ->
+                src.getChapter().getShortName(), StudentPracticeDto::setChapterName)
                 .addMapping(StudentPracticeEntity::getState, StudentPracticeDto::setState);
+    }
+
+    private static void applyStudentReportMap(ModelMapper modelMapper) {
+        modelMapper.createTypeMap(StudentReportEntity.class, StudentReportDto.class)
+            .addMapping(src -> src.getStudent().getName(), StudentReportDto::setPersonName)
+            .addMapping(src ->
+                src.getChapter().getShortName(), StudentReportDto::setChapterName)
+                .addMapping(StudentReportEntity::getState, StudentReportDto::setState);
     }
 }
