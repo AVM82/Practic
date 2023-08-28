@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, Input} from "@angular/core";
 import {Router, RouterLink} from "@angular/router";
 import {CommonModule, NgFor, NgIf} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
@@ -16,12 +16,19 @@ export class ReportButtonComponent{
 
   dropdownText = "Доповідей не заплановано";
   constructor(private router: Router) {}
+  @Input() reportsNumber!: number
 
+
+  isReportsPresent(): boolean {
+    if(this.reportsNumber>0) {
+      this.dropdownText = "Заплановано " + this.reportsNumber + " доповіді/ей"
+      return false;
+    }
+    return true;
+  }
   navigate(event: Event) {
     event.stopPropagation();
     this.router.navigate(['/reports']);
   }
-  isEmpty(): boolean {
-    return false;
-  }
+
 }
