@@ -26,7 +26,7 @@
 }
 .report-topic-header{
   color: #333;
-  font-family: Inter;
+  font-family: serif;
   font-size: 10px;
   font-style: normal;
   font-weight: 500;
@@ -37,7 +37,7 @@
   align-self: stretch;
   color: #333;
   text-align: center;
-  font-family: Inter;
+  font-family: serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -46,7 +46,7 @@
 .like-counter{
   color: #27AE60;
   text-align: center;
-  font-family: Inter;
+  font-family: serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
