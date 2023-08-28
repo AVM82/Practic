@@ -42,10 +42,10 @@ public class StudentOnCourseController {
 
     @Autowired
     public StudentOnCourseController(
-        StudentOnCourseService studentOnCourseService,
-        StudentPracticeService studentPracticeService,
-        PersonService personService,
-        StudentReportService studentReportService) {
+            StudentOnCourseService studentOnCourseService,
+            StudentPracticeService studentPracticeService,
+            PersonService personService,
+            StudentReportService studentReportService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
@@ -54,10 +54,10 @@ public class StudentOnCourseController {
 
     @GetMapping
     public ResponseEntity<Collection<StudentOnCourseEntity>> get(
-        @RequestParam(required = false) Optional<Long> courseId,
-        @RequestParam(required = false) Optional<Long> studentId,
-        @RequestParam(required = false) boolean inactive,
-        @RequestParam(required = false) boolean ban) {
+            @RequestParam(required = false) Optional<Long> courseId,
+            @RequestParam(required = false) Optional<Long> studentId,
+            @RequestParam(required = false) boolean inactive,
+            @RequestParam(required = false) boolean ban) {
         if (!isCurrentPersonMentor()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -89,7 +89,7 @@ public class StudentOnCourseController {
 
     @PostMapping
     public ResponseEntity<StudentOnCourseEntity> create(@Min(1) @RequestParam long courseId,
-        @Min(1) @RequestParam long studentId) {
+            @Min(1) @RequestParam long studentId) {
         if (!isCurrentPersonMentor()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -102,11 +102,11 @@ public class StudentOnCourseController {
 
     @GetMapping("/practices/{practiceState}")
     public ResponseEntity<List<StudentPracticeDto>> getPracticeWithStateFilter(
-        @PathVariable String practiceState
+            @PathVariable String practiceState
     ) {
         PracticeState state = PracticeState.fromString(practiceState);
         List<StudentPracticeEntity> students =
-            studentPracticeService.getAllStudentsByState(state);
+                studentPracticeService.getAllStudentsByState(state);
 
         return ResponseEntity.ok(students.stream()
             .map(Converter::convert)
@@ -116,8 +116,8 @@ public class StudentOnCourseController {
     @GetMapping("/practices/states")
     public ResponseEntity<List<String>> getPracticeStates() {
         List<String> practiceStates = Arrays.stream(PracticeState.values())
-            .map(state -> state.name().toLowerCase())
-            .toList();
+                .map(state -> state.name().toLowerCase())
+                .toList();
 
         return ResponseEntity.ok(practiceStates);
     }
@@ -125,17 +125,17 @@ public class StudentOnCourseController {
     @GetMapping("/reports/states")
     public ResponseEntity<List<String>> getReportStates() {
         List<String> reportStates = Arrays.stream(ReportState.values())
-            .map(state -> state.name().toLowerCase())
-            .toList();
+                .map(state -> state.name().toLowerCase())
+                .toList();
 
         return ResponseEntity.ok(reportStates);
     }
 
     @GetMapping("/reports/course/{slug}")
     public ResponseEntity<Collection<List<StudentReportDto>>> getReportsWithStateAndChapterFilter(
-        @PathVariable String slug) {
+            @PathVariable String slug) {
         List<List<StudentReportEntity>> students =
-            studentReportService.getAllStudentsActualReports(slug);
+                studentReportService.getAllStudentsActualReports(slug);
         return students == null
             ? (ResponseEntity<Collection<List<StudentReportDto>>>) ResponseEntity.badRequest()
             : ResponseEntity.ok(Converter.convertListOfLists(students));
