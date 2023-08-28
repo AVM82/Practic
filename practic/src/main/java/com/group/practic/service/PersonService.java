@@ -203,6 +203,7 @@ public class PersonService implements UserDetailsService {
                 .providerUserId(oauth2UserInfo.getId())
                 .name(oauth2UserInfo.getName())
                 .email(oauth2UserInfo.getEmail())
+                .profilePictureUrl(oauth2UserInfo.getImageUrl()) 
                 .password("changeit")
                 .build();
     }
@@ -231,6 +232,7 @@ public class PersonService implements UserDetailsService {
         newPerson.setPassword(userDetails.getPassword());
         newPerson.setEmail(userDetails.getEmail());
         newPerson.setLinkedin(userDetails.getProviderUserId());
+        newPerson.setProfilePictureUrl(userDetails.getProfilePictureUrl());
         newPerson.setRoles(roles);
 
 

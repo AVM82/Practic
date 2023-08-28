@@ -18,6 +18,8 @@ public class SignUpRequestDto {
     @NotEmpty
     private String email;
 
+    private String profilePictureUrl;
+
     private String password;
 
 }

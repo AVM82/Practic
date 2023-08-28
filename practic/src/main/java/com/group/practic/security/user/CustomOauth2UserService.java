@@ -1,11 +1,14 @@
 package com.group.practic.security.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group.practic.exception.Oauth2AuthenticationProcessingException;
 import com.group.practic.service.PersonService;
 import io.jsonwebtoken.lang.Assert;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -20,6 +23,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
@@ -29,13 +33,21 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     @Autowired
     private Environment env;
 
+    private static RestTemplate restTemplate = new RestTemplate();
+
+    private static ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oauth2UserRequest)
             throws OAuth2AuthenticationException {
         OAuth2User oauth2User = super.loadUser(oauth2UserRequest);
         try {
             Map<String, Object> attributes = new HashMap<>(oauth2User.getAttributes());
-            populateEmailAddressFromLinkedIn(oauth2UserRequest, attributes);
+
+            String accessToken = oauth2UserRequest.getAccessToken().getTokenValue();
+            populateEmailAddressFromLinkedIn(accessToken, attributes);
+            populateProfilePictureFromLinkedIn(accessToken, attributes);
+
             return personService.processUserRegistration(attributes, null, null);
         } catch (AuthenticationException ex) {
             throw ex;
@@ -44,27 +56,82 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    public void populateEmailAddressFromLinkedIn(
-            OAuth2UserRequest oauth2UserRequest, Map<String, Object> attributes
+    private void populateEmailAddressFromLinkedIn(
+            String accessToken, Map<String, Object> attributes
     ) throws OAuth2AuthenticationException {
         String emailEndpointUri = env.getProperty("linkedin.email-address-uri");
-        Assert.notNull(emailEndpointUri, "LinkedIn email address end point required");
-        RestTemplate restTemplate = new RestTemplate();
+        Assert.notNull(emailEndpointUri, "LinkedIn email address endpoint required");
+        
+        ResponseEntity<String> response = makeLinkedInApiRequest(accessToken, emailEndpointUri);
+        String element = extractElement("email", response.getBody());
+
+        attributes.put("emailAddress", element);
+    }
+
+    private void populateProfilePictureFromLinkedIn(
+            String accessToken, Map<String, Object> attributes) {
+        String pictureEndpointUri = env.getProperty("linkedin.profile-picture-uri");
+        Assert.notNull(pictureEndpointUri, "LinkedIn profile picture endpoint required");
+
+        ResponseEntity<String> response = makeLinkedInApiRequest(accessToken, pictureEndpointUri);
+        String element = extractElement("picture", response.getBody());
+       
+        attributes.put("pictureUrl", element);
+    }
+
+    private ResponseEntity<String> makeLinkedInApiRequest(
+            String accessToken, String requestEndpoint) {
+        // Create a header with the access token
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer "
-                + oauth2UserRequest.getAccessToken().getTokenValue());
-        HttpEntity<?> entity = new HttpEntity<>("", headers);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<Map> response = restTemplate
-                .exchange(emailEndpointUri, HttpMethod.GET, entity, Map.class);
+        // Make a GET request to LinkedIn's email endpoint with the token
+        return restTemplate.exchange(requestEndpoint, HttpMethod.GET, entity, String.class);
+    }
 
-        Map<?, ?> responseBody = response.getBody();
-        if (responseBody != null) {
-            List<?> list = (List<?>) responseBody.get("elements");
-            if (list != null) {
-                Map map = (Map<?, ?>) ((Map<?, ?>) list.get(0)).get("handle~");
-                attributes.putAll(map);
+    private String extractElement(String element, String responseBody) {
+        String result = null;
+        try {
+            // Parse the JSON response string into a JsonNode object
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+            if (!rootNode.isEmpty()) {
+                // Extract the element
+                switch (element) {
+                    case "email":
+                        result = extractEmailAddressElement(rootNode);
+                        break;
+                    case "picture":
+                        result = extractProfilePictureUrlElement(rootNode);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("No such known element");
+                }
             }
+        } catch (JsonProcessingException e) {
+            log.error("Cannot process JSON from response's body", e);
         }
+        
+        return result;
+    }
+
+    private String extractEmailAddressElement(JsonNode rootNode) {
+        JsonNode emailAddressElement = rootNode
+                .get("elements").get(0)
+                .get("handle~")
+                .get("emailAddress");
+
+        return emailAddressElement.textValue();
+    }
+    
+    private String extractProfilePictureUrlElement(JsonNode rootNode) {
+        JsonNode profilePictureUrlElement = rootNode
+                .get("profilePicture")
+                .get("displayImage~")
+                .get("elements").get(0)
+                .get("identifiers").get(0)
+                .get("identifier");
+
+        return profilePictureUrlElement.textValue();
     }
 }
