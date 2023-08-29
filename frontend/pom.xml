@@ -25,8 +25,8 @@
                 <version>1.12.0</version>
                 <configuration>
                     <workingDirectory>src/main/angular</workingDirectory>
-                    <nodeVersion>v18.16.0</nodeVersion>
-                    <npmVersion>9.4.2</npmVersion>
+                    <nodeVersion>v18.17.1</nodeVersion>
+                    <npmVersion>9.6.7</npmVersion>
                 </configuration>
                 <executions>
                     <execution>

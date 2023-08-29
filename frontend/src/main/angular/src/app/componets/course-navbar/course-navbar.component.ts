@@ -14,6 +14,7 @@ import {MatButtonModule} from "@angular/material/button";
   templateUrl: './course-navbar.component.html',
   styleUrls: ['./course-navbar.component.css']
 })
+
 export class CourseNavbarComponent implements OnInit{
   course: Course | undefined;
   chapters: Chapter[] = [];
@@ -42,3 +43,4 @@ export class CourseNavbarComponent implements OnInit{
   }
 }
 
+ 

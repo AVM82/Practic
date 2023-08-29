@@ -56,9 +56,11 @@ public class CourseEntity {
     List<ChapterEntity> chapters = new ArrayList<>();
 
     @Column(unique = true)
+    @NotBlank
     String shortName;
 
     @Column(unique = true)
+    @NotBlank
     String slug;
 
 
