@@ -24,8 +24,6 @@ export class ReportDashboardComponent implements OnInit {
     this.loadReports(this.courseSlug);
   }
   loadReports(slug: string): void {
-
-
     this.reportService.getAllActualReports(slug).subscribe(reports => {
       this.reports.push(...reports);
       this.reports = [...this.reports];

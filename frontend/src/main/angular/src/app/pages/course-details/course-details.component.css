@@ -79,6 +79,9 @@
     padding: 3px 8px;
     border-radius: 4px;
 }
+.chapter-button{
+    display: flex;
+}
 
 
 
