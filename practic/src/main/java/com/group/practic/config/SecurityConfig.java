@@ -96,7 +96,10 @@ public class SecurityConfig {
                                                 "/*.ico",
                                                 "/oauth2/**",
                                                 "/error",
-                                                "/api/actuator/prometheus")
+                                                "/api/actuator/prometheus",
+                                                "/swagger-ui/**",
+                                                "/*/swagger-ui/**",
+                                                "/*/api-docs/**")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
