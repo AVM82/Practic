@@ -4,12 +4,16 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.StudentPracticeDto;
+import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
+import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.enumeration.PracticeState;
+import com.group.practic.enumeration.ReportState;
 import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentOnCourseService;
 import com.group.practic.service.StudentPracticeService;
+import com.group.practic.service.StudentReportService;
 import com.group.practic.util.Converter;
 import jakarta.validation.constraints.Min;
 import java.util.Arrays;
@@ -35,16 +39,18 @@ public class StudentOnCourseController {
     private final StudentOnCourseService studentOnCourseService;
     private final StudentPracticeService studentPracticeService;
     private final PersonService personService;
+    private final StudentReportService studentReportService;
 
     @Autowired
     public StudentOnCourseController(
             StudentOnCourseService studentOnCourseService,
             StudentPracticeService studentPracticeService,
-            PersonService personService
-    ) {
+            PersonService personService,
+            StudentReportService studentReportService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
+        this.studentReportService = studentReportService;
     }
 
     @GetMapping
@@ -62,14 +68,14 @@ public class StudentOnCourseController {
                 return getResponse(studentOnCourseService.get(inactive, ban));
             }
             return getResponse(
-                    studentOnCourseService.getCoursesOfStudent(studentId.get(), inactive, ban));
+                studentOnCourseService.getCoursesOfStudent(studentId.get(), inactive, ban));
         }
         if (studentId.isEmpty()) {
             return getResponse(
-                    studentOnCourseService.getStudentsOfCourse(courseId.get(), inactive, ban));
+                studentOnCourseService.getStudentsOfCourse(courseId.get(), inactive, ban));
         }
         return getResponse(
-                studentOnCourseService.get(courseId.get(), studentId.get(), inactive, ban));
+            studentOnCourseService.get(courseId.get(), studentId.get(), inactive, ban));
     }
 
 
@@ -105,8 +111,8 @@ public class StudentOnCourseController {
                 studentPracticeService.getAllStudentsByState(state);
 
         return ResponseEntity.ok(students.stream()
-                .map(Converter::convert)
-                .toList());
+            .map(Converter::convert)
+            .toList());
     }
 
     @GetMapping("/practices/states")
@@ -116,5 +122,24 @@ public class StudentOnCourseController {
                 .toList();
 
         return ResponseEntity.ok(practiceStates);
+    }
+
+    @GetMapping("/reports/states")
+    public ResponseEntity<List<String>> getReportStates() {
+        List<String> reportStates = Arrays.stream(ReportState.values())
+                .map(state -> state.name().toLowerCase())
+                .toList();
+
+        return ResponseEntity.ok(reportStates);
+    }
+
+    @GetMapping("/reports/course/{slug}")
+    public ResponseEntity<Collection<List<StudentReportDto>>> getReportsWithStateAndChapterFilter(
+            @PathVariable String slug) {
+        List<List<StudentReportEntity>> students =
+                studentReportService.getAllStudentsActualReports(slug);
+        return students == null
+            ? (ResponseEntity<Collection<List<StudentReportDto>>>) ResponseEntity.badRequest()
+            : ResponseEntity.ok(Converter.convertListOfLists(students));
     }
 }

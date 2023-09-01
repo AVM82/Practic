@@ -3,6 +3,8 @@ export enum ApiUrls {
   Course = '/api/courses/',
   Practices = '/api/students/practices/',
   PracticeStates = '/api/students/practices/states',
+  Reports = '/api/students/reports/course/',
+  ReportStates = '/api/students/reports/states',
   Chapters = '/api/chapters',
   Me = '/api/persons/me'
 }

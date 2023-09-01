@@ -7,21 +7,27 @@ import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
+import {ReportServiceService} from "../../services/report/report-service.service";
+import {StudentReport} from "../../models/report/studentReport";
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
 export class CourseDetailsComponent implements OnInit {
   course: Course | undefined;
   chapters: Chapter[] = [];
+  reports: StudentReport[][]=[];
 
   constructor(
       private coursesService: CoursesService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private reportService: ReportServiceService
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +43,10 @@ export class CourseDetailsComponent implements OnInit {
           {
             this.coursesService.setFirstChapterVisible(chapters);
             this.chapters = chapters;
+          });
+          this.reportService.getAllActualReports('java-dev-tools').subscribe(reports => {
+            this.reports.push(...reports);
+            this.reports = [...this.reports];
           });
         });
       }

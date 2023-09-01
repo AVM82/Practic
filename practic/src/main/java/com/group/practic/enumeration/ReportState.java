@@ -2,16 +2,17 @@ package com.group.practic.enumeration;
 
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.core.annotation.Order;
 
 
 public enum ReportState {
-
+    @Order(0)
     CANCELLED(),
-
+    @Order(1)
     FINISHED(),
-
+    @Order(2)
     STARTED(FINISHED, CANCELLED),
-
+    @Order(3)
     ANNOUNCED(STARTED, CANCELLED);
 
 
@@ -25,6 +26,15 @@ public enum ReportState {
 
     public boolean changeAllowed(ReportState newState) {
         return this == newState || allowed.contains(newState);
+    }
+
+    public static ReportState fromString(String value) {
+        for (ReportState state : values()) {
+            if (state.name().equalsIgnoreCase(value)) {
+                return state;
+            }
+        }
+        throw new IllegalArgumentException("Unknown ReportState: " + value);
     }
 
 }
