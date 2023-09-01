@@ -14,12 +14,13 @@ import {ApiCacheInterceptor} from "./app/services/api-cache.interceptor";
 import {MatPaginator} from "@angular/material/paginator";
 import {AuthService} from "./app/services/auth/auth.service";
 import {AuthInterceptor} from "./app/services/auth.interceptor";
+import {ReportServiceService} from "./app/services/report/report-service.service";
 
 
 bootstrapApplication(AppComponent, {
     providers: [
         importProvidersFrom(BrowserModule, AppRoutingModule, TranslocoRootModule, MatCardModule, MatIconModule, MatToolbarModule),
-        CoursesService, StudentMetricsService, MatPaginator, MatCard, AuthService,
+        CoursesService, StudentMetricsService, MatPaginator, MatCard, AuthService, ReportServiceService,
         provideAnimations(),
         provideHttpClient(withInterceptorsFromDi()),
       {provide: HTTP_INTERCEPTORS, useClass: ApiCacheInterceptor, multi: true},
