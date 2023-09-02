@@ -1,27 +1,27 @@
 import {Component, OnInit} from '@angular/core';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import {CommonModule, NgFor, NgIf} from '@angular/common';
 import {Course} from "../../models/course/course";
 import {MatIconModule} from "@angular/material/icon";
 import {Chapter} from "../../models/course/chapter";
 import {CoursesService} from "../../services/courses/courses.service";
-import {ActivatedRoute, RouterLink} from "@angular/router";
-import {MatButtonModule} from "@angular/material/button";
+import {ActivatedRoute} from "@angular/router";
+
 
 @Component({
   selector: 'app-course-navbar',
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, MatIconModule, MatButtonModule, RouterLink],
+  imports: [CommonModule, NgFor, NgIf, MatIconModule],
   templateUrl: './course-navbar.component.html',
   styleUrls: ['./course-navbar.component.css']
 })
 
-export class CourseNavbarComponent implements OnInit{
+export class CourseNavbarComponent implements OnInit {
   course: Course | undefined;
   chapters: Chapter[] = [];
 
   constructor(
-      private coursesService :CoursesService,
-      private route :ActivatedRoute
+      private coursesService: CoursesService,
+      private route: ActivatedRoute
   ) {
   }
 
