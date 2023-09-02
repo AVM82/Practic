@@ -10,6 +10,7 @@ import com.group.practic.security.user.CustomOidcUserService;
 import com.group.practic.service.PersonService;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,9 @@ public class SecurityConfig {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Value("${logout.successRedirectUris}")
+    private String logoutRedirectUri;
+
     private CustomOidcUserService getCustomOidcUserService() {
         return applicationContext.getBean(CustomOidcUserService.class);
     }
@@ -74,7 +78,8 @@ public class SecurityConfig {
                 .cors(CorsConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS))
+                                SessionCreationPolicy.STATELESS)
+                )
                 .formLogin(FormLoginConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 .exceptionHandling(
@@ -123,7 +128,11 @@ public class SecurityConfig {
                 .addFilterBefore(
                         tokenAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class
-                );
+                )
+                .logout(httpSecurityLogoutConfigurer ->
+                        httpSecurityLogoutConfigurer.logoutSuccessUrl(
+                                logoutRedirectUri
+                        ));
 
         return http.build();
     }

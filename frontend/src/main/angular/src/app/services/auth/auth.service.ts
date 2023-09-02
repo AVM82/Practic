@@ -22,24 +22,25 @@ export class AuthService {
 }
 
 export class User {
-  static readonly ANONYMOUS = new User('', '', []);
+  static readonly ANONYMOUS = new User([]);
 
   constructor(
-      readonly subject: string,
-      readonly issuer: string,
-      readonly roles: string[]
+      readonly roles: UserRole[]
   ) {}
 
   get isAuthenticated(): boolean {
-    return !!this.subject;
+    return this.roles.length != 0;
   }
 
   hasAnyRole(...roles: string[]): boolean {
-    for (let r in roles) {
-      if (this.roles.includes(r)) {
-        return true;
-      }
-    }
-    return false;
+    return roles.some(roleName => this.roles.some(userRole => userRole.name === roleName));
+  }
+}
+
+export class UserRole {
+  constructor(
+      readonly id: number,
+      readonly name: string
+  ) {
   }
 }

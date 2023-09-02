@@ -20,7 +20,11 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     let authReq = request;
     const loginPath = '/login';
+
     const token = this.token.getToken();
+
+    console.log("path name = " + window.location.pathname);
+
     if (token != null) {
       authReq = request.clone({ headers: request.headers.set(TOKEN_HEADER_KEY, 'Bearer ' + token) });
     }
@@ -28,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
           next: () => {},
           error: (err: any) => {
             if (err instanceof HttpErrorResponse) {
-              const statusCode = err.status as number;
+              const statusCode = err.status;
 
               if (statusCode !== 401 && statusCode !== 403  || window.location.pathname === loginPath) {
                 return;
