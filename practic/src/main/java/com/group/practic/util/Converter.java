@@ -9,6 +9,7 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -54,8 +55,8 @@ public interface Converter {
     }
 
     static List<StudentReportDto> convert(List<StudentReportEntity> studentReportEntityList) {
-        if (studentReportEntityList == null) {
-            return null;
+        if (studentReportEntityList.isEmpty()) {
+            return Collections.emptyList();
         }
         List<StudentReportDto> result = new ArrayList<>();
         for (StudentReportEntity reportEntity : studentReportEntityList) {
@@ -66,6 +67,9 @@ public interface Converter {
 
     static List<List<StudentReportDto>> convertListOfLists(
             List<List<StudentReportEntity>> studentReportEntityList) {
+        if (studentReportEntityList.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<List<StudentReportDto>> result = new ArrayList<>();
         for (List<StudentReportEntity> reportEntityList : studentReportEntityList) {
             result.add(convert(reportEntityList));
