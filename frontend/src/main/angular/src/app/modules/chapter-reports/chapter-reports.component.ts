@@ -5,7 +5,6 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
 import {StudentReport} from "../../models/report/studentReport";
 
-
 @Component({
   selector: 'chapter-reports',
   standalone: true,
@@ -17,6 +16,9 @@ export class ChapterReportsComponent  {
   @Input() shouldShowHeader: boolean = true;
   @Input() chapterNumber!: number
   @Input() studentReports!: StudentReport[];
-
+  limitReports(){
+    return this.studentReports.slice(0,4);
+  }
 
 }
+

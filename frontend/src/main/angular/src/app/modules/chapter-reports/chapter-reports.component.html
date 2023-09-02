@@ -9,7 +9,7 @@ gap: 10px; display: inline-flex">
 
   </div>
   <div style="display: flex;">
-    <report-card *ngFor="let report of  studentReports" [reportTopic]="report.title"
+    <report-card *ngFor="let report of  limitReports()" [reportTopic]="report.title"
                  [studentName]="report.personName"
     [dateTimeValue]="report.dateTime"></report-card>
   </div>
