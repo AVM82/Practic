@@ -14,6 +14,7 @@ import {ApiCacheInterceptor} from "./app/services/api-cache.interceptor";
 import {MatPaginator} from "@angular/material/paginator";
 import {AuthService} from "./app/services/auth/auth.service";
 import {AuthInterceptor} from "./app/services/auth.interceptor";
+import {environment} from "./enviroments/enviroment";
 import {ReportServiceService} from "./app/services/report/report-service.service";
 
 
@@ -24,7 +25,8 @@ bootstrapApplication(AppComponent, {
         provideAnimations(),
         provideHttpClient(withInterceptorsFromDi()),
       {provide: HTTP_INTERCEPTORS, useClass: ApiCacheInterceptor, multi: true},
-      {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+      {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+      { provide: 'environment', useValue: environment }
     ]
 })
   .catch(err => console.error(err));

@@ -12,10 +12,19 @@
 проксі сервер для запитів на бекенд за адресою http://localhost:5000/,
 для повноцінної роботи треба запустити Spring Application).
 
-Налаштування авторизації під час розробки:
-Фронтенд: в файлі app-constant.ts треба вказати REDIRECT_URI localhost:4200 (порт фронтенту)
-Бекенд: в application.properties треба для параметра app.oauth2.authorizedRedirectUris вказати
-localhost:4200
+Налаштування середовища для правильної роботи авторизації:
+environment.ts:          змінні оточення під час розробки (сервер фронтенду на localhost:4200).
+                        В змінні оточення для IDE треба внести наступні параметри:
+                        LOGOUT_REDIRECT_URI=http://localhost:4200/login?logout=true
+                        REDIRECT_URI=http://localhost:4200/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
+
+environment.local.ts:    змінні оточення для перевірки локально зібраного проекту.
+                     В pom.xml фронтенду доданий профіль local-build, який треба активувати для локальної
+                     перевірки зібраного проекту. Зібраний проект запускати в ОС, не з IDE.
+                     В зміні оточення операційної системи треба внести наступні параметри:
+                     LOGOUT_REDIRECT_URI=http://localhost:5000/login?logout=true
+                     REDIRECT_URI=http://localhost:5000/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
+environment.prod.ts:  змінні оточення для production.
 
 Збірка проекту:
     mvn clean install
