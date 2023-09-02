@@ -1,0 +1,23 @@
+<button mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Menu"
+        class="green-button"
+>
+    <mat-icon>menu</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+   <button mat-menu-item (click)="onMenuItemClick('person')">
+        <mat-icon>person</mat-icon>
+        <span>Профіль</span>
+    </button>
+    <button mat-menu-item (click)="onMenuItemClick('admin')"
+    *ngIf="isAdmin">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <span>Адмін панель</span>
+    </button>
+    <button mat-menu-item (click)="onMenuItemClick('logout')">
+        <mat-icon>logout</mat-icon>
+        <span>Вийти</span>
+    </button>
+</mat-menu>
+

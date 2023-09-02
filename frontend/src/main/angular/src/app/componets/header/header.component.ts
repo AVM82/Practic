@@ -7,13 +7,14 @@ import {User} from "../../services/auth/auth.service";
 import {NgIf} from "@angular/common";
 import {environment} from "../../../enviroments/enviroment";
 import {RouterLink} from "@angular/router";
+import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.css'],
     standalone: true,
-  imports: [MatToolbarModule, MatIconModule, MatButtonModule, NgIf, RouterLink]
+  imports: [MatToolbarModule, MatIconModule, MatButtonModule, NgIf, RouterLink, MenuBtnComponent]
 })
 
 export class HeaderComponent implements OnInit{
@@ -40,4 +41,16 @@ export class HeaderComponent implements OnInit{
     window.location.href = logoutUrl;
   }
 
+  toAdminPage() {
+    window.location.href = '/admin'
+  }
+
+  onMenuButtonClick(item: string) {
+    if(item === 'logout') {
+      this.logout();
+    }
+    if(item === 'admin') {
+      this.toAdminPage();
+    }
+  }
 }

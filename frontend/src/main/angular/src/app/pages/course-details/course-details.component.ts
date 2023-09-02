@@ -23,6 +23,7 @@ export class CourseDetailsComponent implements OnInit {
   course: Course | undefined;
   chapters: Chapter[] = [];
   reports: StudentReport[][]=[];
+  slug: string='';
 
   constructor(
       private coursesService: CoursesService,
@@ -35,7 +36,7 @@ export class CourseDetailsComponent implements OnInit {
       const courseShortName = params.get('slug')
 
       if(courseShortName) {
-
+        this.slug = courseShortName;
         this.coursesService.getCourse(courseShortName).subscribe(course =>
         {
           this.course = course;
