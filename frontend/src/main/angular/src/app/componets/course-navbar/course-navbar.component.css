@@ -59,6 +59,12 @@
 }
 .progress:hover:not(.icon):before,
 .progress:hover:not(.icon):after {
-    background: #3cff9e;
+    background: #27AE60;
     cursor: pointer;
+}
+
+.progress.active:before,
+.progress.active:after {
+    background: #27AE60;
+    cursor: none;
 }
