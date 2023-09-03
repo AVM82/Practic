@@ -132,7 +132,7 @@ public class SecurityConfig {
                 .logout(httpSecurityLogoutConfigurer ->
                         httpSecurityLogoutConfigurer.logoutSuccessUrl(
                                 logoutRedirectUri
-                        ));
+                        ).clearAuthentication(true));
 
         return http.build();
     }

@@ -6,14 +6,9 @@
         </a>
     </div>
     <span class="spacer"></span>
-    <a mat-button
-       class="admin-button"
-       routerLink="/admin"
-       *ngIf="isAdmin"
-    >Admin</a>
-    <a mat-button
-       class="logout-button"
-        (click)="logout()"
-       *ngIf="isAuthenticated"
-    >Logout</a>
+    <app-menu-btn
+            (menuItemSelected)="onMenuButtonClick($event)"
+            [isAdmin]="isAdmin"
+            *ngIf="isAuthenticated"
+    ></app-menu-btn>
 </mat-toolbar>

@@ -23,8 +23,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
     const token = this.token.getToken();
 
-    console.log("path name = " + window.location.pathname);
-
     if (token != null) {
       authReq = request.clone({ headers: request.headers.set(TOKEN_HEADER_KEY, 'Bearer ' + token) });
     }
