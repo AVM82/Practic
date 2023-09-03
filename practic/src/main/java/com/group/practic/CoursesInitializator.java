@@ -242,16 +242,17 @@ public class CoursesInitializator {
                 break;
             }
         }
-        int n;
         keyStarts = String.valueOf(chapter.getNumber()) + PART_SEPARATOR;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
             if (key.startsWith(keyStarts) && countDots(key) == 2 && key.endsWith(".")
-                    && getChapterNumber(2, key) != 0
-                    && !partNumberExists(n = getChapterPartNumber(key), result)) {
-                result.add(
-                        getChapterPart(chapter, n, prop, key.substring(0, key.indexOf(DOT) + 1)));
-                break;
+                    && getChapterNumber(2, key) != 0) {
+                int n = getChapterPartNumber(key);
+                if (!partNumberExists(n, result)) {
+                    result.add(getChapterPart(chapter, n, prop,
+                            key.substring(0, key.indexOf(DOT) + 1)));
+                    break;
+                }
             }
         }
         return result;

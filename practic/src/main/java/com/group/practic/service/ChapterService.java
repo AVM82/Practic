@@ -54,7 +54,8 @@ public class ChapterService {
                 break;
             }
         }
-        for (int n = number; exists;) {
+        int n = number;
+        while (exists) {
             exists = false;
             for (ChapterEntity chapter : chapterList) {
                 if (chapter.getNumber() == n) {

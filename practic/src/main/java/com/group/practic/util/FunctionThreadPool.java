@@ -36,7 +36,7 @@ public class FunctionThreadPool<A, R> {
             try {
                 Thread.sleep(sleepTimeMs);
             } catch (InterruptedException e) {
-                break;
+                Thread.currentThread().interrupt();
             }
             es.shutdown();
         }
@@ -54,7 +54,6 @@ public class FunctionThreadPool<A, R> {
     private Collection<R> getResults(Collection<FunctionThread<A, R>> pool) {
         Collection<R> results = new ArrayList<>(pool.size());
         pool.forEach(t -> results.add(t.get()));
-        System.out.println(results);
         return results;
     }
 
