@@ -8,16 +8,18 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class SkillService {
 
     final SkillRepository skillRepository;
 
-    final ChapterService chapterService;
+    final ChapterPartService chapterPartService;
 
-    public SkillService(SkillRepository skillRepository, ChapterService chapterService) {
+
+    public SkillService(SkillRepository skillRepository, ChapterPartService chapterPartService) {
         this.skillRepository = skillRepository;
-        this.chapterService = chapterService;
+        this.chapterPartService = chapterPartService;
     }
 
 
@@ -25,9 +27,11 @@ public class SkillService {
         return skillRepository.findAll();
     }
 
+
     public Optional<SkillEntity> findByName(String name) {
         return skillRepository.findByName(name);
     }
+
 
     public Optional<SkillEntity> save(SkillDto skillDto) {
         Optional<SkillEntity> skillEntityOptional = skillRepository.findByName(skillDto.getName());
@@ -37,13 +41,16 @@ public class SkillService {
         return Optional.empty();
     }
 
+
     public Optional<SkillEntity> delete(String name) {
         return skillRepository.deleteByName(name);
     }
 
+
     public Optional<SkillEntity> addSkillToChapter(String name, long subChapterId) {
         Optional<SkillEntity> skillEntityOptional = skillRepository.findByName(name);
-        Optional<SubChapterEntity> subChapterEntityOptional = chapterService.getSub(subChapterId);
+        Optional<SubChapterEntity> subChapterEntityOptional = chapterPartService
+                .getSub(subChapterId);
         if (skillEntityOptional.isPresent() && subChapterEntityOptional.isPresent()) {
             SkillEntity skillEntity = skillEntityOptional.get();
             SubChapterEntity subChapter = subChapterEntityOptional.get();
@@ -54,7 +61,9 @@ public class SkillService {
         return Optional.empty();
     }
 
+
     public Optional<SkillEntity> findById(long id) {
         return skillRepository.findById(id);
     }
+
 }

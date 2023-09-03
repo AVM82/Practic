@@ -1,15 +1,20 @@
 package com.group.practic.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -20,7 +25,7 @@ public class SubSubChapterEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonIgnore
     SubChapterEntity subChapter;
 
@@ -30,8 +35,8 @@ public class SubSubChapterEntity {
     @Column(length = 1024)
     String name;
 
-    @Column(length = 1024)
-    String refs;
+    @ManyToMany(fetch = FetchType.EAGER, cascade =  CascadeType.MERGE)
+    Set<ReferenceTitleEntity> refs = new HashSet<>();
 
 
     public SubSubChapterEntity() {
@@ -39,7 +44,7 @@ public class SubSubChapterEntity {
 
 
     public SubSubChapterEntity(long id, SubChapterEntity subChapter, int number, String name,
-            String refs) {
+            Set<ReferenceTitleEntity> refs) {
         this.id = id;
         this.subChapter = subChapter;
         this.number = number;
@@ -48,12 +53,29 @@ public class SubSubChapterEntity {
     }
 
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, number, refs);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        SubSubChapterEntity other = (SubSubChapterEntity) obj;
+        return this == other || (Objects.equals(name, other.name) && number == other.number
+                && Objects.equals(refs, other.refs));
+    }
+
+
     public long getId() {
         return id;
     }
 
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -88,12 +110,12 @@ public class SubSubChapterEntity {
     }
 
 
-    public String getRefs() {
+    public Set<ReferenceTitleEntity> getRefs() {
         return refs;
     }
 
 
-    public void setRefs(String refs) {
+    public void setRefs(Set<ReferenceTitleEntity> refs) {
         this.refs = refs;
     }
 

@@ -20,7 +20,7 @@ public class StudentReportEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    int id;
+    long id;
 
     @ManyToOne
     ChapterEntity chapter;
@@ -51,19 +51,19 @@ public class StudentReportEntity {
     }
 
 
-    public StudentReportEntity(int id, ChapterEntity chapter, PersonEntity student,
+    public StudentReportEntity(long id, ChapterEntity chapter, PersonEntity student,
             @Future LocalDateTime dateTime, @NotBlank String title) {
         this(chapter, student, dateTime, title);
         this.id = id;
     }
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

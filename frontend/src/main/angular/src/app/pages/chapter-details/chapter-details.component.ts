@@ -6,17 +6,19 @@ import {ChaptersService} from "../../services/chapters/chapters.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
-import {SplitPipe} from "../../pipes/split.pipe";
+import {CdkAccordionModule} from '@angular/cdk/accordion';
 
 @Component({
   selector: 'app-chapter-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, SplitPipe],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, 
+            CdkAccordionModule],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
 export class ChapterDetailsComponent implements OnInit {
     chapter?: Chapter ;
+    showPartNumber: boolean = false;
 
   constructor(
       private chaptersService: ChaptersService,
@@ -32,6 +34,7 @@ export class ChapterDetailsComponent implements OnInit {
           this.chaptersService.getChapter(chapterId).subscribe(chapter =>
         {
           this.chapter = chapter;
+          this.showPartNumber = chapter.parts.length > 1;
         });
       }
     })

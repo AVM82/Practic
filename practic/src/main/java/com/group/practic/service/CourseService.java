@@ -1,12 +1,16 @@
 package com.group.practic.service;
 
 import com.group.practic.dto.CourseDto;
+import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.LevelEntity;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.util.Converter;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +18,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class CourseService {
 
-    @Autowired
-    private CourseRepository courseRepository;
+    CourseRepository courseRepository;
+
+    ChapterService chapterService;
+
+    LevelService levelService;
+
 
     @Autowired
-    private LevelService levelService;
+    public CourseService(CourseRepository courseRepository, ChapterService chapterService,
+            LevelService levelService) {
+        super();
+        this.courseRepository = courseRepository;
+        this.chapterService = chapterService;
+        this.levelService = levelService;
+    }
 
 
     public List<CourseEntity> get() {
@@ -38,14 +52,20 @@ public class CourseService {
 
     public List<ChapterEntity> getChapters(long id) {
         Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? List.of() : course.get().getChapters();
+        return course.isEmpty() ? List.of() : chapterService.getAll(course.get());
+    }
+
+
+    public List<LevelEntity> getLevels(@Min(1) long id) {
+        Optional<CourseEntity> course = courseRepository.findById(id);
+        return course.isEmpty() ? List.of() : levelService.getAll(course.get());
     }
 
 
     public Optional<ChapterEntity> getChapterByNumber(String slug, int number) {
         Optional<CourseEntity> course = get(slug);
         return course.isEmpty() ? Optional.empty()
-                : ChapterService.getChapterByNumber(course.get().getChapters(), number);
+                : chapterService.getChapterByNumber(course.get(), number);
     }
 
 
@@ -62,10 +82,14 @@ public class CourseService {
     }
 
 
-    public Optional<ChapterEntity> getAdditional(long id) {
-        Optional<CourseEntity> course = courseRepository.findById(id);
-        return course.isEmpty() ? Optional.empty()
-                : Optional.ofNullable(course.get().getAdditionalMaterials());
+    public Set<AdditionalMaterialsEntity> getAdditional(String slug) {
+        Optional<CourseEntity> course = get(slug);
+        return course.isEmpty() ? null : course.get().getAdditionalMaterials();
+    }
+
+
+    public Optional<CourseEntity> getByShortName(String shortName) {
+        return courseRepository.findByShortName(shortName);
     }
 
 
@@ -74,7 +98,7 @@ public class CourseService {
     }
 
 
-    public Optional<CourseEntity> create(CourseEntity course) {
+    public Optional<CourseEntity> save(CourseEntity course) {
         return Optional.ofNullable(courseRepository.save(course));
     }
 
@@ -88,16 +112,6 @@ public class CourseService {
             return Optional.of(courseRepository.save(courseEntity));
         }
         return Optional.empty();
-    }
-
-
-    public Optional<CourseEntity> getByShortName(String shortName) {
-        return Optional.ofNullable(courseRepository.findByShortName(shortName));
-    }
-
-
-    public Optional<CourseEntity> getBySlug(String slug) {
-        return courseRepository.findBySlug(slug);
     }
 
 }
