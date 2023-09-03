@@ -3,7 +3,7 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 
 import com.group.practic.entity.SubSubChapterEntity;
-import com.group.practic.service.ChapterService;
+import com.group.practic.service.ChapterPartService;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/subsubchapters")
 public class SubSubChapterController {
 
+    ChapterPartService chapterPartService;
+
+
     @Autowired
-    ChapterService chapterService;
+    public SubSubChapterController(ChapterPartService chapterPartService) {
+        super();
+        this.chapterPartService = chapterPartService;
+    }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<SubSubChapterEntity> get(@Min(1) @PathVariable long id) {
-        return getResponse(chapterService.getSubSub(id));
+        return getResponse(chapterPartService.getSubSub(id));
     }
 
 }

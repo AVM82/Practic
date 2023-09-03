@@ -28,7 +28,7 @@ public class StudentReportService {
 
 
     public List<List<StudentReportEntity>> getAllStudentsActualReports(String slug) {
-        Optional<CourseEntity> course = courseService.getBySlug(slug);
+        Optional<CourseEntity> course = courseService.get(slug);
         List<List<StudentReportEntity>> result = null;
         if (course.isPresent()) {
             result = new ArrayList<>();

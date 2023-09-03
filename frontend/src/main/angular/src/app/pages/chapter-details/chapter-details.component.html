@@ -1,20 +1,86 @@
 <app-course-navbar></app-course-navbar>
-<div class="chapter-details-container">
-	<h2>Розділ {{ chapter?.number }}: {{chapter?.name}}</h2>
-    <div *ngFor="let subchapter of chapter?.subChapters" class="row">
-        <div class="column">{{chapter?.number}}.{{subchapter.number}}. </div>
-        <div class="column">{{subchapter.name}}
-           	<div *ngIf="subchapter.refs">
-           		<a href={{subchapter.refs}} target="_blank" rel="noopener">{{subchapter.refs}}</a>
-           	</div>
-            <div *ngFor="let subsubchapter of subchapter.subSubChapters" class="row">
-            	<div class="column">{{chapter?.number}}.{{subchapter.number}}.{{subsubchapter.number}}. </div>
-            	<div class="column">{{subsubchapter.name}}
-            		<div *ngIf="subsubchapter.refs">
-            			<a href={{subsubchapter.refs}} target="_blank" rel="noopener">{{subsubchapter.refs}}</a>
-            		</div>
-            	</div>
-            </div>
-         </div>
-    </div>
+<div class="chapter-header">
+	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
+</div>
+
+<div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">
+	<div class="chapter-part">
+		{{ chapter?.number }}. Теоретичний блок {{showPartNumber? '№'+ (indexPart + 1): ''}}
+	</div>
+
+	<cdk-accordion class="chapter-details-container" [multi]="true">
+		<cdk-accordion-item *ngFor="let subchapter of chapterPart.subChapters; let index = index" 
+							#accordionItem="cdkAccordionItem"
+							class="accordion-item"
+							role="button"
+							tabindex="0"
+							[attr.id]="'accordion-header-' + index"
+							
+							[attr.aria-expanded]="accordionItem.expanded"
+							[attr.aria-controls]="'accordion-body-' + index">
+			<div (click)="accordionItem.toggle()" class="subchapter-header">
+				{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}
+				<span *ngIf=subchapter.subSubChapters.length||subchapter.refs>
+					{{accordionItem.expanded ? '-' : '+'}}
+				</span>
+			</div>
+			<div *ngIf=accordionItem.expanded
+				role="region" 
+				[style.display]="accordionItem.expanded ? '' : 'none'">
+				<hr class="horizontal-line">
+				<div *ngIf=subchapter.refs>
+					<div *ngFor="let ref of subchapter.refs">
+						<a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+					</div>
+				</div >
+				<div *ngFor="let subsubchapter of subchapter.subSubChapters" class="row">
+					<div class="column">{{chapter?.number}}.{{subchapter.number}}.{{subsubchapter.number}}. </div>
+					<div class="column">{{subsubchapter.name}}
+						<div *ngIf="subsubchapter.refs">
+							<div *ngFor="let ref of subsubchapter.refs">
+								<a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</cdk-accordion-item>
+	</cdk-accordion>
+
+	<div *ngIf="chapterPart.praxisPurpose">
+		<div class="chapter-part" >
+			{{ chapter?.number }}. Практична робота {{showPartNumber? '№'+ (indexPart + 1): ''}}<br />
+			Мета: {{chapterPart.praxisPurpose}}
+		</div>
+		<div *ngIf="chapterPart.praxis?.length" class="chapter-details-container-ext">
+			<div *ngFor="let praxis of chapterPart.praxis" class="row">
+				<div class="column">{{praxis.number}}. </div>
+				<div class="column">{{praxis.name}}
+					<div *ngIf="praxis.refs">
+						<div *ngFor="let ref of praxis.refs">
+							<a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="chapterPart.additionals?.length">
+		<div class="chapter-part">
+			{{ chapter?.number }}. Додатково {{showPartNumber? '№'+ (indexPart + 1) : ''}}
+		</div>
+		<div *ngIf="chapterPart.additionals?.length" class="chapter-details-container-ext">
+			<div *ngFor="let add of chapterPart.additionals" class="row">
+				<div class="column">{{add.number}}. </div>
+				<div class="column">{{add.name}}
+					<div *ngIf="add.refs">
+						<div *ngFor="let ref of add.refs">
+							<a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

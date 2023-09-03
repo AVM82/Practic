@@ -8,13 +8,15 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -25,9 +27,9 @@ public class SubChapterEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonIgnore
-    ChapterEntity chapter;
+    ChapterPartEntity chapterPart;
 
     int number;
 
@@ -35,31 +37,49 @@ public class SubChapterEntity {
     @Column(length = 1024)
     String name;
 
-    @Column(length = 1024)
-    String refs;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    Set<ReferenceTitleEntity> refs = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subChapter", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("number")
-    List<SubSubChapterEntity> subSubChapters = new ArrayList<>();
+    Set<SubSubChapterEntity> subSubChapters = new HashSet<>();
 
 
     public SubChapterEntity() {
     }
 
 
-    public SubChapterEntity(ChapterEntity chapter, int number, String name) {
-        this.chapter = chapter;
-        this.number = number == 0 ? chapter.getSubChapterSucceedingNumber() : number;
+    public SubChapterEntity(ChapterPartEntity chapterPart, int number, String name) {
+        this.chapterPart = chapterPart;
+        this.number = number;
         this.name = name;
     }
 
 
-    public SubChapterEntity(int id, ChapterEntity chapter, int number, String name, String refs) {
+    public SubChapterEntity(long id, ChapterPartEntity chapterPart, int number, String name,
+            Set<ReferenceTitleEntity> refs) {
         this.id = id;
-        this.chapter = chapter;
+        this.chapterPart = chapterPart;
         this.number = number;
         this.name = name;
         this.refs = refs;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, number, refs, subSubChapters);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        SubChapterEntity other = (SubChapterEntity) obj;
+        return this == other || (Objects.equals(name, other.name) && number == other.number
+                && Objects.equals(refs, other.refs));
     }
 
 
@@ -68,18 +88,18 @@ public class SubChapterEntity {
     }
 
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
 
-    public ChapterEntity getChapter() {
-        return chapter;
+    public ChapterPartEntity getChapterPart() {
+        return chapterPart;
     }
 
 
-    public void setChapter(ChapterEntity chapter) {
-        this.chapter = chapter;
+    public void setChapterPart(ChapterPartEntity chapterPart) {
+        this.chapterPart = chapterPart;
     }
 
 
@@ -103,22 +123,22 @@ public class SubChapterEntity {
     }
 
 
-    public String getRefs() {
+    public Set<ReferenceTitleEntity> getRefs() {
         return refs;
     }
 
 
-    public void setRefs(String refs) {
+    public void setRefs(Set<ReferenceTitleEntity> refs) {
         this.refs = refs;
     }
 
 
-    public List<SubSubChapterEntity> getSubSubChapters() {
+    public Set<SubSubChapterEntity> getSubSubChapters() {
         return subSubChapters;
     }
 
 
-    public void setSubSubChapters(List<SubSubChapterEntity> subSubChapters) {
+    public void setSubSubChapters(Set<SubSubChapterEntity> subSubChapters) {
         this.subSubChapters = subSubChapters;
     }
 
