@@ -1,9 +1,11 @@
 package com.group.practic.util;
 
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
+import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentPracticeEntity;
@@ -36,6 +38,14 @@ public interface Converter {
         return modelMapper().map(courseDto, CourseEntity.class);
     }
 
+    
+    static ChapterDto convert(ChapterEntity chapterEntity) {
+        return modelMapper().map(chapterEntity, ChapterDto.class);
+    }
+    
+    static ChapterEntity convert(ChapterDto chapterDto) {
+        return modelMapper().map(chapterDto, ChapterEntity.class);
+    }
 
     static PersonDto convert(PersonEntity personEntity) {
         return modelMapper().map(personEntity, PersonDto.class);

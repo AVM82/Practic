@@ -1,3 +1,29 @@
 .container {
-    height: 100vh;
+    height: 95%;
+}
+
+.login-container {
+    align-items: center;
+    justify-content: space-evenly;
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+    background-color: #000000;
+    color: #FFFFFF;
+    font-size: 12px;
+}
+
+.login-sub-container {
+    flex-direction: column;
+}
+
+.login-background-image {
+    width: 640px;
+    height: 600px;
+    object-fit: contain;
+}
+
+.linkedin-image {
+    width: 534px;
+    height: 106px;
 }

@@ -7,36 +7,36 @@ author=Пісковий Андрій Віталійович https://www.linkedin
 
 type=backend
 
-purpose=Програма-мінімум на позицію backend Junior Java Developer.\n\
-Як продовження курсу CS від https://programming.org.ua/ua\n\
-мотивація 2021:  підготувати/обрати джава-джуна у команду (done)\n\
+purpose=Програма-мінімум на позицію backend Junior Java Developer. \
+Як продовження курсу CS від https://programming.org.ua/ua \
+мотивація 2021:  підготувати/обрати джава-джуна у команду (done) \
 мотивація 2022/23:  підготувати за рік 9+ нових програмістів із гідною з/п - це просто більше ніж донат
 
-description=Краще коли починаєте в понеділок і ідете зі швидкістю розділ за тиждень/два.\n\
-Дуже бажано починати і йти одночасно групою 4+ людей, а ще краще 8 - буде по двоє на тему.\n\
-(є сенс зачекати, щоб розподіляти теми наступного тижня по доповідачам-одногрупникам).\n\n\
-Всі питання задавайте в діскорд-чатах відповідного рівня level#1(2,3,4),\n\
-продивляйтесь історію чатів, там щось уже є. Користуйтесь голосовими чатами в будь-який час.\n\
-Якщо знаходите цікаві лінки - додавайте в цей документ через коментарі.\n\n\
-Кожну неділю демо зробленого за тиждень, 20:00-22:00.\n\
-(в інші дні можу прийти у цей же час, а можу і не з’явитись)\n\
-Use __only__ JDK 11 please.\n\
-Без англійської хоча б А2 рівня - і не починайте, прокачайте English, тоді приходьте.\n\
-Книги https://dou.ua/lenta/articles/dou-books-enterprise-java/\n\
-https://dou.ua/lenta/articles/top-books-2017/#java\n\
-https://nashformat.ua/products/chystyj-kod-stvorennya-analiz-refaktoryng-916337\n\
-https://www.youtube.com/watch?v=stIwXoRaYis\n\
-Порада: гугліть з обмеженням в один рік і не російською.\n\
-Курси - теж проходьте, паралельно з цим\n\
-https://www.youtube.com/channel/UCW1IBhEQlart1KAImKFMmdQ\n\
-https://training.epam.ua/Training/Details/3501?lang=ua\n\
-– ще: – https://www.youtube.com/c/BobocodeUA\n\
-https://www.youtube.com/@java-tkach/playlists\n\
-https://robotdreams.cc/uk/course/477-t-sql-dlya-analitiki\n\
-https://www.javatpoint.com/java-tutorial\n\
-+ поради, багато: https://dev.ua/news/java-manual-1667244523\n\n\
-І ще - цей курс умовно безкоштовний - заплатіть будь ласка своїм часом своїм наступникам ;)\n\
-Наостанок порада: тут читайте всі всі всі букви, не пропускаючи. Успіхів!\n
+description=Краще коли починаєте в понеділок і ідете зі швидкістю розділ за тиждень/два. \
+Дуже бажано починати і йти одночасно групою 4+ людей, а ще краще 8 - буде по двоє на тему. \
+(є сенс зачекати, щоб розподіляти теми наступного тижня по доповідачам-одногрупникам).  \
+Всі питання задавайте в діскорд-чатах відповідного рівня level#1(2,3,4), \
+продивляйтесь історію чатів, там щось уже є. Користуйтесь голосовими чатами в будь-який час. \
+Якщо знаходите цікаві лінки - додавайте в цей документ через коментарі.  \
+Кожну неділю демо зробленого за тиждень, 20:00-22:00. \
+(в інші дні можу прийти у цей же час, а можу і не з’явитись) \
+Use __only__ JDK 11 please. \
+Без англійської хоча б А2 рівня - і не починайте, прокачайте English, тоді приходьте. \
+Книги https://dou.ua/lenta/articles/dou-books-enterprise-java/ \
+https://dou.ua/lenta/articles/top-books-2017/#java \
+https://nashformat.ua/products/chystyj-kod-stvorennya-analiz-refaktoryng-916337 \
+https://www.youtube.com/watch?v=stIwXoRaYis \
+Порада: гугліть з обмеженням в один рік і не російською. \
+Курси - теж проходьте, паралельно з цим \
+https://www.youtube.com/channel/UCW1IBhEQlart1KAImKFMmdQ \
+https://training.epam.ua/Training/Details/3501?lang=ua \
+– ще: – https://www.youtube.com/c/BobocodeUA \
+https://www.youtube.com/@java-tkach/playlists \
+https://robotdreams.cc/uk/course/477-t-sql-dlya-analitiki \
+https://www.javatpoint.com/java-tutorial \
++ поради, багато: https://dev.ua/news/java-manual-1667244523  \
+І ще - цей курс умовно безкоштовний - заплатіть будь ласка своїм часом своїм наступникам ;) \
+Наостанок порада: тут читайте всі всі всі букви, не пропускаючи. Успіхів! 
 
 level1=1,2
 level2=3
@@ -47,25 +47,25 @@ level4=6,7,8
 1.1.=Збірка java-проєктів
 1.1.1.=Компіляція "HelloWorld" вручну в консолі, запуск вручну і в IDE<>https://www.youtube.com/watch?v=FqcJt4_tKEw
 1.1.2.=Maven із консолі, без IDE: створити новий мавен-проект із відповідного архетипу (+ знати як додати залежності, які фази, goals, плагіни, структура репозитаріїв, де шукать публічні репо)<>\
-https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html\n\ 
-https://www.vogella.com/tutorials/ApacheMaven/article.html\n\
-https://www.baeldung.com/maven-goals-phases\n\
-https://www.baeldung.com/ant-maven-gradle\n\
-https://www.jrebel.com/resources/maven-cheat-sheet\n\
+https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html \
+https://www.vogella.com/tutorials/ApacheMaven/article.html \
+https://www.baeldung.com/maven-goals-phases \
+https://www.baeldung.com/ant-maven-gradle \
+https://www.jrebel.com/resources/maven-cheat-sheet \
 https://www.jrebel.com/blog/what-is-maven
-1.1.3.=Gradle (гляньте хоча б заради інкрементальних збірок мультимодульних проєктів)<>\https://docs.gradle.org/current/userguide/performance.html
+1.1.3.=Gradle (гляньте хоча б заради інкрементальних збірок мультимодульних проєктів)<>https://docs.gradle.org/current/userguide/performance.html
 1.1.4.=Версіонування (семантична схема версій “Мажор.Мінор.Патч”)<>https://semver.org/lang/uk/
 1.1.5.=В чому профіт мавенa для девелопера та девопса?
 1.2.=Системи логування, інтерфейс Slf4J - HelloWorld через логгер, не print.<>\
-https://www.baeldung.com/java-logging-rolling-file-appenders\n\
-https://dou.ua/lenta/columns/about-logging\n\
+https://www.baeldung.com/java-logging-rolling-file-appenders \
+https://dou.ua/lenta/columns/about-logging \
 https://urvanov.ru/2019/07/08/%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81-slf4j-%D0%B8-logback/
 1.2.1.=Налаштувати Logback: зберегти лог за кожний день в окремому файлі
 1.2.2.=Log4j2: зберігати логи в окремих файлах з макс. розміром в 100 кб
 1.2.3.=Плюси-мінуси-підводні камені цих та інших. Чим не влаштував Log4j, що пришлось зробити Log4j2?
 1.3.=Файли properties
 1.3.1.=Використання внутрішніх, що йдуть у складі jar (особливості для UTF-8)<>\
-https://www.baeldung.com/java-properties\n\
+https://www.baeldung.com/java-properties \
 https://brodowsky.it-sky.net/2018/02/02/java-properties-files-and-utf-8/
 1.3.2.=Використання зовнішніх
 1.3.3.=Мавен-плагіни, три основні, для зборок із додатковими файлами (із props включно)<>\
@@ -73,53 +73,271 @@ https://medium.com/@randilfernando/when-to-use-maven-jar-maven-assembly-or-maven
 1.3.4.=У чому користь зовнішніх налаштувань, якщо девелопер все знає?
 1.4.=Різновиди Exceptions
 1.4.1.=Checked vs Unchecked: означення<>\
-https://docs.oracle.com/javase/tutorial/essential/exceptions/runtime.html\n\
+https://docs.oracle.com/javase/tutorial/essential/exceptions/runtime.html \
 https://www.baeldung.com/java-checked-unchecked-exceptions
 1.4.2.=Власні ексепшени - чи однакові для опенсорс бібліотеки і для веб-сервісу
 1.5.=Основні види компоновки java-аплікацій з 1.3.3. (неділя, висновки тижня)<>\
 https://blog.frankel.ch/creating-self-contained-executable-jars/
 1.5.1.=Jar лише із Вашим кодом, бібліотеки окремо
-1.5.2.=Fat jar (із бібліотеками включно)\n\
-Деплой(розгортання) як все-таки краще?
-1.6.=Практичне завдання #1 (складність: 2 s.p.) Мета: передача іншому для запуску.
-
+1.5.2.=Fat jar (із бібліотеками включно)
+1.5.3.=Деплой(розгортання) як все-таки краще?
+1.prac.=Передача іншому для запуску.
+1.prac.1.=Зібрати мавеном jar і запустити саме як jar програму, яка надрукує json такого виду
+{“message”: “Привіт <текст із зовнішнього проперті-файлу, властивість username=Ваше ім'я> !”}. Використайте бібліотеку jackson-databind<>\
+https://www.baeldung.com/jackson \
+https://dzone.com/articles/jackson-property-custom-naming-strategy
+1.prac.2.=Додайте системний параметр, який переключає вивід у xml/json формат.
+1.prac.3.=Підключіть логгер LogBack і залогуйте хід виконання різними рівнями логування.
+1.prac.4.=Зберіть і запустіть на іншому комп’ютері, інший ОС (можна у когось із команди, можна на AWS) як jar (maven-assembly-plugin) і як fat-jar (maven-shade-plugin) (Використайте два профіля maven для білда якимось із двох плагінів).<>\
+https://aws.amazon.com/ru/ec2/getting-started/
+1.add.=Додатково (з розділу 6)
+1.add.1.=Версії Java https://en.wikipedia.org/wiki/Java_version_history<>https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features
+1.add.2.=Jar-file specification<>https://docs.oracle.com/en/java/javase/18/docs/specs/jar/jar.html
 
 2.=Перевірка коду<>Перевірка перед передачею коду іншим
 2.1.=Системи контролю версій
 2.1.1.=Svn (так, застаріла, але все ще використовується)
 2.1.2.=Git - стандарт, гілки git як головна фішка + merge(pull)-requests <>\
-http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/uk/ch02.html\n\
-https://www.educative.io/courses/learn-git-hard-way\n\
-https://dzone.com/refcardz/getting-started-git?chapter=1\n\
-https://www.youtube.com/watch?v=SEvR78OhGtw\n\
-https://girliemac.com/blog/2017/12/26/git-purr/\n\
+http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/uk/ch02.html \
+https://www.educative.io/courses/learn-git-hard-way \
+https://dzone.com/refcardz/getting-started-git?chapter=1 \
+https://www.youtube.com/watch?v=SEvR78OhGtw \
+https://girliemac.com/blog/2017/12/26/git-purr/ \
 https://learngitbranching.js.org/?locale=ua_UA
 2.1.3.=Модель git-репозиторію для підтримки декількох версій коду одночасно <>\
-https://habr.com/ru/post/106912/ і https://habr.com/ru/company/flant/blog/491320/
-2.1.4.=Github vs **Gitlab** vs Bitbacket vs AWS CodeCommit<>\
-https://qna.habr.com/q/641768\n\
+https://habr.com/ru/post/106912/ https://habr.com/ru/company/flant/blog/491320/
+2.1.4.=Github vs Gitlab vs Bitbacket vs AWS CodeCommit<>\
+https://qna.habr.com/q/641768 \
 https://jelvix.com/blog/bitbucket-vs-github-vs-gitlab
 2.1.5.=Створити гіт-репозиторій для п.2.5. і запушити його на власний аккаунт GitLab.com
 2.1.6.=Як запобігти мерж-конфліктам?
 2.2.=Тестування
-2.2.1.=Види тестів<>https://qagroup.com.ua/publications/vydy-testuvannya-ta-vidminnosti-mizh-nymy/ 
+2.2.1.=Види тестів<>https://qagroup.com.ua/publications/vydy-testuvannya-ta-vidminnosti-mizh-nymy/
 2.2.2.=Піраміда тестування і чому тестувальник Вам не дуже допоможе ;)<>\
-https://qastart.by/mainterms/64-piramida-testov-testirovaniya\n\
-https://highload.today/blogs/chto-nado-znat-o-tdd-i-bdd-kak-testy-pomogayut-razrabotchikam-rabotat-v-komande-i-ponyat-zakazchika/ 
-2.2.3.=Junit vs TestNg (but junit5 is the must)<>https://mkyong.com/unittest/junit-4-vs-testng-comparison/ 
-2.2.4.=Mocking (Mockito)<>https://habr.com/ru/post/444982/ 
+https://qastart.by/mainterms/64-piramida-testov-testirovaniya \
+https://highload.today/blogs/chto-nado-znat-o-tdd-i-bdd-kak-testy-pomogayut-razrabotchikam-rabotat-v-komande-i-ponyat-zakazchika/
+2.2.3.=Junit vs TestNg (but junit5 is the must)<>https://mkyong.com/unittest/junit-4-vs-testng-comparison/
+2.2.4.=Mocking (Mockito)<>https://habr.com/ru/post/444982/
 2.2.5.=Написати тести на Junit5, які перевірять методи, що виконують множення і ділення двох чисел
-2.2.6.=TDD - допомагає почати реалізацію, особливо якщо незрозуміло як<>https://www.youtube.com/watch?v=SQUI9Ixb790 
-2.2.7.=Рефакторинг. Програми не пишуться з першого разу і назавжди, програми "розвиваються" за допомогою рефакторингу.    Найважчий виклик у тому, щоб програмісти не боялись змінювать код навіть у величезному проєкті.   Але це єдиний спосіб щоб проєкт не "протух" набравшись технічного боргу і "вонючок".<>\
+2.2.6.=TDD - допомагає почати реалізацію, особливо якщо незрозуміло як<>https://www.youtube.com/watch?v=SQUI9Ixb790
+2.2.7.=Рефакторинг. Програми не пишуться з першого разу і назавжди, програми "розвиваються" за допомогою рефакторингу. Найважчий виклик у тому, щоб програмісти не боялись змінювать код навіть у величезному проєкті. Але це єдиний спосіб щоб проєкт не "протух" набравшись технічного боргу і "вонючок".<>\
 https://dou.ua/lenta/columns/why-refactoring-is-important/
 2.2.8.=Що таке покриття тестами і як його перевірити. Який % достатній?
-2.3.=Системи CI/CD<>Системи CI/CD
-2.3.1.=Gitlab (теорія СІ + практика на Gitlab.com)<>https://about.gitlab.com/pricing/ 
-2.3.2.=Jenkins (теорія + практика на своєму Jenkins)<>https://aws.amazon.com/ru/getting-started/hands-on/setup-jenkins-build-server/ 
-2.3.3.=Teamcity (загальна інфа, порівняння)<>https://dzone.com/articles/jenkins-vs-gitlab-ci-battle-of-cicd-tools 
+2.3.=Системи CI/CD
+2.3.1.=Gitlab (теорія СІ + практика на Gitlab.com)<>https://about.gitlab.com/pricing/
+2.3.2.=Jenkins (теорія + практика на своєму Jenkins)<>https://aws.amazon.com/ru/getting-started/hands-on/setup-jenkins-build-server/
+2.3.3.=Teamcity (загальна інфа, порівняння)<>https://dzone.com/articles/jenkins-vs-gitlab-ci-battle-of-cicd-tools
 2.3.4.=AWS DevOps<>https://aws.amazon.com/ru/devops/what-is-devops/#iac
-2.3.5.=Налаштувати Jenkins job, що збілдить Ваш проєкт із Вашого гіт-репо<>https://geekflare.com/jenkins-hosting-platform/ 
-2.3.6.=Так чим відрізняється СІ та CD?<>https://habr.com/ru/company/piter/blog/343270/ 
-2.4.=Code review<>Code review & авто валідація коду
+2.3.5.=Налаштувати Jenkins job, що збілдить Ваш проєкт із Вашого гіт-репо<>https://geekflare.com/jenkins-hosting-platform/
+2.3.6.=Так чим відрізняється СІ та CD?<>https://habr.com/ru/company/piter/blog/343270/
+2.4.=Code review & авто валідація коду
+2.4.1.=Мерж-реквести в Github / в Gitlab (із девелоп-гілки в мастер)
+2.4.2.=Можливості AWS Codeguru (нова перспективна штука взамін Сонара)<>https://aws.amazon.com/ru/blogs/rus/amazon_codeguru_reviewer_updates_new_java_detectors_and_cicd_integration_with_github_actions/
+2.4.3.=Налаштувати плагін SonarLint в IDE (опція: створити свій проєкт на СонарКуб)<>https://sonarcloud.io/login https://docs.sonarqube.org/latest/ https://www.cloudbees.com/blog/getting-started-sonarqube-sonarlint/
+2.4.4.=Додайте в джобу дженкінса валідацію коду сонаром (по бажанню, так як free_ec2 заслабий)<>https://docs.sonarqube.org/latest/analysis/jenkins/
+2.4.5.=Як перевіряти покриття тестами (це не тільки сонар вміє)<>https://docs.sonarqube.org/latest/analysis/test-coverage/java-test-coverage/
+2.4.6.=Так як прийняти рішення код ОК/не ОК, мержити пулл-реквест чи завернути?<>https://www.youtube.com/watch?v=Xv92EsebyvU
+2.prac.=система перевірки коду перед “боєм” (деплоєм на продакшен-сервер)
+2.prac.1.=Реалізувати програму, яка видасть в консоль табличку множення для чисел, тип яких задається системною змінною (по дефолту int), а мінімум, максимум та інкремент задаються у файлі властивостей.
+2.prac.2.=Створити git-репо на вибраному ресурсі (Github || Gitlab || CodeCommit)
+2.prac.3.=Налаштувати будь-який CI і зібрати проєкт із гілки main
+2.prac.4.=Покрити тестами код
+2.prac.5.=Створити гілку dev і внести в ній зміни згідно рекомендацій Sonar, використовуючи можливості рефакторингу IDE
+2.prac.6.=Створити мерж-реквест із dev до master
+2.prac.7.=Запустіть, що змержили, на EC2 автоматично, using Jenkins.
+2.add.1.=Ssh, keys (+KeyStore Explorer tool), bash у linux/win. Checking the Ubuntu version in the terminal.
+2.add.2.=Запуск по розкладу, cron формат. В ідеалі ще показати різницю крон-формату в різних системах (2-3 приклади)<>http://crontab.guru
 
 3.=DTO, POJO, MQ, Validation<>DTO, POJO, Validation, черги повідомлень
+3.1.=Для старту чистого коду: проговорити принципи KISS, DRY, YAGNI<>https://senior.ua/articles/kiss-dry-solid-yagni--navscho-dotrimuvatis-principv-programuvannya https://refactoring.guru/uk/refactoring/smells
+3.2.=POJO Валідація
+3.2.1.=DTO, Bean, POJO, Entity - що означають ці абревіатури?
+3.2.2.=JSR-303 & hibernate validator<>https://dzone.com/articles/bean-validation-made-simple \
+https://docs.jboss.org/hibernate/validator/4.2/reference/en-US/html_single/#validator-gettingstarted-createmodel \
+https://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/?v=7.0 \
+https://www.baeldung.com/javax-validation \
+https://www.baeldung.com/hibernate-validator-constraints 
+3.2.3.=Реалізація власних валідаторів для DTO etc<>https://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#validator-customconstraints
+3.3.=JDK 8 features. Streams, LocalDate після цього забуваємо назавжди як страшний сон клас java.util.Date<>https://www.javacodegeeks.com/java-8-features-tutorial.html
+3.4.=Черги повідомлень
+3.4.1.=JMS<>https://www.javatpoint.com/jms-tutorial
+3.4.2.=Черги повідомлень ActiveMq, RabbitMq, Apache Kafka<>https://docs.microsoft.com/ru-ru/azure/service-bus-messaging/jms-developer-guide?tabs=JMS-20 \
+https://www.youtube.com/watch?v=deG25y_r6OY \
+https://www.youtube.com/watch?v=Ch5VhJzaoaI \
+https://dzone.com/articles/java-jms-oversimplified?edition=679396
+3.5.=Big-O нотація складності алгоритмів стосовно колекцій java
+3.5.1.=Загальна інфа<>https://www.bigocheatsheet.com
+3.5.2.=Детально про колекції<>https://bikashdubey42.medium.com/time-complexity-of-java-collections-api-c65baa784e21
+3.5.3.=Короткий список<>https://stackoverflow.com/questions/559839/big-o-summary-for-java-collections-framework-implementations
+3.prac.=Робота з чергами повідомлень ActiveMQ
+3.prac.1.=Згенерувати за допомогою Streams N POJO-меседжів(N задається як аргумент запуску, N > 1000, pojo: {name: “текст”, eddr: “ЄДДР”, count: xxx, created_at: date_time} рандомні)
+3.prac.2.=І відправити їх у одну чергу ActiveMq <IN-черга>, Коннект/назву черги винести у properties, Стоп генерації - по часу (параметр в секундах із проперті) через "poison pill"<>\
+https://dzone.com/articles/producers-and-consumers-part-3 https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/activemq-on-amazon-mq.html
+3.prac.3.=Прочитати месседжі із IN-черги (одночасно з генерацією кому цікаво паралельна робота чи після генерації, для простоти), прогнати через валідатори(довжина name >=7, є хоча б одна буква ‘a’, count >= 10, ЄДДР-номер валідний)<>\
+https://uk.wikipedia.org/wiki/%D0%84%D0%B4%D0%B8%D0%BD%D0%B8%D0%B9_%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%B2%D0%BD%D0%B8%D0%B9_%D0%B4%D0%B5%D0%BC%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D1%96%D1%87%D0%BD%D0%B8%D0%B9_%D1%80%D0%B5%D1%94%D1%81%D1%82%D1%80
+3.prac.4.=Валідні записати у один csv-файл із двома полями name & count
+3.prac.5.=Невалідні - у інший csv файл із додатковим полем errors у вигляді json {“errors”:[]}.
+3.prac.6.=Додаткове завдання для тих, кому стане нудно: запустіть 2-5 сервісів на різних AWS (найкраще одногрупника) щоб кілька сервісів заповнювали чергу, а один вичитував.
+
+4.=Реляційні бази даних<>Реляційні бази даних (візьміть IntelliJ IDEA Ultimate у Романа, час, i не забудьте написати йому мейл, на який вам прийде ліцензія)
+4.1.=Ознайомлення з реляційними базами даних
+4.1.1.=Реляційна база даних. Термінологія. Нормальні форми. Мова DDL<>https://www.wikiwand.com/uk/%D0%A0%D0%B5%D0%BB%D1%8F%D1%86%D1%96%D0%B9%D0%BD%D0%B0_%D0%B1%D0%B0%D0%B7%D0%B0_%D0%B4%D0%B0%D0%BD%D0%B8%D1%85 https://www.javatpoint.com/dbms-sql-command
+4.1.2.=Мова SQL
+4.1.3.=JDBC, connection, prepared statements, batches<>https://www.codejava.net/java-se/jdbc/jdbc-batch-update-examples http://nevada-jace-dev.herokuapp.com/design/MySQLTrainer#/funny_baker
+4.2.=Реляційні SQL БД ДБА-частина
+4.2.1.=Які бувають індекси, план виконання запитів
+4.2.2.=Транзакції, рівні ізольованості транзакцій
+4.2.3.=Недоліки реляційних баз даних, або як зберегти дерево у БД, e.g.TreeMap?
+4.prac.=Обробка і зберігання масивів даних, на швидкість: запускаємо свої реалізації на вашому PostgreSql AWS (обережно з $, тушіть вчасно), фіксуємо час (StopWatch.class), хто швидше видасть - той молодець =)
+4.prac.1.=Створити таблиці DDL-скриптом, в яких будуть всі товари всіх магазинів Епіцентр
+4.prac.2.=За допомогою JDBC нагенерити рандомно як мінімум 3 мільйони рядків у будь-якій із ваших таблиць.
+4.prac.3.=Перед вставкою в БД перевіряти DTO на валідність (тут пліз проявіть свою фантазію що саме перевіряти) використовуючи hibernate-validator
+4.prac.4.=Видати адресу магазину із найбільшою кількістю товарів якогось типу: тип товару запитувати із консолі, параметром командного рядка (для автозапуску Дженкінсом після білда можна параметризувати джобу параметром ‘Тип_товару’)
+4.prac.5.=Профілірування джава-процесів. Підключитись до свого процесу використовуючи VisualVm та/або Idea Profiler та відслідковувати треди та пам’ять своєї програми.
+4.prac.6.=Додаткова задача: розпаралелити заради прискорення роботи генерацію і валідацію, використовуючи пакет java.concurrency<>https://www.baeldung.com/java-executor-wait-for-threads
+
+5.=Нереляційні бази даних<>NotOnlySQL(NoSql) і розподілені БД 
+5.1.=Json-data: MongoDB, FireBase<>https://codeguida.com/post/519 https://firebase.google.com/products/realtime-database https://youtu.be/0buKQHokLK8?t=34
+5.2.=Distributed сolumn-wide CassandraDB & ScyllaDB<>https://www.freecodecamp.org/news/the-apache-cassandra-beginner-tutorial/ https://www.baeldung.com/cassandra-replication-partitioning https://intellipaat.com/blog/tutorial/cassandra-tutorial/ https://www.scylladb.com/scylla-vs-cassandra/
+5.3.=ELK і повнотекстовий пошук<>https://aws.amazon.com/ru/opensearch-service/the-elk-stack/what-is-elasticsearch/ https://aws.amazon.com/ru/opensearch-service/
+5.4.=Теорема CAP<>https://blog.cloudthat.com/an-introduction-to-apache-cassandra-part-i/ https://uk.wikipedia.org/wiki/%D0%A2%D0%B5%D0%BE%D1%80%D0%B5%D0%BC%D0%B0_CAP \
+https://habr.com/ru/post/328792/ https://www.bigdataschool.ru/wiki/cap https://medium.com/@sumitsethia94/consistency-or-availability-of-databases-do-you-really-understand-cap-8ecf2b3bb099 \
+https://www.educative.io/blog/what-is-cap-theorem
+5.4.1.=Горизонтальне/вертикальне масштабування<>https://server-gu.ru/scaling-out-vs-scaling-up/
+5.4.2.=Реплікація баз, види реплікацій<>http://naukam.triada.in.ua/index.php/konferentsiji/49-dev-yatnadtsyata-vseukrajinska-praktichno-piznavalna-internet-konferentsiya/438-sistema-viboru-nosql-skhovishcha-danikh-na-osnovi-bazhanikh-kharakteristik-informatsijnoji-sistemi
+5.5.=Плюси-мінуси-підводні камені для DBA і девелопера при виборі БД. Транзакційність в NoSql (чи є?) Порівняння БД<>\
+https://towardsdatascience.com/datastore-choices-sql-vs-nosql-database-ebec24d56106#3f01 https://www.youtube.com/watch?v=W2Z7fbCLSTw \
+https://naiveskill.com/mongodb-vs-postgresql/ https://kinsta.com/blog/mongodb-vs-postgresql/
+5.prac.=Повторити завдання Розділу №4 практичної на NoSql БД. (На вибір: MongoDb, Firebase, ElasticSearch, Apache Cassandra, Amazon Keyspace)
+
+6.=System Design<>System Design
+6.1.=Стартуєм<>https://dou.ua/lenta/articles/java-beginner-guide-2/
+6.2.=Принципи дизайну програм SOLID<>https://uk.wikipedia.org/wiki/SOLID_(%D0%BE%D0%B1%27%D1%94%D0%BA%D1%82%D0%BD%D0%BE-%D0%BE%D1%80%D1%96%D1%94%D0%BD%D1%82%D0%BE%D0%B2%D0%B0%D0%BD%D0%B5_%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D1%83%D0%B2%D0%B0%D0%BD%D0%BD%D1%8F) \
+https://dou.ua/lenta/articles/solid-principles/ https://medium.com/@shubhadeepchat/solid-principle-simplified-b18b73b3e440 https://okso.app/showcase/solid
+6.3.=Вонючки коду і рефакторинг (кожен про “свою” вонючку)<>https://refactoring.guru/uk/refactoring/smells https://refactoring.guru/uk/refactoring https://checkstyle.org/
+6.4.=Патерни проєктування, кожен вибирає собі один паттерн із каталогу і пояснює за 15 хв<>https://refactoring.guru/uk/design-patterns/catalog https://robotdreams.cc/uk/course/chistyy-kod-i-patterny-proektirovaniya
+6.5.=Мікросервіси vs моноліт<>https://medium.com/@IvanZmerzlyi/microservices-architecture-461687045b3d https://jdutreve.medium.com/monolith-or-microservices-neither-combine-both-with-integrated-microservices-5265594c3d59 https://www.youtube.com/watch?v=XD5at992-DI
+6.6.=Власне системний дизайн (самостійно - вилазить за курс %, але ж)<>https://www.educative.io/blog/complete-guide-to-system-design https://www.youtube.com/watch?v=J_Ad9BG84oI https://www.youtube.com/watch?v=Be7INI_U6GY https://fwdays.com/event/system-design-crash-course-v3 https://www.youtube.com/watch?v=vH8a6dbGHaI
+6.7.=Казочка про Event-driven дизайн<>https://www.youtube.com/watch?v=oTTfaynD1Xc
+6.prac.=Реалізувати 3 паттерни на вибір у власний Github-repo
+
+7.=Spring Framework<>Реалізація Restful API використовуючи Spring Framework (Boot 2.7 & Spring MVC) без Webflux&Reactive please: реактивність поза курсом.
+7.1.=Spring Boot<>https://docs.spring.io/spring-boot/docs/2.7.6/reference/html/
+7.2.=HTTP-протокол, REST стиль API
+7.2.1.=REST: теорія<>https://dou.ua/forums/topic/34550 
+7.2.2.=Які методи для чого, ідемпотентність HTTP-методів<>https://docs.microsoft.com/ru-ru/azure/architecture/best-practices/api-design
+7.2.3.=Види/коди помилок HTTP<>https://developer.mozilla.org/ru/docs/Web/HTTP/Status https://dou.ua/forums/topic/40940/?from=fptech
+7.2.4.=Версіонування API<>https://nordicapis.com/introduction-to-api-versioning-best-practices/
+7.2.5.=Spring Boot як швидкий старт в Spring проєкти<>https://habr.com/ru/post/435144/
+7.3.=Документування REST-API для CRUD of DTO {first_name, last_name, ipn}. GET /hello “Hello World” on AWS ElasticBeanStalk вручну. OpenAPI3.<>https://aws.amazon.com/ru/elasticbeanstalk/ https://www.baeldung.com/spring-rest-openapi-documentation
+7.3.1.=Deploy on AWS Elastic BeanStalk без БД задокументованого GET/PUT hello endpoint використовуючи OpenAPI3<>https://coralogix.com/blog/ci-cd-tutorial-how-to-deploy-an-aws-jenkins-pipeline/ https://demo.nginx.com/swagger-ui/#/
+7.3.2.=Конкурент REST-doc від Spring (обзорно, заради цікавості)<>https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/
+7.4.=ORM & persistence framework (попереднє знайомство / обговорення)
+7.4.1.=Hibernate vs MyBatis<>https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-many-to-many \
+https://thorben-janssen.com/ultimate-guide-association-mappings-jpa-hibernate/#manyToMany \
+https://dzone.com/articles/introduction-to-spring-data-jpa-part-8-many-to-man https://thorben-janssen.com/dto-projections/
+7.4.2.=Hsql or H2 in-memory DBs<>https://www.baeldung.com/spring-boot-h2-database https://www.baeldung.com/spring-boot-hsqldb
+7.4.3.=Cache, рівні кешування hibernate
+7.4.4.=Spring Data JPA, початок: CRUD методи.
+7.4.5.=Коли краще не використовувати ORM?
+7.prac.=Spring Boot Application
+7.prac.1.=Зібрать до купи що було на тижні, реалізувати контроллер із всіма 4ма http-методами (хоча б одну DTO <=> in memory БД, причому одне поле DTO це ІПН). Реалізувати валідатор індивідуальний податковий номер і записувати у БД лише валідні.
+7.prac.2.=Виставить (задеплоїть) API на AWS Elastic BeanStalk, без автоскейлу.
+7-2.5.=Restful API, розвиток
+7-2.5.1.=I18n (internationalisation) та l10n (localization) та валідація вхідних даних в Spring Boot<>https://thorben-janssen.com/localized-data-hibernate/ https://www.baeldung.com/spring-boot-internationalization https://developer.okta.com/blog/2019/02/25/java-i18n-internationalization-localization https://www.baeldung.com/spring-custom-validation-message-source
+7-2.5.2.=Spring Data:  Продовжуєм роботу з базами даних використовуючи JPA Repository, також native-sql vs hsql + “проєкції” на dto
+7-2.5.3.=Spring Security (Basic;  довідково: JWT-tokens, OAuth2 для FB, Google etc)<>https://www.baeldung.com/security-spring https://www.youtube.com/watch?v=HvovW6Uh1yU https://www.youtube.com/watch?v=b9O9NI-RJ3o https://amigoscode.com/p/spring-boot-security
+7-2.5.4.=Конкуренти Spring<>https://javarevisited.blogspot.com/2017/02/difference-between-jax-rs-restlet-jersey-apache-cfx-RESTEasy.html#axzz6u0XYGY8S https://dzone.com/articles/building-a-rest-api-with-quarkus?fromrel=true
+7-2.5.5.=Реалізація REST-API<>https://www.baeldung.com/rest-with-spring-series https://dzone.com/articles/building-a-rest-api-with-quarkus?fromrel=true https://medium.com/@bubu.tripathy/best-practices-for-designing-rest-apis-5b1809545e3c https://dou.ua/forums/topic/34550
+7-2.prac.=Швидко оновлюване АПІ на AWS
+7-2.prac.1.=Створити CRUD REST-API, наприклад TODO-список (що/коли/статус)
+7-2.prac.2.=Із авто-документацією і збереженням у ін-меморі/postgresql/mariadb
+7-2.prac.3.=ToDo-задачі мають проходити стани: Стартовий стан Planned, далі -> {Work_in_progress, Postponed } -> {Notified, Signed} -> Done, напрям зміни стану - односторонній,  але не обов’язковий. Done і Cancelled - фінальні (незмінні) стани. Cancelled з будь якого стану. Використайте enum для стану, покрийте тестами логіку зміну стану.
+7-2.prac.4.=Задеплоїти jar із API на власний ресурс AWS Elastic Beanstalk<>\
+https://aws.amazon.com/ru/blogs/devops/deploying-a-spring-boot-application-on-aws-using-aws-elastic-beanstalk/ https://aws.plainenglish.io/deploy-spring-boot-applications-into-aws-elastic-beanstalk-b2204d8fbd9c https://github.com/marketplace/actions/beanstalk-deploy
+7-2.prac.5.=Написати шелл-скрипти із викликами API за допомогою curl
+7-2.prac.6.=Додати до АПІ пару користувачів із різними ролями та i18n
+7-2.prac.7.=Додатково: повикликати сервіси інших студентів HttpClient. Як є можливість щось більше: авто-синхронізація даних між сервісами.
+
+8.=Моніторинг/тести API<>Моніторимо/тестуємо API ззовні
+8.1.=Інструметарій<>https://dou.ua/forums/topic/43750/
+8.2.=Тестування навантаження Jmeter<>https://jmeter.apache.org/usermanual/get-started.html https://medium.com/effective-developers/10-steps-to-run-first-performance-test-with-apache-jmeter-52867c12b0a4
+8.3.=Gatling (По можливості включити тестування навантаження, отримання списку TODO, у збірку проєкту дженкінсом)<>https://gatling.io/docs/gatling/tutorials/quickstart/ https://www.youtube.com/watch?v=PQK3rIiKFys&t=951s https://www.youtube.com/watch?v=YsxrsayLZfw&t=613s
+8.4.=Генерація і збір метрик роботи використовуючи Spring actuator
+8.4.1.=Prometheus + Grafana<>https://habr.com/ru/post/548700/ https://dou.ua/forums/topic/36372/ https://medium.com/@abhishekranjandev/integrating-prometheus-and-grafana-for-metrics-monitoring-in-a-spring-boot-application-701b83457130 \
+https://dzone.com/articles/measuring-network-service-performance https://grafana.com/blog/2022/04/26/set-up-and-observe-a-spring-boot-application-with-grafana-cloud-prometheus-and-opentelemetry/#instrumenting-spring-boot-with-prometheus \
+https://refactorfirst.com/spring-boot-prometheus-grafana https://medium.com/javarevisited/springboot-app-monitoring-with-grafana-prometheus-7c723f0dec15 https://ordina-jworks.github.io/monitoring/2020/11/16/monitoring-spring-prometheus-grafana.html
+8.4.2.=Infrastructure monitoring AWS-native monitoring<>https://newrelic.com/ https://www.datadoghq.com/java-performance-monitoring/
+8.4.3.=Tracing performance of backend services<>https://signoz.io/ https://www.codemotion.com/magazine/backend/tracing-performance-of-backend-services-written-on-java-with-sleuth-zipkin-elk-stack/ \
+https://learn.microsoft.com/ru-ru/azure/azure-monitor/app/opentelemetry-overview https://aws.amazon.com/ru/xray/ https://techukraine.net/%D0%B2%D1%81%D1%82%D1%83%D0%BF-%D0%B4%D0%BE-opentelemetry-%D0%B4%D0%BB%D1%8F-%D0%BF%D0%BE%D1%87%D0%B0%D1%82%D0%BA%D1%96%D0%B2%D1%86%D1%96%D0%B2/
+8.5.=API first архітектура<>https://www.akana.com/blog/api-first https://swagger.io/resources/articles/adopting-an-api-first-approach/
+8.6.=Jhipster as a way to be a full-stack developer. :)
+8.7.=System design (again)<>https://dzone.com/articles/system-design-interview-preparation-guide-and-chea https://medium.com/analysts-corner/enterprise-integration-architecture-patterns-ab26b62c1c3a
+8.8.=Tests (yep, again)<>https://martinfowler.com/articles/practical-test-pyramid.html
+8.9.=Горизонтальне масштабування API. Service discovery tools. Microservicing or not?<>https://ubertasconsulting.com/2022/05/23/modernising-aws-elastic-beanstalk-fargate/ https://blog.knoldus.com/comparing-eureka-vs-consul-io/ https://www.youtube.com/watch?v=MCFMQR6Yvd0
+8.prac.=Моніторинг роботи API
+8.prac.1.=Протестувати навантаження із профіліровщиком та метриками.
+8.prac.2.=Залогувати час роботи методів контроллера в окремий лог за допомогою аспектів.<>https://medium.com/@vegabryam40/aop-for-logs-in-spring-boot-60365c9faae
+
+9.=Фінальний проєкт<>Робота в команді, спільний фінальний проєкт (коли збереться 5+ тих. хто здав першу частину, по домовленості, 3-4 тижні)
+9.1.=SDLC Процеси: Waterfall, Agile, Scrum, Kanban, TDD, XP (Extreme Programming)<>https://www.youtube.com/watch?v=ouAUYLyMo80 https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/ \
+https://dou.ua/lenta/articles/bears-bulls-swaps https://www.agilealliance.org/glossary/xp https://agile.yakubovsky.com/ua/2015/10/9-osnovnykh-metodolohiy-rozrobky-prohramnoho-zabezpechennya-agile/ https://qagroup.com.ua/publications/6-osnovnykh-etapiv-sdlc/ \
+http://www.extremeprogramming.org/ https://www.geeksforgeeks.org/software-development-life-cycle-sdlc/
+9.2.=User-story practicum<>https://www.linkedin.com/posts/ivantay_ivanpost-userstory-requirements-ugcPost-6807019913455267840-q02o/
+9.3.=Планування і естімейт (оцінка) задач
+9.4.=Code review<>https://www.linkedin.com/posts/milanmilanovic_softwareengineering-programming-systemdesign-activity-6995271545484906496-2DhQ/ https://dzone.com/articles/what-is-code-review-amp-how-it-can-save-time-devel?edition=599292
+9.5.=Командна робота - вебінар від Epam<>https://www.youtube.com/watch?v=vxWghZhoSpI https://youtu.be/vxWghZhoSpI?t=2371
+9.6.=Kлючове із відео: xp без scrum працює нормально, а scrum без xp взагалі не працює. Тут розжовано, дуже рекомендую прочитати всі букви (але після відосика із веселими стариганами) \
+https://www.youtube.com/watch?v=WSflPE_oIRI https://www.youtube.com/watch?v=vSuJqMRG1WM https://worksection.com/ua/blog/extreme-programming.html
+9.7.=Culture fit (на роботі про роботу, чесний естімейт, взаємоповага)<>https://itexpert.work/uk/povna-synergiya-shho-vazhlyvishe-v-komandi-cultural-fit-chy-vminnya-vykonuvaty-zavdannya/ https://dou.ua/lenta/articles/usa-cultural-fit/
+9.8.=What else<>https://medium.com/javarevisited/my-interview-experience-with-vmware-for-the-senior-java-developer-role-3fc6efec4442 https://careers.epam.ua/blog/what-does-a-java-developer-need-to-learn-today-to-be-in-demand-tomorrow \
+https://www.youtube.com/watch?v=QVBlnCTu9Ms https://highload.today/blogs/chto-nado-znat-o-tdd-i-bdd-kak-testy-pomogayut-razrabotchikam-rabotat-v-komande-i-ponyat-zakazchika/
+9.9.=Links to keep up-to-date<>https://www.baeldung.com/java-weekly-384 https://dzone.com/java-jdk-development-tutorials-tools-news https://medium.com/javarevisited/the-java-programmer-roadmap-f9db163ef2c2
+9.10.=Jobs<>https://remoteok.io/ https://angel.co/jobs
+
+add.1=Сервлет-контейнери i деплой на них: tomcat, jetty etc
+add.2=JMX, профілювання з VisualVM<>https://blog.jetbrains.com/idea/2021/05/get-started-with-profiling-in-intellij-idea/
+add.3=Ssh & keys, bash
+add.4=Запуск по розкладу, cron
+add.5=JDK8: Streams, LocalDateTime etc<>https://www.baeldung.com/java-when-to-use-parallel-stream https://dou.ua/forums/topic/40868
+add.6=Idea hot-keys<>https://resources.jetbrains.com/storage/products/intellij-idea/docs/IntelliJIDEA_ReferenceCard.pdf
+add.7=Різні HttpClient (sync, async)<>https://www.mocklab.io/blog/which-java-http-client-should-i-use-in-2020/ 
+add.8=SSL vs TLS<>https://www.globalsign.com/en/blog/ssl-vs-tls-difference https://keystore-explorer.org/
+add.9=Сокети, Netty
+add.10=JMS, черги ActiveMq, RabbitMq, Apache Kafka<>https://dzone.com/articles/java-jms-oversimplified?edition=679396
+add.11=Google FireBase realtimeDB<>https://firebase.google.com/products/realtime-database
+add.12=HATEOAS<>https://mxsmirnov.com/2017/05/31/hateoas-2/#more-2484 https://www.baeldung.com/spring-hateoas-tutorial   
+add.13=Авто-тестування UI<>https://ru.selenide.org/quick-start.html  
+add.14=Принципи і паттерни дизайну: SOLID, KISS, DRY, YAGNI<>https://refactoring.guru/
+add.15=Big-O складність алгоритмів і колекції java<>https://www.bigocheatsheet.com https://bikashdubey42.medium.com/time-complexity-of-java-collections-api-c65baa784e21 https://stackoverflow.com/questions/559839/big-o-summary-for-java-collections-framework-implementations
+add.16=Сертифікація Oracle<>https://education.oracle.com/java-se-8-programmer-i/pexam_1Z0-808 https://dou.ua/lenta/articles/oracle-certified-java-8/
+add.17=AWS CI/CD<>https://aws.amazon.com/ru/getting-started/projects/set-up-ci-cd-pipeline/ 
+add.18=Stateless & Stateful<>https://www.xenonstack.com/insights/stateful-and-stateless-applications/
+add.19=Мікросервіси vs моноліт<>\
+https://medium.com/@IvanZmerzlyi/microservices-architecture-461687045b3d \
+https://jdutreve.medium.com/monolith-or-microservices-neither-combine-both-with-integrated-microservices-5265594c3d59 \
+https://www.youtube.com/watch?v=XD5at992-DI \
+https://www-hashicorp-com.translate.goog/resources/tide-self-service-service-mesh-with-consul?_x_tr_sl=en&_x_tr_tl=uk&_x_tr_hl=uk&_x_tr_pto=wapp
+add.20=Рефлексія<>https://www.baeldung.com/java-reflection https://www.geeksforgeeks.org/reflection-in-java/
+add.21=Garbage Collector types<>\
+https://medium.com/@hasithalgamge/seven-types-of-java-garbage-collectors-6297a1418e82 \
+https://www.learnitweb.com/java-10-and-beyond/java-10-plus-tutorials/garbage-collection-in-java-and-types-of-garbage-collectors/
+add.22=Java Memory Model<>http://tutorials.jenkov.com/java-concurrency/java-memory-model.html
+add.23=io vs nio packets<>https://habr.com/ru/post/235585/
+add.24=Docker i Kubernetes (e.g. Spring boot ->  docker -> AWS)<>https://www.baeldung.com/ops/docker-differences-between-images
+add.25=Terraform https://www.varonis.com/blog/what-is-terraform<>https://blog.gruntwork.io/an-introduction-to-terraform-f17df9c6d180
+add.26=GoLang vs Java<>https://dzone.com/articles/java-vs-go-multiple-users-load-test-2
+add.27=Reactive programming: Webflux<>https://www.codemotion.com/magazine/backend/benefits-of-reactive-programming-codemotion-magazine/ https://medium.com/@kirill.sereda?p=3f779953ed45
+add.28=Circuit Breaker, Rate Limiter, Retry and Bulkhead. Стратегии обработки ошибок: Circuit Breaker pattern.<>https://resilience4j.readme.io/docs/getting-started https://www.youtube.com/watch?v=NHVxrLb3jFI
+add.29=Java FullStack (backend+frontend in a single jar): jHipster<>https://www.jhipster.tech/
+add.30=Dev AI tools<>https://aws.amazon.com/codewhisperer/ https://docs.github.com/ru/copilot/getting-started-with-github-copilot
+add.31=Єволюція БД<>https://martinfowler-com.translate.goog/articles/evodb.html?_x_tr_sl=en&_x_tr_tl=uk&_x_tr_hl=en&_x_tr_pto=wapp 
+add.32=ElasticSearch<>https://sqltoelasticsearch.azurewebsites.net/
+add.33=BigData<>https://bryteflow.com/how-to-choose-between-parquet-orc-and-avro/
+add.34=Java-hosting (AWS, AZURE, Hiroku, jelastic)<>https://dou.ua/lenta/articles/jelastic-guide/
+add.35=Spring talks (Евгений Борисов)<>https://www.youtube.com/watch?v=wpEPvAqnhZI&t=2156s https://www.youtube.com/watch?v=rd6wxPzXQvo 
+add.36=Spring Boot<>https://www.youtube.com/@SpringSourceDev/videos https://newsletter.greglturnquist.com/y6e9i8d8f2/2090646979041301507/l8i7/ https://vladmihalcea.com/spring-6-migration
+add.37=Конференція по “старо”-модному напрямку "API first"<>https://apiworld.co/conference/
+add.38=Питання до співбесіди<>https://dou.ua/lenta/articles/interview-questions-java-developer/ https://dzone.com/articles/36-questions-to-ask-your-future-software-employer
+add.39=Безкоштовні книжки по java<>https://javacodegeeks.tradepub.com/?pt=adv&page=Java%20Code%20Geeks 
+add.40=Новини світу java<>https://dzone.com/java https://medium.com/tag/java

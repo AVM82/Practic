@@ -4,8 +4,10 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.CourseDto;
+import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.LevelEntity;
 import com.group.practic.service.CourseService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
@@ -43,6 +45,12 @@ public class CourseController {
     }
 
 
+    @GetMapping("/{id}/levels")
+    public ResponseEntity<Collection<LevelEntity>> getLevels(@Min(1) @PathVariable long id) {
+        return getResponse(courseService.getLevels(id));
+    }
+
+
     @GetMapping("/{id}/purpose")
     public ResponseEntity<String> getPurpose(@Min(1) @PathVariable long id) {
         return getResponse(courseService.getPurpose(id));
@@ -55,9 +63,10 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{id}/additional")
-    public ResponseEntity<ChapterEntity> getAdditional(@Min(1) @PathVariable long id) {
-        return getResponse(courseService.getAdditional(id));
+    @GetMapping("/{slug}/additional")
+    public ResponseEntity<Collection<AdditionalMaterialsEntity>> getAdditional(
+            @PathVariable String slug) {
+        return getResponse(courseService.getAdditional(slug));
     }
 
 
@@ -76,7 +85,7 @@ public class CourseController {
 
     @GetMapping("/{slug}")
     public ResponseEntity<CourseEntity> getBySlug(@PathVariable String slug) {
-        return getResponse(courseService.getBySlug(slug));
+        return getResponse(courseService.get(slug));
     }
 
 
