@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class StudentReportDto {
     private String personName;
+    private String profilePictureUrl;
     private String chapterName;
     private LocalDateTime dateTime;
     private String state;
@@ -23,6 +24,13 @@ public class StudentReportDto {
 
     public void setPersonName(String personName) {
         this.personName = personName;
+    }
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public String getChapterName() {

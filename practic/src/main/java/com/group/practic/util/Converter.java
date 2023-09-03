@@ -90,6 +90,8 @@ public interface Converter {
         modelMapper.createTypeMap(StudentReportEntity.class, StudentReportDto.class)
             .addMapping(src -> src.getStudent().getName(), StudentReportDto::setPersonName)
             .addMapping(src ->
+                src.getStudent().getProfilePictureUrl(), StudentReportDto::setProfilePictureUrl)
+            .addMapping(src ->
                 src.getChapter().getShortName(), StudentReportDto::setChapterName)
                 .addMapping(StudentReportEntity::getState, StudentReportDto::setState);
     }
