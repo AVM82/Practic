@@ -3,6 +3,7 @@ package com.group.practic.repository;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,11 +11,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChapterRepository extends JpaRepository<ChapterEntity, Long> {
 
-    List<ChapterEntity> findAllByCourse(CourseEntity course);
+    List<ChapterEntity> findAllByCourseOrderByNumberAsc(CourseEntity course);
 
-    List<ChapterEntity> findAll();
+    Optional<ChapterEntity> findByShortName(String shortName);
 
-    List<ChapterEntity> findAllByCourseAndShortName(CourseEntity course, String shortname);
+    ChapterEntity findByCourseAndShortName(CourseEntity course, String shortname);
 
-    ChapterEntity findByShortName(String shortName);
+    Optional<ChapterEntity> findByCourseAndNumber(CourseEntity course, int number);
 }

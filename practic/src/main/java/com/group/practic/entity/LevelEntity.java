@@ -7,7 +7,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -16,7 +18,7 @@ public class LevelEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    int id;
+    long id;
 
     @ManyToOne
     @JsonIgnore
@@ -24,7 +26,7 @@ public class LevelEntity {
 
     int number;
 
-    Set<Integer> chapters;
+    List<Integer> chapterN = new ArrayList<>();
 
     String discordChat; // ?
 
@@ -37,21 +39,43 @@ public class LevelEntity {
     }
 
 
-    public LevelEntity(int id, CourseEntity course, int number, String discordChat) {
-        super();
+    public LevelEntity(long id, CourseEntity course, int number, List<Integer> chapterN) {
         this.id = id;
         this.course = course;
         this.number = number;
-        this.discordChat = discordChat;
+        this.chapterN = chapterN;
     }
 
 
-    public int getId() {
+    @Override
+    public int hashCode() {
+        return Objects.hash(course.slug, anotherChat, chapterN, discordChat, number, telegramChat);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        LevelEntity other = (LevelEntity) obj;
+        return Objects.equals(course.slug, other.course.slug)
+                && Objects.equals(anotherChat, other.anotherChat)
+                && Objects.equals(chapterN, other.chapterN)
+                && Objects.equals(discordChat, other.discordChat) && number == other.number
+                && Objects.equals(telegramChat, other.telegramChat);
+    }
+
+
+    public long getId() {
         return id;
     }
 
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -73,6 +97,36 @@ public class LevelEntity {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+
+    public List<Integer> getChapterN() {
+        return chapterN;
+    }
+
+
+    public void setChapterN(List<Integer> chapterN) {
+        this.chapterN = chapterN;
+    }
+
+
+    public String getTelegramChat() {
+        return telegramChat;
+    }
+
+
+    public void setTelegramChat(String telegramChat) {
+        this.telegramChat = telegramChat;
+    }
+
+
+    public String getAnotherChat() {
+        return anotherChat;
+    }
+
+
+    public void setAnotherChat(String anotherChat) {
+        this.anotherChat = anotherChat;
     }
 
 

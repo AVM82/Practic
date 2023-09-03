@@ -8,13 +8,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -39,21 +37,26 @@ public class CourseEntity {
     String name;
 
     @Column(length = 1024)
-    @JsonIgnore
     String purpose;
 
     @NotBlank
     @Column(length = 8192)
-    @JsonIgnore
     String description;
 
-    @ManyToOne
+    @OneToMany
     @JsonIgnore
-    ChapterEntity additionalMaterials;
+    @OrderBy("number")
+    Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    List<ChapterEntity> chapters = new ArrayList<>();
+    @OrderBy("number")
+    Set<LevelEntity> levels = new HashSet<>();
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OrderBy("number")
+    Set<ChapterEntity> chapters = new HashSet<>();
 
     @Column(unique = true)
     @NotBlank
@@ -68,9 +71,10 @@ public class CourseEntity {
     }
 
 
-    public CourseEntity(String name, String description) {
+    public CourseEntity(String slug, String shortName, String name) {
+        this.slug = slug;
+        this.shortName = shortName;
         this.name = name;
-        this.description = description;
     }
 
 
@@ -164,22 +168,32 @@ public class CourseEntity {
     }
 
 
-    public ChapterEntity getAdditionalMaterials() {
+    public Set<AdditionalMaterialsEntity> getAdditionalMaterials() {
         return additionalMaterials;
     }
 
 
-    public void setAdditionalMaterials(ChapterEntity additionalMaterials) {
+    public void setAdditionalMaterials(Set<AdditionalMaterialsEntity> additionalMaterials) {
         this.additionalMaterials = additionalMaterials;
     }
 
 
-    public List<ChapterEntity> getChapters() {
+    public Set<LevelEntity> getLevels() {
+        return levels;
+    }
+
+
+    public void setLevels(Set<LevelEntity> levels) {
+        this.levels = levels;
+    }
+
+
+    public Set<ChapterEntity> getChapters() {
         return chapters;
     }
 
 
-    public void setChapters(List<ChapterEntity> chapters) {
+    public void setChapters(Set<ChapterEntity> chapters) {
         this.chapters = chapters;
     }
 
