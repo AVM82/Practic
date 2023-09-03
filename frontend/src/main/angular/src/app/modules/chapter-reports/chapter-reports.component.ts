@@ -4,11 +4,13 @@ import { RouterLink} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
 import {StudentReport} from "../../models/report/studentReport";
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'chapter-reports',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, ReportCardComponent],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, ReportCardComponent, MatButtonModule, MatIconModule],
   templateUrl: './chapter-reports.component.html',
   styleUrls: ['./chapter-reports.component.css']
 })
@@ -16,9 +18,29 @@ export class ChapterReportsComponent  {
   @Input() shouldShowHeader: boolean = true;
   @Input() chapterNumber!: number
   @Input() studentReports!: StudentReport[];
-  limitReports(){
-    return this.studentReports.slice(0,4);
+  startOfRange: number = 0;
+  endOfRange: number = 3;
+
+
+  showReports(){
+    return this.studentReports.slice(this.startOfRange,this.endOfRange);
   }
+  nextReports(){
+    if(this.endOfRange<this.studentReports.length) {
+      this.startOfRange += 1;
+      this.endOfRange += 1;
+    }
+  }
+  previousReports(){
+    if(this.startOfRange>0) {
+      this.startOfRange -= 1;
+      this.endOfRange -= 1;
+    }
+  }
+  isReportsLengthMore3(){
+    return this.studentReports.length>3;
+  }
+
 
 }
 
