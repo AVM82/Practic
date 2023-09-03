@@ -16,6 +16,7 @@ export class ReportCardComponent{
   @Input() reportTopic!: string
   @Input() studentName!: string
   @Input() dateTimeValue!: string
+  @Input() profilePictureUrl!: string
 
   get datePart(): string {
     return this.dateTimeValue.split('T')[0];

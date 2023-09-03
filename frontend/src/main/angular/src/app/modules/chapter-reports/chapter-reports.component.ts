@@ -37,7 +37,7 @@ export class ChapterReportsComponent  {
       this.endOfRange -= 1;
     }
   }
-  isReportsLengthMore3(){
+  isReportsLengthMore(){
     return this.studentReports.length>3;
   }
 

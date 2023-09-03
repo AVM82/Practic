@@ -4,13 +4,13 @@ import {Course} from "../../models/course/course";
 import {MatIconModule} from "@angular/material/icon";
 import {Chapter} from "../../models/course/chapter";
 import {CoursesService} from "../../services/courses/courses.service";
-import {ActivatedRoute} from "@angular/router";
-
+import {ActivatedRoute, RouterLink} from "@angular/router";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-course-navbar',
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, MatIconModule],
+  imports: [CommonModule, NgFor, NgIf, MatIconModule, MatButtonModule, RouterLink],
   templateUrl: './course-navbar.component.html',
   styleUrls: ['./course-navbar.component.css']
 })
