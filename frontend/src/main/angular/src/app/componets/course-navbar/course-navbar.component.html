@@ -1,8 +1,15 @@
 <div class="nav-wrap" *ngIf="chapters">
-    <div class="progress">
+    <div class="progress active"
+        [routerLink]="['/courses', slug]"
+    >
         {{ course?.shortName }}
     </div>
-    <div class="progress" [class.icon]="!chapter.isVisible" *ngFor="let chapter of chapters;">
+    <div class="progress"
+         [class.icon]="!chapter.isVisible"
+         *ngFor="let chapter of chapters;"
+         [ngClass]="{'active': chapter.isActive}"
+         [routerLink]="chapter.isActive ? [] : ['/courses', slug, 'chapters', chapter.id]"
+    >
         <span *ngIf="chapter.isVisible">{{ chapter.shortName }}</span>
         <mat-icon class="icon" *ngIf="!chapter.isVisible">lock</mat-icon>
     </div>

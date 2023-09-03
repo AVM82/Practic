@@ -1,0 +1,16 @@
+<div style="display: flex; align-items: center;">
+  <div style="margin-left:10px; width: 35px; height: 254px; padding-left: 18px; padding-right: 18px;
+   padding-top: 10px; padding-bottom: 10px; background: #84C984; border-radius: 8px;
+    overflow: hidden; flex-direction: column; justify-content: center; align-items: center;
+gap: 10px; display: inline-flex">
+    <div style="transform: rotate(-90deg); transform-origin: 5 5 ; color: black; font-size: 32px">
+      Розділ{{chapterNumber}}
+    </div>
+
+  </div>
+  <div style="display: flex;">
+    <report-card *ngFor="let report of  studentReports" [reportTopic]="report.title"
+                 [studentName]="report.personName"
+    [dateTimeValue]="report.dateTime"></report-card>
+  </div>
+</div>

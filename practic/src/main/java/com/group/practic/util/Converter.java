@@ -5,9 +5,13 @@ import com.group.practic.dto.CourseDto;
 import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.entity.ChapterEntity;
+import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentPracticeEntity;
+import com.group.practic.entity.StudentReportEntity;
+import java.util.ArrayList;
+import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 
@@ -19,6 +23,7 @@ public interface Converter {
         ModelMapper modelMapper = new ModelMapper();
 
         applyStudentPracticeMap(modelMapper);
+        applyStudentReportMap(modelMapper);
 
         return modelMapper;
     }
@@ -54,11 +59,44 @@ public interface Converter {
         return modelMapper().map(studentPracticeEntity, StudentPracticeDto.class);
     }
 
+    static StudentReportDto convert(StudentReportEntity studentReportEntity) {
+        return modelMapper().map(studentReportEntity, StudentReportDto.class);
+    }
+
+    static List<StudentReportDto> convert(List<StudentReportEntity> studentReportEntityList) {
+        if (studentReportEntityList == null) {
+            return null;
+        }
+        List<StudentReportDto> result = new ArrayList<>();
+        for (StudentReportEntity reportEntity : studentReportEntityList) {
+            result.add(convert(reportEntity));
+        }
+        return result;
+    }
+
+    static List<List<StudentReportDto>> convertListOfLists(
+            List<List<StudentReportEntity>> studentReportEntityList) {
+        List<List<StudentReportDto>> result = new ArrayList<>();
+        for (List<StudentReportEntity> reportEntityList : studentReportEntityList) {
+            result.add(convert(reportEntityList));
+        }
+        return result;
+
+    }
+
     private static void applyStudentPracticeMap(ModelMapper modelMapper) {
         modelMapper.createTypeMap(StudentPracticeEntity.class, StudentPracticeDto.class)
-                .addMapping(src -> src.getStudent().getName(), StudentPracticeDto::setPersonName)
-                .addMapping(src ->
-                        src.getChapter().getShortName(), StudentPracticeDto::setChapterName)
+            .addMapping(src -> src.getStudent().getName(), StudentPracticeDto::setPersonName)
+            .addMapping(src ->
+                src.getChapter().getShortName(), StudentPracticeDto::setChapterName)
                 .addMapping(StudentPracticeEntity::getState, StudentPracticeDto::setState);
+    }
+
+    private static void applyStudentReportMap(ModelMapper modelMapper) {
+        modelMapper.createTypeMap(StudentReportEntity.class, StudentReportDto.class)
+            .addMapping(src -> src.getStudent().getName(), StudentReportDto::setPersonName)
+            .addMapping(src ->
+                src.getChapter().getShortName(), StudentReportDto::setChapterName)
+                .addMapping(StudentReportEntity::getState, StudentReportDto::setState);
     }
 }

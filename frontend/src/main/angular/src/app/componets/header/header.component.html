@@ -6,5 +6,9 @@
         </a>
     </div>
     <span class="spacer"></span>
-    <a mat-button class="admin-button" routerLink="/admin">Admin</a>
+    <app-menu-btn
+            (menuItemSelected)="onMenuButtonClick($event)"
+            [isAdmin]="isAdmin"
+            *ngIf="isAuthenticated"
+    ></app-menu-btn>
 </mat-toolbar>

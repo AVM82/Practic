@@ -27,8 +27,9 @@ export class CoursesService {
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {
-    if (chapters !==null && chapters.length > 0) {
+    if (chapters !==null && chapters.length > 1) {
       chapters[0].isVisible = true;
+      chapters[1].isVisible = true;
     }
   }
 
@@ -53,5 +54,23 @@ export class CoursesService {
       this._router.navigateByUrl('/404');
       return of(result as T);
     };
+  }
+
+  setActiveChapter(chapters: Chapter[], chapterId: number) {
+    if (chapters !== null
+        && chapters.length > 0
+        && chapters.some(chapter => chapter.id === chapterId)
+    ) {
+      this.resetAllChapters(chapters);
+      chapters.forEach(chapter => {
+        chapter.isActive = chapter.id === chapterId;
+      });
+    }
+  }
+
+  resetAllChapters(chapters: Chapter[]) {
+    chapters.forEach(chapter => {
+      chapter.isActive = false;
+    });
   }
 }

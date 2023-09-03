@@ -1,6 +1,27 @@
 <app-course-navbar></app-course-navbar>
+<<<<<<< HEAD
 <div class="chapter-header">
 	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
+=======
+<div class="chapter-details-container">
+	<h2>Розділ {{ chapter?.number }}: {{chapter?.name}}</h2>
+    <div *ngFor="let subchapter of chapter?.subChapters" class="row">
+        <div class="column">{{chapter?.number}}.{{subchapter.number}}. </div>
+        <div class="column">{{subchapter.name}}
+           	<div *ngIf="subchapter.refs">
+           		<a href={{subchapter.refs}} target="_blank" rel="noopener">{{subchapter.refs}}</a>
+           	</div>
+            <div *ngFor="let subsubchapter of subchapter.subSubChapters" class="row">
+            	<div class="column">{{chapter?.number}}.{{subchapter.number}}.{{subsubchapter.number}}. </div>
+            	<div class="column">{{subsubchapter.name}}
+            		<div *ngIf="subsubchapter.refs">
+            			<a href={{subsubchapter.refs}} target="_blank" rel="noopener">{{subsubchapter.refs}}</a>
+            		</div>
+            	</div>
+            </div>
+         </div>
+    </div>
+>>>>>>> refs/remotes/origin/development
 </div>
 
 <div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">

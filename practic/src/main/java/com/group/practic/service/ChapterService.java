@@ -80,8 +80,7 @@ public class ChapterService {
 
 
     public Optional<ChapterEntity> getChapterByNumber(CourseEntity course, int number) {
-        Optional<ChapterEntity> result = chapterRepository.findByCourseAndNumber(course, number);
-        return result;
+        return chapterRepository.findByCourseAndNumber(course, number);
     }
 
 
