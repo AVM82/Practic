@@ -27,11 +27,12 @@ export class ChapterDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const chapterId =  Number(params.get('chapterId'));
+      const slug = params.get('slug');
+      const chapterN =  Number(params.get('chapterN'));
 
-      if(chapterId) {
+      if(slug && chapterN) {
   
-          this.chaptersService.getChapter(chapterId).subscribe(chapter =>
+          this.chaptersService.getChapter(slug, chapterN).subscribe(chapter =>
         {
           this.chapter = chapter;
           this.showPartNumber = chapter.parts.length > 1;
