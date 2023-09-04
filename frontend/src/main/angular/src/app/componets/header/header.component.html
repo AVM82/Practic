@@ -6,9 +6,14 @@
         </a>
     </div>
     <span class="spacer"></span>
+    
+    <div class="userpic-conteiner">
     <app-menu-btn
             (menuItemSelected)="onMenuButtonClick($event)"
             [isAdmin]="isAdmin"
             *ngIf="isAuthenticated"
+            [userPic]="profilePictureUrl"
     ></app-menu-btn>
+    <h1>{{name}}</h1>
+    </div>
 </mat-toolbar>
