@@ -13,6 +13,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,17 +66,20 @@ public class PersonController {
 
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')||hasRole('MENTOR')")
     public ResponseEntity<PersonEntity> createCourse(@RequestBody PersonDto personDto) {
         return postResponse(personService.create(personDto));
     }
 
 
     @GetMapping("/{id}/roles")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Set<RoleEntity>> findAllRoles(@PathVariable long id) {
         return ResponseEntity.ok(personService.findUserRolesById(id));
     }
 
     @PostMapping("/{id}/roles")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PersonEntity> addRole(@PathVariable long id,
                                                 @RequestParam String newRole) {
         PersonEntity personEntity = personService.addRoleToUserById(id, newRole);
