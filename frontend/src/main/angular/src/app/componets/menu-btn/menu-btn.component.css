@@ -2,3 +2,16 @@
     background-color: #27AE60;
     color: white;
 }
+.custom-icon {
+    width: 100%; /* Ширина 100% для заполнения размеров родительского элемента */
+    height: 100%;
+    background-size: contain;
+    background-repeat: initial;
+    border-radius: 50%; /* Это делает изображение круглым */
+    background-position: center center;
+  }
+
+  .round-image-button {
+    width: 70px;
+    height: 70px;
+}
