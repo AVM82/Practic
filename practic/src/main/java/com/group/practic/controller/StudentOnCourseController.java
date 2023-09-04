@@ -138,7 +138,7 @@ public class StudentOnCourseController {
             @PathVariable String slug) {
         List<List<StudentReportEntity>> students =
                 studentReportService.getAllStudentsActualReports(slug);
-        return students == null
+        return students.isEmpty()
             ? (ResponseEntity<Collection<List<StudentReportDto>>>) ResponseEntity.badRequest()
             : ResponseEntity.ok(Converter.convertListOfLists(students));
     }

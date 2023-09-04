@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import {CommonModule, NgFor, NgIf} from '@angular/common';
 import {Course} from "../../models/course/course";
 import {MatIconModule} from "@angular/material/icon";
 import {Chapter} from "../../models/course/chapter";
@@ -15,14 +15,14 @@ import {MatButtonModule} from "@angular/material/button";
   styleUrls: ['./course-navbar.component.css']
 })
 
-export class CourseNavbarComponent implements OnInit{
+export class CourseNavbarComponent implements OnInit {
   course: Course | undefined;
   chapters: Chapter[] = [];
   slug: string = '';
 
   constructor(
-      private coursesService :CoursesService,
-      private route :ActivatedRoute
+      private coursesService: CoursesService,
+      private route: ActivatedRoute
   ) {
   }
 

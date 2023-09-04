@@ -6,6 +6,7 @@ import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.repository.StudentReportRepository;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class StudentReportService {
 
     public List<List<StudentReportEntity>> getAllStudentsActualReports(String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
-        List<List<StudentReportEntity>> result = null;
+        List<List<StudentReportEntity>> result = Collections.emptyList();
         if (course.isPresent()) {
             result = new ArrayList<>();
             for (ChapterEntity chapter : course.get().getChapters()) {

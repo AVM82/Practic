@@ -9,8 +9,20 @@ gap: 10px; display: inline-flex">
 
   </div>
   <div style="display: flex;">
-    <report-card *ngFor="let report of  studentReports" [reportTopic]="report.title"
+    <report-card *ngFor="let report of  showReports()" [reportTopic]="report.title"
                  [studentName]="report.personName"
-    [dateTimeValue]="report.dateTime"></report-card>
+                 [dateTimeValue]="report.dateTime"
+                 [profilePictureUrl]="report.profilePictureUrl"></report-card>
   </div>
+  <ng-container *ngIf="isReportsLengthMore()">
+    <div style="display: flex;">
+      <button (click)="previousReports()" mat-icon-button aria-label>
+        <mat-icon>arrow_circle_left</mat-icon>
+      </button>
+      <button (click)="nextReports()" mat-icon-button aria-label>
+        <mat-icon>arrow_circle_right</mat-icon>
+      </button>
+    </div>
+  </ng-container>
+
 </div>

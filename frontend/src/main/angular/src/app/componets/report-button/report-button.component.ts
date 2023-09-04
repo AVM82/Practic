@@ -15,13 +15,20 @@ import {MatButtonModule} from "@angular/material/button";
 export class ReportButtonComponent{
 
   dropdownText = "Доповідей не заплановано";
+  rep = " доповідь";
   constructor(private router: Router) {}
   @Input() reportsNumber!: number
 
 
   isReportsPresent(): boolean {
     if(this.reportsNumber>0) {
-      this.dropdownText = "Заплановано " + this.reportsNumber + " доповіді/ей"
+      if(this.reportsNumber>1&&this.reportsNumber<5){
+        this.rep = ' доповіді'
+      }
+      if(this.reportsNumber>=5){
+        this.rep = ' доповідей'
+      }
+      this.dropdownText = "Заплановано " + this.reportsNumber + this.rep
       return false;
     }
     return true;
