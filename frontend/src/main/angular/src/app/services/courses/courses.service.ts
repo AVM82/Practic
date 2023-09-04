@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getChapterByIdUrl} from "../../enums/api-urls";
+import {ApiUrls, getChaptersUrl} from "../../enums/api-urls";
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +22,8 @@ export class CoursesService {
     )
   }
 
-  getChapters(id: number): Observable<Chapter[]> {
-    return this.http.get<Chapter[]>(getChapterByIdUrl(id));
+  getChapters(slug: string): Observable<Chapter[]> {
+    return this.http.get<Chapter[]>(getChaptersUrl(slug));
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {
