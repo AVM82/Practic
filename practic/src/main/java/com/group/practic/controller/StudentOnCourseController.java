@@ -7,7 +7,6 @@ import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
-import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.service.PersonService;
@@ -134,12 +133,11 @@ public class StudentOnCourseController {
     }
 
     @GetMapping("/reports/course/{slug}")
-    public ResponseEntity<Collection<List<StudentReportDto>>> getReportsWithStateAndChapterFilter(
+    public ResponseEntity<Collection<List<StudentReportDto>>> getReportsActualReports(
             @PathVariable String slug) {
-        List<List<StudentReportEntity>> students =
-                studentReportService.getAllStudentsActualReports(slug);
-        return students.isEmpty()
-            ? (ResponseEntity<Collection<List<StudentReportDto>>>) ResponseEntity.badRequest()
-            : ResponseEntity.ok(Converter.convertListOfLists(students));
+
+        return getResponse(Converter.convertListOfLists(
+            studentReportService.getAllStudentsActualReports(slug)));
+
     }
 }
