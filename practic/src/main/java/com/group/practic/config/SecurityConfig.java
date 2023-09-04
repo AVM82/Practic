@@ -90,24 +90,10 @@ public class SecurityConfig {
                         request ->
                                 request
                                         .requestMatchers(
-                                                "/",
-                                                "/error",
-                                                "/login/**",
-                                                "/statistics/**",
-                                                "/*.js",
-                                                "/*.html",
-                                                "/*.css",
-                                                "/*.woff2",
-                                                "/*.ico",
-                                                "/oauth2/**",
-                                                "/error",
-                                                "/api/actuator/prometheus",
-                                                "/swagger-ui/**",
-                                                "/*/swagger-ui/**",
-                                                "/*/api-docs/**")
-                                        .permitAll()
+                                                "/api/**")
+                                        .authenticated()
                                         .anyRequest()
-                                        .authenticated())
+                                        .permitAll())
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(endpointConfig ->
                                 endpointConfig

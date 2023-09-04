@@ -6,7 +6,7 @@ import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {User} from "../../services/auth/auth.service";
 import {NgIf} from "@angular/common";
 import {environment} from "../../../enviroments/enviroment";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
 
 @Component({
@@ -23,7 +23,8 @@ export class HeaderComponent implements OnInit{
   isAuthenticated: boolean = false;
 
   constructor(
-      private tokenStorageService:TokenStorageService
+      private tokenStorageService:TokenStorageService,
+      private router: Router
   ) {
   }
   ngOnInit(): void {
@@ -42,7 +43,7 @@ export class HeaderComponent implements OnInit{
   }
 
   toAdminPage() {
-    window.location.href = '/admin'
+    this.router.navigate(['/admin']);
   }
 
   onMenuButtonClick(item: string) {
