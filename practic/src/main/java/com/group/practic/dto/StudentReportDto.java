@@ -25,6 +25,7 @@ public class StudentReportDto {
     public void setPersonName(String personName) {
         this.personName = personName;
     }
+
     public String getProfilePictureUrl() {
         return profilePictureUrl;
     }
