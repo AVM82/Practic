@@ -21,6 +21,8 @@ export class HeaderComponent implements OnInit{
 
   isAdmin: boolean = false;
   isAuthenticated: boolean = false;
+  name: string = "User"
+  profilePictureUrl = ""
 
   constructor(
       private tokenStorageService:TokenStorageService
@@ -30,9 +32,11 @@ export class HeaderComponent implements OnInit{
     const token = this.tokenStorageService.getToken();
     if (token) {
       const user: User = this.tokenStorageService.getUser();
-      let currentUser: User = new User(user.roles);
+      let currentUser: User = new User(user.roles,user.name,user.profilePictureUrl);
       this.isAdmin = currentUser.hasAnyRole('ADMIN');
       this.isAuthenticated = currentUser.isAuthenticated;
+      this.name = currentUser.name;
+      this.profilePictureUrl=currentUser.profilePictureUrl
     }
   }
 
