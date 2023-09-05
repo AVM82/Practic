@@ -61,7 +61,6 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     ) throws OAuth2AuthenticationException {
         String emailEndpointUri = env.getProperty("linkedin.email-address-uri");
         Assert.notNull(emailEndpointUri, "LinkedIn email address endpoint required");
-        
         ResponseEntity<String> response = makeLinkedInApiRequest(accessToken, emailEndpointUri);
         String element = extractElement("email", response.getBody());
 
@@ -72,11 +71,13 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             String accessToken, Map<String, Object> attributes) {
         String pictureEndpointUri = env.getProperty("linkedin.profile-picture-uri");
         Assert.notNull(pictureEndpointUri, "LinkedIn profile picture endpoint required");
-
         ResponseEntity<String> response = makeLinkedInApiRequest(accessToken, pictureEndpointUri);
-        String element = extractElement("picture", response.getBody());
-       
-        attributes.put("pictureUrl", element);
+        try {
+            String element = extractElement("picture", response.getBody());
+            attributes.put("pictureUrl", element);
+        } catch (Exception e) {
+            log.error("User don't have profile picture", e);
+        }
     }
 
     private ResponseEntity<String> makeLinkedInApiRequest(
@@ -111,7 +112,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         } catch (JsonProcessingException e) {
             log.error("Cannot process JSON from response's body", e);
         }
-        
+
         return result;
     }
 
@@ -123,7 +124,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         return emailAddressElement.textValue();
     }
-    
+
     private String extractProfilePictureUrlElement(JsonNode rootNode) {
         JsonNode profilePictureUrlElement = rootNode
                 .get("profilePicture")

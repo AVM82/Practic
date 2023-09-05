@@ -2,7 +2,8 @@
     [matMenuTriggerFor]="menu" 
     aria-label="Menu">
     <mat-icon 
-    [ngStyle]="{ 'background-image': 'url(' + userPic + ')' }"
+    [ngStyle]="{ 'background-image': userPic ? 'url(' + userPic + ')' :
+     'url(https://i.imgur.com/2OB0d0t.png)' }"
      class="custom-icon" ></mat-icon>
 </button>
 
