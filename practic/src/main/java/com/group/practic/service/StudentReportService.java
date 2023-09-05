@@ -1,5 +1,6 @@
 package com.group.practic.service;
 
+import com.group.practic.dto.NewStudentReportDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
@@ -18,14 +19,16 @@ public class StudentReportService {
 
     private final StudentReportRepository studentReportRepository;
     private final CourseService courseService;
+    private final ChapterService chapterService;
     static final List<ReportState> ACTUAL_STATES = List.of(ReportState.STARTED,
-        ReportState.ANNOUNCED);
+            ReportState.ANNOUNCED);
 
     @Autowired
     public StudentReportService(StudentReportRepository studentReportRepository,
-        CourseService courseService) {
+            CourseService courseService, ChapterService chapterService) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
+        this.chapterService = chapterService;
     }
 
 
@@ -36,13 +39,19 @@ public class StudentReportService {
             result = new ArrayList<>();
             for (ChapterEntity chapter : course.get().getChapters()) {
                 result.add(
-                    studentReportRepository.findAllByChapterAndStateIn(chapter, ACTUAL_STATES));
+                        studentReportRepository.findAllByChapterAndStateIn(chapter, ACTUAL_STATES));
             }
         }
         return result;
     }
 
-    public StudentReportEntity addNewStudentReport(PersonEntity person) {
-        return null;
+    public Optional<StudentReportEntity> createStudentReport(Optional<PersonEntity> student,
+            NewStudentReportDto newStudentReportDto) {
+        Optional<ChapterEntity> chapter = chapterService.get(newStudentReportDto.chapter());
+
+        return (student.isPresent() && chapter.isPresent())
+            ? Optional.ofNullable(studentReportRepository
+            .save(new StudentReportEntity(chapter.get(), student.get(),
+                newStudentReportDto.dateTime(), newStudentReportDto.title()))) : Optional.empty();
     }
 }

@@ -3,8 +3,10 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
+import com.group.practic.dto.NewStudentReportDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
+import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
@@ -16,6 +18,7 @@ import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
 import com.group.practic.util.Converter;
 import jakarta.validation.constraints.Min;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +30,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -126,16 +130,21 @@ public class StudentOnCourseController {
     }
 
     @GetMapping("/reports/course/{slug}")
-    public ResponseEntity<Collection<List<StudentReportDto>>> getReportsActualReports(
+    public ResponseEntity<Collection<List<StudentReportDto>>> getActualStudentReports(
             @PathVariable String slug) {
 
         return getResponse(Converter.convertListOfLists(
             studentReportService.getAllStudentsActualReports(slug)));
 
     }
-    @PostMapping("/reports")
-    private ResponseEntity<StudentReportDto> createNewReport(Principal principal){
 
-        return null;
+    @PostMapping("/reports")
+    public ResponseEntity<StudentReportDto> postStudentReport(Principal principal, @RequestBody
+            NewStudentReportDto newStudentReportDto) {
+
+        Optional<PersonEntity> personEntity = personService.get(principal.getName());
+        Optional<StudentReportEntity> reportEntity =
+                studentReportService.createStudentReport(personEntity, newStudentReportDto);
+        return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
 }
