@@ -15,6 +15,7 @@ import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
 import com.group.practic.util.Converter;
 import jakarta.validation.constraints.Min;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -139,5 +140,10 @@ public class StudentOnCourseController {
         return getResponse(Converter.convertListOfLists(
             studentReportService.getAllStudentsActualReports(slug)));
 
+    }
+    @PostMapping("/reports")
+    private ResponseEntity<StudentReportDto> createNewReport(Principal principal){
+
+        return null;
     }
 }
