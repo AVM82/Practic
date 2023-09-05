@@ -43,6 +43,12 @@ public interface Converter {
         return modelMapper().map(chapterEntity, ChapterDto.class);
     }
     
+    static List<ChapterDto> convertChapterEntityList(List<ChapterEntity> chapterEntityList) {
+        List<ChapterDto> result = new ArrayList<>();
+        chapterEntityList.forEach(x -> result.add(convert(x)));
+        return result;
+    }
+    
     static ChapterEntity convert(ChapterDto chapterDto) {
         return modelMapper().map(chapterDto, ChapterEntity.class);
     }

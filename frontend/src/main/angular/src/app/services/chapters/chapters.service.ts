@@ -12,9 +12,9 @@ export class ChaptersService {
   
   constructor(private http: HttpClient, private router: Router) {}
 
-  getChapter(chapterId: number): Observable<Chapter> {
-     return this.http.get<Chapter>(getChapterUrl(chapterId)).pipe(
-        catchError(this.handleError<Chapter>(`getChapter chapterId=${chapterId}`))
+  getChapter(slug: string, chapterN: number): Observable<Chapter> {
+     return this.http.get<Chapter>(getChapterUrl(slug, chapterN)).pipe(
+        catchError(this.handleError<Chapter>(`getChapter chapterId=${chapterN}`))
     );
   }
 
