@@ -1,19 +1,18 @@
 <div class="nav-wrap" *ngIf="chapters">
     <div class="progress active"
-        [routerLink]="['/courses', slug]"
-    >
-        {{ course?.shortName }}
+        [routerLink]="['/courses', slug]">
+        Розділи
     </div>
     <div class="progress"
          [class.icon]="!chapter.isVisible"
          *ngFor="let chapter of chapters;"
          [ngClass]="{'active': chapter.isActive}"
-         [routerLink]="chapter.isActive ? [] : ['/courses', slug, 'chapters', chapter.id]"
+         [routerLink]="chapter.isActive ? [] : ['/courses', slug, 'chapters', chapter.number]"
     >
-        <span *ngIf="chapter.isVisible">{{ chapter.shortName }}</span>
+        <span *ngIf="chapter.isVisible">{{ chapter.number }}</span>
         <mat-icon class="icon" *ngIf="!chapter.isVisible">lock</mat-icon>
     </div>
     <div class="progress">
-        Додаткові матеріали
+        Матеріали
     </div>
 </div>

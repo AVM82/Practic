@@ -5,7 +5,7 @@
     <ng-container *ngIf="chapter.isVisible">
 
       <div class="chapter-button">
-        <a class="link" [routerLink]="['/courses', slug, 'chapters', chapter.id]">
+        <a class="link" [routerLink]="['/courses', slug, 'chapters', chapter.number]">
           <mat-card-header class="course-details">
             <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
           </mat-card-header>
@@ -14,9 +14,6 @@
         <report-button [reportsNumber]="reports[chapter.number-1].length"></report-button>
       </div>
 
-      <mat-card-content class="mat-card-content">
-        {{chapter.name}}
-      </mat-card-content>
       <mat-card-footer>
         <div class="info-tags">
           <div class="info-tag">
@@ -33,7 +30,7 @@
     </ng-container>
     <ng-container *ngIf="!chapter.isVisible">
       <mat-card-header class="course-details">
-        <h3>Розділ {{ chapter?.number }}: {{chapter.name}}</h3>
+        <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
       </mat-card-header>
       <mat-card-content>
         <mat-icon class="lock-icon">lock</mat-icon>

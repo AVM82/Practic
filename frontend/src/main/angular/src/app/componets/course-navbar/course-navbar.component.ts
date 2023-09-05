@@ -29,16 +29,16 @@ export class CourseNavbarComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug')
-      const chapterId = Number(params.get('chapterId')) | 0;
+      const chapterN = Number(params.get('chapterN')) | 0;
 
       if (slug) {
         this.slug = slug;
         this.coursesService.getCourse(slug).subscribe(course => {
           this.course = course;
-          this.coursesService.getChapters(course.id).subscribe(chapters => {
+          this.coursesService.getChapters(slug).subscribe(chapters => {
             this.coursesService.setFirstChapterVisible(chapters);
-            if(chapterId !== 0) {
-              this.coursesService.setActiveChapter(chapters, chapterId);
+            if(chapterN !== 0) {
+              this.coursesService.setActiveChapter(chapters, chapterN);
             }else{
               this.coursesService.resetAllChapters(chapters);
             }
