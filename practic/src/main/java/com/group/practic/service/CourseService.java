@@ -53,7 +53,8 @@ public class CourseService {
 
     public List<ChapterDto> getChapters(String slug) {
         Optional<CourseEntity> course = courseRepository.findBySlug(slug);
-        return course.isEmpty() ? List.of() : Converter.convertChapterEntityList(chapterService.getAll(course.get()));
+        return course.isEmpty() ? List.of()
+                : Converter.convertChapterEntityList(chapterService.getAll(course.get()));
     }
 
 

@@ -290,7 +290,7 @@ public class CoursesInitializator {
                 SubChapterEntity subChapter = chapterPartService.createSub(new SubChapterEntity(0,
                         chapterPart, n, nameRefs[0], getReferenceTitleEntitySet(nameRefs)));
                 if (subChapter != null) {
-                    getSubSubChapterSet(subChapter, prop, key);
+                    subChapter.setSubSubChapters(getSubSubChapterSet(subChapter, prop, key));
                     result.add(subChapter);
                 }
             }

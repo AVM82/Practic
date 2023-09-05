@@ -1,8 +1,7 @@
 <div class="nav-wrap" *ngIf="chapters">
     <div class="progress active"
-        [routerLink]="['/courses', slug]"
-    >
-        {{ course?.shortName }}
+        [routerLink]="['/courses', slug]">
+        Розділи
     </div>
     <div class="progress"
          [class.icon]="!chapter.isVisible"
@@ -14,6 +13,6 @@
         <mat-icon class="icon" *ngIf="!chapter.isVisible">lock</mat-icon>
     </div>
     <div class="progress">
-        Додаткові матеріали
+        Матеріали
     </div>
 </div>
