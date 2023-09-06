@@ -31,7 +31,6 @@ public class StudentReportService {
         this.chapterService = chapterService;
     }
 
-
     public List<List<StudentReportEntity>> getAllStudentsActualReports(String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
         List<List<StudentReportEntity>> result = Collections.emptyList();
