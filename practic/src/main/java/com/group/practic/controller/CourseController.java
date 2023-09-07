@@ -29,8 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/courses")
 public class CourseController {
 
-    @Autowired
     private CourseService courseService;
+
+
+    @Autowired
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
+    }
 
 
     @GetMapping
@@ -71,6 +76,12 @@ public class CourseController {
     }
 
 
+    @PostMapping("/NewCourseFromProperties")
+    public ResponseEntity<CourseEntity> createCourse(@RequestBody String propertyFile) {
+        return postResponse(courseService.create(propertyFile));
+    }
+    
+    
     @PostMapping
     public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseDto courseDto) {
         return postResponse(courseService.create(courseDto));
@@ -78,9 +89,9 @@ public class CourseController {
 
 
     @PutMapping("/{id}/change/shortNname")
-    public ResponseEntity<CourseEntity> addShortName(@PathVariable long id,
+    public ResponseEntity<CourseEntity> changeShortName(@PathVariable long id,
             @RequestParam String shortName) {
-        return postResponse(courseService.addShortName(id, shortName));
+        return postResponse(courseService.changeShortName(id, shortName));
     }
 
 

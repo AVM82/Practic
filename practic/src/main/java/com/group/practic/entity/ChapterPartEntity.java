@@ -30,18 +30,18 @@ public class ChapterPartEntity {
 
     int number;
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
     @OrderBy("number")
     Set<SubChapterEntity> subChapters = new HashSet<>();
 
     @NotBlank
     String praxisPurpose;
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
     @OrderBy("number")
     Set<PraxisEntity> praxis = new HashSet<>();
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
     @OrderBy("number")
     Set<AdditionalEntity> additionals = new HashSet<>();
 

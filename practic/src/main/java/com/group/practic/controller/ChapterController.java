@@ -17,8 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/chapters")
 public class ChapterController {
 
-    @Autowired
     ChapterService chapterService;
+
+
+    @Autowired
+    public ChapterController(ChapterService chapterService) {
+        this.chapterService = chapterService;
+    }
 
 
     @GetMapping("/{id}")
@@ -31,6 +36,5 @@ public class ChapterController {
     public ResponseEntity<ChapterEntity> getByShortName(@PathVariable String shortName) {
         return getResponse(chapterService.getByShortName(shortName));
     }
-
 
 }

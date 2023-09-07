@@ -5,6 +5,7 @@ import com.group.practic.entity.ReferenceTitleEntity;
 import com.group.practic.repository.ReferenceTitleRepository;
 import com.group.practic.util.FunctionThreadPool;
 import com.group.practic.util.MetaInfo;
+import com.group.practic.util.PropertyUtil;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -87,6 +88,12 @@ public class ReferenceTitleService {
             result.add(update(referenceTitleDto));
         }
         return result;
+    }
+
+
+    public Set<ReferenceTitleEntity> getReferenceTitleEntitySet(String[] part) {
+        return part.length == 1 ? Set.of()
+                : create(Set.of(part[1].split(PropertyUtil.REFERENCE_SEPARATOR)));
     }
 
 }
