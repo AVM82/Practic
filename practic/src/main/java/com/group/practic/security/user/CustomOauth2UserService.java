@@ -76,7 +76,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             String element = extractElement("picture", response.getBody());
             attributes.put("pictureUrl", element);
         } catch (Exception e) {
-            log.error("User don't have profile picture", e);
+            log.error("User don't have profile picture");
         }
     }
 
