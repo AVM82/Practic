@@ -9,11 +9,8 @@ export enum ApiUrls {
   Me = '/api/persons/me'
 }
 
-export const getChapterByIdUrl = (courseId: number): string =>
-    `/api/courses/${courseId}/chapters`;
+export const getChaptersUrl = (slug: string): string =>
+    `/api/courses/${slug}/allchapters`;
 
-export const getChaptersUrl = (courseId: number): string =>
-    `/api/courses/${courseId}/chapters`;
-
-export const getChapterUrl = (chapterId: number): string =>
-    `/api/chapters/${chapterId}`;
+export const getChapterUrl = (slug: string, chapterN: number): string =>
+    `/api/courses/${slug}/chapters/${chapterN}`;

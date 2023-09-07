@@ -29,7 +29,7 @@ const routes: Routes = [
 
   },
   {path: 'courses/:slug', component: CourseDetailsComponent},
-  {path: 'courses/:slug/chapters/:chapterId', component: ChapterDetailsComponent},
+  {path: 'courses/:slug/chapters/:chapterN', component: ChapterDetailsComponent},
   {path: '**', component: PageNotFoundComponent}
 ];
 

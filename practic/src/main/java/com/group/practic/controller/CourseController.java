@@ -3,6 +3,7 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
@@ -38,10 +39,10 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{id}/chapters")
+    @GetMapping("/{slug}/allchapters")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Collection<ChapterEntity>> getChapters(@Min(1) @PathVariable long id) {
-        return getResponse(courseService.getChapters(id));
+    public ResponseEntity<Collection<ChapterDto>> getChapters(@PathVariable String slug) {
+        return getResponse(courseService.getChapters(slug));
     }
 
 
