@@ -3,11 +3,11 @@
     color: white;
 }
 .custom-icon {
-    width: 100%; /* Ширина 100% для заполнения размеров родительского элемента */
+    width: 100%; 
     height: 100%;
     background-size: contain;
     background-repeat: initial;
-    border-radius: 50%; /* Это делает изображение круглым */
+    border-radius: 50%;
     background-position: center center;
   }
 
