@@ -22,10 +22,12 @@ export class AuthService {
 }
 
 export class User {
-  static readonly ANONYMOUS = new User([]);
-
+  static readonly ANONYMOUS = new User([],"","");
+  
   constructor(
-      readonly roles: UserRole[]
+      readonly roles: UserRole[],
+      readonly name : string,
+      readonly profilePictureUrl : string
   ) {}
 
   get isAuthenticated(): boolean {
@@ -35,6 +37,7 @@ export class User {
   hasAnyRole(...roles: string[]): boolean {
     return roles.some(roleName => this.roles.some(userRole => userRole.name === roleName));
   }
+
 }
 
 export class UserRole {

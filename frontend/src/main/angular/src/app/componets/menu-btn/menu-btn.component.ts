@@ -13,7 +13,8 @@ import {MatButtonModule} from "@angular/material/button";
 })
 export class MenuBtnComponent {
   @Output() menuItemSelected = new EventEmitter<string>();
-  @Input() isAdmin :boolean = false;
+  @Input() isAdmin : boolean = false;
+  @Input() userPic : string = ''
 
   onMenuItemClick(item: string) {
     this.menuItemSelected.emit(item);
