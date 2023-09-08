@@ -40,7 +40,7 @@ public class SubChapterEntity {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     Set<ReferenceTitleEntity> refs = new HashSet<>();
 
-    @OneToMany(mappedBy = "subChapter", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "subChapter", cascade = CascadeType.ALL)
     @OrderBy("number")
     Set<SubSubChapterEntity> subSubChapters = new HashSet<>();
 

@@ -4,6 +4,7 @@
     background-color: #e8ffef;
     justify-content: space-between;
     padding: 10px;
+    padding-left: 20px;
     margin-left: 40px;
     margin-right: 40px;    
     margin-top: 10px;
@@ -116,10 +117,6 @@
 
 .accordion-span {
     color: #c0d0c0;
-}
-
-.accordion-span-down {
-    transform: rotate(180deg);
 }
 
 .column {

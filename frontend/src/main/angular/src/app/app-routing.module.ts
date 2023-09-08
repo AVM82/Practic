@@ -9,6 +9,7 @@ import {DashboardComponent} from "./modules/dashboard/dashboard.component";
 import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
 import {ReportDashboardComponent} from "./pages/report-dashboard/report-dashboard.component";
+import {AdditionalMaterialsComponent} from "./pages/materials/additional-materials.component";
 
 const routes: Routes = [
   {path: '', component: CoursesComponent},
@@ -23,13 +24,10 @@ const routes: Routes = [
       {path: 'students/practices', component: PracticMetricComponent}
     ]
   },
-  {
-    path: 'reports',
-    component: ReportDashboardComponent
-
-  },
+  {path: 'reports', component: ReportDashboardComponent},
   {path: 'courses/:slug', component: CourseDetailsComponent},
   {path: 'courses/:slug/chapters/:chapterN', component: ChapterDetailsComponent},
+  {path: 'courses/:slug/additional', component: AdditionalMaterialsComponent},
   {path: '**', component: PageNotFoundComponent}
 ];
 
