@@ -9,6 +9,8 @@ import {DashboardComponent} from "./modules/dashboard/dashboard.component";
 import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
 import {ReportDashboardComponent} from "./pages/report-dashboard/report-dashboard.component";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
 
 const routes: Routes = [
   {path: '', component: CoursesComponent},
@@ -24,7 +26,7 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'reports',
+    path: 'courses/:slug/reports',
     component: ReportDashboardComponent
 
   },
@@ -32,9 +34,9 @@ const routes: Routes = [
   {path: 'courses/:slug/chapters/:chapterN', component: ChapterDetailsComponent},
   {path: '**', component: PageNotFoundComponent}
 ];
-
+//todo ask about import date modules
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes),MatDatepickerModule, MatNativeDateModule],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
