@@ -138,7 +138,8 @@ public class StudentOnCourseController {
 
     }
 
-    @PostMapping("/reports")
+
+    @PostMapping("/reports/course/{slug}")
     public ResponseEntity<StudentReportDto> postStudentReport(Principal principal, @RequestBody
             NewStudentReportDto newStudentReportDto) {
 
