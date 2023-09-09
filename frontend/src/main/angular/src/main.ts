@@ -16,12 +16,14 @@ import {AuthService} from "./app/services/auth/auth.service";
 import {AuthInterceptor} from "./app/services/auth.interceptor";
 import {environment} from "./enviroments/enviroment";
 import {ReportServiceService} from "./app/services/report/report-service.service";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
 
 
 bootstrapApplication(AppComponent, {
     providers: [
         importProvidersFrom(BrowserModule, AppRoutingModule, TranslocoRootModule, MatCardModule, MatIconModule, MatToolbarModule),
-        CoursesService, StudentMetricsService, MatPaginator, MatCard, AuthService, ReportServiceService,
+        CoursesService, StudentMetricsService, MatPaginator, MatCard, AuthService, ReportServiceService,MatDatepickerModule, MatNativeDateModule,
         provideAnimations(),
         provideHttpClient(withInterceptorsFromDi()),
       {provide: HTTP_INTERCEPTORS, useClass: ApiCacheInterceptor, multi: true},
