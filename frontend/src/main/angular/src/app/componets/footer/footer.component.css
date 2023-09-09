@@ -15,6 +15,12 @@ footer {
     align-items: center;
 }
 
+.center-line{
+    display: flex;
+    text-align: center;
+    margin-top: 7px;
+}
+
 .first-line{
     display: flex;
     text-align: center;
@@ -35,14 +41,6 @@ footer {
     user-select: none;
 }
 
-.center-line{
-    display: contents;
-    align-items: center;
-    justify-content: baseline;
-    display: flex;
-    text-align: center;
-    margin-top: 7px;
-}
 
 .end-line{
     align-items: last baseline;
