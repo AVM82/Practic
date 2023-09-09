@@ -3,9 +3,7 @@ export enum ApiUrls {
   Course = '/api/courses/',
   Practices = '/api/students/practices/',
   PracticeStates = '/api/students/practices/states',
-  Reports = '/api/students/reports/course/',
   ReportStates = '/api/students/reports/states',
-  Chapters = '/api/chapters',
   Me = '/api/persons/me'
 }
 
@@ -14,3 +12,8 @@ export const getChaptersUrl = (slug: string): string =>
 
 export const getChapterUrl = (slug: string, chapterN: number): string =>
     `/api/courses/${slug}/chapters/${chapterN}`;
+
+export const getReportsUrl = (slug: string): string =>
+    `/api/students/reports/course/${slug}`;
+export const postReportsUrl = (slug: string): string =>
+    `/api/students/reports/course/${slug}`;
