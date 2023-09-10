@@ -94,10 +94,8 @@ public class StudentOnCourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentOnCourseEntity> get(@Min(1) @PathVariable long id) {
-        if (!personService.isCurrentPersonMentor()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        return getResponse(studentOnCourseService.get(id));
+        return personService.isCurrentPersonMentor() ? getResponse(studentOnCourseService.get(id))
+                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
 

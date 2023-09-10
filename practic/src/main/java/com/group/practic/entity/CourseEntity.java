@@ -43,17 +43,17 @@ public class CourseEntity {
     @Column(length = 8192)
     String description;
 
-    @OneToMany
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @JsonIgnore
     @OrderBy("number")
     Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @JsonIgnore
     @OrderBy("number")
     Set<LevelEntity> levels = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @JsonIgnore
     @OrderBy("number")
     Set<ChapterEntity> chapters = new HashSet<>();

@@ -66,8 +66,7 @@ public class PersonEntity implements UserDetails {
     private String applyCourse;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "persons_roles",
-            joinColumns = @JoinColumn(name = "person_id"),
+    @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
 
@@ -78,13 +77,19 @@ public class PersonEntity implements UserDetails {
     }
 
 
+    public PersonEntity(String name, String linkedin, Set<RoleEntity> roles) {
+        this.name = name;
+        this.linkedin = linkedin;
+        this.roles = roles;
+    }
+
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<SimpleGrantedAuthority> authorities = new HashSet<>();
         if (roles != null) {
-            authorities = roles.stream()
-                    .map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
+            authorities = roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
                     .collect(Collectors.toUnmodifiableSet());
         }
 

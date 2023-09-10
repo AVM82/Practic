@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Course} from "../../models/course/course";
 import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl} from "../../enums/api-urls";
+import {ApiUrls, getChaptersUrl, getMaterialsUrl} from "../../enums/api-urls";
+import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,14 @@ export class CoursesService {
 
   confirmApplyOnCourse(courseSlug: string, userId: number): Observable<any> {
     return this.http.post('/api/students', {courseSlug, userId});
+  }
+
+  getAdditionalMaterials(slug: string): Observable<AdditionalMaterials[]> {
+    return this.http.get<AdditionalMaterials[]>(getMaterialsUrl(slug));
+  }
+
+  postAdditionalChange(slug: string, id: number, checked: boolean) {
+
   }
 
 
