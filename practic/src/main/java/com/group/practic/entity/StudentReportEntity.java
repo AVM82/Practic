@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 
@@ -29,6 +30,7 @@ public class StudentReportEntity {
     PersonEntity student;
 
     @Future
+    @NotNull
     LocalDateTime dateTime;
 
     @NotBlank
