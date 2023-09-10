@@ -27,9 +27,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-
 @Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}))
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -63,6 +61,9 @@ public class PersonEntity implements UserDetails {
     private String password;
 
     private String profilePictureUrl;
+
+    @Getter
+    private String applyCourse;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "persons_roles",
@@ -137,4 +138,7 @@ public class PersonEntity implements UserDetails {
         return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
     }
 
+    public void setApplyCourse(String applyCourse) {
+        this.applyCourse = applyCourse;
+    }
 }

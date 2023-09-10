@@ -37,6 +37,10 @@ export class CoursesService {
     return this.http.get<Course[]>(ApiUrls.Courses);
   }
 
+  confirmApplyOnCourse(courseSlug: string, userId: number): Observable<any> {
+    return this.http.post('/api/students', {courseSlug, userId});
+  }
+
 
   /**
    * Handle Http operation that failed.

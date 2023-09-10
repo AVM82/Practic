@@ -229,6 +229,7 @@ public class PersonService implements UserDetailsService {
         final HashSet<RoleEntity> roles = new HashSet<>();
         roles.add(roleRepository.findByName("USER"));
         PersonEntity newPerson = new PersonEntity();
+        newPerson.setInactive(true);
         newPerson.setName(userDetails.getName());
         newPerson.setPassword(userDetails.getPassword());
         newPerson.setEmail(userDetails.getEmail());
@@ -240,6 +241,10 @@ public class PersonService implements UserDetailsService {
         newPerson = personRepository.save(newPerson);
         personRepository.flush();
         return newPerson;
+    }
+
+    public PersonEntity save(PersonEntity person) {
+        return personRepository.save(person);
     }
 
 }

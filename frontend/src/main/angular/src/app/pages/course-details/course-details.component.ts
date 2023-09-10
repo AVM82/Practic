@@ -11,11 +11,12 @@ import {MatButtonModule} from "@angular/material/button";
 import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {StudentReport} from "../../models/report/studentReport";
+import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent, ApplyBtnComponent],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })

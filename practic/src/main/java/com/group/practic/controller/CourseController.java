@@ -91,6 +91,7 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/chapters/{number}")
+    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<ChapterEntity> getChapterByNumber(@PathVariable String slug,
             @PathVariable int number) {
         return getResponse(courseService.getChapterByNumber(slug, number));

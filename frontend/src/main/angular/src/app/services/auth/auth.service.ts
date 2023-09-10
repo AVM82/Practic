@@ -19,15 +19,26 @@ export class AuthService {
   getCurrentUser(): Observable<any> {
     return this.http.get(ApiUrls.Me, httpOptions);
   }
+
+  applyOnCourse(): Observable<any> {
+    return this.http.post('/api/persons/apply-on-course', {}, httpOptions);
+  }
 }
 
 export class User {
-  static readonly ANONYMOUS = new User([],"","");
-  
+
   constructor(
-      readonly roles: UserRole[],
-      readonly name : string,
-      readonly profilePictureUrl : string
+      readonly id: number,
+      readonly inactive: boolean,
+      readonly ban: boolean,
+      readonly email: string,
+      readonly name: string,
+      readonly discord: string | null,
+      readonly linkedin: string,
+      readonly contacts: string | null,
+      readonly profilePictureUrl: string,
+      readonly applyCourse: string,
+      readonly roles: UserRole[]
   ) {}
 
   get isAuthenticated(): boolean {
@@ -36,6 +47,22 @@ export class User {
 
   hasAnyRole(...roles: string[]): boolean {
     return roles.some(roleName => this.roles.some(userRole => userRole.name === roleName));
+  }
+
+  static fromJson(json: any): User {
+    return new User(
+        json.id,
+        json.inactive,
+        json.ban,
+        json.email,
+        json.name,
+        json.discord,
+        json.linkedin,
+        json.contacts,
+        json.profilePictureUrl,
+        json.applyCourse,
+        json.roles
+    );
   }
 
 }

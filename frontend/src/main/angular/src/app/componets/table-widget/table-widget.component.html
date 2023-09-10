@@ -10,7 +10,16 @@
             <ng-container *ngIf="isCreatedAtOrUpdatedAt(column)">
                 {{ element[column] | date: 'dd.MM.yyyy' }}
             </ng-container>
-            <ng-container *ngIf="!isCreatedAtOrUpdatedAt(column)">
+            <ng-container *ngIf="isColumnWithBnt(column)">
+                <button [disabled]="isRequestInProgress"
+                        (click)="performAction.emit({ name: column, element: element })">
+                    {{columnNameMap[column]}}
+                </button>
+            </ng-container>
+            <ng-container *ngIf="isColumnWithImg(column)">
+                <img [src]="element[column]" alt="Profile Image" width="50" height="50">
+            </ng-container>
+            <ng-container *ngIf="isCommonColumn(column)">
                 {{ element[column] }}
             </ng-container>
         </td>

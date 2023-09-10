@@ -2,10 +2,13 @@ package com.group.practic.service;
 
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.RoleEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
+import com.group.practic.repository.RoleRepository;
 import com.group.practic.repository.StudentOnCourseRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,9 @@ public class StudentOnCourseService {
 
     @Autowired
     PersonService personService;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
 
     public List<StudentOnCourseEntity> get() {
@@ -71,11 +77,22 @@ public class StudentOnCourseService {
 
     public Optional<StudentOnCourseEntity> create(long courseId, long studentId) {
         Optional<CourseEntity> course = courseService.get(courseId);
-        Optional<PersonEntity> student = personService.get(studentId);
-        return (course.isPresent() && student.isPresent())
-                ? Optional.ofNullable(studentOnCourseRepository
-                        .save(new StudentOnCourseEntity(student.get(), course.get())))
+        Optional<PersonEntity> user = personService.get(studentId);
+
+        Optional<StudentOnCourseEntity> student = (course.isPresent() && user.isPresent())
+                ? Optional.of(studentOnCourseRepository
+                        .save(new StudentOnCourseEntity(user.get(), course.get())))
                 : Optional.empty();
+
+        if (student.isPresent()) {
+            PersonEntity updateUser = user.get();
+            Set<RoleEntity> roles = updateUser.getRoles();
+            roles.add(roleRepository.findByName("STUDENT"));
+            updateUser.setInactive(false);
+            personService.save(user.get());
+        }
+
+        return student;
     }
 
 }

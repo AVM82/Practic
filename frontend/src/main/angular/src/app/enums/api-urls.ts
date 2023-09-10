@@ -6,7 +6,8 @@ export enum ApiUrls {
   Reports = '/api/students/reports/course/',
   ReportStates = '/api/students/reports/states',
   Chapters = '/api/chapters',
-  Me = '/api/persons/me'
+  Me = '/api/persons/me',
+  Applicants = '/api/persons/?inactive=true'
 }
 
 export const getChaptersUrl = (slug: string): string =>

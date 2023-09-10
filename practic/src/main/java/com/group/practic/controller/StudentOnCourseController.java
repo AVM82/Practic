@@ -3,17 +3,22 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
+import com.group.practic.dto.NewStudentDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
+import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
+import com.group.practic.exception.ResourceNotFoundException;
+import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentOnCourseService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
 import com.group.practic.util.Converter;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +31,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,15 +49,20 @@ public class StudentOnCourseController {
 
     private final StudentReportService studentReportService;
 
+    private final CourseService courseService;
+
 
     @Autowired
     public StudentOnCourseController(StudentOnCourseService studentOnCourseService,
-            StudentPracticeService studentPracticeService, PersonService personService,
-            StudentReportService studentReportService) {
+                                     StudentPracticeService studentPracticeService,
+                                     PersonService personService,
+                                     StudentReportService studentReportService,
+                                     CourseService courseService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
         this.studentReportService = studentReportService;
+        this.courseService = courseService;
     }
 
 
@@ -91,12 +102,20 @@ public class StudentOnCourseController {
 
 
     @PostMapping
-    public ResponseEntity<StudentOnCourseEntity> create(@Min(1) @RequestParam long courseId,
-            @Min(1) @RequestParam long studentId) {
-        if (!personService.isCurrentPersonMentor()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    @PreAuthorize("hasRole('ADMIN')||hasRole('MENTOR')")
+    public ResponseEntity<StudentOnCourseEntity> create(@RequestBody @Valid
+                                                        NewStudentDto student) {
+        Optional<CourseEntity> courseOptional  = courseService.get(student.getCourseSlug());
+
+        if (courseOptional.isPresent()) {
+            return postResponse(
+                    studentOnCourseService.create(
+                            courseOptional.get().getId(),
+                            student.getUserId())
+            );
+        } else {
+            throw new ResourceNotFoundException("Курс ", student.getCourseSlug(), " не знайдено");
         }
-        return postResponse(studentOnCourseService.create(courseId, studentId));
     }
 
 

@@ -9,6 +9,8 @@ import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.PersonService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -97,5 +99,23 @@ public class PersonController {
                 .getAuthentication().getPrincipal();
 
         return ResponseEntity.ok(person);
+    }
+
+    @PostMapping("/apply-on-course")
+    public ResponseEntity<?> applyOnCourse() {
+        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        if (person != null) {
+            person.setInactive(true);
+            person.setApplyCourse("java-dev-tools");
+            personService.save(person);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Заявка прийнята");
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Помилка: користувач не ідентифікований");
+        }
     }
 }
