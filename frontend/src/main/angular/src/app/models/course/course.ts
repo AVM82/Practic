@@ -9,4 +9,5 @@ export interface Course {
   shortName: string;
   slug: string;
   chapters: Chapter[];
+  svg: string;
 }

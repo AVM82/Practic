@@ -131,13 +131,16 @@ public class CourseService {
         CourseEntity courseEntity;
         String slug = prop.getProperty(PropertyUtil.SLUG_KEY, "");
         Optional<CourseEntity> course = get(slug);
+        String shortName = prop.getProperty(PropertyUtil.SHORT_NAME_KEY, "");
+        String name = prop.getProperty(PropertyUtil.NAME_KEY, "");
+        String svg = prop.getProperty(PropertyUtil.SVG_KEY, "");
         if (course.isPresent()) {
             courseEntity = course.get();
-            courseEntity.setShortName(prop.getProperty(PropertyUtil.SHORT_NAME_KEY, ""));
-            courseEntity.setName(prop.getProperty(PropertyUtil.NAME_KEY, ""));
+            courseEntity.setShortName(shortName);
+            courseEntity.setName(name);
+            courseEntity.setSvg(svg);
         } else {
-            course = save(new CourseEntity(slug, prop.getProperty(PropertyUtil.SHORT_NAME_KEY, ""),
-                    prop.getProperty(PropertyUtil.NAME_KEY, "")));
+            course = save(new CourseEntity(slug, shortName, name, svg));
             if (course.isEmpty()) {
                 return Optional.empty();
             }

@@ -2,7 +2,7 @@
     <mat-card *ngFor="let course of courses" class="course-card">
         <a [routerLink]="['/courses', course.slug]">
             <mat-card-content class="course-details">
-                <mat-icon class="icon">coffee</mat-icon>
+                <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
                 <h3 class="course-name">{{ course.name }}</h3>
             </mat-card-content>
         </a>

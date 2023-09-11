@@ -22,6 +22,8 @@ public interface PropertyUtil {
 
     public static final String SLUG_KEY = "slug";
 
+    public static final String SVG_KEY = "svg-icon";
+
     static final int LEVEL_KEY_LENGTH = LEVEL_KEY.length();
 
     public static final String SEPARATOR = File.separator;
