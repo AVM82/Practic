@@ -66,15 +66,19 @@ public class CourseEntity {
     @NotBlank
     String slug;
 
+    @Column(length = 2048)
+    String svg;
+
 
     public CourseEntity() {
     }
 
 
-    public CourseEntity(String slug, String shortName, String name) {
+    public CourseEntity(String slug, String shortName, String name, String svg) {
         this.slug = slug;
         this.shortName = shortName;
         this.name = name;
+        this.svg = svg;
     }
 
 
@@ -215,6 +219,16 @@ public class CourseEntity {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+
+    public String getSvg() {
+        return svg;
+    }
+
+
+    public void setSvg(String svg) {
+        this.svg = svg;
     }
 
 }
