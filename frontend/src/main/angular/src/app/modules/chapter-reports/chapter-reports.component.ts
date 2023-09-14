@@ -18,7 +18,7 @@ export class ChapterReportsComponent {
   @Input() shouldShowHeader: boolean = true;
   @Input() chapterNumber!: number
   @Input() studentReports!: StudentReport[];
-  reportsNumberOnPage: number = 3;
+  reportsNumberOnPage: number = 5;
   startOfRange: number = 0;
   endOfRange: number = this.reportsNumberOnPage;
 
