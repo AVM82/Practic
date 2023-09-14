@@ -1,38 +1,53 @@
-Проект Practic складається з 2х модулів:
-    1. Модуль practic - бекенд з використанням Spring Boot 3.
-    2. Модуль frontend - фронтенд на Angular 2+.
+# Practic
 
-Проект має налаштовану перевірку стилю кода, файли з налаштуваннями ggogle_cheks.xml,
- suppresions.xml(відключення перевірки Javadoc). Для перевірки в IJ IDE потрібно встановити
- плагін Chekstyle версії > 10. Далі в налаштуваннях плагіну імпортувати файл google_cheks.xml.
+### ⚡Інформація про проєкт
 
-Під час розробки фронтенд запускається з папки проекту:
-    nmp start
-(по замовчуванню запускається сервер http://localhost:4200, до команди npm start дописаний
+В цьому репозиторії можна побачити реалізацію сайту - збірнику курсів,
+де адміністратори можуть додавати курси, ментори ними управляти та змінювати,
+а студенти просто навчатися, отримувати знання, готувати доповіді
+та робити практичні роботи.
+
+![Here must be a picture of enter page](enter_page.png)
+
+В цьому проєкті були використані такі технології як:
+- Spring Boot 3, Spring Security, Spring Data, Hibernate;
+- Реєстрація та авторизація відбуваються за допомогою LinkedIn використовуючи OAuth 2.0 та JWT;
+- PostgreSQL;
+- Angular 2+;
+
+Проєкт Practic складається з 3х модулів:
+1. Модуль practic - бекенд з використанням Spring Boot 3;
+2. Модуль frontend - фронтенд на Angular 2+;
+3. Модуль loadTesting - тести з використанням Gatling;
+
+Проєкт має налаштовану перевірку стилю кода, файли з налаштуваннями ggogle_cheks.xml,
+suppresions.xml(відключення перевірки Javadoc). Для перевірки в IntelliJ IDEA потрібно встановити
+плагін Chekstyle версії > 10. Далі в налаштуваннях плагіну імпортувати файл google_cheks.xml.
+
+### ⚙ Налаштування ️
+
+Для роботи сервісу потрібно встановити ряд __необхідних__ зміних(найкращий спосіб використовуючи environment variables):
+- _LINKEDIN_CI_ - LinkedIn Client ID - ключ аутентифікації, який можна знайти в аппці на лінкедіні;
+- _LINKEDIN_CS_ - LinkedIn Client Secret - пароль до ключа аутентифікації, який можна знайти в аппці на лінкедіні;
+- _LOGOUT_REDIRECT_URI_=http://localhost:4200/login?logout=true - (приклад для локального використання);
+- _MAIL_PASSWORD_ - пароль до пошти, що буде використана для відправки нотифікацій з приводу нових доповідей;
+- _MAIL_USERNAME_ - пошта, що буде використана для відправки нотифікацій з приводу нових доповідей;
+- _POSTGRESQL_PASSWORD_ - пароль до postgresql бази даних, що використовується для роботи програми;
+- _POSTGRESQL_URL_ - url до бази даних, що використовується для роботи програми;
+- _POSTGRESQL_USERNAME_ - username користувача, що використовує базу даних;
+- _REDIRECT_URI_=http://localhost:4200/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect - (приклад для локального використання);
+- _TOKEN_SECRET_ - токен, що буде використовуватися в програмі для JWT;
+
+Слід зазначити, що при роботі на віддаленому сервері, всі "localhost:порт" треба замінити на домен сервера, наприклад: 
+_http://localhost:4200/login?logout=true_ -> _https://www.google.com/login?logout=true_
+
+Під час розробки фронтенд запускається з папки проекту(папка frontend): ```nmp start```
+(по замовчуванню запускається сервер http://localhost:4200, до команди ```npm start``` дописаний
 проксі сервер для запитів на бекенд за адресою http://localhost:5000/,
 для повноцінної роботи треба запустити Spring Application).
- 
-Налаштування середовища для правильної роботи авторизації:
-environment.ts:          змінні оточення під час розробки (сервер фронтенду на localhost:4200).
-                        В змінні оточення для IDE треба внести наступні параметри:
-                        LOGOUT_REDIRECT_URI=http://localhost:4200/login?logout=true
-                        REDIRECT_URI=http://localhost:4200/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
-
-environment.local.ts:    змінні оточення для перевірки локально зібраного проекту.
-                     В pom.xml фронтенду доданий профіль local-build, який треба активувати для локальної
-                     перевірки зібраного проекту. Зібраний проект запускати в ОС, не з IDE.
-                     В зміні оточення операційної системи треба внести наступні параметри:
-                     LOGOUT_REDIRECT_URI=http://localhost:5000/login?logout=true
-                     REDIRECT_URI=http://localhost:5000/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
-environment.prod.ts:  змінні оточення для production.
 
 Збірка проекту:
     mvn clean install
 
 Після збірки і запуску додатку фронтенд і бекенд працють на одному сервері:
     http://localhost:5000
-
-При розробці:
-1. НЕ ЗМІНЮВАТИ в корені проекта pom.xml, а також ./frontend/pom.xml
-2. Вся розробка по java в ./practic/src/main/java/com/group/practic
-3. Всі необхідні для розробки java залежності додавати ./practic/pom.xml
