@@ -5,12 +5,15 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentReportEntity;
+import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.repository.StudentReportRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import com.group.practic.repository.TimeSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +23,17 @@ public class StudentReportService {
     private final StudentReportRepository studentReportRepository;
     private final CourseService courseService;
     private final ChapterService chapterService;
+    private final TimeSlotRepository timeSlotRepository;
     static final List<ReportState> ACTUAL_STATES = List.of(ReportState.STARTED,
             ReportState.ANNOUNCED);
 
     @Autowired
     public StudentReportService(StudentReportRepository studentReportRepository,
-            CourseService courseService, ChapterService chapterService) {
+                                CourseService courseService, ChapterService chapterService, TimeSlotRepository timeSlotRepository) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
         this.chapterService = chapterService;
+        this.timeSlotRepository = timeSlotRepository;
     }
 
     public List<List<StudentReportEntity>> getAllStudentsActualReports(String slug) {
@@ -47,10 +52,13 @@ public class StudentReportService {
     public Optional<StudentReportEntity> createStudentReport(Optional<PersonEntity> student,
             NewStudentReportDto newStudentReportDto) {
         Optional<ChapterEntity> chapter = chapterService.get(newStudentReportDto.chapter());
+        Optional<TimeSlotEntity> timeslot = timeSlotRepository.findById(newStudentReportDto.timeslotId());
 
-        return (student.isPresent() && chapter.isPresent())
+
+        return (student.isPresent() && chapter.isPresent()&& timeslot.isPresent())
             ? Optional.ofNullable(studentReportRepository
             .save(new StudentReportEntity(chapter.get(), student.get(),
-                newStudentReportDto.dateTime(), newStudentReportDto.title()))) : Optional.empty();
+                    LocalDateTime.of(newStudentReportDto.date(), timeslot.get().getTime())
+                ,timeslot.get(), newStudentReportDto.title()))) : Optional.empty();
     }
 }
