@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @NoArgsConstructor
 @AllArgsConstructor
@@ -83,33 +84,19 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public PersonEntity getCurrentPerson() {
-        OAuth2User authorization = getOauth2User();
-
-        return personRepository.findByLinkedin(authorization.getAttribute("id")).orElse(null);
+    public Optional<PersonEntity> getCurrentPerson() {
+        return personRepository.findByLinkedin(getOauth2User().getAttribute("id"));
     }
 
 
     public PersonEntity createUserIfNotExists() {
-        OAuth2User authorization = getOauth2User();
-
-        Map<String, Object> authorizationAttributes = authorization.getAttributes();
-
+        Map<String, Object> authorizationAttributes = getOauth2User().getAttributes();
         String linkedinId = authorizationAttributes.get("id").toString();
-
-        if (personRepository.findByLinkedin(linkedinId).isPresent()) {
-            return null;
-        }
-
-        PersonEntity personEntity = new PersonEntity(
-                authorizationAttributes.get("localizedFirstName")
-                        + " " + authorizationAttributes.get("localizedLastName"),
-                linkedinId);
-
-
-        personEntity.setRoles(Set.of(new RoleEntity("USER")));
-
-        return personRepository.save(personEntity);
+        return personRepository.findByLinkedin(linkedinId).isPresent() ? null
+                : personRepository.save(new PersonEntity(
+                        authorizationAttributes.get("localizedFirstName") + " "
+                                + authorizationAttributes.get("localizedLastName"),
+                        linkedinId, Set.of(new RoleEntity("USER"))));
     }
 
 
@@ -119,45 +106,39 @@ public class PersonService implements UserDetailsService {
 
 
     public Set<RoleEntity> findUserRolesById(long id) {
-        PersonEntity foundPerson = personRepository.findById(id).orElse(null);
-
-        if (foundPerson == null) {
-            return Set.of();
-        }
-
-        return foundPerson.getRoles();
+        Optional<PersonEntity> foundPerson = get(id);
+        return foundPerson.isPresent() ? foundPerson.get().getRoles() : Set.of();
     }
 
 
-    public PersonEntity addRoleToUserById(long id, String newRole) {
+    public Optional<PersonEntity> addRoleToUserById(long id, String newRole) {
         PersonEntity foundPerson = personRepository.findById(id).orElse(null);
-
-        if (foundPerson == null) {
-            return null;
+        if (foundPerson != null) {
+            if (foundPerson.containsRole(newRole)) {
+                throw new EntityExistsException("User with this role already exists " + newRole);
+            }
+            foundPerson.setRoles(Set.of(new RoleEntity(newRole)));
+            return Optional.ofNullable(personRepository.save(foundPerson));
         }
-
-        if (foundPerson.containsRole(newRole)) {
-            throw new EntityExistsException("User with this role already exists " + newRole);
-        }
-
-        foundPerson.setRoles(Set.of(new RoleEntity(newRole)));
-
-        return personRepository.save(foundPerson);
+        return Optional.empty();
     }
 
 
     public boolean isCurrentPersonMentor() {
-        return getCurrentPerson().containsRole("MENTOR");
+        Optional<PersonEntity> currentPerson = getCurrentPerson();
+        return currentPerson.isPresent() && currentPerson.get().containsRole("MENTOR");
     }
 
-  
-    public PersonEntity addEmailToCurrentUser(String email) {
-        PersonEntity currentPerson = getCurrentPerson();
 
-        currentPerson.setContacts(email);
-
-        return personRepository.save(currentPerson);
+    public Optional<PersonEntity> addEmailToCurrentUser(String email) {
+        Optional<PersonEntity> currentPerson = getCurrentPerson();
+        if (currentPerson.isPresent()) {
+            currentPerson.get().setContacts(email);
+            return Optional.ofNullable(personRepository.save(currentPerson.get()));
+        }
+        return Optional.empty();
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -166,48 +147,32 @@ public class PersonService implements UserDetailsService {
 
 
     @Transactional
-    public AuthUserDto processUserRegistration(
-            Map<String, Object> attributes,
-            OidcIdToken idToken,
-            OidcUserInfo userInfo
-    ) {
+    public AuthUserDto processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken,
+            OidcUserInfo userInfo) {
         Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(attributes);
-
-        Optional<PersonEntity> user = personRepository.findPersonEntityByEmail(
-                oauth2UserInfo.getEmail()
-        );
-
-        PersonEntity person;
-
-        if (user.isPresent()) {
-            person = updateExistingUser(user.get(), oauth2UserInfo);
-        } else {
-            SignUpRequestDto userDetails = toUserRegistrationObject(oauth2UserInfo);
-            person = registerNewUser(userDetails);
-        }
-
+        Optional<PersonEntity> user = personRepository
+                .findPersonEntityByEmail(oauth2UserInfo.getEmail());
+        PersonEntity person = user.isPresent() ? updateExistingUser(user.get(), oauth2UserInfo)
+                : registerNewUser(toUserRegistrationObject(oauth2UserInfo));
         return AuthUserDto.create(person, attributes, idToken, userInfo);
     }
 
-    private PersonEntity updateExistingUser(
-            PersonEntity existingUser,
-            Oauth2UserInfo oauth2UserInfo
-    ) {
+
+    private PersonEntity updateExistingUser(PersonEntity existingUser,
+            Oauth2UserInfo oauth2UserInfo) {
         existingUser.setName(oauth2UserInfo.getName());
         existingUser.setLinkedin(oauth2UserInfo.getId());
         existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());
         return personRepository.save(existingUser);
     }
 
+
     private SignUpRequestDto toUserRegistrationObject(Oauth2UserInfo oauth2UserInfo) {
-        return SignUpRequestDto.builder()
-                .providerUserId(oauth2UserInfo.getId())
-                .name(oauth2UserInfo.getName())
-                .email(oauth2UserInfo.getEmail())
-                .profilePictureUrl(oauth2UserInfo.getImageUrl()) 
-                .password("changeit")
-                .build();
+        return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId())
+                .name(oauth2UserInfo.getName()).email(oauth2UserInfo.getEmail())
+                .profilePictureUrl(oauth2UserInfo.getImageUrl()).password("changeit").build();
     }
+
 
     @Transactional
     public UserDetails loadUserById(Long id) {
@@ -215,16 +180,14 @@ public class PersonService implements UserDetailsService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
     }
 
+
     @Transactional
     public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
         Optional<PersonEntity> personEntity = personRepository
                 .findPersonEntityByEmail(userDetails.getEmail());
         if (personEntity.isPresent()) {
             throw new UserAlreadyExistAuthenticationException(
-                    "User with email "
-                            + userDetails.getEmail()
-                            + " already exist"
-            );
+                    "User with email " + userDetails.getEmail() + " already exist");
         }
         final HashSet<RoleEntity> roles = new HashSet<>();
         roles.add(roleRepository.findByName("USER"));
@@ -235,8 +198,6 @@ public class PersonService implements UserDetailsService {
         newPerson.setLinkedin(userDetails.getProviderUserId());
         newPerson.setProfilePictureUrl(userDetails.getProfilePictureUrl());
         newPerson.setRoles(roles);
-
-
         newPerson = personRepository.save(newPerson);
         personRepository.flush();
         return newPerson;

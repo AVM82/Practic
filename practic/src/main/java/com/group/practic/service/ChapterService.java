@@ -1,10 +1,15 @@
 package com.group.practic.service;
 
+import com.group.practic.PropertyLoader;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.repository.ChapterRepository;
+import com.group.practic.util.PropertyUtil;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +19,14 @@ public class ChapterService {
 
     ChapterRepository chapterRepository;
 
+    ChapterPartService chapterPartService;
+
 
     @Autowired
-    public ChapterService(ChapterRepository chapterRepository) {
+    public ChapterService(ChapterRepository chapterRepository,
+            ChapterPartService chapterPartService) {
         this.chapterRepository = chapterRepository;
+        this.chapterPartService = chapterPartService;
     }
 
 
@@ -87,6 +96,25 @@ public class ChapterService {
 
     public Optional<ChapterEntity> getByShortName(String shortName) {
         return chapterRepository.findByShortName(shortName);
+    }
+
+
+    public Set<ChapterEntity> getChapters(CourseEntity course, PropertyLoader prop) {
+        Set<ChapterEntity> result = new HashSet<>();
+        int n;
+        for (Entry<Object, Object> entry : prop.getEntrySet()) {
+            String key = (String) entry.getKey();
+            if (PropertyUtil.countDots(key) == 1 && key.endsWith(".")
+                    && (n = PropertyUtil.getChapterNumber(1, key)) != 0) {
+                String[] names = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
+                ChapterEntity chapter = create(course, n, names[0], names[1]);
+                if (chapter != null) {
+                    chapterPartService.getChapterPartSet(chapter, prop);
+                    result.add(chapter);
+                }
+            }
+        }
+        return result;
     }
 
 }

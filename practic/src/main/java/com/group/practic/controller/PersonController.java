@@ -9,9 +9,8 @@ import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.PersonService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    @Autowired
     private PersonService personService;
+
+
+    @Autowired
+    public PersonController(PersonService personService) {
+        this.personService = personService;
+    }
 
 
     @GetMapping("/")
@@ -48,20 +52,16 @@ public class PersonController {
         return getResponse(personService.get(id));
     }
 
+
     @GetMapping("/profile")
     public ResponseEntity<PersonEntity> getProfile() {
-        PersonEntity foundPerson = personService.getCurrentPerson();
-
-        if (foundPerson == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(foundPerson);
+        return getResponse(personService.getCurrentPerson());
     }
+
 
     @PostMapping("/profile")
     public ResponseEntity<PersonEntity> createProfile(@RequestParam String email) {
-        return new ResponseEntity<>(personService.addEmailToCurrentUser(email), HttpStatus.CREATED);
+        return postResponse(personService.addEmailToCurrentUser(email));
     }
 
 
@@ -73,29 +73,25 @@ public class PersonController {
 
 
     @GetMapping("/{id}/roles")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Set<RoleEntity>> findAllRoles(@PathVariable long id) {
-        return ResponseEntity.ok(personService.findUserRolesById(id));
+
+    public ResponseEntity<Collection<RoleEntity>> findAllRoles(@PathVariable long id) {
+        return getResponse(personService.findUserRolesById(id));
+
     }
+
 
     @PostMapping("/{id}/roles")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PersonEntity> addRole(@PathVariable long id,
-                                                @RequestParam String newRole) {
-        PersonEntity personEntity = personService.addRoleToUserById(id, newRole);
-
-        if (personEntity == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return new ResponseEntity<>(personEntity, HttpStatus.CREATED);
+            @RequestParam String newRole) {
+        return postResponse(personService.addRoleToUserById(id, newRole));
     }
+
 
     @GetMapping("/me")
     public ResponseEntity<PersonEntity> getCurrentUser() {
-        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-
-        return ResponseEntity.ok(person);
+        return getResponse(Optional.ofNullable((PersonEntity) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal()));
     }
+
 }
