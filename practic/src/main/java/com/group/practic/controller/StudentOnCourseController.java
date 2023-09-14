@@ -10,12 +10,14 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
+import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentOnCourseService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
+import com.group.practic.service.TimeSlotService;
 import com.group.practic.util.Converter;
 import jakarta.validation.constraints.Min;
 import java.security.Principal;
@@ -23,6 +25,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,16 +52,18 @@ public class StudentOnCourseController {
     private final PersonService personService;
 
     private final StudentReportService studentReportService;
+    private final TimeSlotService timeSlotService;
 
 
     @Autowired
     public StudentOnCourseController(StudentOnCourseService studentOnCourseService,
-            StudentPracticeService studentPracticeService, PersonService personService,
-            StudentReportService studentReportService) {
+                                     StudentPracticeService studentPracticeService, PersonService personService,
+                                     StudentReportService studentReportService, TimeSlotService timeSlotService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
         this.studentReportService = studentReportService;
+        this.timeSlotService = timeSlotService;
     }
 
 
@@ -133,6 +140,7 @@ public class StudentOnCourseController {
     public ResponseEntity<Collection<List<StudentReportDto>>> getActualStudentReports(
             @PathVariable String slug) {
 
+
         return getResponse(Converter.convertListOfLists(
             studentReportService.getAllStudentsActualReports(slug)));
 
@@ -142,10 +150,15 @@ public class StudentOnCourseController {
     @PostMapping("/reports/course/{slug}")
     public ResponseEntity<StudentReportDto> postStudentReport(Principal principal, @RequestBody
             NewStudentReportDto newStudentReportDto) {
-
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.createStudentReport(personEntity, newStudentReportDto);
+        //todo put timeSlotService.fillTimeSlots(); for filling new dateslots
+        //timeSlotService.fillTimeSlots();
         return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
+    }
+    @GetMapping("timeslots")
+    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(){
+        return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
     }
 }

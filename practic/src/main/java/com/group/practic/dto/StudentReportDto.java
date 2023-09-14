@@ -6,6 +6,8 @@ public class StudentReportDto {
     private String personName;
     private String profilePictureUrl;
     private String chapterName;
+
+    //todo split datetime to separate fields
     private LocalDateTime dateTime;
     private String state;
     private String title;

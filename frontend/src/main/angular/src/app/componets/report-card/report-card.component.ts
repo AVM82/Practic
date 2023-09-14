@@ -9,10 +9,11 @@ import {RouterLink} from "@angular/router";
   selector: 'report-card',
   standalone: true,
   templateUrl: './report-card.component.html',
-  imports: [CommonModule, NgFor, NgIf, MatIconModule, MatButtonModule, RouterLink,  MatButtonModule, MatButtonModule, MatCardModule],
+  imports: [CommonModule, NgFor, NgIf, MatIconModule, MatButtonModule, RouterLink, MatButtonModule, MatButtonModule, MatCardModule],
   styleUrls: ['/report-card.component.css']
 })
-export class ReportCardComponent{
+export class ReportCardComponent {
+  //todo split dateTimeValue to separate date and time inputs
   @Input() reportTopic!: string
   @Input() studentName!: string
   @Input() dateTimeValue!: string
