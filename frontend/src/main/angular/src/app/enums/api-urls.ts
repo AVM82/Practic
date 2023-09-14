@@ -4,6 +4,7 @@ export enum ApiUrls {
   Practices = '/api/students/practices/',
   PracticeStates = '/api/students/practices/states',
   ReportStates = '/api/students/reports/states',
+  TimeSlots = '/api/students/timeslots',
   Me = '/api/persons/me'
 }
 
