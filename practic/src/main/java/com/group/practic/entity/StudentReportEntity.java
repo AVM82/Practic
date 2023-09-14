@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -32,6 +33,8 @@ public class StudentReportEntity {
     @Future
     @NotNull
     LocalDateTime dateTime;
+    @OneToOne
+    TimeSlotEntity timeSlot;
 
     @NotBlank
     String title;
@@ -45,17 +48,19 @@ public class StudentReportEntity {
 
 
     public StudentReportEntity(ChapterEntity chapter, PersonEntity student,
-            @Future LocalDateTime dateTime, @NotBlank String title) {
+            @Future LocalDateTime dateTime, TimeSlotEntity timeslot, @NotBlank String title) {
         this.chapter = chapter;
         this.student = student;
         this.dateTime = dateTime;
+        this.timeSlot = timeslot;
         this.title = title;
+
     }
 
 
     public StudentReportEntity(long id, ChapterEntity chapter, PersonEntity student,
-            @Future LocalDateTime dateTime, @NotBlank String title) {
-        this(chapter, student, dateTime, title);
+            @Future LocalDateTime dateTime, TimeSlotEntity timeslot, @NotBlank String title) {
+        this(chapter, student, dateTime ,timeslot, title);
         this.id = id;
     }
 
@@ -119,4 +124,11 @@ public class StudentReportEntity {
         this.state = state;
     }
 
+    public TimeSlotEntity getTimeSlot() {
+        return timeSlot;
+    }
+
+    public void setTimeSlot(TimeSlotEntity timeSlot) {
+        this.timeSlot = timeSlot;
+    }
 }
