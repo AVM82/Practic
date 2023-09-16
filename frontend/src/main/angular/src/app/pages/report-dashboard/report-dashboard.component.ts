@@ -41,7 +41,7 @@ export class ReportDashboardComponent implements OnInit {
     ) {
     }
 
-//todo error occurs if dateTime == null
+
     ngOnInit(): void {
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
@@ -51,7 +51,6 @@ export class ReportDashboardComponent implements OnInit {
                 this.loadChapters(slug);
                 this.loadTimeSlots()
             }
-
         });
     }
 
@@ -91,12 +90,13 @@ export class ReportDashboardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             this.route.paramMap.subscribe(params => {
                 const slug = params.get('slug');
-                console.log(slug)
                 console.log('The dialog was closed');
                 if (result != null && slug) {
                     this.reportService.createNewReport(result, slug).subscribe();
+                    this.timeSlotService.updateTimeslotAvailability(result.timeslotId).subscribe();
                 }
             });
+            this.ngOnInit();
         });
     }
 }

@@ -26,7 +26,7 @@ export class ChapterReportsComponent {
   showReports() {
     const sortedList = this.studentReports;
     sortedList.sort((a, b) => {
-      return new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime();
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
     return sortedList.slice(this.startOfRange, this.endOfRange);
   }

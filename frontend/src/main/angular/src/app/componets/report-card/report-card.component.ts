@@ -13,18 +13,9 @@ import {RouterLink} from "@angular/router";
   styleUrls: ['/report-card.component.css']
 })
 export class ReportCardComponent {
-  //todo split dateTimeValue to separate date and time inputs
   @Input() reportTopic!: string
   @Input() studentName!: string
-  @Input() dateTimeValue!: string
+  @Input() dateValue!:string
+  @Input() timeValue!:string
   @Input() profilePictureUrl!: string
-
-  get datePart(): string {
-    return this.dateTimeValue.split('T')[0];
-  }
-
-  get timePart(): string {
-    return this.dateTimeValue.split('T')[1];
-  }
-
 }
