@@ -1,14 +1,14 @@
 package com.group.practic.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class StudentReportDto {
     private String personName;
     private String profilePictureUrl;
     private String chapterName;
-
-    //todo split datetime to separate fields
-    private LocalDateTime dateTime;
+    private LocalDate date;
+    private LocalTime time;
     private String state;
     private String title;
 
@@ -44,12 +44,20 @@ public class StudentReportDto {
         this.chapterName = chapterName;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
     public String getState() {
@@ -67,4 +75,6 @@ public class StudentReportDto {
     public void setTitle(String title) {
         this.title = title;
     }
+
+
 }

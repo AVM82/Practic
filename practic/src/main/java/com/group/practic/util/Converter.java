@@ -119,8 +119,9 @@ public interface Converter {
                         StudentReportDto::setProfilePictureUrl)
                 .addMapping(src -> src.getChapter().getShortName(),
                         StudentReportDto::setChapterName)
-                .addMapping(StudentReportEntity::getState, StudentReportDto::setState);
-        //todo mapping date and time from reportEntity timeslot
+                .addMapping(StudentReportEntity::getState, StudentReportDto::setState)
+                .addMapping(src->src.getTimeSlot().getDate(), StudentReportDto::setDate)
+                .addMapping(src->src.getTimeSlot().getTime(),StudentReportDto::setTime);
     }
 
 }

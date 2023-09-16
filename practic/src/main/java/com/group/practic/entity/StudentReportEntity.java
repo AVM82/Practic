@@ -10,10 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+
 
 
 @Entity
@@ -30,10 +29,8 @@ public class StudentReportEntity {
     @ManyToOne
     PersonEntity student;
 
-    @Future
-    @NotNull
-    LocalDateTime dateTime;
     @OneToOne
+    @NotNull
     TimeSlotEntity timeSlot;
 
     @NotBlank
@@ -48,10 +45,9 @@ public class StudentReportEntity {
 
 
     public StudentReportEntity(ChapterEntity chapter, PersonEntity student,
-            @Future LocalDateTime dateTime, TimeSlotEntity timeslot, @NotBlank String title) {
+                               TimeSlotEntity timeslot, @NotBlank String title) {
         this.chapter = chapter;
         this.student = student;
-        this.dateTime = dateTime;
         this.timeSlot = timeslot;
         this.title = title;
 
@@ -59,8 +55,8 @@ public class StudentReportEntity {
 
 
     public StudentReportEntity(long id, ChapterEntity chapter, PersonEntity student,
-            @Future LocalDateTime dateTime, TimeSlotEntity timeslot, @NotBlank String title) {
-        this(chapter, student, dateTime ,timeslot, title);
+            TimeSlotEntity timeslot, @NotBlank String title) {
+        this(chapter, student, timeslot, title);
         this.id = id;
     }
 
@@ -92,16 +88,6 @@ public class StudentReportEntity {
 
     public void setStudent(PersonEntity student) {
         this.student = student;
-    }
-
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
     }
 
 
