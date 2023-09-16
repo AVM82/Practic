@@ -170,7 +170,8 @@ public class StudentOnCourseController {
     public ResponseEntity<Set<ChapterDto>> getOpenChapters() {
         PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-        Set<StudentChapterEntity> studentOpenChapters = studentChapterService.findOpenChapters(person);
+        Set<StudentChapterEntity> studentOpenChapters =
+                studentChapterService.findOpenChapters(person);
         return ResponseEntity.ok(studentOpenChapters.stream()
                 .map(Converter::convert).collect(Collectors.toSet()));
     }
@@ -182,6 +183,23 @@ public class StudentOnCourseController {
         return ResponseEntity.ok(
                 studentChapterService.addChapter(student.getStudentId(), student.getChapterId())
         );
+    }
+
+    @PostMapping("/practices")
+    public ResponseEntity<StudentPracticeDto> setPracticeState(
+            @RequestBody StudentPracticeDto studentPracticeDto
+    ) {
+        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        PracticeState practiceState = PracticeState.fromString(studentPracticeDto.getState());
+        StudentPracticeEntity studentPractice =
+                studentPracticeService.getPractice(person, studentPracticeDto.getChapterPartId());
+        studentPractice.setState(practiceState);
+        return ResponseEntity.ok(
+                Converter.convert(studentPracticeService.save(studentPractice))
+        );
+
     }
 
 

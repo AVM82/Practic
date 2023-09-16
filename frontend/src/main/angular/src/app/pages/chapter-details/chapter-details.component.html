@@ -51,7 +51,7 @@
 		<div class="chapter-part" >
             <div class="action-buttons">
                 <button mat-icon-button
-                        (click)="playAction()"
+                        (click)="playAction(chapterPart)"
                         matTooltip="Почати практичну"
                         matTooltipPosition="below"
                         aria-label="Play"
@@ -59,14 +59,14 @@
                     <mat-icon>play_circle_outline</mat-icon>
                 </button>
                 <button mat-icon-button
-                        (click)="pauseAction()"
+                        (click)="pauseAction(chapterPart)"
                         matTooltip="Відкласти роботу над практичною"
                         matTooltipPosition="below"
                         aria-label="Pause">
                     <mat-icon>pause_circle_outline</mat-icon>
                 </button>
                 <button mat-icon-button
-                        (click)="doneAction()"
+                        (click)="doneAction(chapterPart)"
                         matTooltip="Практична готова до ревью"
                         matTooltipPosition="below"
                         aria-label="Done">

@@ -15,9 +15,14 @@ public class StudentPracticeService {
 
     private final StudentPracticeRepository studentPracticeRepository;
 
+    private final ChapterPartService chapterPartService;
+
+
     @Autowired
-    public StudentPracticeService(StudentPracticeRepository studentPracticeRepository) {
+    public StudentPracticeService(StudentPracticeRepository studentPracticeRepository,
+                                  ChapterPartService chapterPartService) {
         this.studentPracticeRepository = studentPracticeRepository;
+        this.chapterPartService = chapterPartService;
     }
 
     public List<StudentPracticeEntity> getAllStudentsByState(PracticeState state) {
@@ -37,4 +42,12 @@ public class StudentPracticeService {
         return  studentPracticeRepository.save(practice);
     }
 
+    public StudentPracticeEntity getPractice(PersonEntity student, long chapterPartId) {
+        ChapterPartEntity chapterPart = chapterPartService.getChapterPartById(chapterPartId);
+        return studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart);
+    }
+
+    public StudentPracticeEntity save(StudentPracticeEntity studentPractice) {
+        return studentPracticeRepository.save(studentPractice);
+    }
 }

@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/chapter/chapter";
 import {Router} from "@angular/router";
-import {getChapterUrl} from "../../enums/api-urls";
+import {ApiUrls, getChapterUrl} from "../../enums/api-urls";
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,10 @@ export class ChaptersService {
      return this.http.get<Chapter>(getChapterUrl(slug, chapterN)).pipe(
         catchError(this.handleError<Chapter>(`getChapter chapterId=${chapterN}`))
     );
+  }
+
+  setPracticeState(state: string, chapterPartId: number): Observable<any> {
+    return this.http.post(ApiUrls.PracticeState, {state, chapterPartId});
   }
 
 

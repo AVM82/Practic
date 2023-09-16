@@ -8,6 +8,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {ChapterPart} from "../../models/chapter/chapterpart";
 
 @Component({
   selector: 'app-chapter-details',
@@ -42,15 +43,24 @@ export class ChapterDetailsComponent implements OnInit {
     })
   }
 
-  playAction() {
-
+  playAction(chapterPart: ChapterPart) {
+    this.chaptersService.setPracticeState('IN_PROCESS', chapterPart.id).subscribe({
+      next: value => console.log("Practice = " + JSON.stringify(value)),
+      error: err => console.log("Не можливо оновити статус практичної: " + err)
+    });
   }
 
-  pauseAction() {
-
+  pauseAction(chapterPart: ChapterPart) {
+    this.chaptersService.setPracticeState('PAUSE', chapterPart.id).subscribe({
+      next: value => console.log("Practice = " + JSON.stringify(value)),
+      error: err => console.log("Не можливо оновити статус практичної: " + err)
+    });
   }
 
-  doneAction() {
-
+  doneAction(chapterPart: ChapterPart) {
+    this.chaptersService.setPracticeState('READY_TO_REVIEW', chapterPart.id).subscribe({
+      next: value => console.log("Practice = " + JSON.stringify(value)),
+      error: err => console.log("Не можливо оновити статус практичної: " + err)
+    });
   }
 }

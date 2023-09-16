@@ -245,4 +245,8 @@ public class ChapterPartService {
         return chapterPartRepository.findAllByChapterId(chapterId);
     }
 
+    ChapterPartEntity getChapterPartById(long chapterPartId) {
+        return chapterPartRepository.findById(chapterPartId);
+    }
+
 }

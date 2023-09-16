@@ -43,17 +43,20 @@ export class PracticMetricComponent implements OnInit {
   }
 
   loadStudentsByState(state: string): void {
-    const index = this.showState.indexOf(state);
+    const index = this.showState.indexOf(state.toLowerCase());
 
     if (index === -1) {
       this.showState.push(state);
       this.studentMetricService.getAllPracticesByState(state).subscribe(students => {
-        this.data.push(...students);
-        this.data = [...this.data];
+        if(students.length > 0) {
+          this.data.push(...students);
+          this.data = [...this.data];
+        }
+
       });
     } else {
       this.showState.splice(index, 1);
-      this.data = this.data.filter(student => student.state !== state);
+      this.data = this.data.filter(student => student.state.toLowerCase() !== state);
     }
   }
 

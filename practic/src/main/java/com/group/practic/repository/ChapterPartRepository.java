@@ -14,4 +14,6 @@ public interface ChapterPartRepository extends JpaRepository<ChapterPartEntity, 
 
     Optional<Set<ChapterPartEntity>> findAllByChapterId(long chapterId);
 
+    ChapterPartEntity findById(long chapterPartId);
+
 }

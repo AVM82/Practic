@@ -42,7 +42,7 @@ public class StudentPracticeEntity {
     private Date createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false, updatable = false)
+    @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
 
     public StudentPracticeEntity(ChapterPartEntity chapter, PersonEntity student,
