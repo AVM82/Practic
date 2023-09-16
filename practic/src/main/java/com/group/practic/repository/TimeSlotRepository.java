@@ -11,8 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TimeSlotRepository extends JpaRepository< TimeSlotEntity, Long> {
-    List<TimeSlotEntity> findAllByAvailabilityTrue();
-    Optional<List<TimeSlotEntity>> findAllByDate(LocalDate date);
-    Optional<List<TimeSlotEntity>> findAllById(Long id);
+    List<TimeSlotEntity> findAllByAvailabilityTrueOrderByTime();
+    Optional<List<TimeSlotEntity>> findAllByDateOrderByDate(LocalDate date);
 
 }
