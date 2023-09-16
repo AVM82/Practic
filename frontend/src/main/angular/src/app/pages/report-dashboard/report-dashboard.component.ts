@@ -96,7 +96,7 @@ export class ReportDashboardComponent implements OnInit {
                     this.timeSlotService.updateTimeslotAvailability(result.timeslotId).subscribe();
                 }
             });
-            this.ngOnInit();
+
         });
     }
 }
