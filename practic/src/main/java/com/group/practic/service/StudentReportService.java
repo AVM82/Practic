@@ -8,7 +8,6 @@ import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.repository.StudentReportRepository;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,8 +56,7 @@ public class StudentReportService {
 
         return (student.isPresent() && chapter.isPresent()&& timeslot.isPresent())
             ? Optional.ofNullable(studentReportRepository
-            .save(new StudentReportEntity(chapter.get(), student.get(),
-                    LocalDateTime.of(newStudentReportDto.date(), timeslot.get().getTime())
+            .save(new StudentReportEntity(chapter.get(), student.get()
                 ,timeslot.get(), newStudentReportDto.title()))) : Optional.empty();
     }
 }
