@@ -10,6 +10,7 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonApplicationEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
 import java.util.ArrayList;
@@ -28,8 +29,13 @@ public interface Converter {
         applyStudentPracticeMap(modelMapper);
         applyStudentReportMap(modelMapper);
         applyPersonOnCourseMap(modelMapper);
+        applyStudentChapter(modelMapper);
 
         return modelMapper;
+    }
+
+    static ChapterDto convert(StudentChapterEntity studentChapter) {
+        return modelMapper().map(studentChapter, ChapterDto.class);
     }
 
 
@@ -138,6 +144,13 @@ public interface Converter {
                 .addMapping(src -> src.getCourse().getSlug(),
                         PersonApplyOnCourseDto::setCourseSlug);
 
+    }
+
+    private static void applyStudentChapter(ModelMapper modelMapper) {
+        modelMapper.createTypeMap(StudentChapterEntity.class, ChapterDto.class)
+                .addMapping(src -> src.getChapter().getId(), ChapterDto::setId)
+                .addMapping(src -> src.getChapter().getNumber(), ChapterDto::setNumber)
+                .addMapping(src -> src.getChapter().getShortName(), ChapterDto::setShortName);
     }
 
 }

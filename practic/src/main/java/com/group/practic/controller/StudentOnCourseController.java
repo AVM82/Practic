@@ -3,6 +3,7 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStudentDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.NewStudentReportDto;
@@ -32,10 +33,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -163,11 +166,13 @@ public class StudentOnCourseController {
 
     }
 
-    @GetMapping("/chapters/{studentId}")
-    public ResponseEntity<Set<StudentChapterEntity>> getOpenChapters(
-            @PathVariable long studentId
-    ) {
-        return ResponseEntity.ok(studentChapterService.findOpenChapters(studentId));
+    @GetMapping("/chapters")
+    public ResponseEntity<Set<ChapterDto>> getOpenChapters() {
+        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        Set<StudentChapterEntity> studentOpenChapters = studentChapterService.findOpenChapters(person);
+        return ResponseEntity.ok(studentOpenChapters.stream()
+                .map(Converter::convert).collect(Collectors.toSet()));
     }
 
     @PostMapping("/chapters")

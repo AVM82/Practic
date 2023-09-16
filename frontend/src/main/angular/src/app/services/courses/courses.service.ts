@@ -31,13 +31,29 @@ export class CoursesService {
     return this.http.post<any>("/api/students/chapters", {studentId, chapterId});
   }
 
-  getOpenChapters(studentId: number): Observable<Chapter[]> {
-    return this.http.get<Chapter[]>("/api/chapters");
+  getOpenChapters(): Observable<Chapter[]> {
+    return this.http.get<Chapter[]>(ApiUrls.OpenChapters);
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {
     if (chapters !==null && chapters.length > 1) {
       chapters[0].isVisible = true;
+    }
+  }
+
+  setVisibleChapters(chapters: Chapter[], openChapters: Chapter[]): void {
+    if (chapters && openChapters) {
+      const openChapterMap = new Map<number, Chapter>();
+
+      for (const openChapter of openChapters) {
+        openChapterMap.set(openChapter.id, openChapter);
+      }
+
+      for (const chapter of chapters) {
+        if (openChapterMap.has(chapter.id)) {
+          chapter.isVisible = true;
+        }
+      }
     }
   }
 

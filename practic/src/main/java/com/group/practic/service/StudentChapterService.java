@@ -40,8 +40,8 @@ public class StudentChapterService {
         this.studentPracticeService = studentPracticeService;
     }
 
-    public Set<StudentChapterEntity> findOpenChapters(long studentId) {
-        return studentChapterRepository.findByStudentId(studentId);
+    public Set<StudentChapterEntity> findOpenChapters(PersonEntity student) {
+        return studentChapterRepository.findByStudent(student);
     }
 
     public StudentChapterEntity addChapter(long studentId, long chapterId) {
@@ -59,10 +59,6 @@ public class StudentChapterService {
         } else {
             throw new ResourceNotFoundException("Student ", "studentId",  studentId);
         }
-    }
-
-    public StudentChapterEntity update(StudentChapterEntity studentChapter) {
-        return studentChapterRepository.saveAndFlush(studentChapter);
     }
 
     public Set<StudentPracticeEntity> addPractices(long studentId, long chapterId) {

@@ -130,7 +130,7 @@ public class CourseController {
 
         if (person != null) {
             Set<StudentChapterEntity> studentChapters =
-                    studentChapterService.findOpenChapters(person.getId());
+                    studentChapterService.findOpenChapters(person);
 
             return studentChapters.stream()
                     .anyMatch(studentChapter ->
