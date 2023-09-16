@@ -32,9 +32,9 @@
 }
 
 .icon {
-    width: 30px; /* Задайте розмір іконки за вашим бажанням */
-    height: 30px;
-    margin-right: 10px;
+    width: 32px; /* Задайте розмір іконки за вашим бажанням */
+    height: 32px;
+    margin-right: 20px;
 }
 
 .course-card:hover .icon {

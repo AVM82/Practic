@@ -1,7 +1,9 @@
 package com.group.practic.service;
 
+import com.group.practic.dto.NewStudentReportDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.repository.StudentReportRepository;
@@ -17,16 +19,17 @@ public class StudentReportService {
 
     private final StudentReportRepository studentReportRepository;
     private final CourseService courseService;
+    private final ChapterService chapterService;
     static final List<ReportState> ACTUAL_STATES = List.of(ReportState.STARTED,
             ReportState.ANNOUNCED);
 
     @Autowired
     public StudentReportService(StudentReportRepository studentReportRepository,
-            CourseService courseService) {
+            CourseService courseService, ChapterService chapterService) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
+        this.chapterService = chapterService;
     }
-
 
     public List<List<StudentReportEntity>> getAllStudentsActualReports(String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
@@ -39,5 +42,15 @@ public class StudentReportService {
             }
         }
         return result;
+    }
+
+    public Optional<StudentReportEntity> createStudentReport(Optional<PersonEntity> student,
+            NewStudentReportDto newStudentReportDto) {
+        Optional<ChapterEntity> chapter = chapterService.get(newStudentReportDto.chapter());
+
+        return (student.isPresent() && chapter.isPresent())
+            ? Optional.ofNullable(studentReportRepository
+            .save(new StudentReportEntity(chapter.get(), student.get(),
+                newStudentReportDto.dateTime(), newStudentReportDto.title()))) : Optional.empty();
     }
 }

@@ -5,12 +5,15 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.NewStudentDto;
 import com.group.practic.dto.StudentChapterDto;
+import com.group.practic.dto.NewStudentReportDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.StudentChapterEntity;
+import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
+import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.exception.ResourceNotFoundException;
@@ -23,6 +26,7 @@ import com.group.practic.service.StudentReportService;
 import com.group.practic.util.Converter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -143,7 +147,6 @@ public class StudentOnCourseController {
         return getResponse(practiceStates);
     }
 
-
     @GetMapping("/reports/states")
     public ResponseEntity<Collection<String>> getReportStates() {
         List<String> reportStates = Arrays.stream(ReportState.values())
@@ -151,12 +154,13 @@ public class StudentOnCourseController {
         return getResponse(reportStates);
     }
 
-
     @GetMapping("/reports/course/{slug}")
-    public ResponseEntity<Collection<List<StudentReportDto>>> getReportsWithStateAndChapterFilter(
+    public ResponseEntity<Collection<List<StudentReportDto>>> getActualStudentReports(
             @PathVariable String slug) {
-        return getResponse(Converter
-                .convertListOfLists(studentReportService.getAllStudentsActualReports(slug)));
+
+        return getResponse(Converter.convertListOfLists(
+            studentReportService.getAllStudentsActualReports(slug)));
+
     }
 
     @GetMapping("/chapters/{studentId}")
@@ -175,4 +179,14 @@ public class StudentOnCourseController {
         );
     }
 
+
+    @PostMapping("/reports/course/{slug}")
+    public ResponseEntity<StudentReportDto> postStudentReport(Principal principal, @RequestBody
+            NewStudentReportDto newStudentReportDto) {
+
+        Optional<PersonEntity> personEntity = personService.get(principal.getName());
+        Optional<StudentReportEntity> reportEntity =
+                studentReportService.createStudentReport(personEntity, newStudentReportDto);
+        return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
+    }
 }
