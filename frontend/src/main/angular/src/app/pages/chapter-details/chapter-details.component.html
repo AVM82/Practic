@@ -49,6 +49,30 @@
 
 	<div *ngIf="chapterPart.praxisPurpose">
 		<div class="chapter-part" >
+            <div class="action-buttons">
+                <button mat-icon-button
+                        (click)="playAction()"
+                        matTooltip="Почати практичну"
+                        matTooltipPosition="below"
+                        aria-label="Play"
+                >
+                    <mat-icon>play_circle_outline</mat-icon>
+                </button>
+                <button mat-icon-button
+                        (click)="pauseAction()"
+                        matTooltip="Відкласти роботу над практичною"
+                        matTooltipPosition="below"
+                        aria-label="Pause">
+                    <mat-icon>pause_circle_outline</mat-icon>
+                </button>
+                <button mat-icon-button
+                        (click)="doneAction()"
+                        matTooltip="Практична готова до ревью"
+                        matTooltipPosition="below"
+                        aria-label="Done">
+                    <mat-icon>check_circle_outline</mat-icon>
+                </button>
+            </div>
 			{{ chapter?.number }}. Практична робота {{showPartNumber? '№'+ (indexPart + 1): ''}}<br />
 			Мета: {{chapterPart.praxisPurpose}}
 		</div>

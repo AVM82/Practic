@@ -7,12 +7,13 @@ import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {CdkAccordionModule} from '@angular/cdk/accordion';
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @Component({
   selector: 'app-chapter-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, 
-            CdkAccordionModule],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule,
+    CdkAccordionModule, MatTooltipModule],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
@@ -41,4 +42,15 @@ export class ChapterDetailsComponent implements OnInit {
     })
   }
 
+  playAction() {
+
+  }
+
+  pauseAction() {
+
+  }
+
+  doneAction() {
+
+  }
 }

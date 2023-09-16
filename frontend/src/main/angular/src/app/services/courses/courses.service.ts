@@ -27,10 +27,17 @@ export class CoursesService {
     return this.http.get<Chapter[]>(getChaptersUrl(slug));
   }
 
+  openChapter(studentId: number, chapterId: number): Observable<any> {
+    return this.http.post<any>("/api/students/chapters", {studentId, chapterId});
+  }
+
+  getOpenChapters(studentId: number): Observable<Chapter[]> {
+    return this.http.get<Chapter[]>("/api/chapters");
+  }
+
   setFirstChapterVisible(chapters: Chapter[]): void {
     if (chapters !==null && chapters.length > 1) {
       chapters[0].isVisible = true;
-      chapters[1].isVisible = true;
     }
   }
 

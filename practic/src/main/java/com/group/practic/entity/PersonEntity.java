@@ -62,13 +62,17 @@ public class PersonEntity implements UserDetails {
 
     private String profilePictureUrl;
 
-    @Getter
-    private String applyCourse;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "person_application", joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private Set<CourseEntity> courses;
 
 
     public PersonEntity(String name, String linkedin) {
@@ -82,6 +86,8 @@ public class PersonEntity implements UserDetails {
         this.linkedin = linkedin;
         this.roles = roles;
     }
+
+
 
 
     @JsonIgnore
@@ -143,7 +149,4 @@ public class PersonEntity implements UserDetails {
         return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
     }
 
-    public void setApplyCourse(String applyCourse) {
-        this.applyCourse = applyCourse;
-    }
 }

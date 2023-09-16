@@ -4,9 +4,11 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.NewStudentDto;
+import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
@@ -14,6 +16,7 @@ import com.group.practic.enumeration.ReportState;
 import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
+import com.group.practic.service.StudentChapterService;
 import com.group.practic.service.StudentOnCourseService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
@@ -24,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,18 +55,22 @@ public class StudentOnCourseController {
 
     private final CourseService courseService;
 
+    private final StudentChapterService studentChapterService;
+
 
     @Autowired
     public StudentOnCourseController(StudentOnCourseService studentOnCourseService,
                                      StudentPracticeService studentPracticeService,
                                      PersonService personService,
                                      StudentReportService studentReportService,
-                                     CourseService courseService) {
+                                     CourseService courseService,
+                                     StudentChapterService studentChapterService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
         this.studentReportService = studentReportService;
         this.courseService = courseService;
+        this.studentChapterService = studentChapterService;
     }
 
 
@@ -94,7 +102,8 @@ public class StudentOnCourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentOnCourseEntity> get(@Min(1) @PathVariable long id) {
-        return personService.isCurrentPersonMentor() ? getResponse(studentOnCourseService.get(id))
+        return personService.isCurrentPersonMentor()
+                ? ResponseEntity.ok(studentOnCourseService.get(id))
                 : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
@@ -148,6 +157,22 @@ public class StudentOnCourseController {
             @PathVariable String slug) {
         return getResponse(Converter
                 .convertListOfLists(studentReportService.getAllStudentsActualReports(slug)));
+    }
+
+    @GetMapping("/chapters/{studentId}")
+    public ResponseEntity<Set<StudentChapterEntity>> getOpenChapters(
+            @PathVariable long studentId
+    ) {
+        return ResponseEntity.ok(studentChapterService.findOpenChapters(studentId));
+    }
+
+    @PostMapping("/chapters")
+    public ResponseEntity<StudentChapterEntity> createStudentChapter(
+            @RequestBody @Valid StudentChapterDto student) {
+
+        return ResponseEntity.ok(
+                studentChapterService.addChapter(student.getStudentId(), student.getChapterId())
+        );
     }
 
 }

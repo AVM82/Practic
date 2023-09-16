@@ -241,4 +241,8 @@ public class ChapterPartService {
         return result;
     }
 
+    Optional<Set<ChapterPartEntity>> getAllPractices(long chapterId) {
+        return chapterPartRepository.findAllByChapterId(chapterId);
+    }
+
 }

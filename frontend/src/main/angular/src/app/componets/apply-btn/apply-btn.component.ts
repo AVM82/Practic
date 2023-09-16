@@ -13,7 +13,6 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class ApplyBtnComponent implements OnInit {
   isApply: boolean = false;
-  applyCourse: string = '';
   courseSlug: string = '';
   constructor(
       private tokenStorageService:TokenStorageService,
@@ -27,21 +26,23 @@ export class ApplyBtnComponent implements OnInit {
       const slug = params.get('slug');
       if(slug) {
         this.courseSlug = slug;
+        const token = this.tokenStorageService.getToken();
+        if (token) {
+          const user: User = this.tokenStorageService.getUser();
+          if (user && user.hasApplyOnCourse(slug)) {
+            this.isApply = true;
+          }
+        }
       }
     });
-    const token = this.tokenStorageService.getToken();
-    if (token) {
-      const user: User = this.tokenStorageService.getUser();
-      this.applyCourse = user.applyCourse;
-    }
+
   }
 
   onApplyClick() {
-    this.authService.applyOnCourse().subscribe({
-      next: () => {
-        console.log('Заявка прийнята');
+    this.authService.applyOnCourse(this.courseSlug).subscribe({
+      next: user => {
+        this.tokenStorageService.saveUser(user);
         this.isApply = true;
-        this.applyCourse = this.courseSlug;
       },
       error: error => {
         console.error('Помилка при відправці заявки', error);

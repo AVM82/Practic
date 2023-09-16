@@ -1,9 +1,11 @@
 package com.group.practic.service;
 
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonApplicationEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
+import com.group.practic.repository.PersonApplicationRepository;
 import com.group.practic.repository.RoleRepository;
 import com.group.practic.repository.StudentOnCourseRepository;
 import java.util.List;
@@ -28,14 +30,17 @@ public class StudentOnCourseService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private PersonApplicationRepository personApplicationRepository;
+
 
     public List<StudentOnCourseEntity> get() {
         return studentOnCourseRepository.findAll();
     }
 
 
-    public Optional<StudentOnCourseEntity> get(long id) {
-        return studentOnCourseRepository.findById(id);
+    public StudentOnCourseEntity get(long id) {
+        return studentOnCourseRepository.findByStudentId(id);
     }
 
 
@@ -86,10 +91,14 @@ public class StudentOnCourseService {
 
         if (student.isPresent()) {
             PersonEntity updateUser = user.get();
+            PersonApplicationEntity applicant =
+                    personApplicationRepository.findByPersonAndCourse(updateUser, course.get());
+            applicant.setApply(true);
             Set<RoleEntity> roles = updateUser.getRoles();
             roles.add(roleRepository.findByName("STUDENT"));
-            updateUser.setInactive(false);
+            roles.add(roleRepository.findByName(course.get().getSlug()));
             personService.save(user.get());
+            personApplicationRepository.save(applicant);
         }
 
         return student;

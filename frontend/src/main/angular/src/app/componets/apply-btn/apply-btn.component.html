@@ -1,4 +1,4 @@
-<div class="apply-button-container" *ngIf="applyCourse.length === 0 || isApply">
+<div class="apply-button-container" *ngIf="!isApply">
     <button
             class="apply-button"
             (click)="onApplyClick()"

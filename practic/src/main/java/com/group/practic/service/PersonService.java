@@ -94,9 +94,10 @@ public class PersonService implements UserDetailsService {
         String linkedinId = authorizationAttributes.get("id").toString();
         return personRepository.findByLinkedin(linkedinId).isPresent() ? null
                 : personRepository.save(new PersonEntity(
-                        authorizationAttributes.get("localizedFirstName") + " "
-                                + authorizationAttributes.get("localizedLastName"),
-                        linkedinId, Set.of(new RoleEntity("USER"))));
+                authorizationAttributes.get("localizedFirstName") + " "
+                        + authorizationAttributes.get("localizedLastName"),
+                linkedinId,
+                Set.of(new RoleEntity("USER"))));
     }
 
 
@@ -118,7 +119,7 @@ public class PersonService implements UserDetailsService {
                 throw new EntityExistsException("User with this role already exists " + newRole);
             }
             foundPerson.setRoles(Set.of(new RoleEntity(newRole)));
-            return Optional.ofNullable(personRepository.save(foundPerson));
+            return Optional.of(personRepository.save(foundPerson));
         }
         return Optional.empty();
     }
@@ -134,7 +135,7 @@ public class PersonService implements UserDetailsService {
         Optional<PersonEntity> currentPerson = getCurrentPerson();
         if (currentPerson.isPresent()) {
             currentPerson.get().setContacts(email);
-            return Optional.ofNullable(personRepository.save(currentPerson.get()));
+            return Optional.of(personRepository.save(currentPerson.get()));
         }
         return Optional.empty();
     }
@@ -148,18 +149,19 @@ public class PersonService implements UserDetailsService {
 
     @Transactional
     public AuthUserDto processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken,
-            OidcUserInfo userInfo) {
+                                               OidcUserInfo userInfo) {
         Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(attributes);
         Optional<PersonEntity> user = personRepository
                 .findPersonEntityByEmail(oauth2UserInfo.getEmail());
-        PersonEntity person = user.isPresent() ? updateExistingUser(user.get(), oauth2UserInfo)
-                : registerNewUser(toUserRegistrationObject(oauth2UserInfo));
+        PersonEntity person =
+                user.map(personEntity -> updateExistingUser(personEntity, oauth2UserInfo))
+                        .orElseGet(() -> registerNewUser(toUserRegistrationObject(oauth2UserInfo)));
         return AuthUserDto.create(person, attributes, idToken, userInfo);
     }
 
 
     private PersonEntity updateExistingUser(PersonEntity existingUser,
-            Oauth2UserInfo oauth2UserInfo) {
+                                            Oauth2UserInfo oauth2UserInfo) {
         existingUser.setName(oauth2UserInfo.getName());
         existingUser.setLinkedin(oauth2UserInfo.getId());
         existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());
@@ -192,13 +194,14 @@ public class PersonService implements UserDetailsService {
         final HashSet<RoleEntity> roles = new HashSet<>();
         roles.add(roleRepository.findByName("USER"));
         PersonEntity newPerson = new PersonEntity();
-        newPerson.setInactive(true);
+        newPerson.setInactive(false);
         newPerson.setName(userDetails.getName());
         newPerson.setPassword(userDetails.getPassword());
         newPerson.setEmail(userDetails.getEmail());
         newPerson.setLinkedin(userDetails.getProviderUserId());
         newPerson.setProfilePictureUrl(userDetails.getProfilePictureUrl());
         newPerson.setRoles(roles);
+        newPerson.setCourses(new HashSet<>());
         newPerson = personRepository.save(newPerson);
         personRepository.flush();
         return newPerson;

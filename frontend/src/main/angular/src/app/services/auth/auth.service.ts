@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ApiUrls} from "../../enums/api-urls";
+import { Course } from 'src/app/models/course/course';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,8 +21,9 @@ export class AuthService {
     return this.http.get(ApiUrls.Me, httpOptions);
   }
 
-  applyOnCourse(): Observable<any> {
-    return this.http.post('/api/persons/apply-on-course', {}, httpOptions);
+  applyOnCourse(slug :string): Observable<any> {
+    const url = `/api/persons/application/${slug}`;
+    return this.http.post(url, {}, httpOptions);
   }
 }
 
@@ -38,7 +40,8 @@ export class User {
       readonly contacts: string | null,
       readonly profilePictureUrl: string,
       readonly applyCourse: string,
-      readonly roles: UserRole[]
+      readonly roles: UserRole[],
+      readonly courses: Course[]
   ) {}
 
   get isAuthenticated(): boolean {
@@ -47,6 +50,10 @@ export class User {
 
   hasAnyRole(...roles: string[]): boolean {
     return roles.some(roleName => this.roles.some(userRole => userRole.name === roleName));
+  }
+
+  hasApplyOnCourse(...courses: string[]): boolean {
+   return courses.some(courseSlug => this.courses.some(course => course.slug === courseSlug));
   }
 
   static fromJson(json: any): User {
@@ -61,7 +68,8 @@ export class User {
         json.contacts,
         json.profilePictureUrl,
         json.applyCourse,
-        json.roles
+        json.roles,
+        json.courses
     );
   }
 

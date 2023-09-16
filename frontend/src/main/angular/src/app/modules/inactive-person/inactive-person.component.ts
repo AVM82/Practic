@@ -4,6 +4,7 @@ import {TableWidgetComponent} from "../../componets/table-widget/table-widget.co
 import {StudentMetricsService} from "../../services/admin/student-metrics.service";
 import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute} from "@angular/router";
+import {ChaptersService} from "../../services/chapters/chapters.service";
 
 @Component({
   selector: 'app-inactive-person',
@@ -16,19 +17,22 @@ export class InactivePersonComponent implements OnInit{
   @Input() shouldShowHeader: boolean = true;
   isRequestInProgress: boolean = false;
 
-  displayedColumns: string[] = ['name', 'profilePictureUrl', 'btnApply'];
+  displayedColumns: string[] = ['name', 'profilePictureUrl', 'courseSlug', 'btnApply'];
   columnNameConverterMap: { [key: string]: string } = {
     'name': 'ПІБ',
     'profilePictureUrl': 'Фото',
+    'courseSlug': 'Курс',
     'btnApply': 'Прийняти заявку'
   };
 
   data: any[] = [];
+  firstChapterId: number = 0;
 
   constructor(
       private studentMetricService: StudentMetricsService,
       private coursesService: CoursesService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private chaptersService: ChaptersService
   ) {}
 
   ngOnInit(): void {
@@ -40,10 +44,11 @@ export class InactivePersonComponent implements OnInit{
     console.log("Element="+JSON.stringify(element));
     console.log(element.applyCourse);
     this.isRequestInProgress = true;
-    this.coursesService.confirmApplyOnCourse(element.applyCourse, element.id).subscribe({
+    this.coursesService.confirmApplyOnCourse(element.courseSlug, element.id).subscribe({
       next: value => {
         this.isRequestInProgress = false;
         this.updateData();
+        this.getFirstChapterId(element.courseSlug, element.id);
       },
       error: err => {
         this.isRequestInProgress = false;
@@ -56,5 +61,34 @@ export class InactivePersonComponent implements OnInit{
       this.data = applicants;
     });
   }
+
+  openFirstChapter(chapterId :number, studentId :number) {
+    this.coursesService.openChapter(studentId, chapterId).subscribe({
+      next: value => {
+        console.log(value);
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
+  }
+
+  getFirstChapterId(courseSlug: string, studentId: number) {
+    this.coursesService.getChapters(courseSlug).subscribe({
+      next: value => {
+        const firstChapter = value.find(chapter => chapter.number === 1);
+
+        if (firstChapter) {
+          this.openFirstChapter(firstChapter.id, studentId);
+        } else {
+          console.error('Главу з номером 1 не знайдено.');
+        }
+      },
+      error: error => {
+        console.error('Помилка при отриманні глав:', error);
+      }
+    });
+  }
+
 
 }
