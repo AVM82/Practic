@@ -2,6 +2,7 @@ package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
+import static com.group.practic.util.ResponseUtils.updateResponse;
 
 import com.group.practic.dto.NewStudentReportDto;
 import com.group.practic.dto.StudentPracticeDto;
@@ -35,6 +36,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -152,11 +154,15 @@ public class StudentOnCourseController {
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.createStudentReport(personEntity, newStudentReportDto);
         //todo put timeSlotService.fillTimeSlots(); for filling new dateslots
-        //timeSlotService.fillTimeSlots();
+        timeSlotService.fillTimeSlots();
         return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
     @GetMapping("timeslots")
     public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(){
         return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
+    }
+    @PutMapping("timeslots")
+    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(@RequestBody Long timeslotId){
+        return updateResponse(Optional.ofNullable(timeSlotService.updateTimeSlotAvailability(timeslotId)));
     }
 }
