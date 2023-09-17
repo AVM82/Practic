@@ -43,7 +43,6 @@ export class CourseDetailsComponent implements OnInit {
           this.course = course;
           this.coursesService.getChapters(slug).subscribe(chapters =>
           {
-            //this.coursesService.setFirstChapterVisible(chapters);
             this.chapters = chapters;
             this.setChapterVisibility();
           });

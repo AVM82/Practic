@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import {TableWidgetComponent} from "../../componets/table-widget/table-widget.component";
 import {StudentMetricsService} from "../../services/admin/student-metrics.service";
 import {CoursesService} from "../../services/courses/courses.service";
-import {ActivatedRoute} from "@angular/router";
-import {ChaptersService} from "../../services/chapters/chapters.service";
 import {InfoMessagesService} from "../../services/info-messages.service";
 
 @Component({

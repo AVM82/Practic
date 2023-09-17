@@ -31,7 +31,7 @@ export class ApplyBtnComponent implements OnInit {
         const token = this.tokenStorageService.getToken();
         if (token) {
           const user: User = this.tokenStorageService.getUser();
-          if (user && user.hasApplyOnCourse(slug)) {
+          if (user?.hasApplyOnCourse(slug)) {
             this.isApply = true;
           }
         }
