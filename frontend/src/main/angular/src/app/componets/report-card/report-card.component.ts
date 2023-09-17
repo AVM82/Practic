@@ -18,4 +18,12 @@ export class ReportCardComponent {
   @Input() dateValue!:string
   @Input() timeValue!:string
   @Input() profilePictureUrl!: string
+
+  formatTime(): string {
+    const parts = this.timeValue.split(':');
+    if (parts.length >= 2) {
+      return `${parts[0]}:${parts[1]}`;
+    }
+    return this.timeValue;
+  }
 }
