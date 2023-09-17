@@ -7,6 +7,7 @@ import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentPracticeRepository;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,12 @@ public class StudentPracticeService {
 
     public List<StudentPracticeEntity> getAllStudentsByState(PracticeState state) {
         return studentPracticeRepository.findByState(state);
+    }
+
+    public Set<StudentPracticeEntity> getAllPracticesByChapter(
+            PersonEntity student, ChapterEntity chapter
+    ) {
+        return studentPracticeRepository.findByStudentAndChapter(student, chapter);
     }
 
     public StudentPracticeEntity addPractice(

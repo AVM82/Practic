@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +16,7 @@ public class StudentPracticeDto {
 
     private String personName;
 
+    @NotNull
     private long chapterPartId;
 
     private String chapterName;
@@ -22,4 +24,7 @@ public class StudentPracticeDto {
     private String state;
 
     private Date updatedAt;
+
+    @NotNull
+    private long studentId;
 }

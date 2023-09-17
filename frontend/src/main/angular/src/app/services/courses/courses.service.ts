@@ -73,6 +73,10 @@ export class CoursesService {
 
   }
 
+  approvePractice(studentId: number, chapterPartId: number): Observable<any> {
+    return this.http.post(ApiUrls.PracticeApprove, {studentId, chapterPartId});
+  }
+
 
   /**
    * Handle Http operation that failed.
@@ -95,11 +99,11 @@ export class CoursesService {
   setActiveChapter(chapters: Chapter[], chapterId: number) {
     if (chapters !== null
         && chapters.length > 0
-        && chapters.some(chapter => chapter.id === chapterId)
+        && chapters.some(chapter => chapter.number === chapterId)
     ) {
       this.resetAllChapters(chapters);
       chapters.forEach(chapter => {
-        chapter.isActive = chapter.id === chapterId;
+        chapter.isActive = chapter.number === chapterId;
       });
     }
   }

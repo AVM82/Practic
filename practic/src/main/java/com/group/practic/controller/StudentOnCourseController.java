@@ -5,13 +5,13 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStudentDto;
-import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.NewStudentReportDto;
+import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
-import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
@@ -193,13 +193,13 @@ public class StudentOnCourseController {
                 .getAuthentication().getPrincipal();
 
         PracticeState practiceState = PracticeState.fromString(studentPracticeDto.getState());
+
         StudentPracticeEntity studentPractice =
                 studentPracticeService.getPractice(person, studentPracticeDto.getChapterPartId());
         studentPractice.setState(practiceState);
         return ResponseEntity.ok(
                 Converter.convert(studentPracticeService.save(studentPractice))
         );
-
     }
 
 

@@ -41,8 +41,6 @@ export class InactivePersonComponent implements OnInit{
 
   handleAction(event: any) {
     const element = event.element;
-    console.log("Element="+JSON.stringify(element));
-    console.log(element.applyCourse);
     this.isRequestInProgress = true;
     this.coursesService.confirmApplyOnCourse(element.courseSlug, element.id).subscribe({
       next: value => {

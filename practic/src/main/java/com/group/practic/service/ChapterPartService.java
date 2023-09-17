@@ -241,11 +241,11 @@ public class ChapterPartService {
         return result;
     }
 
-    Optional<Set<ChapterPartEntity>> getAllPractices(long chapterId) {
+    public Optional<Set<ChapterPartEntity>> getAllPractices(long chapterId) {
         return chapterPartRepository.findAllByChapterId(chapterId);
     }
 
-    ChapterPartEntity getChapterPartById(long chapterPartId) {
+    public ChapterPartEntity getChapterPartById(long chapterPartId) {
         return chapterPartRepository.findById(chapterPartId);
     }
 
