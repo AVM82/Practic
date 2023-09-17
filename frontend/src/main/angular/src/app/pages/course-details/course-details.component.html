@@ -12,7 +12,7 @@
           </mat-card-header>
         </a>
 
-        <report-button [reportsNumber]="reports[chapter.number-1].length"></report-button>
+        <report-button [reportsNumber]="reports[chapter.number-1] ? reports[chapter.number-1].length : 0"></report-button>
       </div>
 
       <mat-card-footer>

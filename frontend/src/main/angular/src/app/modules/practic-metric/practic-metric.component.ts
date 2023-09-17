@@ -6,6 +6,7 @@ import { RouterLink} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 import {CoursesService} from "../../services/courses/courses.service";
+import {InfoMessagesService} from "../../services/info-messages.service";
 
 @Component({
   selector: 'app-practic-metric',
@@ -35,7 +36,8 @@ export class PracticMetricComponent implements OnInit {
 
   constructor(
       private studentMetricService: StudentMetricsService,
-      private coursesService: CoursesService
+      private coursesService: CoursesService,
+      private messagesService: InfoMessagesService
   ) {}
 
   ngOnInit(): void {
@@ -73,12 +75,14 @@ export class PracticMetricComponent implements OnInit {
     this.isRequestInProgress = true;
     console.log("Element = " + JSON.stringify(element));
     this.coursesService.approvePractice(element.studentId, element.chapterPartId).subscribe({
-      next: value => {
-        console.log("Approve action result = " + JSON.stringify(value));
+      next: () => {
+        this.messagesService.showMessage("Практична підтверджена.", "normal");
         this.isRequestInProgress = false;
+        this.loadStudentsByState(this.defaultState);
       },
       error: err => {
-        console.log("Error approving practice: " + JSON.stringify(err));
+        console.error("Error approving practice: " + JSON.stringify(err));
+        this.messagesService.showMessage("Помилка при підтверджені", "error");
         this.isRequestInProgress = false;
       }
     })

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import {AuthService, User} from "../../services/auth/auth.service";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ActivatedRoute} from "@angular/router";
+import {InfoMessagesService} from "../../services/info-messages.service";
 
 @Component({
   selector: 'app-apply-btn',
@@ -17,7 +18,8 @@ export class ApplyBtnComponent implements OnInit {
   constructor(
       private tokenStorageService:TokenStorageService,
       private authService:AuthService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private messagesService: InfoMessagesService
   ) {
   }
 
@@ -43,9 +45,11 @@ export class ApplyBtnComponent implements OnInit {
       next: user => {
         this.tokenStorageService.saveUser(user);
         this.isApply = true;
+        this.messagesService.showMessage("Заявка прийнята", "normal")
       },
       error: error => {
         console.error('Помилка при відправці заявки', error);
+        this.messagesService.showMessage("Помилка відправки заявки", "error")
       }
     });
   }

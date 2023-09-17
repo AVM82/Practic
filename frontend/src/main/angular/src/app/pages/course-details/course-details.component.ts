@@ -43,14 +43,26 @@ export class CourseDetailsComponent implements OnInit {
           this.course = course;
           this.coursesService.getChapters(slug).subscribe(chapters =>
           {
-            this.coursesService.setFirstChapterVisible(chapters);
+            //this.coursesService.setFirstChapterVisible(chapters);
             this.chapters = chapters;
+            this.setChapterVisibility();
           });
           this.reportService.getAllActualReports(slug).subscribe(reports => {
             this.reports.push(...reports);
             this.reports = [...this.reports];
           });
         });
+      }
+    })
+  }
+
+  private setChapterVisibility() :void {
+    this.coursesService.getOpenChapters().subscribe({
+      next: chapters => {
+        this.coursesService.setVisibleChapters(this.chapters, chapters);
+      },
+      error: error => {
+        console.error('Помилка при запиті доступних глав', error);
       }
     })
   }

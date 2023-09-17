@@ -9,6 +9,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {ChapterPart} from "../../models/chapter/chapterpart";
+import {InfoMessagesService} from "../../services/info-messages.service";
 
 @Component({
   selector: 'app-chapter-details',
@@ -24,7 +25,8 @@ export class ChapterDetailsComponent implements OnInit {
 
   constructor(
       private chaptersService: ChaptersService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private messagesService: InfoMessagesService
   ) {}
 
   ngOnInit(): void {
@@ -45,22 +47,39 @@ export class ChapterDetailsComponent implements OnInit {
 
   playAction(chapterPart: ChapterPart) {
     this.chaptersService.setPracticeState('IN_PROCESS', chapterPart.id).subscribe({
-      next: value => console.log("Practice = " + JSON.stringify(value)),
-      error: err => console.log("Не можливо оновити статус практичної: " + err)
+      next: () => {
+        this.messagesService.showMessage("Стан практичної змінено на стан 'В ПРОЦЕССІ'", "normal");
+      },
+      error: err => {
+        this.showError(err);
+      }
     });
   }
 
   pauseAction(chapterPart: ChapterPart) {
     this.chaptersService.setPracticeState('PAUSE', chapterPart.id).subscribe({
-      next: value => console.log("Practice = " + JSON.stringify(value)),
-      error: err => console.log("Не можливо оновити статус практичної: " + err)
+      next: () => {
+        this.messagesService.showMessage("Стан практичної змінено на стан 'НА ПАУЗІ'", "normal");
+      },
+      error: err => {
+        this.showError(err);
+      }
     });
   }
 
   doneAction(chapterPart: ChapterPart) {
     this.chaptersService.setPracticeState('READY_TO_REVIEW', chapterPart.id).subscribe({
-      next: value => console.log("Practice = " + JSON.stringify(value)),
-      error: err => console.log("Не можливо оновити статус практичної: " + err)
+      next: () => {
+        this.messagesService.showMessage("Стан практичної змінено на стан 'ГОТОВО ДО РЕВЬЮ'", "normal");
+      },
+      error: err => {
+        this.showError(err);
+      }
     });
+  }
+
+  showError(error: any) {
+    console.error("Не можливо оновити статус практичної: " + error);
+    this.messagesService.showMessage("Помилка при зміні стану практичної. Див. консоль", "error");
   }
 }

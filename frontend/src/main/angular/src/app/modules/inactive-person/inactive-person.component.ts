@@ -5,6 +5,7 @@ import {StudentMetricsService} from "../../services/admin/student-metrics.servic
 import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute} from "@angular/router";
 import {ChaptersService} from "../../services/chapters/chapters.service";
+import {InfoMessagesService} from "../../services/info-messages.service";
 
 @Component({
   selector: 'app-inactive-person',
@@ -31,8 +32,7 @@ export class InactivePersonComponent implements OnInit{
   constructor(
       private studentMetricService: StudentMetricsService,
       private coursesService: CoursesService,
-      private route: ActivatedRoute,
-      private chaptersService: ChaptersService
+      private messagesService: InfoMessagesService
   ) {}
 
   ngOnInit(): void {
@@ -43,12 +43,12 @@ export class InactivePersonComponent implements OnInit{
     const element = event.element;
     this.isRequestInProgress = true;
     this.coursesService.confirmApplyOnCourse(element.courseSlug, element.id).subscribe({
-      next: value => {
+      next: () => {
         this.isRequestInProgress = false;
         this.updateData();
         this.getFirstChapterId(element.courseSlug, element.id);
       },
-      error: err => {
+      error: () => {
         this.isRequestInProgress = false;
       }
     });
@@ -63,7 +63,7 @@ export class InactivePersonComponent implements OnInit{
   openFirstChapter(chapterId :number, studentId :number) {
     this.coursesService.openChapter(studentId, chapterId).subscribe({
       next: value => {
-        console.log(value);
+        this.messagesService.showMessage("Студента зараховано, перший розділ відкрито.", "normal");
       },
       error: err => {
         console.log(err);
