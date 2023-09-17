@@ -89,6 +89,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request ->
                                 request
+                                        .requestMatchers("/api/courses")
+                                        .permitAll()
                                         .requestMatchers(
                                                 "/api/**")
                                         .authenticated()

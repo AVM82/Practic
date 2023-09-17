@@ -1,12 +1,21 @@
-import {AfterViewInit, Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {MatTableDataSource, MatTableModule} from "@angular/material/table";
 import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-table-widget',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatPaginatorModule],
+  imports: [CommonModule, MatTableModule, MatPaginatorModule, NgOptimizedImage],
   templateUrl: './table-widget.component.html',
   styleUrls: ['./table-widget.component.css']
 })
@@ -16,6 +25,9 @@ export class TableWidgetComponent implements OnChanges, AfterViewInit {
   @Input() data: any[]=[];
   @Input() columnNameMap: { [key: string]: string }={};
   @Input() showPaginator: boolean = true;
+  @Input() isRequestInProgress: boolean = false;
+  @Output() performAction = new EventEmitter<any>();
+
 
   dataSource = new MatTableDataSource<any>(this.data);
 
@@ -23,6 +35,20 @@ export class TableWidgetComponent implements OnChanges, AfterViewInit {
 
   isCreatedAtOrUpdatedAt(column: string): boolean {
     return column === 'createdAt' || column === 'updatedAt';
+  }
+
+  isColumnWithBnt(column: string): boolean {
+    return column.startsWith('btn');
+  }
+
+  isColumnWithImg(column: string): boolean {
+    return  column === 'profilePictureUrl';
+  }
+
+  isCommonColumn(column: string): boolean {
+    return !this.isColumnWithImg(column) &&
+        !this.isColumnWithBnt(column) &&
+        !this.isCreatedAtOrUpdatedAt(column);
   }
 
   ngAfterViewInit(): void {

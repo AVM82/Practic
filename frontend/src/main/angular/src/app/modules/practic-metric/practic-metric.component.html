@@ -24,6 +24,8 @@
                 [data]="data"
                 [columnNameMap]="columnNameConverterMap"
                 [showPaginator]="shouldShowHeader"
+                [isRequestInProgress] = "isRequestInProgress"
+                (performAction)="handleAction($event)"
                 class="app-table-widget"
         ></app-table-widget>
     </div>
