@@ -147,8 +147,8 @@ public class StudentOnCourseController {
 
     @PostMapping("/reports/course/{slug}")
     public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,
-                                                              Principal principal,
-                                                              @RequestBody NewStudentReportDto newStudentReportDto) {
+            Principal principal,
+            @RequestBody NewStudentReportDto newStudentReportDto) {
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.createStudentReport(personEntity, newStudentReportDto);
@@ -156,13 +156,15 @@ public class StudentOnCourseController {
     }
 
     @GetMapping("/reports/course/{slug}/timeslots")
-    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(@PathVariable String slug) {
+    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(
+            @PathVariable String slug) {
         return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
     }
 
     @PutMapping("/reports/course/{slug}/timeslots")
-    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(@PathVariable String slug,
-                                                                                @RequestBody Long timeslotId) {
+    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(
+            @PathVariable String slug,
+            @RequestBody Long timeslotId) {
         return updateResponse(Optional.ofNullable(timeSlotService
                 .updateTimeSlotAvailability(timeslotId)));
     }
