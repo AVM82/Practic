@@ -25,10 +25,8 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Map;
-
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,8 +57,10 @@ public class StudentOnCourseController {
 
     @Autowired
     public StudentOnCourseController(StudentOnCourseService studentOnCourseService,
-                                     StudentPracticeService studentPracticeService, PersonService personService,
-                                     StudentReportService studentReportService, TimeSlotService timeSlotService) {
+                                     StudentPracticeService studentPracticeService,
+                                     PersonService personService,
+                                     StudentReportService studentReportService,
+                                     TimeSlotService timeSlotService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
@@ -146,24 +146,29 @@ public class StudentOnCourseController {
 
 
     @PostMapping("/reports/course/{slug}")
-    public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,Principal principal, @RequestBody
-            NewStudentReportDto newStudentReportDto) {
+    public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,
+                                                              Principal principal,
+                                                              @RequestBody NewStudentReportDto newStudentReportDto) {
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.createStudentReport(personEntity, newStudentReportDto);
         return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
+
     @GetMapping("/reports/course/{slug}/timeslots")
-    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(@PathVariable String slug){
+    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(@PathVariable String slug) {
         return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
     }
-    @PutMapping("/reports/course/{slug}/timeslots")
-    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(@PathVariable String slug,@RequestBody Long timeslotId){
-        return updateResponse(Optional.ofNullable(timeSlotService.updateTimeSlotAvailability(timeslotId)));
-    }
-    @PostMapping("/reports/course/{slug}/timeslots")
 
-    public  ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots(){
+    @PutMapping("/reports/course/{slug}/timeslots")
+    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(@PathVariable String slug,
+                                                                                @RequestBody Long timeslotId) {
+        return updateResponse(Optional.ofNullable(timeSlotService
+                .updateTimeSlotAvailability(timeslotId)));
+    }
+
+    @PostMapping("/reports/course/{slug}/timeslots")
+    public  ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots() {
         return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
 }

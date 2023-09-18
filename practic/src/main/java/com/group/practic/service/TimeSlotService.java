@@ -3,12 +3,17 @@ package com.group.practic.service;
 import com.group.practic.PropertyLoader;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.repository.TimeSlotRepository;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
+
 
 
 @Service
@@ -24,7 +29,8 @@ public class TimeSlotService {
 
     public Map<String, List<TimeSlotEntity>> getAvailableTimeSlots() {
 
-        List<TimeSlotEntity> timeSlotList = timeSlotRepository.findAllByAvailabilityTrueOrderByTime();
+        List<TimeSlotEntity> timeSlotList = timeSlotRepository
+                .findAllByAvailabilityTrueOrderByTime();
         Map<String, List<TimeSlotEntity>> slotMap = new HashMap<>();
         for (TimeSlotEntity timeSlot : timeSlotList) {
             String date = timeSlot.getDate().toString();
@@ -51,7 +57,8 @@ public class TimeSlotService {
     public Optional<List<TimeSlotEntity>> fillTimeSlots() {
         PropertyLoader loader = new PropertyLoader("practic/reportTimeslot.properties");
         if (loader.initialized) {
-            int reportDuration = Integer.parseInt(loader.getProperty("reportDurationMinutes", "30"));
+            int reportDuration = Integer.parseInt(
+                    loader.getProperty("reportDurationMinutes", "30"));
             int daysNum = Integer.parseInt(loader.getProperty("numberOfDays", "5"));
             LocalDate currentDate = LocalDate.now();
             LocalDate endDate = currentDate.plusDays(daysNum);

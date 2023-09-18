@@ -120,8 +120,8 @@ public interface Converter {
                 .addMapping(src -> src.getChapter().getShortName(),
                         StudentReportDto::setChapterName)
                 .addMapping(StudentReportEntity::getState, StudentReportDto::setState)
-                .addMapping(src->src.getTimeSlot().getDate(), StudentReportDto::setDate)
-                .addMapping(src->src.getTimeSlot().getTime(),StudentReportDto::setTime);
+                .addMapping(src -> src.getTimeSlot().getDate(), StudentReportDto::setDate)
+                .addMapping(src -> src.getTimeSlot().getTime(), StudentReportDto::setTime);
     }
 
 }

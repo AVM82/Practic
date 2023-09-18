@@ -1,6 +1,10 @@
 package com.group.practic.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -15,7 +19,7 @@ public class TimeSlotEntity {
     boolean availability = true;
 
 
-    public TimeSlotEntity( LocalDate date, LocalTime time) {
+    public TimeSlotEntity(LocalDate date, LocalTime time) {
         this.date = date;
         this.time = time;
     }
