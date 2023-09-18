@@ -65,8 +65,8 @@ public class CourseService {
     }
 
 
-    public List<LevelEntity> getLevels(@Min(1) long id) {
-        Optional<CourseEntity> course = courseRepository.findById(id);
+    public List<LevelEntity> getLevels(String slug) {
+        Optional<CourseEntity> course = courseRepository.findBySlug(slug);
         return course.isEmpty() ? List.of() : levelService.getAll(course.get());
     }
 
