@@ -9,12 +9,15 @@ import {DashboardComponent} from "./modules/dashboard/dashboard.component";
 import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
 import {ReportDashboardComponent} from "./pages/report-dashboard/report-dashboard.component";
+import { FeedbackComponent } from './componets/feedback/feedback.component';
 
 const routes: Routes = [
   {path: '', component: CoursesComponent},
   {path: 'courses', component: CoursesComponent},
   {path: 'login', component: LoginComponent},
-  {path: 'logout', component: LoginComponent},
+  {path: 'logout', component: LoginComponent},  
+  {path: 'feedback',component: FeedbackComponent},
+
   {
     path: 'admin',
     component: AdminDashboardComponent,

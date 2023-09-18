@@ -22,12 +22,14 @@ export class AuthService {
 }
 
 export class User {
-  static readonly ANONYMOUS = new User([],"","");
+  static readonly ANONYMOUS = new User([],"","","",0);
   
   constructor(
       readonly roles: UserRole[],
       readonly name : string,
-      readonly profilePictureUrl : string
+      readonly profilePictureUrl : string,
+      readonly email : string,
+      readonly id : number
   ) {}
 
   get isAuthenticated(): boolean {

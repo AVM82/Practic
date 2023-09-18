@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {  MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
@@ -10,4 +11,10 @@ import {  MatIconModule } from '@angular/material/icon';
 })
 
 export class FooterComponent {
+  constructor(private router: Router) { }
+
+  goToFeedbackPage() {
+    this.router.navigate(['/feedback']);
+  }
+
 }
