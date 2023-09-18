@@ -54,27 +54,19 @@ export class FeedbackComponent implements OnInit {
       }
     });}
 
-  
-
-  // Метод, который возвращает имена студентов
   getStudentNames(): string[] {
     return this.feedbacks.map(feedback => feedback.student.name || "Немає ім'я");
   }
 
-  // Метод, который возвращает обратную связь
   getFeedbacks(): string[] {
     return this.feedbacks.map(feedback => feedback.feedback || 'Немає відгуків');
   }
 
-  // Метод, который возвращает URL изображений профилей
   getProfilePictureUrls(): string[] {
     return this.feedbacks.map(feedback => feedback.student.profilePictureUrl || 'URL зображення відсутній');
   }
 
-
-  // Получение ссылки на пагинатор из шаблона
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
@@ -85,17 +77,12 @@ export class FeedbackComponent implements OnInit {
 
   incrementLikes(feedback: any) {
     const id = feedback.id;
-    console.log(id + " this is feedback id");
-    console.log(this.id + " this is person id");
-  
     this.feedbackService.incrementLikes(id, this.id).subscribe(
       (response) => {
         console.log("Likes increment:", response);
-        // Обработка успешного выполнения запроса
       },
       (error) => {
         console.error("Likes not incremented:", error);
-        // Обработка ошибки
       }
     );
     this.feedbackLiked = true;
@@ -115,20 +102,10 @@ export class FeedbackComponent implements OnInit {
   changeLike(feedback: any) {
     const likedPersons: any[] = feedback.likedByPerson;
     const ids = likedPersons.map((person: any) => person.id);
-
-    console.log(ids);
-    // Проверяем, есть ли в массиве пользователь с таким же ID
-    const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.id);
-    
+     const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.id);
     if (userLikedIndex !== -1) {
-      console.log("decrement");
-      
-      // Если пользователь уже лайкнул, то вызываем метод для декремента
-      this.decrementLikes(feedback);
+            this.decrementLikes(feedback);
     } else {
-      console.log("increment");
-
-      // Если пользователь еще не лайкнул, то вызываем метод для инкремента
       this.incrementLikes(feedback);
     }
   }
@@ -136,14 +113,10 @@ export class FeedbackComponent implements OnInit {
   isLiked(feedback: any):boolean{
     const likedPersons: any[] = feedback.likedByPerson;
     const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.id);
-
     if (userLikedIndex !== -1) {
-      console.log("decrement");
-      
       return true;
     } else {
      return false;
     }
-
   }
 }

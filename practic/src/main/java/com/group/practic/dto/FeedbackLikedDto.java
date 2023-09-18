@@ -36,8 +36,12 @@ public class FeedbackLikedDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {return true;}
-        if (o == null || getClass() != o.getClass()) {return false;}
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FeedbackLikedDto that = (FeedbackLikedDto) o;
         return Objects.equals(feedbackId, that.feedbackId)
                 && Objects.equals(personId, that.personId);

@@ -3,7 +3,6 @@ package com.group.practic.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.Objects;
 
 public class FeedbackDto {
@@ -51,8 +50,8 @@ public class FeedbackDto {
             return false;
         }
         FeedbackDto that = (FeedbackDto) o;
-        return id == that.id && likes == that.likes &&
-                Objects.equals(email, that.email) && Objects.equals(feedback, that.feedback);
+        return id == that.id && likes == that.likes
+                && Objects.equals(email, that.email) && Objects.equals(feedback, that.feedback);
     }
 
     @Override

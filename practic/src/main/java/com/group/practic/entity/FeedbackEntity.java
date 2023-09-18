@@ -1,12 +1,23 @@
 package com.group.practic.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.springframework.data.annotation.Id;
+
 
 @Entity
 @Table(name = "feedback")
@@ -86,10 +97,17 @@ public class FeedbackEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FeedbackEntity feedback1 = (FeedbackEntity) o;
-        return id == feedback1.id && likes == feedback1.likes && Objects.equals(student, feedback1.student) && Objects.equals(feedback, feedback1.feedback) && Objects.equals(likedByPerson, feedback1.likedByPerson);
+        return id == feedback1.id && likes == feedback1.likes
+                && Objects.equals(student, feedback1.student)
+                && Objects.equals(feedback, feedback1.feedback)
+                && Objects.equals(likedByPerson, feedback1.likedByPerson);
     }
 
     @Override

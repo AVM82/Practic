@@ -8,9 +8,8 @@
   margin-right: 180px;
 }
 
-/* Стили карточки */
 .feedback-card {
-    border: 2px solid #acabab; /* Контур */
+    border: 2px solid #acabab;
     border-radius: 10px;
     padding: 5px;
     margin: 20px;
@@ -18,10 +17,8 @@
     height: 200;
     display: flex;
       margin-left: 10%;
-            
-
   }
-  /* Стили контейнера */
+
   .container {
     display: flex;
     align-items: center; 
@@ -29,7 +26,6 @@
     justify-content: space-between; 
   }
 
-/* Стили текста */
 .centered-content {
     font-size: 35px;  
     margin: 0 auto; 
@@ -89,7 +85,6 @@
     user-select: none;
     margin-top: 10px;
     margin-left: 795px;
-
   }
 
   .like-button{
