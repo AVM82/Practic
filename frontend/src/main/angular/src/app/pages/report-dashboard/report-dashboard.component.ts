@@ -12,6 +12,7 @@ import {NewReportDialogComponent} from "../../componets/new-report/new-report-di
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {TimeSlot} from "../../models/timeSlot/time-slot";
 import {TimeSlotService} from "../../services/timeSlot/time-slot.service";
+import {Level} from "../../models/level/level";
 
 
 @Component({
@@ -30,6 +31,7 @@ import {TimeSlotService} from "../../services/timeSlot/time-slot.service";
 export class ReportDashboardComponent implements OnInit {
     reports: StudentReport[][] = [];
     chapters: Chapter[] = [];
+    levels: Level[] = []
     timeslots: Map<String, TimeSlot[]> = new Map<String, TimeSlot[]>();
 
     constructor(
@@ -47,9 +49,12 @@ export class ReportDashboardComponent implements OnInit {
             const slug = params.get('slug');
             console.log(slug)
             if (slug) {
-                this.loadReports(slug);
+                this.loadLevels(slug);
                 this.loadChapters(slug);
-                this.loadTimeSlots()
+                this.loadReports(slug);
+                this.loadTimeSlots(slug);
+                this.createTimeSlots(slug)
+
             }
         });
     }
@@ -69,14 +74,25 @@ export class ReportDashboardComponent implements OnInit {
         });
     }
 
-    loadTimeSlots(): void {
-        this.timeSlotService.getAllAvailableTimeSlots().subscribe(timeslots => {
+    loadLevels(slug: string): void {
+        this.coursesService.getLevels(slug).subscribe(levels => {
+            this.levels = levels;
+            console.log('level inside method subscribe');
+            console.log(this.levels)
+        });
+    }
+
+    loadTimeSlots(slug: string): void {
+        this.timeSlotService.getAllAvailableTimeSlots(slug).subscribe(timeslots => {
             this.timeslots = timeslots;
             console.log('timeslots inside method  loadTimeSlots()');
             console.log(this.timeslots);
         });
     }
 
+    createTimeSlots(slug: string): void {
+        this.timeSlotService.createNewTimeslots(slug).subscribe();
+    }
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
@@ -93,10 +109,9 @@ export class ReportDashboardComponent implements OnInit {
                 console.log('The dialog was closed');
                 if (result != null && slug) {
                     this.reportService.createNewReport(result, slug).subscribe();
-                    this.timeSlotService.updateTimeslotAvailability(result.timeslotId).subscribe();
+                    this.timeSlotService.updateTimeslotAvailability(result.timeslotId, slug).subscribe();
                 }
             });
-
         });
     }
 }
