@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {catchError, Observable, of} from "rxjs";
-import {ApiUrls} from "../../enums/api-urls";
+import {timeslotsUrl} from "../../enums/api-urls";
 import {TimeSlot} from "../../models/timeSlot/time-slot";
 
 @Injectable({
@@ -18,14 +18,19 @@ export class TimeSlotService {
         'Content-Type': 'application/json',
     });
 
-    getAllAvailableTimeSlots(): Observable<Map<String, TimeSlot[]>> {
-        return this.http.get<Map<String, TimeSlot[]>>(ApiUrls.TimeSlots).pipe(
+    getAllAvailableTimeSlots(slug: string): Observable<Map<String, TimeSlot[]>> {
+        return this.http.get<Map<String, TimeSlot[]>>(timeslotsUrl(slug)).pipe(
             catchError(this.handleError<Map<String, TimeSlot[]>>(`get available time slots`)));
     }
 
-    updateTimeslotAvailability(timeslotId: HttpParams): Observable<any> {
-        return this.http.put<any>(ApiUrls.TimeSlots, timeslotId, { headers: this.headers }).pipe(
+    updateTimeslotAvailability(timeslotId: number, slug: string): Observable<any> {
+        return this.http.put<any>(timeslotsUrl(slug), timeslotId, {headers: this.headers}).pipe(
             catchError(this.handleError<any>(`update timeslot availability`)));
+    }
+
+    createNewTimeslots(slug: string): Observable<any> {
+        return this.http.post<any>(timeslotsUrl(slug), {headers: this.headers}).pipe(
+            catchError(this.handleError<any>(`create new timeslots`)));
     }
 
     /**
