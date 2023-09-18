@@ -1,26 +1,23 @@
 package com.group.practic.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
 @Table(name = "report_timeslots")
 public class TimeSlotEntity {
-    //todo add course slug or course id for timeslots of different courses
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
     LocalDate date;
     LocalTime time;
-    boolean availability;
+    boolean availability = true;
 
 
-    public TimeSlotEntity( LocalDate date, LocalTime time, boolean availability) {
+    public TimeSlotEntity( LocalDate date, LocalTime time) {
         this.date = date;
         this.time = time;
-        this.availability = availability;
     }
 
 
