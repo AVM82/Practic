@@ -25,7 +25,7 @@ public class FeedbackService {
 
     public FeedbackEntity addFeedback(FeedbackDto feedbackDto) {
         String email = feedbackDto.getEmail();
-        PersonEntity person = personRepository.findByEmail(email).orElse(null);
+        PersonEntity person = personRepository.findPersonEntityByEmail(email).orElse(null);
         if (email.isEmpty() || person == null) {
             throw new NullPointerException();
         }
