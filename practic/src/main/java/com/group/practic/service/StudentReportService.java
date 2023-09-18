@@ -42,7 +42,7 @@ public class StudentReportService {
             result = new ArrayList<>();
             for (ChapterEntity chapter : course.get().getChapters()) {
                 result.add(
-                        studentReportRepository.findAllByChapterAndStateIn(chapter, ACTUAL_STATES));
+                        studentReportRepository.findAllByChapterAndStateInOrderByTimeSlotId(chapter, ACTUAL_STATES));
             }
         }
         return result;
@@ -52,7 +52,6 @@ public class StudentReportService {
             NewStudentReportDto newStudentReportDto) {
         Optional<ChapterEntity> chapter = chapterService.get(newStudentReportDto.chapter());
         Optional<TimeSlotEntity> timeslot = timeSlotRepository.findById(newStudentReportDto.timeslotId());
-
 
         return (student.isPresent() && chapter.isPresent()&& timeslot.isPresent())
             ? Optional.ofNullable(studentReportRepository
