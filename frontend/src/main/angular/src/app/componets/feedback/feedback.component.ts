@@ -4,10 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FeedbackService } from 'src/app/services/feedback/feedbacks.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FeedbackDialogComponent } from 'src/app/componets/feedback-dialog/feedback-dialog.component'
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatTableModule } from '@angular/material/table';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginatorModule,MatPaginator } from '@angular/material/paginator';
+import { MatTableModule,MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {User} from "../../services/auth/auth.service";
@@ -54,7 +52,7 @@ export class FeedbackComponent implements OnInit {
       }
     });}
 
-  getStudentNames(): string[] {
+    getStudentNames(): string[] {
     return this.feedbacks.map(feedback => feedback.student.name || "Немає ім'я");
   }
 
@@ -77,7 +75,7 @@ export class FeedbackComponent implements OnInit {
 
   incrementLikes(feedback: any) {
     const id = feedback.id;
-    this.feedbackService.incrementLikes(id, this.id).subscribe(
+        this.feedbackService.incrementLikes(id, this.id).subscribe(
       (response) => {
         console.log("Likes increment:", response);
       },
@@ -101,12 +99,11 @@ export class FeedbackComponent implements OnInit {
 
   changeLike(feedback: any) {
     const likedPersons: any[] = feedback.likedByPerson;
-    const ids = likedPersons.map((person: any) => person.id);
-     const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.id);
+    const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.id);
     if (userLikedIndex !== -1) {
             this.decrementLikes(feedback);
     } else {
-      this.incrementLikes(feedback);
+            this.incrementLikes(feedback);
     }
   }
 
@@ -114,7 +111,7 @@ export class FeedbackComponent implements OnInit {
     const likedPersons: any[] = feedback.likedByPerson;
     const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.id);
     if (userLikedIndex !== -1) {
-      return true;
+            return true;
     } else {
      return false;
     }

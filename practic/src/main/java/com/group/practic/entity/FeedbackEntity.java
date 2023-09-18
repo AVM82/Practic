@@ -91,7 +91,7 @@ public class FeedbackEntity {
         return likedByPerson;
     }
 
-    public void setLikedByPerson(HashSet<PersonEntity> likedByPerson) {
+    public void setLikedByPerson(Set<PersonEntity> likedByPerson) {
         this.likedByPerson = likedByPerson;
     }
 
