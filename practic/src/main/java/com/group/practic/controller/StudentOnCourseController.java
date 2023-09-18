@@ -139,8 +139,6 @@ public class StudentOnCourseController {
     @GetMapping("/reports/course/{slug}")
     public ResponseEntity<Collection<List<StudentReportDto>>> getActualStudentReports(
             @PathVariable String slug) {
-
-
         return getResponse(Converter.convertListOfLists(
             studentReportService.getAllStudentsActualReports(slug)));
 
@@ -148,21 +146,24 @@ public class StudentOnCourseController {
 
 
     @PostMapping("/reports/course/{slug}")
-    public ResponseEntity<StudentReportDto> postStudentReport(Principal principal, @RequestBody
+    public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,Principal principal, @RequestBody
             NewStudentReportDto newStudentReportDto) {
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.createStudentReport(personEntity, newStudentReportDto);
-        //todo put timeSlotService.fillTimeSlots(); for filling new dateslots
-        timeSlotService.fillTimeSlots();
         return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
-    @GetMapping("timeslots")
-    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(){
+    @GetMapping("/reports/course/{slug}/timeslots")
+    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(@PathVariable String slug){
         return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
     }
-    @PutMapping("timeslots")
-    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(@RequestBody Long timeslotId){
+    @PutMapping("/reports/course/{slug}/timeslots")
+    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(@PathVariable String slug,@RequestBody Long timeslotId){
         return updateResponse(Optional.ofNullable(timeSlotService.updateTimeSlotAvailability(timeslotId)));
+    }
+    @PostMapping("/reports/course/{slug}/timeslots")
+
+    public  ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots(){
+        return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
 }
