@@ -26,9 +26,9 @@ export class ReportServiceService {
   getReportStates(): Observable<any[]>{
     return this.http.get<any[]>(ApiUrls.ReportStates);
   }
-  createNewReport(newReport: NewStudentReport,slug: string):Observable<NewStudentReport> {
+  createNewReport(newReport: NewStudentReport,slug: string):Observable<any> {
     return this.http.post<NewStudentReport>(postReportsUrl(slug), JSON.stringify(newReport),{ headers: this.headers } )
-    .pipe(catchError(this.handleError<NewStudentReport>(`post new student report = ${slug}`)));
+    .pipe(catchError(this.handleError<StudentReport>(`post new student report = ${slug}`)));
 
   }
 
