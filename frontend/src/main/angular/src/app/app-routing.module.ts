@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, LOCALE_ID} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {PageNotFoundComponent} from "./pages/page-not-found/page-not-found.component";
 import {CoursesComponent} from "./pages/courses/courses.component";
@@ -12,6 +12,10 @@ import {ReportDashboardComponent} from "./pages/report-dashboard/report-dashboar
 import {AdditionalMaterialsComponent} from "./pages/materials/additional-materials.component";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule, NativeDateModule} from "@angular/material/core";
+import localeUk from '@angular/common/locales/uk';
+import {registerLocaleData} from "@angular/common";
+
+registerLocaleData(localeUk, 'uk');
 
 const routes: Routes = [
   {path: '', component: CoursesComponent},
@@ -36,9 +40,12 @@ const routes: Routes = [
   {path: 'courses/:slug/additional', component: AdditionalMaterialsComponent},
   {path: '**', component: PageNotFoundComponent}
 ];
-//todo ask about import date modules
+
 @NgModule({
   imports: [RouterModule.forRoot(routes),MatDatepickerModule, MatNativeDateModule, NativeDateModule],
   exports: [RouterModule],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'uk' }
+  ],
 })
 export class AppRoutingModule { }

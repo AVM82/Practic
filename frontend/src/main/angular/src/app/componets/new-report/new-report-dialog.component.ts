@@ -8,12 +8,14 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatSelectModule} from "@angular/material/select";
 import {NewStudentReport} from "../../models/newStudentReport/newStudentReport";
 import {Chapter} from "../../models/course/chapter";
-import {NgForOf} from "@angular/common";
+import {DatePipe, NgForOf} from "@angular/common";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
 import {TimeSlot} from "../../models/timeSlot/time-slot";
 import * as _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
+import 'moment/locale/uk';
+
 
 
 const moment = _rollupMoment || _moment;
@@ -41,6 +43,7 @@ export const MY_FORMATS = {
             deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
         },
         {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+        { provide: MAT_DATE_LOCALE, useValue: 'uk' }
     ],
 
     standalone: true,
@@ -54,7 +57,9 @@ export const MY_FORMATS = {
         MatFormFieldModule,
         MatInputModule,
         MatDatepickerModule,
-        MatNativeDateModule],
+        MatNativeDateModule,
+        DatePipe
+    ],
 })
 export class NewReportDialogComponent {
     minDate: Date;
@@ -73,6 +78,7 @@ export class NewReportDialogComponent {
         const currentDay = new Date().getDate();
         this.minDate = new Date(currentYear, currentMonth, currentDay);
         this.maxDate = new Date(currentYear, currentMonth, currentDay + 14);
+        moment.locale('uk');
     }
 
     onNoClick(): void {
@@ -85,6 +91,13 @@ export class NewReportDialogComponent {
         }
         // @ts-ignore
         return this.timeslotsMap.timeslots[this.dateStr];
+    }
+    formatTime(timeValue:string): string {
+        const parts = timeValue.split(':');
+        if (parts.length >= 2) {
+            return `${parts[0]}:${parts[1]}`;
+        }
+        return timeValue;
     }
 
     protected readonly Date = Date;

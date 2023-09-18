@@ -6,6 +6,7 @@ import {ReportCardComponent} from "../../componets/report-card/report-card.compo
 import {StudentReport} from "../../models/report/studentReport";
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {Level} from "../../models/level/level";
 
 @Component({
   selector: 'chapter-reports',
@@ -16,11 +17,14 @@ import {MatIconModule} from '@angular/material/icon';
 })
 export class ChapterReportsComponent {
   @Input() shouldShowHeader: boolean = true;
+  @Input() levels!:Level[];
   @Input() chapterNumber!: number
   @Input() studentReports!: StudentReport[];
+
   reportsNumberOnPage: number = 5;
   startOfRange: number = 0;
   endOfRange: number = this.reportsNumberOnPage;
+  chapterColor: string = '#6565A3';
 
 
   showReports() {
@@ -49,6 +53,19 @@ export class ChapterReportsComponent {
     return this.studentReports.length > this.reportsNumberOnPage;
   }
 
-
+  getChapterColor(chapter:number):any{
+    for(let i:number = 0; i<this.levels.length; i++) {
+      if (this.levels[i].number == 1 && this.levels[i].chapterN.includes(chapter)) {
+        this.chapterColor =  '#84C984';
+      }
+      if (this.levels[i].number == 2 && this.levels[i].chapterN.includes(chapter)) {
+        this.chapterColor =  '#D86D6D';
+      }
+      if (this.levels[i].number == 3 && this.levels[i].chapterN.includes(chapter)) {
+        this.chapterColor =  '#CED069';
+      }
+    }
+    return this.chapterColor;
+  }
 }
 

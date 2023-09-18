@@ -11,10 +11,10 @@
   </div>
   <div class="date-field">
     <mat-label>Час</mat-label>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" style="align-items: center">
       <mat-select [(ngModel)]="newStudentReport.timeslotId">
       <mat-option *ngFor="let timeslot of getTimeslots(newStudentReport.date);"
-                  [value]="timeslot.id">{{timeslot.time}}</mat-option>
+                  [value]="timeslot.id">{{formatTime(timeslot.time)}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -39,7 +39,7 @@
 </div>
 <div mat-dialog-actions class="dialog-actions">
   <button mat-button (click)="onNoClick()">Відхилити</button>
-  <button mat-button style="color: #27AE60" [mat-dialog-close]="newStudentReport" cdkFocusInitial>
+  <button mat-button style="background-color: #27AE60;color: black" [mat-dialog-close]="newStudentReport" cdkFocusInitial>
     Прийняти
   </button>
 </div>
