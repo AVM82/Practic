@@ -4,8 +4,9 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl, getMaterialsUrl} from "../../enums/api-urls";
+import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
+import {Level} from "../../models/level/level";
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,9 @@ export class CoursesService {
 
   getChapters(slug: string): Observable<Chapter[]> {
     return this.http.get<Chapter[]>(getChaptersUrl(slug));
+  }
+  getLevels(slug:string):Observable<Level[]>{
+    return this.http.get<Level[]>(getLevelsUrl(slug))
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {
