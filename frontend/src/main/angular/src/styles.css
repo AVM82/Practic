@@ -5,3 +5,14 @@ html, body {
     overflow-x: hidden;
 }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.normal-snackbar {
+    background-color: #4caf50;
+    color: white;
+}
+
+.error-snackbar {
+    background-color: #f44336;
+    color: white;
+}
+

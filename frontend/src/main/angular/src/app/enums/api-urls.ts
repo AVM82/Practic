@@ -1,10 +1,17 @@
 export enum ApiUrls {
-    Courses = '/api/courses',
-    Course = '/api/courses/',
-    Practices = '/api/students/practices/',
-    PracticeStates = '/api/students/practices/states',
-    ReportStates = '/api/students/reports/states',
-    Me = '/api/persons/me'
+  Courses = '/api/courses',
+  Course = '/api/courses/',
+  Practices = '/api/students/practices/',
+  PracticeStates = '/api/students/practices/states',
+  Reports = '/api/students/reports/course/',
+  ReportStates = '/api/students/reports/states',
+  Chapters = '/api/chapters',
+  Me = '/api/persons/me',
+  Applicants = '/api/persons/applicants',
+  OpenChapters = '/api/students/chapters',
+  PracticeState = '/api/students/practices',
+  PracticeApprove = '/api/mentor/practices'
+
 }
 
 export const getChaptersUrl = (slug: string): string =>

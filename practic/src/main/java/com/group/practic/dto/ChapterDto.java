@@ -2,9 +2,8 @@ package com.group.practic.dto;
 
 public class ChapterDto {
 
-
-
     long id;
+
     int number;
 
     String shortName;
@@ -14,19 +13,10 @@ public class ChapterDto {
     }
 
 
-    public ChapterDto(long id, int number, String shortName) {
+    public ChapterDto(int number, String shortName) {
         super();
-        this.id = id;
         this.number = number;
         this.shortName = shortName;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
 
@@ -49,4 +39,11 @@ public class ChapterDto {
         this.shortName = shortName;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

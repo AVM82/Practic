@@ -36,7 +36,7 @@ export class CourseNavbarComponent implements OnInit {
         this.coursesService.getCourse(slug).subscribe(course => {
           this.course = course;
           this.coursesService.getChapters(slug).subscribe(chapters => {
-            this.coursesService.setFirstChapterVisible(chapters);
+            this.setChapterVisibility();
             if(chapterN !== 0) {
               this.coursesService.setActiveChapter(chapters, chapterN);
             }else{
@@ -45,6 +45,18 @@ export class CourseNavbarComponent implements OnInit {
             this.chapters = chapters;
           });
         });
+
+      }
+    })
+  }
+
+  private setChapterVisibility() :void {
+    this.coursesService.getOpenChapters().subscribe( {
+      next: chapters => {
+        this.coursesService.setVisibleChapters(this.chapters, chapters);
+      },
+      error: error => {
+        console.error('Помилка при запиті доступних глав', error);
       }
     })
   }

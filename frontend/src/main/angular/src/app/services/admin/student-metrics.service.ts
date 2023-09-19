@@ -18,4 +18,8 @@ export class StudentMetricsService {
   getPracticeStates(): Observable<any[]>{
     return this.http.get<any[]>(ApiUrls.PracticeStates);
   }
+
+  getApplicants(): Observable<any[]>{
+    return this.http.get<any[]>(ApiUrls.Applicants);
+  }
 }

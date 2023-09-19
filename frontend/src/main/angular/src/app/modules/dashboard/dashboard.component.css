@@ -1,10 +1,16 @@
 .dashboard-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     grid-gap: 2px;
     margin: 2% 2% 1% 2%;
     justify-content: center;
     align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 .metric-card {
@@ -17,6 +23,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 50vh;
 }
 
 .metric-card.clickable {
@@ -39,6 +46,4 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-right: 5%;
-    margin-left: -10%;
 }

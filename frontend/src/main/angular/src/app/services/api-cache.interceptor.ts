@@ -14,7 +14,8 @@ export class ApiCacheInterceptor implements HttpInterceptor {
   private cache = new Map<string, HttpResponse<any>>();
 
   private endPointsToCachePatterns: RegExp[] = [
-    new RegExp(ApiUrls.Courses.toString())
+    new RegExp(ApiUrls.Courses.toString()),
+    new RegExp(/^\/api\/courses$/)
   ];
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
