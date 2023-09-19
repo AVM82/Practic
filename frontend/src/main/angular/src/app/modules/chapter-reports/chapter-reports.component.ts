@@ -54,14 +54,14 @@ export class ChapterReportsComponent {
   }
 
   getChapterColor(chapter:number):any{
-    for(let i:number = 0; i<this.levels.length; i++) {
-      if (this.levels[i].number == 1 && this.levels[i].chapterN.includes(chapter)) {
-        this.chapterColor =  '#84C984';
+    for(const element of this.levels) {
+      if (element.number == 1 && element.chapterN.includes(chapter)) {
+        this.chapterColor = '#84C984';
       }
-      if (this.levels[i].number == 2 && this.levels[i].chapterN.includes(chapter)) {
-        this.chapterColor =  '#D86D6D';
+      if (element.number == 2 && element.chapterN.includes(chapter)) {
+        this.chapterColor = '#D86D6D';
       }
-      if (this.levels[i].number == 3 && this.levels[i].chapterN.includes(chapter)) {
+      if (element.number == 3 && element.chapterN.includes(chapter)) {
         this.chapterColor =  '#CED069';
       }
     }
