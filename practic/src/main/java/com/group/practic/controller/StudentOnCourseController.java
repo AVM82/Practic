@@ -6,8 +6,8 @@ import static com.group.practic.util.ResponseUtils.updateResponse;
 
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStudentDto;
-import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.NewStudentReportDto;
+import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
@@ -45,8 +45,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -76,7 +76,9 @@ public class StudentOnCourseController {
                                      StudentPracticeService studentPracticeService,
                                      PersonService personService,
                                      StudentReportService studentReportService,
-                                     TimeSlotService timeSlotService, CourseService courseService, StudentChapterService studentChapterService) {
+                                     TimeSlotService timeSlotService,
+                                     CourseService courseService,
+                                     StudentChapterService studentChapterService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
