@@ -132,7 +132,9 @@ public interface Converter {
                         StudentReportDto::setProfilePictureUrl)
                 .addMapping(src -> src.getChapter().getShortName(),
                         StudentReportDto::setChapterName)
-                .addMapping(StudentReportEntity::getState, StudentReportDto::setState);
+                .addMapping(StudentReportEntity::getState, StudentReportDto::setState)
+                .addMapping(src -> src.getTimeSlot().getDate(), StudentReportDto::setDate)
+                .addMapping(src -> src.getTimeSlot().getTime(), StudentReportDto::setTime);
     }
 
     private static void applyPersonOnCourseMap(ModelMapper modelMapper) {

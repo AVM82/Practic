@@ -9,21 +9,21 @@ import {RouterLink} from "@angular/router";
   selector: 'report-card',
   standalone: true,
   templateUrl: './report-card.component.html',
-  imports: [CommonModule, NgFor, NgIf, MatIconModule, MatButtonModule, RouterLink,  MatButtonModule, MatButtonModule, MatCardModule],
+  imports: [CommonModule, NgFor, NgIf, MatIconModule, MatButtonModule, RouterLink, MatButtonModule, MatButtonModule, MatCardModule],
   styleUrls: ['/report-card.component.css']
 })
-export class ReportCardComponent{
+export class ReportCardComponent {
   @Input() reportTopic!: string
   @Input() studentName!: string
-  @Input() dateTimeValue!: string
+  @Input() dateValue!:string
+  @Input() timeValue!:string
   @Input() profilePictureUrl!: string
 
-  get datePart(): string {
-    return this.dateTimeValue.split('T')[0];
+  formatTime(): string {
+    const parts = this.timeValue.split(':');
+    if (parts.length >= 2) {
+      return `${parts[0]}:${parts[1]}`;
+    }
+    return this.timeValue;
   }
-
-  get timePart(): string {
-    return this.dateTimeValue.split('T')[1];
-  }
-
 }

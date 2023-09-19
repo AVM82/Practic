@@ -2,11 +2,12 @@ package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
+import static com.group.practic.util.ResponseUtils.updateResponse;
 
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStudentDto;
-import com.group.practic.dto.NewStudentReportDto;
 import com.group.practic.dto.StudentChapterDto;
+import com.group.practic.dto.NewStudentReportDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
@@ -15,6 +16,7 @@ import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
+import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.exception.ResourceNotFoundException;
@@ -24,6 +26,7 @@ import com.group.practic.service.StudentChapterService;
 import com.group.practic.service.StudentOnCourseService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
+import com.group.practic.service.TimeSlotService;
 import com.group.practic.util.Converter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -31,6 +34,7 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,6 +45,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +64,7 @@ public class StudentOnCourseController {
     private final PersonService personService;
 
     private final StudentReportService studentReportService;
+    private final TimeSlotService timeSlotService;
 
     private final CourseService courseService;
 
@@ -70,12 +76,12 @@ public class StudentOnCourseController {
                                      StudentPracticeService studentPracticeService,
                                      PersonService personService,
                                      StudentReportService studentReportService,
-                                     CourseService courseService,
-                                     StudentChapterService studentChapterService) {
+                                     TimeSlotService timeSlotService, CourseService courseService, StudentChapterService studentChapterService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
         this.studentReportService = studentReportService;
+        this.timeSlotService = timeSlotService;
         this.courseService = courseService;
         this.studentChapterService = studentChapterService;
     }
@@ -160,7 +166,6 @@ public class StudentOnCourseController {
     @GetMapping("/reports/course/{slug}")
     public ResponseEntity<Collection<List<StudentReportDto>>> getActualStudentReports(
             @PathVariable String slug) {
-
         return getResponse(Converter.convertListOfLists(
             studentReportService.getAllStudentsActualReports(slug)));
 
@@ -204,12 +209,31 @@ public class StudentOnCourseController {
 
 
     @PostMapping("/reports/course/{slug}")
-    public ResponseEntity<StudentReportDto> postStudentReport(Principal principal, @RequestBody
-            NewStudentReportDto newStudentReportDto) {
-
+    public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,
+            Principal principal,
+            @RequestBody NewStudentReportDto newStudentReportDto) {
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.createStudentReport(personEntity, newStudentReportDto);
         return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
+    }
+
+    @GetMapping("/reports/course/{slug}/timeslots")
+    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(
+            @PathVariable String slug) {
+        return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
+    }
+
+    @PutMapping("/reports/course/{slug}/timeslots")
+    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(
+            @PathVariable String slug,
+            @RequestBody Long timeslotId) {
+        return updateResponse(Optional.ofNullable(timeSlotService
+                .updateTimeSlotAvailability(timeslotId)));
+    }
+
+    @PostMapping("/reports/course/{slug}/timeslots")
+    public  ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots() {
+        return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
 }

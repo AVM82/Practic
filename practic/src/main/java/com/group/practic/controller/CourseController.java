@@ -61,9 +61,9 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{id}/levels")
-    public ResponseEntity<Collection<LevelEntity>> getLevels(@Min(1) @PathVariable long id) {
-        return getResponse(courseService.getLevels(id));
+    @GetMapping("/{slug}/levels")
+    public ResponseEntity<Collection<LevelEntity>> getLevels(@PathVariable String slug) {
+        return getResponse(courseService.getLevels(slug));
     }
 
 

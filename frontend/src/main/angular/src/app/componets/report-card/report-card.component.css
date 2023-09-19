@@ -1,57 +1,99 @@
-.report-card {
-  margin-top: 10px;
-  width: 254px;
-  height: 243px;
-  display: inline-flex;
-  padding: 16px 16px 12px 16px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 10px;
-  border-radius: 8px;
+.base-card{
+  overflow-wrap: break-word;
+  margin-left:10px;
+  width: 210px;
+  height: 180px;
   background: #D9D9D9;
+  border-radius: 8px;
+  align-items: center;
+  padding: 5px;
 }
-
-.inner-block{
-
-  width: 222px;
-  height: 90px;
+.inner-info-card{
+  width: 200px;
+  height: 85px;
+  background: white;
+  border-radius: 4px;
   display: flex;
-  padding: 16px 16px 12px 16px;
+}
+.student-image{
+  margin-top:5px;
+  margin-left:10px;
+  width: 60px;
+  height: 60px;
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.student-name{
+  margin-top: 3px;
+  margin-left: 1px;
+  color: #333333;
+  font-size: 12px;
+  font-family: serif;
+  font-weight: 500;
+  line-height: 10px;
+  word-wrap: break-word
+}
+.report-date{
+  color: #333333;
+  font-size: 18px;
+  font-family: serif;
+  font-weight: 550;
+  line-height: 20px;
+  word-wrap: break-word;
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+}
+.report-time{
+  color: #333333;
+  font-size: 20px;
+  font-family: serif;
+  font-weight: 500;
+  line-height: 22px;
+  word-wrap: break-word;
+}
+.report-time-border{
+  padding: 2px 7px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 0.50px black solid;
   justify-content: center;
   align-items: center;
-  gap: 31px;
-  border-radius: 4px;
-  background: #ffffff;
+  display: flex;
+  position:absolute;
+  bottom: 15px;
+  right: 30px;
 }
 .report-topic-header{
-  color: #333;
-  font-family: serif;
   font-size: 10px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 100%; /* 10px */
-  letter-spacing: -0.32px;
+  margin: 2px;
 }
-.report-topic{
-  align-self: stretch;
-  color: #333;
-  text-align: center;
-  font-family: serif;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 122%; /* 19.52px */
+.report-topic-text{
+  font-size: 14px;
+  margin: 2px;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
-.like-counter{
+.like-counter-location{
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+.like-counter-number{
+  margin-right:2px;
   color: #27AE60;
-  text-align: center;
-  font-family: serif;
   font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 122%; /* 19.52px */
-  text-decoration-line: underline;
+  font-family: serif;
+  text-decoration: underline;
 }
+
+
+
+
+
 
 

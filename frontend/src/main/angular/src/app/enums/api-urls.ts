@@ -11,13 +11,26 @@ export enum ApiUrls {
   OpenChapters = '/api/students/chapters',
   PracticeState = '/api/students/practices',
   PracticeApprove = '/api/mentor/practices'
+
 }
 
 export const getChaptersUrl = (slug: string): string =>
     `/api/courses/${slug}/allchapters`;
 
-   export const getMaterialsUrl = (slug: string): string =>
+export const getMaterialsUrl = (slug: string): string =>
     `/api/courses/${slug}/additional`;
 
 export const getChapterUrl = (slug: string, chapterN: number): string =>
     `/api/courses/${slug}/chapters/${chapterN}`;
+
+export const getReportsUrl = (slug: string): string =>
+    `/api/students/reports/course/${slug}`;
+export const postReportsUrl = (slug: string): string =>
+    `/api/students/reports/course/${slug}`;
+
+export const getLevelsUrl = (slug: string): string =>
+    `/api/courses/${slug}/levels`;
+
+export const timeslotsUrl = (slug: string): string =>
+    `/api/students/reports/course/${slug}/timeslots`;
+
