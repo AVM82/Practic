@@ -32,7 +32,7 @@ export class ReportDashboardComponent implements OnInit {
     reports: StudentReport[][] = [];
     chapters: Chapter[] = [];
     levels: Level[] = []
-    timeslots: Map<String, TimeSlot[]> = new Map<String, TimeSlot[]>();
+    timeslots: Map<string, TimeSlot[]> = new Map<string, TimeSlot[]>();
 
     constructor(
         public dialog: MatDialog,

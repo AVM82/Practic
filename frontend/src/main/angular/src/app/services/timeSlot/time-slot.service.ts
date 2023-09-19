@@ -18,9 +18,9 @@ export class TimeSlotService {
         'Content-Type': 'application/json',
     });
 
-    getAllAvailableTimeSlots(slug: string): Observable<Map<String, TimeSlot[]>> {
-        return this.http.get<Map<String, TimeSlot[]>>(timeslotsUrl(slug)).pipe(
-            catchError(this.handleError<Map<String, TimeSlot[]>>(`get available time slots`)));
+    getAllAvailableTimeSlots(slug: string): Observable<Map<string, TimeSlot[]>> {
+        return this.http.get<Map<string, TimeSlot[]>>(timeslotsUrl(slug)).pipe(
+            catchError(this.handleError<Map<string, TimeSlot[]>>(`get available time slots`)));
     }
 
     updateTimeslotAvailability(timeslotId: number, slug: string): Observable<any> {
