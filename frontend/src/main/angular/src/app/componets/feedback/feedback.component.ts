@@ -84,6 +84,7 @@ export class FeedbackComponent implements OnInit {
 
   onPageChange(event: any): void {
     this.page = event.pageIndex + 1;
+    this.pageSize=event.pageSize;
   }
 
   incrementLikes(feedback: any) {
@@ -140,7 +141,6 @@ export class FeedbackComponent implements OnInit {
 
   getDate(feedback: any):string{
     const date = new Date(feedback.dateTime);
-
     return date.toLocaleDateString();
   }
 }

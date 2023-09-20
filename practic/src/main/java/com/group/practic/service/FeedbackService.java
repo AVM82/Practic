@@ -44,10 +44,12 @@ public class FeedbackService {
         if (personOption.isPresent() && feedbackOption.isPresent()) {
             FeedbackEntity feedback = feedbackOption.get();
             PersonEntity person = personOption.get();
-            feedback.getLikedByPerson().add(person);
-            repository.incrementLikesById(idFeedback);
-            repository.save(feedback);
-            return feedback;
+            if (!feedback.getLikedByPerson().contains(person)) {
+                feedback.getLikedByPerson().add(person);
+                repository.incrementLikesById(idFeedback);
+                repository.save(feedback);
+                return feedback;
+            }
         }
         return null;
     }
@@ -58,10 +60,12 @@ public class FeedbackService {
         if (feedbackOption.isPresent() && personOption.isPresent()) {
             FeedbackEntity feedbackEntity = feedbackOption.get();
             PersonEntity person = personOption.get();
-            feedbackEntity.getLikedByPerson().remove(person);
-            repository.decrementLikesById(idFeedback);
-            repository.save(feedbackEntity);
-            return feedbackEntity;
+            if (feedbackEntity.getLikedByPerson().contains(person)) {
+                feedbackEntity.getLikedByPerson().remove(person);
+                repository.decrementLikesById(idFeedback);
+                repository.save(feedbackEntity);
+                return feedbackEntity;
+            }
         }
         return null;
     }
