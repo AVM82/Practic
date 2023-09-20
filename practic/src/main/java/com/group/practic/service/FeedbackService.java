@@ -5,9 +5,8 @@ import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.repository.FeedbackRepository;
 import com.group.practic.repository.PersonRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,9 @@ public class FeedbackService {
     PersonRepository personRepository;
 
     public List<FeedbackEntity> getAllFeedbacks() {
-        return new ArrayList<>(repository.findAll());
+        ArrayList<FeedbackEntity> list = new ArrayList<>(repository.findAll());
+        list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
+        return list;
     }
 
     public FeedbackEntity addFeedback(FeedbackDto feedbackDto) {
@@ -30,6 +31,7 @@ public class FeedbackService {
             throw new NullPointerException();
         }
         FeedbackEntity feedback = new FeedbackEntity(person, feedbackDto.getFeedback(), 0);
+        feedback.setDateTime(LocalDateTime.now());
         repository.save(feedback);
 
         return feedback;

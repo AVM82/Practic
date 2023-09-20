@@ -25,19 +25,27 @@ export class FeedbackComponent implements OnInit {
   dataSource = new MatTableDataSource<any>(this.feedbacks);
   id:number=0
   feedbackLiked: boolean = false;
+  loading: boolean = false;
+  loadingIncremend: boolean = false;
+  loadingDecremend: boolean = false;
+
   constructor(private feedbackService: FeedbackService, private dialog: MatDialog,private tokenStorageService:TokenStorageService) { }
   
 
   ngOnInit(): void {
-    this.feedbackService.getFeedbacks().subscribe(data => {
-      this.feedbacks = data;
-    });
+    this.updateData();
     const token = this.tokenStorageService.getToken();
       if (token) {
         const user: User = this.tokenStorageService.getUser();
-        let currentUser: User = new User(user.roles,user.name,user.profilePictureUrl,user.email,user.id);
-        this.id = currentUser.id;
+        this.id = user.id;
       }
+  }
+
+  updateData():void{
+    this.feedbackService.getFeedbacks().subscribe(data => {
+      this.feedbacks = data;
+      this.dataSource = new MatTableDataSource<any>(this.feedbacks);
+    });
   }
 
   openFeedbackDialog(): void {
@@ -45,9 +53,14 @@ export class FeedbackComponent implements OnInit {
       width: '1150px', 
       height: '650px'
     });
+
+    dialogRef.componentInstance.feedbackSaved.subscribe((savedData) => {
+      this.updateData();
+    });
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.updateData();
         console.log(result);
       }
     });}
@@ -74,33 +87,41 @@ export class FeedbackComponent implements OnInit {
   }
 
   incrementLikes(feedback: any) {
-    const id = feedback.id;
-        this.feedbackService.incrementLikes(id, this.id).subscribe(
-      (response) => {
-        console.log("Likes increment:", response);
-      },
-      (error) => {
-        console.error("Likes not incremented:", error);
-      }
-    );
-    this.feedbackLiked = true;
-    window.location.reload();
+    if (!this.loadingIncremend) {
+      this.loadingIncremend = true;
+      const id = feedback.id;
+      this.feedbackService.incrementLikes(id, this.id).subscribe(
+        (response) => {
+          console.log("Likes increment:", response);
+          this.updateData();
+        },
+        (error) => {
+          console.error("Likes not incremented:", error);
+        }
+      ).add(() => {
+        this.loadingIncremend = false;
+      });
+      this.feedbackLiked = true;
+    }
   }
   
   decrementLikes(feedback:any){
-    const id =  feedback.id;
-    this.feedbackService.decrementLikes(id,this.id).subscribe(response=>{
-      console.log("Likes increment:",response);
-    },error=>{console.error("likes not increment:",error);
-    });
-    this.feedbackLiked = true;
-    window.location.reload();
+    if (!this.loadingDecremend) {
+      this.loadingDecremend = true; 
+      const id =  feedback.id;
+      this.feedbackService.decrementLikes(id, this.id).subscribe(response=>{
+        console.log("Likes increment:",response);
+        this.updateData();
+      },error=>{console.error("likes not increment:",error);
+      }).add(() => {
+        this.loadingDecremend = false; 
+      });
+      this.feedbackLiked = true;
+    }
   }
 
   changeLike(feedback: any) {
-    const likedPersons: any[] = feedback.likedByPerson;
-    const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.id);
-    if (userLikedIndex !== -1) {
+    if (this.isLiked(feedback)) {
             this.decrementLikes(feedback);
     } else {
             this.incrementLikes(feedback);
@@ -115,5 +136,11 @@ export class FeedbackComponent implements OnInit {
     } else {
      return false;
     }
+  }
+
+  getDate(feedback: any):string{
+    const date = new Date(feedback.dateTime);
+
+    return date.toLocaleDateString();
   }
 }

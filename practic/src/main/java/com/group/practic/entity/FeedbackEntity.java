@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -32,6 +33,8 @@ public class FeedbackEntity {
     @Min(5)
     @Column(length = 320)
     private String feedback;
+
+    private LocalDateTime dateTime;
 
     private int likes;
 
@@ -95,6 +98,14 @@ public class FeedbackEntity {
         this.likedByPerson = likedByPerson;
     }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -107,11 +118,12 @@ public class FeedbackEntity {
         return id == feedback1.id && likes == feedback1.likes
                 && Objects.equals(student, feedback1.student)
                 && Objects.equals(feedback, feedback1.feedback)
+                && Objects.equals(dateTime, feedback1.dateTime)
                 && Objects.equals(likedByPerson, feedback1.likedByPerson);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, student, feedback, likes, likedByPerson);
+        return Objects.hash(id, student, feedback, dateTime, likes, likedByPerson);
     }
 }
