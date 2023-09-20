@@ -31,6 +31,11 @@ export class ReportServiceService {
     .pipe(catchError(this.handleError<StudentReport>(`post new student report = ${slug}`)));
 
   }
+  updateReportLikeList(reportId: number): Observable<any> {
+    console.log("updateReportLikeList")
+    return this.http.put<any>(ApiUrls.ReportLikeList, reportId, {headers: this.headers}).pipe(
+        catchError(this.handleError<any>(`update report like list`)));
+  }
 
   /**
    * Handle Http operation that failed.
