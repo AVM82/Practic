@@ -31,4 +31,13 @@ export class TokenStorageService {
     const userJson = sessionStorage.getItem(USER_KEY);
     return userJson ? User.fromJson(JSON.parse(userJson)) : null;
   }
+
+  public isStudent(slug: string): boolean {
+    const token = this.getToken();
+    if (token) {
+      const user: User = this.getUser();
+      return user?.hasApplyOnCourse(slug);
+    }
+    return false;
+  }
 }

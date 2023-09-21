@@ -6,21 +6,25 @@ import {MatIconModule} from "@angular/material/icon";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {CoursesService} from 'src/app/services/courses/courses.service';
 import {ActivatedRoute} from '@angular/router';
+import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
+import {TokenStorageService} from "../../services/auth/token-storage.service";
 
 @Component({
   selector: 'app-additional-materials',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, MatIconModule],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, MatIconModule, ApplyBtnComponent],
   templateUrl: './additional-materials.component.html',
   styleUrls: ['./additional-materials.component.css']
 })
 export class AdditionalMaterialsComponent implements OnInit {
     materials?: AdditionalMaterials[];
     slug: string = '';
+    showCheckbox: boolean = false;
 
   constructor(
-      private courseService: CoursesService,
-      private route: ActivatedRoute
+    private tokenStorageService:TokenStorageService,
+    private courseService: CoursesService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +36,7 @@ export class AdditionalMaterialsComponent implements OnInit {
         {
           this.materials = materials;
           this.slug = slug;
+          this.showCheckbox = this.tokenStorageService.isStudent(slug);
         });
       }
     })

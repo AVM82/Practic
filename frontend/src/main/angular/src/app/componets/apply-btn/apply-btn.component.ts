@@ -28,13 +28,7 @@ export class ApplyBtnComponent implements OnInit {
       const slug = params.get('slug');
       if(slug) {
         this.courseSlug = slug;
-        const token = this.tokenStorageService.getToken();
-        if (token) {
-          const user: User = this.tokenStorageService.getUser();
-          if (user?.hasApplyOnCourse(slug)) {
-            this.isApply = true;
-          }
-        }
+        this.isApply = this.tokenStorageService.isStudent(slug);
       }
     });
 
