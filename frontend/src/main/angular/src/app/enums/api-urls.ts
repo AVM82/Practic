@@ -10,7 +10,8 @@ export enum ApiUrls {
   Applicants = '/api/persons/applicants',
   OpenChapters = '/api/students/chapters',
   PracticeState = '/api/students/practices',
-  PracticeApprove = '/api/mentor/practices'
+  PracticeApprove = '/api/mentor/practices',
+  ReportLikeList = '/api/students/reports/likes/'
 
 }
 

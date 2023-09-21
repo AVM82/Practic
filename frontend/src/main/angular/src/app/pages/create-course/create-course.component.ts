@@ -88,7 +88,7 @@ export class CreateCourseComponent implements OnInit{
       this.coursesService.postCourse(this.checkoutForm.value.slug, this.checkoutForm.value.shortName,
                                      this.checkoutForm.value.name, this.checkoutForm.value.svg)
       .subscribe(response => {
-        console.warn('Course \"%s\" is created', response.name);
+        console.warn('Course "%s" is created', response.name);
         window.location.href = '/courses/' + response.slug;
       })
     } else
