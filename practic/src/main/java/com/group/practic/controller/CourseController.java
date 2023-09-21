@@ -4,7 +4,6 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.ChapterDto;
-import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
@@ -83,8 +82,8 @@ public class CourseController {
     
     
     @PostMapping
-    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseDto courseDto) {
-        return postResponse(courseService.create(courseDto));
+    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseEntity courseEntity) {
+        return postResponse(courseService.save(courseEntity));
     }
 
 

@@ -10,10 +10,15 @@ export enum ApiUrls {
 }
 
 export const getChaptersUrl = (slug: string): string =>
-    `/api/courses/${slug}/allchapters`;
+    ApiUrls.Course + slug + `/allchapters`;
 
-   export const getMaterialsUrl = (slug: string): string =>
-    `/api/courses/${slug}/additional`;
+export const getMaterialsUrl = (slug: string): string =>
+    ApiUrls.Course + slug + `/additional`;
 
 export const getChapterUrl = (slug: string, chapterN: number): string =>
-    `/api/courses/${slug}/chapters/${chapterN}`;
+    ApiUrls.Course + slug + `/chapters/` + chapterN;
+
+export const getCourseUrl = (slug: string): string =>
+    ApiUrls.Course + slug;
+
+export const postCourse = window.location.origin + ApiUrls.Courses;

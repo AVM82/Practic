@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl, getMaterialsUrl} from "../../enums/api-urls";
+import {ApiUrls, getCourseUrl, getChaptersUrl, getMaterialsUrl, postCourse} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class CoursesService {
       ) {}
 
   getCourse(slug: string): Observable<Course> {
-    return this.http.get<Course>(ApiUrls.Course+slug).pipe(
+    return this.http.get<Course>(getCourseUrl(slug)).pipe(
         catchError(this.handleError<Course>(`get course = ${slug}`))
     )
   }
@@ -40,6 +40,18 @@ export class CoursesService {
 
   getAdditionalMaterials(slug: string): Observable<AdditionalMaterials[]> {
     return this.http.get<AdditionalMaterials[]>(getMaterialsUrl(slug));
+  }
+
+  postCourse(_slug: any, _shortName: any, _name: any, _svg: any): Observable<Course> {
+    let course: Course = {
+      id: 0,
+      chapters: [],
+      slug: _slug,
+      shortName: _shortName,
+      name: _name,
+      svg: _svg
+    };
+    return this.http.post<Course>(postCourse, course);
   }
 
   postAdditionalChange(slug: string, id: number, checked: boolean) {
