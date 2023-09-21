@@ -1,4 +1,5 @@
 export interface StudentReport {
+  id:number;
   personName: string;
   profilePictureUrl: string;
   chapterName: string;
@@ -6,4 +7,5 @@ export interface StudentReport {
   time: any;
   state: string;
   title: string;
+  likedPersonsIdList:any;
 }

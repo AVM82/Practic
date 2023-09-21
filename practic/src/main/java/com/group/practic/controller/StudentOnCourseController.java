@@ -238,4 +238,16 @@ public class StudentOnCourseController {
     public  ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots() {
         return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
+
+    @PutMapping("/reports/likes/")
+    public ResponseEntity<StudentReportDto> changeLikeCount(@RequestBody int reportId,
+                                                                      Principal principal) {
+        Optional<PersonEntity> personEntity = personService.get(principal.getName());
+        long studentId = personEntity.get().getId();
+        Optional<StudentReportEntity> reportEntity =
+                studentReportService.changeReportLikeList(reportId, studentId);
+
+        return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
+
+    }
 }

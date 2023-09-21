@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -14,7 +16,10 @@ public class TimeSlotEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
+    @NotNull
+    @FutureOrPresent
     LocalDate date;
+    @NotNull
     LocalTime time;
     boolean availability = true;
 

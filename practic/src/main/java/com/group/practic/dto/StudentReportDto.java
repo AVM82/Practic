@@ -2,8 +2,11 @@ package com.group.practic.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class StudentReportDto {
+
+    private long id;
     private String personName;
     private String profilePictureUrl;
     private String chapterName;
@@ -12,12 +15,22 @@ public class StudentReportDto {
     private String state;
     private String title;
 
+    private List<Long> likedPersonsIdList;
+
     public StudentReportDto() {
     }
 
     public StudentReportDto(String personName, String chapterName) {
         this.personName = personName;
         this.chapterName = chapterName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getPersonName() {
@@ -76,5 +89,11 @@ public class StudentReportDto {
         this.title = title;
     }
 
+    public List<Long> getLikedPersonsIdList() {
+        return likedPersonsIdList;
+    }
 
+    public void setLikedPersonsIdList(List<Long> likedPersonsIdList) {
+        this.likedPersonsIdList = likedPersonsIdList;
+    }
 }

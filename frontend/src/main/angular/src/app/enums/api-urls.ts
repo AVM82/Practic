@@ -10,7 +10,8 @@ export enum ApiUrls {
   Applicants = '/api/persons/applicants',
   OpenChapters = '/api/students/chapters',
   PracticeState = '/api/students/practices',
-  PracticeApprove = '/api/mentor/practices'
+  PracticeApprove = '/api/mentor/practices',
+	ReportLikeList = '/api/students/reports/likes/'
 
 }
 
@@ -38,4 +39,3 @@ export const getLevelsUrl = (slug: string): string =>
 
 export const timeslotsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}/timeslots`;
-
