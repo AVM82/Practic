@@ -23,4 +23,6 @@ public interface StudentPracticeRepository extends JpaRepository<StudentPractice
             PersonEntity student, ChapterEntity chapter
     );
 
+    Set<StudentPracticeEntity> findAllByStudent(PersonEntity student);
+
 }

@@ -1,6 +1,25 @@
 <app-course-navbar></app-course-navbar>
 <div class="chapter-header">
 	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
+    <div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">
+    <button mat-icon-button
+            (click)="doneAction(chapterPart)"
+            matTooltip="Практична готова до ревью"
+            matTooltipPosition="below"
+            aria-label="Done"
+            [disabled]="(chapterPart.id | practiceBtnVisibility: practices).doneDisabled"
+            *ngIf="(chapterPart.id | practiceBtnVisibility: practices).doneVisible"
+            [ngClass]="{
+            'green-bg': !(chapterPart.id | practiceBtnVisibility: practices).doneDisabled,
+            'gray-bg': (chapterPart.id | practiceBtnVisibility: practices).doneDisabled
+        }"
+            [ngStyle]="{
+            'color': (chapterPart.id | practiceBtnVisibility: practices).doneDisabled ? 'white' : 'black'
+        }"
+    >
+        Здати практичну
+    </button>
+    </div>
 </div>
 
 <div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">
@@ -49,12 +68,14 @@
 
 	<div *ngIf="chapterPart.praxisPurpose">
 		<div class="chapter-part" >
+            <mat-chip>{{chapterPart.id | practiceState: practices}}</mat-chip>
             <div class="action-buttons">
                 <button mat-icon-button
                         (click)="playAction(chapterPart)"
                         matTooltip="Почати практичну"
                         matTooltipPosition="below"
                         aria-label="Play"
+                        *ngIf="(chapterPart.id | practiceBtnVisibility: practices).playVisible"
                 >
                     <mat-icon>play_circle_outline</mat-icon>
                 </button>
@@ -62,14 +83,19 @@
                         (click)="pauseAction(chapterPart)"
                         matTooltip="Відкласти роботу над практичною"
                         matTooltipPosition="below"
-                        aria-label="Pause">
+                        aria-label="Pause"
+                        *ngIf="(chapterPart.id | practiceBtnVisibility: practices).pauseVisible"
+                >
                     <mat-icon>pause_circle_outline</mat-icon>
                 </button>
                 <button mat-icon-button
                         (click)="doneAction(chapterPart)"
                         matTooltip="Практична готова до ревью"
                         matTooltipPosition="below"
-                        aria-label="Done">
+                        aria-label="Done"
+                        [disabled]="(chapterPart.id | practiceBtnVisibility: practices).doneDisabled"
+                        *ngIf="(chapterPart.id | practiceBtnVisibility: practices).doneVisible"
+                >
                     <mat-icon>check_circle_outline</mat-icon>
                 </button>
             </div>

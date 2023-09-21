@@ -12,11 +12,16 @@ import {ReportButtonComponent} from "../../componets/report-button/report-button
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {StudentReport} from "../../models/report/studentReport";
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
+import {Practice} from "../../models/practice/practice";
+import {InfoMessagesService} from "../../services/info-messages.service";
+import {TokenStorageService} from "../../services/auth/token-storage.service";
+import {ChaptersService} from "../../services/chapters/chapters.service";
+import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent, ApplyBtnComponent],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent, ApplyBtnComponent, PracticeStatePipe],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
@@ -25,14 +30,18 @@ export class CourseDetailsComponent implements OnInit {
   chapters: Chapter[] = [];
   reports: StudentReport[][]=[];
   slug: string='';
+  practices: Practice[] = [];
 
   constructor(
       private coursesService: CoursesService,
       private route: ActivatedRoute,
-      private reportService: ReportServiceService
+      private reportService: ReportServiceService,
+      private chaptersService: ChaptersService,
+      private tokenStorageService: TokenStorageService
   ) {}
 
   ngOnInit(): void {
+    this.setPractices();
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug')
 
@@ -64,6 +73,20 @@ export class CourseDetailsComponent implements OnInit {
         console.error('Помилка при запиті доступних глав', error);
       }
     })
+  }
+
+  setPractices() {
+    const practices = this.tokenStorageService.getPractice();
+    if(practices){
+      this.practices = practices;
+    } else {
+      this.chaptersService.getMyPractices().subscribe({
+        next: value => {
+          this.practices = value;
+          this.tokenStorageService.updatePractice(value);
+        }
+      })
+    }
   }
 
 }

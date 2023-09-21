@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import {User} from "./auth.service";
+import {Practice} from "../../models/practice/practice";
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
+const PRACTICE_KEY = 'practice-data';
 
 @Injectable({
   providedIn: 'root'
@@ -31,4 +33,19 @@ export class TokenStorageService {
     const userJson = sessionStorage.getItem(USER_KEY);
     return userJson ? User.fromJson(JSON.parse(userJson)) : null;
   }
+
+  public savePractice(practice: Practice[]): void {
+    window.sessionStorage.removeItem(PRACTICE_KEY);
+    window.sessionStorage.setItem(PRACTICE_KEY, JSON.stringify(practice));
+  }
+
+  public getPractice(): Practice[] | null {
+    const practiceJson = sessionStorage.getItem(PRACTICE_KEY);
+    return practiceJson ? JSON.parse(practiceJson) : null;
+  }
+
+  public updatePractice(practice: Practice[]): void {
+    this.savePractice(practice);
+  }
+
 }
