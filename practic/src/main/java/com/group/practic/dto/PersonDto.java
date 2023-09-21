@@ -1,14 +1,31 @@
 package com.group.practic.dto;
 
 import java.util.Objects;
+import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Builder
+@Getter
+@Setter
+@AllArgsConstructor
 public class PersonDto {
 
     private String name;
 
     private String discord;
+
+    private String email;
+
+    private String linkedin;
+
+    private String profilePictureUrl;
+
+    private Set<String> roles;
+
+    private Set<String> courses;
 
     PersonDto() {
     }

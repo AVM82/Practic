@@ -17,12 +17,38 @@ import {AuthInterceptor} from "./app/services/auth.interceptor";
 import {environment} from "./enviroments/enviroment";
 import {ReportServiceService} from "./app/services/report/report-service.service";
 import { AngularSvgIconModule, SvgIconRegistryService } from 'angular-svg-icon';
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
+import {InfoMessagesService} from "./app/services/info-messages.service";
+import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 
 
 bootstrapApplication(AppComponent, {
     providers: [
         importProvidersFrom(BrowserModule, AngularSvgIconModule.forRoot(), AppRoutingModule, TranslocoRootModule, MatCardModule, MatIconModule, MatToolbarModule),
         SvgIconRegistryService, CoursesService, StudentMetricsService, MatPaginator, MatCard, AuthService, ReportServiceService,
+        importProvidersFrom(BrowserModule, AppRoutingModule, TranslocoRootModule, MatCardModule, MatIconModule, MatToolbarModule),
+        CoursesService, StudentMetricsService, MatPaginator, MatCard, AuthService, ReportServiceService,MatDatepickerModule, MatNativeDateModule,
+        importProvidersFrom(
+            BrowserModule,
+            AngularSvgIconModule.forRoot(),
+            AppRoutingModule,
+            TranslocoRootModule,
+            MatCardModule,
+            MatIconModule,
+            MatToolbarModule,
+            MatSnackBar,
+            MatCard,
+            MatSnackBar,
+            MatPaginator,
+            MatSnackBarModule
+        ),
+      SvgIconRegistryService,
+      CoursesService,
+      StudentMetricsService,
+      AuthService,
+      ReportServiceService,
+      InfoMessagesService,
         provideAnimations(),
         provideHttpClient(withInterceptorsFromDi()),
       {provide: HTTP_INTERCEPTORS, useClass: ApiCacheInterceptor, multi: true},

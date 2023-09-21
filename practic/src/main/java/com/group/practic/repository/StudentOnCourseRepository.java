@@ -24,4 +24,7 @@ public interface StudentOnCourseRepository extends JpaRepository<StudentOnCourse
 
     List<StudentOnCourseEntity>
             findAllByBanFalseAndInactiveFalseAndActiveChapter_Number(int chapterNumber);
+
+    StudentOnCourseEntity findByStudentId(Long studentId);
+
 }

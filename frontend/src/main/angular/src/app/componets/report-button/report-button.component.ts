@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {Router, RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {CommonModule, NgFor, NgIf} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
@@ -16,7 +16,8 @@ export class ReportButtonComponent{
 
   dropdownText = "Доповідей не заплановано";
   rep = " доповідь";
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+  private route: ActivatedRoute) {}
   @Input() reportsNumber!: number
 
 
@@ -35,7 +36,12 @@ export class ReportButtonComponent{
   }
   navigate(event: Event) {
     event.stopPropagation();
-    this.router.navigate(['/reports']);
+    this.route.paramMap.subscribe(params => {
+      const slug = params.get('slug');
+      if (slug) {
+        this.router.navigate(['courses/',slug,'reports']);
+      }
+    })
   }
 
 }

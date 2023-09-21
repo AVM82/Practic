@@ -27,8 +27,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = { "email", "discord" }))
-
+@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}))
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -63,10 +62,17 @@ public class PersonEntity implements UserDetails {
 
     private String profilePictureUrl;
 
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"), 
+    @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "person_application", joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private Set<CourseEntity> courses;
 
 
     public PersonEntity(String name, String linkedin) {
@@ -80,6 +86,8 @@ public class PersonEntity implements UserDetails {
         this.linkedin = linkedin;
         this.roles = roles;
     }
+
+
 
 
     @JsonIgnore

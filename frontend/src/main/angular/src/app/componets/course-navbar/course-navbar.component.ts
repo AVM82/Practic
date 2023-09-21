@@ -39,7 +39,7 @@ export class CourseNavbarComponent implements OnInit {
           this.course = course;
           this.coursesService.getChapters(slug).subscribe(chapters => {
             this.showChaptersLink = chapters.length > 0;
-            this.coursesService.setFirstChapterVisible(chapters);
+            this.setChapterVisibility();
             if(chapterN !== 0) {
               this.coursesService.setActiveChapter(chapters, chapterN);
             }else{
@@ -51,6 +51,17 @@ export class CourseNavbarComponent implements OnInit {
             this.showAdditionalMaterials = additionalMaterials.length > 0;
           });
         });
+      }
+    })
+  }
+  
+  private setChapterVisibility() :void {
+    this.coursesService.getOpenChapters().subscribe( {
+      next: chapters => {
+        this.coursesService.setVisibleChapters(this.chapters, chapters);
+      },
+      error: error => {
+        console.error('Помилка при запиті доступних глав', error);
       }
     })
   }

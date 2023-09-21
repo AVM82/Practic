@@ -21,6 +21,7 @@
     padding: 10px;
     border-radius: 3px;
     border: 1px solid;
+    position: relative;
 }
 
 .chapter-details-container {
@@ -129,4 +130,12 @@
     display: flex;
     width: 100%;
     margin: 5px;
+}
+
+.chapter-part .action-buttons {
+    position: absolute;
+    top: 0;
+    right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
+    display: flex;
+    align-items: center;
 }

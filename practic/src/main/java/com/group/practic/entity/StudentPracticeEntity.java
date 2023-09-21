@@ -11,21 +11,28 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "student_practice")
+@Getter
+@Setter
 public class StudentPracticeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne
-    ChapterEntity chapter;
+    ChapterPartEntity chapterPart;
 
     @ManyToOne
     PersonEntity student;
+
+    @ManyToOne
+    ChapterEntity chapter;
 
     @Enumerated(EnumType.STRING)
     PracticeState state = PracticeState.NOT_STARTED;
@@ -35,64 +42,16 @@ public class StudentPracticeEntity {
     private Date createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false, updatable = false)
+    @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
 
-    public StudentPracticeEntity(ChapterEntity chapter, PersonEntity student,
+    public StudentPracticeEntity(ChapterPartEntity chapter, PersonEntity student,
                                  PracticeState state) {
-        this.chapter = chapter;
+        this.chapterPart = chapter;
         this.student = student;
         this.state = state;
     }
 
     public StudentPracticeEntity() {
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public ChapterEntity getChapter() {
-        return chapter;
-    }
-
-    public void setChapter(ChapterEntity chapter) {
-        this.chapter = chapter;
-    }
-
-    public PersonEntity getStudent() {
-        return student;
-    }
-
-    public void setStudent(PersonEntity student) {
-        this.student = student;
-    }
-
-    public PracticeState getState() {
-        return state;
-    }
-
-    public void setState(PracticeState state) {
-        this.state = state;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 }

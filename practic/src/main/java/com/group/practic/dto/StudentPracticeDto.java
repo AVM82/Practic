@@ -1,52 +1,30 @@
 package com.group.practic.dto;
 
-import com.group.practic.enumeration.PracticeState;
-import java.util.Date;
 
+import java.sql.Date;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class StudentPracticeDto {
+
     private String personName;
+
+    @NotNull
+    private long chapterPartId;
+
     private String chapterName;
+
     private String state;
 
     private Date updatedAt;
 
-    public StudentPracticeDto() {
-    }
-
-    public StudentPracticeDto(String personName, String chapterName) {
-        this.personName = personName;
-        this.chapterName = chapterName;
-    }
-
-    public String getPersonName() {
-        return personName;
-    }
-
-    public void setPersonName(String personName) {
-        this.personName = personName;
-    }
-
-    public String getChapterName() {
-        return chapterName;
-    }
-
-    public void setChapterName(String chapterName) {
-        this.chapterName = chapterName;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(PracticeState state) {
-        this.state = state.name().toLowerCase();
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    @NotNull
+    private long studentId;
 }
