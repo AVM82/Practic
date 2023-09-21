@@ -11,7 +11,11 @@ export enum ApiUrls {
   OpenChapters = '/api/students/chapters',
   PracticeState = '/api/students/practices',
   PracticeApprove = '/api/mentor/practices',
+<<<<<<< HEAD
   ReportLikeList = '/api/students/reports/likes/'
+=======
+	ReportLikeList = '/api/students/reports/likes/'
+>>>>>>> branch 'Slava' of git@github.com:AVM82/Practic.git
 
 }
 
@@ -39,4 +43,3 @@ export const getLevelsUrl = (slug: string): string =>
 
 export const timeslotsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}/timeslots`;
-

@@ -61,4 +61,20 @@ public class StudentReportService {
             .save(new StudentReportEntity(chapter.get(), student.get(),
                     timeslot.get(), newStudentReportDto.title()))) : Optional.empty();
     }
+
+    public Optional<StudentReportEntity> changeReportLikeList(int reportId, long studentId) {
+        Optional<StudentReportEntity> report = studentReportRepository.findById(reportId);
+        if (report.isPresent()) {
+            StudentReportEntity reportEntity = report.get();
+            List<Long> reportLikedPersonsIdList =  reportEntity.getLikedPersonsIdList();
+            if (reportLikedPersonsIdList.contains(studentId)) {
+                reportLikedPersonsIdList.remove(studentId);
+            } else {
+                reportLikedPersonsIdList.add(studentId);
+            }
+            reportEntity.setLikedPersonsIdList(reportLikedPersonsIdList);
+            return Optional.of(studentReportRepository.save(reportEntity));
+        }
+        return Optional.empty();
+    }
 }

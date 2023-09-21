@@ -9,11 +9,14 @@
 
   </div>
   <div style="display: flex;">
-    <report-card *ngFor="let report of  showReports()" [reportTopic]="report.title"
+    <report-card *ngFor="let report of  showReports()"
+                 [reportId]="report.id"
+                 [reportTopic]="report.title"
                  [studentName]="report.personName"
                  [dateValue]="report.date"
                  [timeValue]="report.time"
-                 [profilePictureUrl]="report.profilePictureUrl"></report-card>
+                 [profilePictureUrl]="report.profilePictureUrl"
+                 [likedPersonsIdList]="report.likedPersonsIdList" ></report-card>
   </div>
   <ng-container *ngIf="isReportsLengthMore()">
     <div style="display: flex;">
