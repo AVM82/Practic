@@ -18,6 +18,8 @@ import {MatButtonModule} from "@angular/material/button";
 export class CourseNavbarComponent implements OnInit {
   course: Course | undefined;
   chapters: Chapter[] = [];
+  showChaptersLink: boolean = false;
+  showAdditionalMaterials: boolean = false;
   slug: string = '';
 
   constructor(
@@ -36,6 +38,7 @@ export class CourseNavbarComponent implements OnInit {
         this.coursesService.getCourse(slug).subscribe(course => {
           this.course = course;
           this.coursesService.getChapters(slug).subscribe(chapters => {
+            this.showChaptersLink = chapters.length > 0;
             this.setChapterVisibility();
             if(chapterN !== 0) {
               this.coursesService.setActiveChapter(chapters, chapterN);
@@ -44,12 +47,14 @@ export class CourseNavbarComponent implements OnInit {
             }
             this.chapters = chapters;
           });
+          this.coursesService.getAdditionalMaterials(slug).subscribe(additionalMaterials => {
+            this.showAdditionalMaterials = additionalMaterials.length > 0;
+          });
         });
-
       }
     })
   }
-
+  
   private setChapterVisibility() :void {
     this.coursesService.getOpenChapters().subscribe( {
       next: chapters => {

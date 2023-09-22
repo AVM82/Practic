@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl} from "../../enums/api-urls";
+import {ApiUrls, getCourseUrl, getChaptersUrl, getLevelsUrl, getMaterialsUrl, postCourse} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
 
@@ -19,7 +19,7 @@ export class CoursesService {
       ) {}
 
   getCourse(slug: string): Observable<Course> {
-    return this.http.get<Course>(ApiUrls.Course+slug).pipe(
+    return this.http.get<Course>(getCourseUrl(slug)).pipe(
         catchError(this.handleError<Course>(`get course = ${slug}`))
     )
   }
@@ -27,6 +27,7 @@ export class CoursesService {
   getChapters(slug: string): Observable<Chapter[]> {
     return this.http.get<Chapter[]>(getChaptersUrl(slug));
   }
+
   getLevels(slug:string):Observable<Level[]>{
     return this.http.get<Level[]>(getLevelsUrl(slug))
   }
@@ -69,19 +70,31 @@ export class CoursesService {
     return this.http.post('/api/students', {courseSlug, userId});
   }
 
+  approvePractice(studentId: number, chapterPartId: number): Observable<any> {
+    return this.http.post(ApiUrls.PracticeApprove, {studentId, chapterPartId});
+  }
+
   getAdditionalMaterials(slug: string): Observable<AdditionalMaterials[]> {
     return this.http.get<AdditionalMaterials[]>(getMaterialsUrl(slug));
+  }
+
+  postCourse(_slug: any, _shortName: any, _name: any, _svg: any): Observable<Course> {
+    let course: Course = {
+      id: 0,
+      chapters: [],
+      slug: _slug,
+      shortName: _shortName,
+      name: _name,
+      svg: _svg
+    };
+    return this.http.post<Course>(postCourse, course);
   }
 
   postAdditionalChange(slug: string, id: number, checked: boolean) {
 
   }
 
-  approvePractice(studentId: number, chapterPartId: number): Observable<any> {
-    return this.http.post(ApiUrls.PracticeApprove, {studentId, chapterPartId});
-  }
-
-
+  
   /**
    * Handle Http operation that failed.
    * Let the app continue.

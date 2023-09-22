@@ -93,8 +93,8 @@ public class CourseController {
     
     
     @PostMapping
-    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseDto courseDto) {
-        return postResponse(courseService.create(courseDto));
+    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseEntity courseEntity) {
+        return postResponse(courseService.save(courseEntity));
     }
 
 
