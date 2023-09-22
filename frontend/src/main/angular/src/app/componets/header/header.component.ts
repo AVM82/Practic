@@ -31,13 +31,12 @@ export class HeaderComponent implements OnInit{
   }
   ngOnInit(): void {
     const token = this.tokenStorageService.getToken();
-    if (token) {
-      const user: User = this.tokenStorageService.getUser();
-      let currentUser: User = new User(user.roles,user.name,user.profilePictureUrl,user.email,user.id);
-      this.isAdmin = currentUser.hasAnyRole('ADMIN');
-      this.isAuthenticated = currentUser.isAuthenticated;
-      this.name = currentUser.name;
-      this.profilePictureUrl=currentUser.profilePictureUrl
+    const user: User = this.tokenStorageService.getUser();
+    if (token && user) {
+      this.isAdmin = user.hasAnyRole('ADMIN');
+      this.isAuthenticated = user.isAuthenticated;
+      this.name = user.name;
+      this.profilePictureUrl = user.profilePictureUrl
     }
   }
 
