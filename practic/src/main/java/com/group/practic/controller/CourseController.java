@@ -62,7 +62,8 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/levels")
-    public ResponseEntity<Collection<LevelEntity>> getLevels(@PathVariable String slug) {
+    @PreAuthorize("hasRole('STUDENT') && hasRole(#slug) || hasRole('ADMIN')")
+    public ResponseEntity<Collection<LevelEntity>> getLevels(@PathVariable("slug") String slug) {
         return getResponse(courseService.getLevels(slug));
     }
 
@@ -80,25 +81,29 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/additional")
+    @PreAuthorize("hasRole('STUDENT') && hasRole(#slug) || hasRole('ADMIN')")
     public ResponseEntity<Collection<AdditionalMaterialsEntity>> getAdditional(
-            @PathVariable String slug) {
+            @PathVariable("slug") String slug) {
         return getResponse(courseService.getAdditional(slug));
     }
 
 
     @PostMapping("/NewCourseFromProperties")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CourseEntity> createCourse(@RequestBody String propertyFile) {
         return postResponse(courseService.create(propertyFile));
     }
     
     
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseEntity courseEntity) {
         return postResponse(courseService.save(courseEntity));
     }
 
 
     @PutMapping("/{id}/change/shortNname")
+    @PreAuthorize("hasRole('MENTOR') || hasRole('ADMIN')")
     public ResponseEntity<CourseEntity> changeShortName(@PathVariable long id,
             @RequestParam String shortName) {
         return postResponse(courseService.changeShortName(id, shortName));

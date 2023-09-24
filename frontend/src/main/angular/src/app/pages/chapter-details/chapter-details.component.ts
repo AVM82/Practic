@@ -10,23 +10,30 @@ import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {ChapterPart} from "../../models/chapter/chapterpart";
 import {InfoMessagesService} from "../../services/info-messages.service";
+import {MatChipsModule} from "@angular/material/chips";
+import {Practice} from "../../models/practice/practice";
+import {TokenStorageService} from "../../services/auth/token-storage.service";
+import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
+import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
 
 @Component({
   selector: 'app-chapter-details',
   standalone: true,
   imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule,
-    CdkAccordionModule, MatTooltipModule],
+    CdkAccordionModule, MatTooltipModule, MatChipsModule, PracticeStatePipe, PracticeButtonsVisibilityPipe],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
 export class ChapterDetailsComponent implements OnInit {
     chapter?: Chapter ;
     showPartNumber: boolean = false;
+    practices: Practice[] = [];
 
   constructor(
       private chaptersService: ChaptersService,
       private route: ActivatedRoute,
-      private messagesService: InfoMessagesService
+      private messagesService: InfoMessagesService,
+      private tokenStorageService: TokenStorageService
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +42,7 @@ export class ChapterDetailsComponent implements OnInit {
       const chapterN =  Number(params.get('chapterN'));
 
       if(slug && chapterN) {
-  
+          this.updatePractices();
           this.chaptersService.getChapter(slug, chapterN).subscribe(chapter =>
         {
           this.chapter = chapter;
@@ -45,9 +52,28 @@ export class ChapterDetailsComponent implements OnInit {
     })
   }
 
+  setPractices() {
+    const practices = this.tokenStorageService.getPractice();
+    if(practices){
+      this.practices = practices;
+    } else {
+      this.updatePractices();
+    }
+  }
+
+  updatePractices() {
+    this.chaptersService.getMyPractices().subscribe({
+      next: value => {
+        this.practices = value;
+        this.tokenStorageService.updatePractice(value);
+      }
+    })
+  }
+
   playAction(chapterPart: ChapterPart) {
     this.chaptersService.setPracticeState('IN_PROCESS', chapterPart.id).subscribe({
       next: () => {
+        this.updatePractices();
         this.messagesService.showMessage("Стан практичної змінено на стан 'В ПРОЦЕССІ'", "normal");
       },
       error: err => {
@@ -59,6 +85,7 @@ export class ChapterDetailsComponent implements OnInit {
   pauseAction(chapterPart: ChapterPart) {
     this.chaptersService.setPracticeState('PAUSE', chapterPart.id).subscribe({
       next: () => {
+        this.updatePractices();
         this.messagesService.showMessage("Стан практичної змінено на стан 'НА ПАУЗІ'", "normal");
       },
       error: err => {
@@ -70,6 +97,7 @@ export class ChapterDetailsComponent implements OnInit {
   doneAction(chapterPart: ChapterPart) {
     this.chaptersService.setPracticeState('READY_TO_REVIEW', chapterPart.id).subscribe({
       next: () => {
+        this.updatePractices();
         this.messagesService.showMessage("Стан практичної змінено на стан 'ГОТОВО ДО РЕВЬЮ'", "normal");
       },
       error: err => {

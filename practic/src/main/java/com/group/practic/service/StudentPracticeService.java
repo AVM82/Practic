@@ -57,4 +57,8 @@ public class StudentPracticeService {
     public StudentPracticeEntity save(StudentPracticeEntity studentPractice) {
         return studentPracticeRepository.save(studentPractice);
     }
+
+    public Set<StudentPracticeEntity> getAllPracticesByStudent(PersonEntity student) {
+        return studentPracticeRepository.findAllByStudent(student);
+    }
 }

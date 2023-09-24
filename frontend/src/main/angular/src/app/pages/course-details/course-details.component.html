@@ -20,9 +20,9 @@
           <div class="info-tag">
             Теорія: не розпочато
           </div>
-          <div class="info-tag">
-            Практика: не розпочато
-          </div>
+            <div *ngFor="let partId of chapter.chapterPartIds" class="info-tag">
+                Практика: {{ partId | practiceState: practices }}
+            </div>
           <div class="info-tag">
             Доповідь: не проведена
           </div>

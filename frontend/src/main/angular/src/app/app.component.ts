@@ -34,7 +34,7 @@ export class AppComponent implements OnDestroy{
 
   openSnackBar(message: string, type: string) {
     this._snackBar.open(message, 'Закрити', {
-      duration: 50000,
+      duration: 5000,
       panelClass: type === 'error' ? 'error-snackbar' : 'normal-snackbar'
     });
   }
