@@ -9,12 +9,19 @@ import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
+import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.service.CourseService;
+import com.group.practic.service.StudentChapterService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +36,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/courses")
 public class CourseController {
 
-    @Autowired
     private CourseService courseService;
+    private StudentChapterService studentChapterService;
+
+
+    @Autowired
+    public CourseController(CourseService courseService,
+                            StudentChapterService studentChapterService) {
+        this.courseService = courseService;
+        this.studentChapterService = studentChapterService;
+    }
 
 
     @GetMapping
@@ -46,9 +61,9 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{id}/levels")
-    public ResponseEntity<Collection<LevelEntity>> getLevels(@Min(1) @PathVariable long id) {
-        return getResponse(courseService.getLevels(id));
+    @GetMapping("/{slug}/levels")
+    public ResponseEntity<Collection<LevelEntity>> getLevels(@PathVariable String slug) {
+        return getResponse(courseService.getLevels(slug));
     }
 
 
@@ -71,16 +86,22 @@ public class CourseController {
     }
 
 
+    @PostMapping("/NewCourseFromProperties")
+    public ResponseEntity<CourseEntity> createCourse(@RequestBody String propertyFile) {
+        return postResponse(courseService.create(propertyFile));
+    }
+    
+    
     @PostMapping
-    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseDto courseDto) {
-        return postResponse(courseService.create(courseDto));
+    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseEntity courseEntity) {
+        return postResponse(courseService.save(courseEntity));
     }
 
 
     @PutMapping("/{id}/change/shortNname")
-    public ResponseEntity<CourseEntity> addShortName(@PathVariable long id,
+    public ResponseEntity<CourseEntity> changeShortName(@PathVariable long id,
             @RequestParam String shortName) {
-        return postResponse(courseService.addShortName(id, shortName));
+        return postResponse(courseService.changeShortName(id, shortName));
     }
 
 
@@ -91,9 +112,34 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/chapters/{number}")
-    public ResponseEntity<ChapterEntity> getChapterByNumber(@PathVariable String slug,
+    @PreAuthorize("hasRole(#slug)||hasRole('ADMIN')")
+    public ResponseEntity<ChapterEntity> getChapterByNumber(@PathVariable("slug") String slug,
             @PathVariable int number) {
-        return getResponse(courseService.getChapterByNumber(slug, number));
+        Optional<ChapterEntity> chapter = courseService.getChapterByNumber(slug, number);
+        if (chapter.isPresent() && isChapterOpen(chapter.get())) {
+            return getResponse(courseService.getChapterByNumber(slug, number));
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+    }
+
+    private boolean isChapterOpen(ChapterEntity chapter) {
+        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        if (person != null) {
+            Set<StudentChapterEntity> studentChapters =
+                    studentChapterService.findOpenChapters(person);
+
+            return studentChapters.stream()
+                    .anyMatch(studentChapter ->
+                            studentChapter.getChapter().getId() == chapter.getId()
+                    );
+
+        } else {
+            return false;
+        }
     }
 
 }

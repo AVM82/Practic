@@ -2,12 +2,15 @@ package com.group.practic.util;
 
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.CourseDto;
+import com.group.practic.dto.PersonApplyOnCourseDto;
 import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonApplicationEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
 import java.util.ArrayList;
@@ -25,8 +28,14 @@ public interface Converter {
 
         applyStudentPracticeMap(modelMapper);
         applyStudentReportMap(modelMapper);
+        applyPersonOnCourseMap(modelMapper);
+        applyStudentChapter(modelMapper);
 
         return modelMapper;
+    }
+
+    static ChapterDto convert(StudentChapterEntity studentChapter) {
+        return modelMapper().map(studentChapter, ChapterDto.class);
     }
 
 
@@ -69,6 +78,10 @@ public interface Converter {
         return modelMapper().map(studentReportEntity, StudentReportDto.class);
     }
 
+    static PersonApplyOnCourseDto convert(PersonApplicationEntity personApplication) {
+        return modelMapper().map(personApplication, PersonApplyOnCourseDto.class);
+    }
+
 
     static List<StudentReportDto> convert(List<StudentReportEntity> studentReportEntityList) {
         if (studentReportEntityList.isEmpty()) {
@@ -106,7 +119,7 @@ public interface Converter {
     private static void applyStudentPracticeMap(ModelMapper modelMapper) {
         modelMapper.createTypeMap(StudentPracticeEntity.class, StudentPracticeDto.class)
                 .addMapping(src -> src.getStudent().getName(), StudentPracticeDto::setPersonName)
-                .addMapping(src -> src.getChapter().getShortName(),
+                .addMapping(src -> src.getChapterPart().getPraxisPurpose(),
                         StudentPracticeDto::setChapterName)
                 .addMapping(StudentPracticeEntity::getState, StudentPracticeDto::setState);
     }
@@ -119,7 +132,27 @@ public interface Converter {
                         StudentReportDto::setProfilePictureUrl)
                 .addMapping(src -> src.getChapter().getShortName(),
                         StudentReportDto::setChapterName)
-                .addMapping(StudentReportEntity::getState, StudentReportDto::setState);
+                .addMapping(StudentReportEntity::getState, StudentReportDto::setState)
+                .addMapping(src -> src.getTimeSlot().getDate(), StudentReportDto::setDate)
+                .addMapping(src -> src.getTimeSlot().getTime(), StudentReportDto::setTime);
+    }
+
+    private static void applyPersonOnCourseMap(ModelMapper modelMapper) {
+        modelMapper.createTypeMap(PersonApplicationEntity.class, PersonApplyOnCourseDto.class)
+                .addMapping(src -> src.getPerson().getId(), PersonApplyOnCourseDto::setId)
+                .addMapping(src -> src.getPerson().getName(), PersonApplyOnCourseDto::setName)
+                .addMapping(src -> src.getPerson().getProfilePictureUrl(),
+                        PersonApplyOnCourseDto::setProfilePictureUrl)
+                .addMapping(src -> src.getCourse().getSlug(),
+                        PersonApplyOnCourseDto::setCourseSlug);
+
+    }
+
+    private static void applyStudentChapter(ModelMapper modelMapper) {
+        modelMapper.createTypeMap(StudentChapterEntity.class, ChapterDto.class)
+                .addMapping(src -> src.getChapter().getId(), ChapterDto::setId)
+                .addMapping(src -> src.getChapter().getNumber(), ChapterDto::setNumber)
+                .addMapping(src -> src.getChapter().getShortName(), ChapterDto::setShortName);
     }
 
 }

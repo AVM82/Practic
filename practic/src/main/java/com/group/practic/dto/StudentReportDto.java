@@ -1,14 +1,21 @@
 package com.group.practic.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 public class StudentReportDto {
+
+    private long id;
     private String personName;
     private String profilePictureUrl;
     private String chapterName;
-    private LocalDateTime dateTime;
+    private LocalDate date;
+    private LocalTime time;
     private String state;
     private String title;
+
+    private List<Long> likedPersonsIdList;
 
     public StudentReportDto() {
     }
@@ -16,6 +23,14 @@ public class StudentReportDto {
     public StudentReportDto(String personName, String chapterName) {
         this.personName = personName;
         this.chapterName = chapterName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getPersonName() {
@@ -42,12 +57,20 @@ public class StudentReportDto {
         this.chapterName = chapterName;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
     public String getState() {
@@ -64,5 +87,13 @@ public class StudentReportDto {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public List<Long> getLikedPersonsIdList() {
+        return likedPersonsIdList;
+    }
+
+    public void setLikedPersonsIdList(List<Long> likedPersonsIdList) {
+        this.likedPersonsIdList = likedPersonsIdList;
     }
 }

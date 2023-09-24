@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +29,7 @@ public class CourseEntity {
 
     String authors;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     Set<PersonEntity> mentors = new HashSet<>();
 
     String courseType;
@@ -43,17 +44,17 @@ public class CourseEntity {
     @Column(length = 8192)
     String description;
 
-    @OneToMany
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @JsonIgnore
     @OrderBy("number")
     Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @JsonIgnore
     @OrderBy("number")
     Set<LevelEntity> levels = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     @JsonIgnore
     @OrderBy("number")
     Set<ChapterEntity> chapters = new HashSet<>();
@@ -66,15 +67,19 @@ public class CourseEntity {
     @NotBlank
     String slug;
 
+    @Column(length = 16384)
+    String svg;
+
 
     public CourseEntity() {
     }
 
 
-    public CourseEntity(String slug, String shortName, String name) {
+    public CourseEntity(String slug, String shortName, String name, String svg) {
         this.slug = slug;
         this.shortName = shortName;
         this.name = name;
+        this.svg = svg;
     }
 
 
@@ -215,6 +220,16 @@ public class CourseEntity {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+
+    public String getSvg() {
+        return svg;
+    }
+
+
+    public void setSvg(String svg) {
+        this.svg = svg;
     }
 
 }

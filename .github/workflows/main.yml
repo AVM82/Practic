@@ -29,8 +29,8 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }} # Создайте этот секрет в настройках репозитория
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Создайте этот секрет в настройках репозитория
           region: 'eu-north-1' # Замените на ваш регион AWS Elastic Beanstalk  
-          application_name: 'restApiShpp' # Замените на имя вашего приложения в Elastic Beanstalk
-          environment_name: 'RestApiShpp-env-1' # Замените на имя вашей среды в Elastic Beanstalk
+          application_name: 'practically' # Замените на имя вашего приложения в Elastic Beanstalk
+          environment_name: 'Practically-env' # Замените на имя вашей среды в Elastic Beanstalk
           version_label: 'v${{ github.sha }}' # Используйте хеш последнего коммита в качестве метки версии
           deployment_package: 'practic/target/practic-0.0.1.jar' # Путь к директории с .jar или .war файлом для деплоя
           wait_for_deployment: true # Дожидаться завершения деплоя

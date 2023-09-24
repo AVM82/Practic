@@ -1,0 +1,17 @@
+.apply-button-container {
+    position: fixed;
+    top: 30%;
+    left: 1%;
+}
+
+.apply-button {
+    background-color: #27AE60;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.apply-button:hover {
+    background-color: #65BF95;
+}

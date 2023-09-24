@@ -4,6 +4,7 @@
     background-color: #e8ffef;
     justify-content: space-between;
     padding: 10px;
+    padding-left: 20px;
     margin-left: 40px;
     margin-right: 40px;    
     margin-top: 10px;
@@ -20,6 +21,7 @@
     padding: 10px;
     border-radius: 3px;
     border: 1px solid;
+    position: relative;
 }
 
 .chapter-details-container {
@@ -118,10 +120,6 @@
     color: #c0d0c0;
 }
 
-.accordion-span-down {
-    transform: rotate(180deg);
-}
-
 .column {
     padding: 2px;
     flex-direction: column;
@@ -132,4 +130,12 @@
     display: flex;
     width: 100%;
     margin: 5px;
+}
+
+.chapter-part .action-buttons {
+    position: absolute;
+    top: 0;
+    right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
+    display: flex;
+    align-items: center;
 }

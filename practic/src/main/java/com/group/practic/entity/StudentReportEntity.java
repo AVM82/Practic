@@ -8,10 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -28,8 +30,9 @@ public class StudentReportEntity {
     @ManyToOne
     PersonEntity student;
 
-    @Future
-    LocalDateTime dateTime;
+    @OneToOne
+    @NotNull
+    TimeSlotEntity timeSlot;
 
     @NotBlank
     String title;
@@ -38,22 +41,26 @@ public class StudentReportEntity {
     ReportState state = ReportState.ANNOUNCED;
 
 
+    List<Long> likedPersonsIdList = new ArrayList<>();
+
+
     public StudentReportEntity() {
     }
 
 
     public StudentReportEntity(ChapterEntity chapter, PersonEntity student,
-            @Future LocalDateTime dateTime, @NotBlank String title) {
+                               TimeSlotEntity timeslot, @NotBlank String title) {
         this.chapter = chapter;
         this.student = student;
-        this.dateTime = dateTime;
+        this.timeSlot = timeslot;
         this.title = title;
+
     }
 
 
     public StudentReportEntity(long id, ChapterEntity chapter, PersonEntity student,
-            @Future LocalDateTime dateTime, @NotBlank String title) {
-        this(chapter, student, dateTime, title);
+            TimeSlotEntity timeslot, @NotBlank String title) {
+        this(chapter, student, timeslot, title);
         this.id = id;
     }
 
@@ -88,16 +95,6 @@ public class StudentReportEntity {
     }
 
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-
     public String getTitle() {
         return title;
     }
@@ -117,4 +114,19 @@ public class StudentReportEntity {
         this.state = state;
     }
 
+    public TimeSlotEntity getTimeSlot() {
+        return timeSlot;
+    }
+
+    public void setTimeSlot(TimeSlotEntity timeSlot) {
+        this.timeSlot = timeSlot;
+    }
+
+    public List<Long> getLikedPersonsIdList() {
+        return likedPersonsIdList;
+    }
+
+    public void setLikedPersonsIdList(List<Long> likedPersonsIdList) {
+        this.likedPersonsIdList = likedPersonsIdList;
+    }
 }

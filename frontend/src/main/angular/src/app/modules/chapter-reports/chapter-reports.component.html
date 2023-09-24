@@ -1,18 +1,22 @@
-<div style="display: flex; align-items: center;">
-  <div style="margin-left:10px; width: 35px; height: 254px; padding-left: 18px; padding-right: 18px;
-   padding-top: 10px; padding-bottom: 10px; background: #84C984; border-radius: 8px;
-    overflow: hidden; flex-direction: column; justify-content: center; align-items: center;
-gap: 10px; display: inline-flex">
-    <div style="transform: rotate(-90deg); transform-origin: 5 5 ; color: black; font-size: 32px">
-      Розділ{{chapterNumber}}
+<div style="margin-left:10px; height: 180px; margin-top:10px;display: flex; align-items: center;">
+
+  <div  [style.background]="getChapterColor(chapterNumber)" style=" width: 50px; height: 100%; border-radius: 8px;
+    overflow: hidden; flex-direction: column; justify-content: center; align-items: center;display: inline-flex">
+
+    <div style="transform: rotate(-90deg);color: black; font-size: 25px; white-space: nowrap;">
+      Розділ {{chapterNumber}}
     </div>
 
   </div>
   <div style="display: flex;">
-    <report-card *ngFor="let report of  showReports()" [reportTopic]="report.title"
+    <report-card *ngFor="let report of  showReports()"
+                 [reportId]="report.id"
+                 [reportTopic]="report.title"
                  [studentName]="report.personName"
-                 [dateTimeValue]="report.dateTime"
-                 [profilePictureUrl]="report.profilePictureUrl"></report-card>
+                 [dateValue]="report.date"
+                 [timeValue]="report.time"
+                 [profilePictureUrl]="report.profilePictureUrl"
+                 [likedPersonsIdList]="report.likedPersonsIdList" ></report-card>
   </div>
   <ng-container *ngIf="isReportsLengthMore()">
     <div style="display: flex;">

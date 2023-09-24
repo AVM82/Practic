@@ -1,5 +1,6 @@
 package com.group.practic;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +17,11 @@ public class PropertyLoader {
     Properties prop = new Properties();
 
 
+    public PropertyLoader(String file, boolean string) {
+        initialized = string ? loadPropertiesFromString(prop, file) : loadProperties(prop, file);
+    }
+
+
     public PropertyLoader(String file) {
         initialized = loadProperties(prop, file);
     }
@@ -23,6 +29,17 @@ public class PropertyLoader {
 
     public PropertyLoader(ClassLoader classLoader, String file) {
         initialized = loadProperties(classLoader, file);
+    }
+
+
+    private boolean loadPropertiesFromString(Properties prop, String file) {
+        try {
+            prop.load(new InputStreamReader(new ByteArrayInputStream(file.getBytes()),
+                    StandardCharsets.UTF_8));
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 
