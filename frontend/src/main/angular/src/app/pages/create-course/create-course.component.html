@@ -1,0 +1,58 @@
+<h2>Створити новий курс</h2>
+
+<form>
+  <h3>спосіб створення:</h3>
+  <div>
+    <label for="contactChoice1" class="choice">
+      <input type="radio" id="choiceInteractive" name="choice" value="Interactive" (change)="setMethod('Interactive')" checked/>
+      інтерактивний
+    </label>
+  </div>
+  <div>
+    <label for="contactChoice2" class="choice">
+      <input type="radio" id="choiceFromProperties" name="choice" value="FromProperties" (change)="setMethod('FromProperties')"/>
+      з тексту властивостей
+    </label>
+  </div>
+</form>
+
+
+<form *ngIf="createMethod == 'Interactive'" [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="slug" class="textinput">
+          slug
+        </label>
+        <input id="slug" type="text" required minlength="5" formControlName="slug" on-focus="setBlackColor('slug')" on-focusout="checkSlug()">
+      </div>
+    
+      <div>
+        <label for="shortName" class="textinput">
+          коротка назва
+        </label>
+        <input id="shortName" type="text" required minlength="5" formControlName="shortName" on-focus="setBlackColor('shortName')" on-focusout="checkShort()">
+      </div>
+    
+      <div>
+        <label for="name" class="textinput">
+          повна назва
+        </label>
+        <input id="name" type="text" required minlength="5" formControlName="name" on-focus="setBlackColor('name')" on-focusout="checkName()">
+      </div>
+    
+      <div>
+        <label for="svg" class="textinput">
+          іконка
+        </label>
+        <input  id="svg" type="text" formControlName="svg" oninput="document.getElementById('svg-icon').innerHTML = this.value">
+      </div>
+
+      <div id="svg-icon" class="svg-view"></div>
+</form>
+
+<form *ngIf="createMethod == 'FromProperties'" (ngSubmit)="onSubmit()">
+  <textarea id="properties" type="text" rows="15"></textarea>
+</form>
+
+<div>
+  <button class="button" type="submit">Створити</button>
+</div>

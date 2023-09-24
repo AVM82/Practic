@@ -48,4 +48,13 @@ export class TokenStorageService {
     this.savePractice(practice);
   }
 
+
+  public isStudent(slug: string): boolean {
+    const token = this.getToken();
+    if (token) {
+      const user: User = this.getUser();
+      return user?.hasApplyOnCourse(slug);
+    }
+    return false;
+  }
 }

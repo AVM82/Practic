@@ -67,7 +67,7 @@ public class CourseEntity {
     @NotBlank
     String slug;
 
-    @Column(length = 2048)
+    @Column(length = 16384)
     String svg;
 
 

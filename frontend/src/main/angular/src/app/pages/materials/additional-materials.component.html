@@ -1,7 +1,10 @@
 <app-course-navbar></app-course-navbar>
+
 <div class="chapter-header">
 	<h3>Додаткові матеріали</h3>
 </div>
+
+<app-apply-btn></app-apply-btn>
 
 <div *ngFor="let item of materials" class="chapter-part">
     <div class="column">{{item.number}}. </div>
@@ -12,7 +15,7 @@
             </div>
         </div>
     </div>
-    <form class="column-right">
+    <form *ngIf="showCheckbox" class="column-right">
         <label>
             <input type="checkbox" [id]="item.id" (change)="changeLearned($event)" />
             вивчено

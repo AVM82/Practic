@@ -10,6 +10,7 @@ import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.co
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
 import {ReportDashboardComponent} from "./pages/report-dashboard/report-dashboard.component";
 import {AdditionalMaterialsComponent} from "./pages/materials/additional-materials.component";
+import {CreateCourseComponent} from "./pages/create-course/create-course.component";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule, NativeDateModule} from "@angular/material/core";
 import localeUk from '@angular/common/locales/uk';
@@ -27,7 +28,8 @@ const routes: Routes = [
     component: AdminDashboardComponent,
     children: [
       {path: '', component: DashboardComponent},
-      {path: 'students/practices', component: PracticMetricComponent}
+      {path: 'students/practices', component: PracticMetricComponent},
+      {path: 'create/course', component: CreateCourseComponent}
     ]
   },
   {
