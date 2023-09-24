@@ -27,24 +27,19 @@ export class FeedbackService {
   return this.http.post(ApiUrls.Feedbacks,body,{headers:headers})  
   }
 
-  incrementLikes(id: number,email:string): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const body = {
-      email: email
-    };
-    const apiUrl = `${ApiUrls.Feedbacks}/${id}`;
+  incrementLikes(feedbackId: number,personId:number): Observable<any> {
+    const apiUrl = `${ApiUrls.Feedbacks}${feedbackId}`;
   
-    return this.http.patch(apiUrl, {body}, { headers: headers });
+    return this.http.patch(apiUrl, personId);
   }
 
   
-  decrementLikes(id: number,email:string): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  decrementLikes(feedbackId: number,personId:number): Observable<any> {
     const body = {
-      id:id,
-      email: email
+      feedbackId:feedbackId,
+      personId: personId
     };
   
-    return this.http.patch(ApiUrls.Feedbacks, {body}, { headers: headers });
+    return this.http.patch(ApiUrls.Feedbacks, body);
   }
 }
