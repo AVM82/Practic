@@ -9,13 +9,13 @@ import {DashboardComponent} from "./modules/dashboard/dashboard.component";
 import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
 import {ReportDashboardComponent} from "./pages/report-dashboard/report-dashboard.component";
-import { FeedbackComponent } from './componets/feedback/feedback.component';
 import {AdditionalMaterialsComponent} from "./pages/materials/additional-materials.component";
 import {CreateCourseComponent} from "./pages/create-course/create-course.component";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule, NativeDateModule} from "@angular/material/core";
 import localeUk from '@angular/common/locales/uk';
 import {registerLocaleData} from "@angular/common";
+import { FeedbackComponent } from './componets/feedback/feedback.component';
 
 registerLocaleData(localeUk, 'uk');
 
