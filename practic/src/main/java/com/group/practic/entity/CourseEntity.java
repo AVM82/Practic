@@ -25,6 +25,7 @@ public class CourseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
+
     boolean inactive;
 
     String authors;

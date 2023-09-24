@@ -1,5 +1,6 @@
 package com.group.practic.controller;
 
+import com.group.practic.dto.SendMessageDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
@@ -8,6 +9,7 @@ import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.service.ChapterPartService;
 import com.group.practic.service.ChapterService;
+import com.group.practic.service.EmailSenderService;
 import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentChapterService;
 import com.group.practic.service.StudentPracticeService;
@@ -18,6 +20,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,19 +40,24 @@ public class MentorController {
 
     private StudentChapterService studentChapterService;
 
+    private EmailSenderService emailSenderService;
+
     @Autowired
     public MentorController(ChapterPartService chapterPartService, PersonService personService,
                             StudentPracticeService studentPracticeService,
                             ChapterService chapterService,
-                            StudentChapterService studentChapterService) {
+                            StudentChapterService studentChapterService,
+                            EmailSenderService emailSenderService) {
         this.chapterPartService = chapterPartService;
         this.personService = personService;
         this.studentPracticeService = studentPracticeService;
         this.chapterService = chapterService;
         this.studentChapterService = studentChapterService;
+        this.emailSenderService = emailSenderService;
     }
 
     @PostMapping("/practices")
+    @PreAuthorize("hasRole('MENTOR')||hasRole('ADMIN')")
     public ResponseEntity<StudentPracticeDto> approvePractice(
             @RequestBody @Valid StudentPracticeDto studentPracticeDto
     ) {
@@ -77,6 +85,7 @@ public class MentorController {
 
             if (isAllPracticesApproved(practices) && nextChapter != null) {
                 studentChapterService.addChapter(student.get().getId(), nextChapter.getId());
+                this.notify(student.get(), nextChapter.getShortName());
             }
 
             return ResponseEntity.ok(Converter.convert(updatedPractice));
@@ -96,4 +105,13 @@ public class MentorController {
         return practices.stream()
                 .allMatch(practice -> practice.getState() == PracticeState.APPROVED);
     }
+
+    private void notify(PersonEntity student, String chapterShortName) {
+        SendMessageDto messageDto = new SendMessageDto();
+        messageDto.setAddress(student.getEmail());
+        messageDto.setHeader("Відкрито новий розділ!");
+        messageDto.setMessage("Вітаємо, вам відкрито новий розділ " + chapterShortName);
+        this.emailSenderService.sendMessage(messageDto);
+    }
+
 }
