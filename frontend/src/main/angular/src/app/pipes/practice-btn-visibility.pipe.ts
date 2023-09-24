@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {ChapterPart} from "../models/chapter/chapterpart";
 import {Practice} from "../models/practice/practice";
 
 @Pipe({
@@ -17,7 +16,9 @@ export class PracticeButtonsVisibilityPipe implements PipeTransform {
     const playVisible = practice?.state === 'NOT_STARTED' || practice?.state === 'PAUSE';
     const pauseVisible = practice?.state === 'IN_PROCESS';
     const doneVisible = practice?.state !== 'APPROVED';
-    const doneDisabled = practice?.state === 'NOT_STARTED' || practice?.state === 'PAUSE';
+    const doneDisabled = practice?.state === 'NOT_STARTED'
+        || practice?.state === 'PAUSE'
+        || practice?.state === 'READY_TO_REVIEW';
 
     return { playVisible, pauseVisible, doneVisible, doneDisabled };
   }

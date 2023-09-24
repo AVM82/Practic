@@ -101,7 +101,8 @@ public class StudentOnCourseService {
             Set<RoleEntity> roles = updateUser.getRoles();
             roles.add(roleRepository.findByName("STUDENT"));
             roles.add(roleRepository.findByName(course.get().getSlug()));
-            personService.save(user.get());
+            updateUser.setRoles(roles);
+            personService.save(updateUser);
             personApplicationRepository.save(applicant);
             this.notify(user.get(), course.get().getSlug());
         }

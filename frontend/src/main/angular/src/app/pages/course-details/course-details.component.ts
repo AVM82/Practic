@@ -13,7 +13,6 @@ import {ReportServiceService} from "../../services/report/report-service.service
 import {StudentReport} from "../../models/report/studentReport";
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
 import {Practice} from "../../models/practice/practice";
-import {InfoMessagesService} from "../../services/info-messages.service";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ChaptersService} from "../../services/chapters/chapters.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";

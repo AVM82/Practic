@@ -2,23 +2,18 @@
 <div class="chapter-header">
 	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
     <div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">
-    <button mat-icon-button
-            (click)="doneAction(chapterPart)"
-            matTooltip="Практична готова до ревью"
-            matTooltipPosition="below"
-            aria-label="Done"
-            [disabled]="(chapterPart.id | practiceBtnVisibility: practices).doneDisabled"
-            *ngIf="(chapterPart.id | practiceBtnVisibility: practices).doneVisible"
-            [ngClass]="{
-            'green-bg': !(chapterPart.id | practiceBtnVisibility: practices).doneDisabled,
-            'gray-bg': (chapterPart.id | practiceBtnVisibility: practices).doneDisabled
-        }"
-            [ngStyle]="{
-            'color': (chapterPart.id | practiceBtnVisibility: practices).doneDisabled ? 'white' : 'black'
-        }"
-    >
-        Здати практичну
-    </button>
+        <div class="done-btn-container">
+            <button class="done-btn"
+                    (click)="doneAction(chapterPart)"
+                    matTooltip="Практична готова до ревью"
+                    matTooltipPosition="below"
+                    aria-label="Done"
+                    [disabled]="(chapterPart.id | practiceBtnVisibility: practices).doneDisabled"
+                    *ngIf="(chapterPart.id | practiceBtnVisibility: practices).doneVisible"
+            >
+                Здати практичну
+            </button>
+        </div>
     </div>
 </div>
 
@@ -68,7 +63,6 @@
 
 	<div *ngIf="chapterPart.praxisPurpose">
 		<div class="chapter-part" >
-            <mat-chip>{{chapterPart.id | practiceState: practices}}</mat-chip>
             <div class="action-buttons">
                 <button mat-icon-button
                         (click)="playAction(chapterPart)"
@@ -88,19 +82,10 @@
                 >
                     <mat-icon>pause_circle_outline</mat-icon>
                 </button>
-                <button mat-icon-button
-                        (click)="doneAction(chapterPart)"
-                        matTooltip="Практична готова до ревью"
-                        matTooltipPosition="below"
-                        aria-label="Done"
-                        [disabled]="(chapterPart.id | practiceBtnVisibility: practices).doneDisabled"
-                        *ngIf="(chapterPart.id | practiceBtnVisibility: practices).doneVisible"
-                >
-                    <mat-icon>check_circle_outline</mat-icon>
-                </button>
             </div>
 			{{ chapter?.number }}. Практична робота {{showPartNumber? '№'+ (indexPart + 1): ''}}<br />
 			Мета: {{chapterPart.praxisPurpose}}
+            <div class="custom-chip">{{chapterPart.id | practiceState: practices}}</div>
 		</div>
 		<div *ngIf="chapterPart.praxis?.length" class="chapter-details-container-ext">
 			<div *ngFor="let praxis of chapterPart.praxis" class="row">
