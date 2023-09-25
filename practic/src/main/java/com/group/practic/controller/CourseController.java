@@ -4,7 +4,6 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.ChapterDto;
-import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
@@ -81,7 +80,6 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/additional")
-    @PreAuthorize("hasRole('STUDENT') && hasRole(#slug) || hasRole('ADMIN')")
     public ResponseEntity<Collection<AdditionalMaterialsEntity>> getAdditional(
             @PathVariable("slug") String slug) {
         return getResponse(courseService.getAdditional(slug));
