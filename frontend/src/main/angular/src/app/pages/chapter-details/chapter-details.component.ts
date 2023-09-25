@@ -10,7 +10,6 @@ import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {ChapterPart} from "../../models/chapter/chapterpart";
 import {InfoMessagesService} from "../../services/info-messages.service";
-import { CreationEditCourseCapabilityService } from 'src/app/services/creation-edit-course.capability.service';
 import { EditBtnComponent } from 'src/app/componets/edit-btn/edit-course.component';
 
 @Component({
