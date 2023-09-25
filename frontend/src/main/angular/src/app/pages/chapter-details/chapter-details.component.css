@@ -139,3 +139,45 @@
     display: flex;
     align-items: center;
 }
+
+button.done-btn {
+    font-size: 16px;
+    height: calc(1.5em + 10px);
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white;
+    border-width: 0;
+}
+button.done-btn[disabled] {
+    background-color: lightgrey;
+}
+
+button.done-btn:not([disabled]) {
+    background-color: #27AE60;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.custom-chip {
+    height: calc(1.5em + 10px);
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 1px 12px;
+    margin: 2px;
+    background-color: white;
+    border: 1px solid #27AE60;
+    color: #27AE60;
+    font-size: 12px;
+    border-radius: calc(1.5em + 5px);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+

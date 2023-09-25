@@ -25,15 +25,13 @@ import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 
 bootstrapApplication(AppComponent, {
     providers: [
-        importProvidersFrom(BrowserModule, AngularSvgIconModule.forRoot(), AppRoutingModule, TranslocoRootModule, MatCardModule, MatIconModule, MatToolbarModule),
-        SvgIconRegistryService, CoursesService, StudentMetricsService, MatPaginator, MatCard, AuthService, ReportServiceService,
-        importProvidersFrom(BrowserModule, AppRoutingModule, TranslocoRootModule, MatCardModule, MatIconModule, MatToolbarModule),
-        CoursesService, StudentMetricsService, MatPaginator, MatCard, AuthService, ReportServiceService,MatDatepickerModule, MatNativeDateModule,
         importProvidersFrom(
             BrowserModule,
             AngularSvgIconModule.forRoot(),
             AppRoutingModule,
             TranslocoRootModule,
+            MatDatepickerModule,
+            MatNativeDateModule,
             MatCardModule,
             MatIconModule,
             MatToolbarModule,

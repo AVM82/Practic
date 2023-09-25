@@ -1,0 +1,12 @@
+<div class="window">
+    <h2 class="top-line">Написати відгук або пропозицію</h2>
+    <mat-form-field class="mat-field">
+        <input class="field" matInput [(ngModel)]="feedbackText" placeholder="(Не більше 320 символів)"
+               style="height: 370px" (keyup.enter)="onSave()">
+    </mat-form-field>
+    <div class="buttons">
+        <button mat-button (click)="onSave()">Зберегти</button>
+        <button mat-button (click)="onClose()">Закрити</button>
+    </div>
+</div>
+

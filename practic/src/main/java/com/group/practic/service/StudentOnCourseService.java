@@ -1,5 +1,6 @@
 package com.group.practic.service;
 
+import com.group.practic.dto.SendMessageDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonApplicationEntity;
 import com.group.practic.entity.PersonEntity;
@@ -32,6 +33,9 @@ public class StudentOnCourseService {
 
     @Autowired
     private PersonApplicationRepository personApplicationRepository;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
 
     public List<StudentOnCourseEntity> get() {
@@ -97,11 +101,21 @@ public class StudentOnCourseService {
             Set<RoleEntity> roles = updateUser.getRoles();
             roles.add(roleRepository.findByName("STUDENT"));
             roles.add(roleRepository.findByName(course.get().getSlug()));
-            personService.save(user.get());
+            updateUser.setRoles(roles);
+            personService.save(updateUser);
             personApplicationRepository.save(applicant);
+            this.notify(user.get(), course.get().getSlug());
         }
 
         return student;
+    }
+
+    private void notify(PersonEntity student, String slug) {
+        SendMessageDto messageDto = new SendMessageDto();
+        messageDto.setAddress(student.getEmail());
+        messageDto.setHeader("Заявку на навчання на курсі " + slug + " прийнято!");
+        messageDto.setMessage("Вітаємо на курсі " + slug);
+        this.emailSenderService.sendMessage(messageDto);
     }
 
 }

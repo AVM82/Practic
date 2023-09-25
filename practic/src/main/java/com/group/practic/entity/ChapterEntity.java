@@ -36,7 +36,7 @@ public class ChapterEntity {
     @Column(length = 1024)
     String name;
 
-    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("number")
     Set<ChapterPartEntity> parts = new HashSet<>();
 

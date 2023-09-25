@@ -5,6 +5,7 @@
     </div>
     <div *ngFor="let chapter of chapters;"
          class="progress"
+         [class.active] = "chapter.isActive"
          [class.icon]="!chapter.isVisible"
          [routerLink]="chapter.isVisible ? ['/courses', slug, 'chapters', chapter.number] : []">
         <span *ngIf="chapter.isVisible">{{ chapter.number }}</span>

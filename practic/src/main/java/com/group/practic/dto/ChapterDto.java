@@ -1,5 +1,9 @@
 package com.group.practic.dto;
 
+import com.group.practic.entity.ChapterPartEntity;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class ChapterDto {
 
     long id;
@@ -7,6 +11,8 @@ public class ChapterDto {
     int number;
 
     String shortName;
+
+    Set<Long> chapterPartIds;
 
 
     public ChapterDto() {
@@ -45,5 +51,18 @@ public class ChapterDto {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Set<Long> getChapterPartIds() {
+        return chapterPartIds;
+    }
+
+    public void setChapterPartIds(Set<ChapterPartEntity> chapterParts) {
+        if (!chapterParts.isEmpty()) {
+            this.chapterPartIds = chapterParts.stream()
+                    .map(ChapterPartEntity::getId)
+                    .collect(Collectors.toSet());
+        }
+
     }
 }

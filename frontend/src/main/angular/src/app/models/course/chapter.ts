@@ -4,4 +4,5 @@ export interface Chapter {
   shortName: string;
   isVisible: boolean;
   isActive: boolean;
+  chapterPartIds: number[];
 }
