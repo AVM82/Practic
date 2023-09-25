@@ -8,8 +8,6 @@ public interface PropertyUtil {
 
     public static final String NAME_KEY = "name";
 
-    public static final String SHORT_NAME_KEY = "shortname";
-
     public static final String AUTHOR_KEY = "author";
 
     public static final String TYPE_KEY = "type";

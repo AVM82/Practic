@@ -4,7 +4,6 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.ChapterDto;
-import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
@@ -13,7 +12,9 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.StudentChapterService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -25,24 +26,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequestMapping("/api/courses")
 public class CourseController {
 
     private CourseService courseService;
-    private StudentChapterService studentChapterService;
 
+    private StudentChapterService studentChapterService;
 
     @Autowired
     public CourseController(CourseService courseService,
-                            StudentChapterService studentChapterService) {
+            StudentChapterService studentChapterService) {
         this.courseService = courseService;
         this.studentChapterService = studentChapterService;
     }
@@ -87,21 +85,15 @@ public class CourseController {
 
 
     @PostMapping("/NewCourseFromProperties")
-    public ResponseEntity<CourseEntity> createCourse(@RequestBody String propertyFile) {
+    public ResponseEntity<CourseEntity> createCourse(@Valid @RequestBody String propertyFile) {
         return postResponse(courseService.create(propertyFile));
     }
-    
-    
+
+
     @PostMapping
-    public ResponseEntity<CourseEntity> createCourse(@RequestBody CourseEntity courseEntity) {
+    public ResponseEntity<CourseEntity> createCourse(
+            @NotBlank @RequestBody CourseEntity courseEntity) {
         return postResponse(courseService.save(courseEntity));
-    }
-
-
-    @PutMapping("/{id}/change/shortNname")
-    public ResponseEntity<CourseEntity> changeShortName(@PathVariable long id,
-            @RequestParam String shortName) {
-        return postResponse(courseService.changeShortName(id, shortName));
     }
 
 
@@ -124,18 +116,16 @@ public class CourseController {
 
     }
 
-    private boolean isChapterOpen(ChapterEntity chapter) {
-        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
 
+    private boolean isChapterOpen(ChapterEntity chapter) {
+        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
         if (person != null) {
             Set<StudentChapterEntity> studentChapters =
                     studentChapterService.findOpenChapters(person);
 
-            return studentChapters.stream()
-                    .anyMatch(studentChapter ->
-                            studentChapter.getChapter().getId() == chapter.getId()
-                    );
+            return studentChapters.stream().anyMatch(
+                    studentChapter -> studentChapter.getChapter().getId() == chapter.getId());
 
         } else {
             return false;

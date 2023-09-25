@@ -12,11 +12,13 @@ import {ReportButtonComponent} from "../../componets/report-button/report-button
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {StudentReport} from "../../models/report/studentReport";
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
+import { CreationEditCourseCapabilityService } from 'src/app/services/creation-edit-course.capability.service';
+import { EditBtnComponent } from 'src/app/componets/edit-btn/edit-course.component';
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent, ApplyBtnComponent],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent, ApplyBtnComponent, EditBtnComponent],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
@@ -34,7 +36,7 @@ export class CourseDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug')
+      const slug = params.get('slug');
 
       if(slug) {
         this.slug = slug;
@@ -47,8 +49,10 @@ export class CourseDetailsComponent implements OnInit {
             this.setChapterVisibility();
           });
           this.reportService.getAllActualReports(slug).subscribe(reports => {
-            this.reports.push(...reports);
-            this.reports = [...this.reports];
+            if (reports) {
+              this.reports.push(...reports);
+              this.reports = [...this.reports];
+            }
           });
         });
       }

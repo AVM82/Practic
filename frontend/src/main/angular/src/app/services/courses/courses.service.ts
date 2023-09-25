@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getCourseUrl, getChaptersUrl, getLevelsUrl, getMaterialsUrl, postCourse} from "../../enums/api-urls";
+import {ApiUrls, getCourseUrl, getChaptersUrl, getLevelsUrl, getMaterialsUrl} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
 
@@ -78,16 +78,19 @@ export class CoursesService {
     return this.http.get<AdditionalMaterials[]>(getMaterialsUrl(slug));
   }
 
-  postCourse(_slug: any, _shortName: any, _name: any, _svg: any): Observable<Course> {
+  postCourseInteractive(_slug: any,  _name: any, _svg: any): Observable<Course> {
     let course: Course = {
       id: 0,
       chapters: [],
       slug: _slug,
-      shortName: _shortName,
       name: _name,
       svg: _svg
     };
-    return this.http.post<Course>(postCourse, course);
+    return this.http.post<Course>(ApiUrls.Courses, course);
+  }
+
+  postCourseProperties(properties: string): Observable<Course> {
+    return this.http.post<Course>(ApiUrls.NewCourseFromProperties, properties);
   }
 
   postAdditionalChange(slug: string, id: number, checked: boolean) {
@@ -114,7 +117,7 @@ export class CoursesService {
   }
 
   setActiveChapter(chapters: Chapter[], chapterId: number) {
-    if (chapters !== null
+    if (chapters
         && chapters.length > 0
         && chapters.some(chapter => chapter.number === chapterId)
     ) {
@@ -126,8 +129,10 @@ export class CoursesService {
   }
 
   resetAllChapters(chapters: Chapter[]) {
-    chapters.forEach(chapter => {
-      chapter.isActive = false;
-    });
+    if (chapters) {
+      chapters.forEach(chapter => {
+        chapter.isActive = false;
+      });
+    }
   }
 }

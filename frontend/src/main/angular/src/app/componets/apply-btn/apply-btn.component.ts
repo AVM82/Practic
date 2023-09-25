@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {AuthService, User} from "../../services/auth/auth.service";
+import {AuthService} from "../../services/auth/auth.service";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ActivatedRoute} from "@angular/router";
 import {InfoMessagesService} from "../../services/info-messages.service";
@@ -15,6 +15,7 @@ import {InfoMessagesService} from "../../services/info-messages.service";
 export class ApplyBtnComponent implements OnInit {
   isApply: boolean = false;
   courseSlug: string = '';
+  
   constructor(
       private tokenStorageService:TokenStorageService,
       private authService:AuthService,

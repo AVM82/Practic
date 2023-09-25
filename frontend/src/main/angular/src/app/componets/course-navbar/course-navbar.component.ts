@@ -38,7 +38,7 @@ export class CourseNavbarComponent implements OnInit {
         this.coursesService.getCourse(slug).subscribe(course => {
           this.course = course;
           this.coursesService.getChapters(slug).subscribe(chapters => {
-            this.showChaptersLink = chapters.length > 0;
+            this.showChaptersLink = chapters && chapters.length > 0;
             this.setChapterVisibility();
             if(chapterN !== 0) {
               this.coursesService.setActiveChapter(chapters, chapterN);
@@ -48,7 +48,7 @@ export class CourseNavbarComponent implements OnInit {
             this.chapters = chapters;
           });
           this.coursesService.getAdditionalMaterials(slug).subscribe(additionalMaterials => {
-            this.showAdditionalMaterials = additionalMaterials.length > 0;
+            this.showAdditionalMaterials = additionalMaterials && additionalMaterials.length > 0;
           });
         });
       }

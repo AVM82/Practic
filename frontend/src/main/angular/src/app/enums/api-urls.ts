@@ -1,17 +1,19 @@
 export enum ApiUrls {
   Courses = '/api/courses',
   Course = '/api/courses/',
-  Practices = '/api/students/practices/',
-  PracticeStates = '/api/students/practices/states',
-  Reports = '/api/students/reports/course/',
-  ReportStates = '/api/students/reports/states',
+  NewCourseFromProperties = Courses + '/NewCourseFromProperties',
+  Students = '/api/students',
+  Practices = Students + '/practices/',
+  PracticeStates = Students + '/practices/states',
+  Reports = Students + '/reports/course/',
+  ReportStates = Students + '/reports/states',
   Chapters = '/api/chapters',
   Me = '/api/persons/me',
   Applicants = '/api/persons/applicants',
-  OpenChapters = '/api/students/chapters',
-  PracticeState = '/api/students/practices',
+  OpenChapters = Students + '/chapters',
+  PracticeState = Students + '/practices',
   PracticeApprove = '/api/mentor/practices',
-  ReportLikeList = '/api/students/reports/likes/'
+  ReportLikeList = Students + '/reports/likes/'
 }
 
 export const getChaptersUrl = (slug: string): string =>
@@ -26,11 +28,7 @@ export const getChapterUrl = (slug: string, chapterN: number): string =>
 export const getCourseUrl = (slug: string): string =>
     ApiUrls.Course + slug;
 
-export const postCourse = window.location.origin + ApiUrls.Courses;
-
 export const getReportsUrl = (slug: string): string =>
-    `/api/students/reports/course/${slug}`;
-export const postReportsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}`;
 
 export const getLevelsUrl = (slug: string): string =>

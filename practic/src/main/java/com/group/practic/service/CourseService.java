@@ -10,7 +10,6 @@ import com.group.practic.entity.LevelEntity;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.util.Converter;
 import com.group.practic.util.PropertyUtil;
-import jakarta.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -19,7 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class CourseService {
@@ -32,10 +30,10 @@ public class CourseService {
 
     AdditionalMaterialsService additionalMaterialsService;
 
-
     @Autowired
     public CourseService(CourseRepository courseRepository, ChapterService chapterService,
             LevelService levelService, AdditionalMaterialsService additionalMaterialsService) {
+
         this.courseRepository = courseRepository;
         this.chapterService = chapterService;
         this.levelService = levelService;
@@ -97,20 +95,6 @@ public class CourseService {
     }
 
 
-    public Optional<CourseEntity> getByShortName(String shortName) {
-        return courseRepository.findByShortName(shortName);
-    }
-
-
-    public Optional<CourseEntity> changeShortName(long id, String shortName) {
-        Optional<CourseEntity> course = get(id);
-        if (course.isPresent()) {
-            course.get().setShortName(shortName);
-        }
-        return course;
-    }
-
-
     public Optional<CourseEntity> save(CourseEntity course) {
         return Optional.ofNullable(courseRepository.save(course));
     }
@@ -130,17 +114,25 @@ public class CourseService {
     public Optional<CourseEntity> create(PropertyLoader prop) {
         CourseEntity courseEntity;
         String slug = prop.getProperty(PropertyUtil.SLUG_KEY, "");
+        if (slug.length() < 5) {
+            return Optional.empty();
+        }
         Optional<CourseEntity> course = get(slug);
-        String shortName = prop.getProperty(PropertyUtil.SHORT_NAME_KEY, "");
         String name = prop.getProperty(PropertyUtil.NAME_KEY, "");
         String svg = prop.getProperty(PropertyUtil.SVG_KEY, "");
+        if (name.length() < 5) {
+            return Optional.empty();
+        }
         if (course.isPresent()) {
             courseEntity = course.get();
-            courseEntity.setShortName(shortName);
-            courseEntity.setName(name);
-            courseEntity.setSvg(svg);
+            if (!name.isEmpty()) {
+                courseEntity.setName(name);
+            }
+            if (!svg.isEmpty()) {
+                courseEntity.setSvg(svg);
+            }
         } else {
-            course = save(new CourseEntity(slug, shortName, name, svg));
+            course = save(new CourseEntity(slug, name, svg));
             if (course.isEmpty()) {
                 return Optional.empty();
             }

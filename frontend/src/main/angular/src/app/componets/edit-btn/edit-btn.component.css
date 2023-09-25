@@ -1,0 +1,17 @@
+.edit-button-container {
+    position: fixed;
+    top: 20%;
+    left: 1%;
+}
+
+.edit-button {
+    background-color: #277cae;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    background-color: #657dbf;
+}

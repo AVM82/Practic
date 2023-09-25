@@ -1,31 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule  } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { CoursesService } from '../../services/courses/courses.service';
 import { Course } from 'src/app/models/course/course';
 import {AngularSvgIconModule} from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { CreateMethod } from 'src/app/enums/create-method-enum';
+import { CreationEditCourseCapabilityService } from 'src/app/services/creation-edit-course.capability.service';
 
 @Component({
     selector: 'app-create-course',
     templateUrl: './create-course.component.html',
     styleUrls: ['./create-course.component.css'],
     standalone: true,
-    imports: [AngularSvgIconModule, ReactiveFormsModule, CommonModule]
+    imports: [AngularSvgIconModule, ReactiveFormsModule, CommonModule, FormsModule]
   })
 export class CreateCourseComponent implements OnInit{
   courses: Course[] = [];
   newCourse?: Course;
   createMethod: CreateMethod = 'Interactive';
+  properties: string = '';
 
   checkoutForm = this.formBuilder.group({
     slug: '',
-    shortName: '',
     name: '',
     svg: ''
   });
   
   constructor(
+    private creationEditCourseCapabilityService: CreationEditCourseCapabilityService,
     private coursesService: CoursesService,
     private formBuilder: FormBuilder
   ) {}
@@ -54,44 +56,61 @@ export class CreateCourseComponent implements OnInit{
   }
 
   checkSlug(): boolean {
-    if (this.checkoutForm.controls.slug) {
-      const slug = this.checkoutForm.value.slug;
+    const slug = this.checkoutForm.value.slug?.trim();
+    if (slug) {
+      this.checkoutForm.value.slug = slug;
       for(let course of this.courses) {
         if (slug === course.slug)
           return this.setRedColor('slug');
       }
+      return true;
     }
-    return true;
+    return false;
   }
  
-  checkShort(): boolean {
-    if (this.checkoutForm.controls.shortName) {
-      const shortName = this.checkoutForm.value.shortName;
-      for(let course of this.courses) {
-        if (shortName === course.shortName)
-          return this.setRedColor('shortName');
-      }
-    }
-    return true;
-  }
-   
   checkName(): boolean {
-    const name = this.checkoutForm.value.name ? this.checkoutForm.value.name : '';
-    return name.length >= 5 ? true : this.setRedColor('name');
+    const name = this.checkoutForm.value.name?.trim();
+    return name && name.length >= 5 ? true : this.setRedColor('name');
   }
 
   onSubmit(): void {
-    const slug = this.checkSlug();
-    const short = this.checkShort();
-    const name = this.checkName();
-    if (slug && short && name) {
-      this.coursesService.postCourse(this.checkoutForm.value.slug, this.checkoutForm.value.shortName,
-                                     this.checkoutForm.value.name, this.checkoutForm.value.svg)
-      .subscribe(response => {
-        console.warn('Course "%s" is created', response.name);
-        window.location.href = '/courses/' + response.slug;
-      })
-    } else
-      console.error('Confict course data');
+    switch(this.createMethod) {
+      case 'Interactive': {
+        const slug = this.checkSlug();
+        const name = this.checkName();
+        if (slug && name) {
+          this.coursesService.postCourseInteractive(this.checkoutForm.value.slug,
+                                        this.checkoutForm.value.name, this.checkoutForm.value.svg)
+            .subscribe(response => this.processResponse(response));
+        } else
+          console.warn('Check fields');
+        break;
+      }
+
+      case 'FromProperties': {
+        const prop = this.properties.trim();
+        if (prop) {
+          this.coursesService.postCourseProperties(this.properties)
+            .subscribe(response => this.processResponse(response));
+        } else
+          console.warn('Check properties');
+        break;
+      }
+
+      case 'FromFile': {
+        console.warn('This mode is not work yet.');
+        break;
+      }
+    }
   }
+
+  processResponse(course: Course): void {
+    if (course) {
+      console.warn('Course "%s" is created', course.name);
+      this.creationEditCourseCapabilityService.setEditMode(true);
+      window.location.href = '/courses/' + course.slug;
+    } else
+    console.warn('Confict course data');
+  }
+
 }
