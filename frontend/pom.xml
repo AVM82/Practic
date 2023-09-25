@@ -77,8 +77,8 @@
                         <version>1.13.4</version>
                         <configuration>
                             <workingDirectory>src/main/angular</workingDirectory>
-                            <nodeVersion>v18.17.1</nodeVersion>
-                            <npmVersion>9.6.7</npmVersion>
+                            <nodeVersion>v18.18.0</nodeVersion>
+                            <npmVersion>9.8.1</npmVersion>
                         </configuration>
                         <executions>
                             <execution>
