@@ -1,0 +1,64 @@
+.window {
+    height: 610px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    background-color: #F0F0F0;
+  }
+  
+  .top-line {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 50px;
+    margin-top: 50px;
+  }
+  
+  .field {
+    border: 4px #ee7777;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    font-size: 19px;
+    resize: none;
+  }
+  
+
+  .mat-input-element {
+    border: 2px solid #f70202;
+    padding: 10px;
+  }
+  
+    .buttons {
+    text-align: right;
+    margin-top: 5px;
+  }
+  
+  .buttons button:first-child {
+    background-color: #27AE60;
+  color: #fff;
+  padding: 8px 8px;
+  font-size: 19px;
+  cursor: pointer;
+  border-radius: 5px;
+    margin-right: 10px;
+  }
+  
+  .buttons button:last-child {
+    background-color: #ee7777;
+    color: #fff;
+    padding: 8px 8px;
+    font-size: 19px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }
+  
+  mat-button {
+    min-width: 100px;
+    font-size: 35px;
+  }
+  

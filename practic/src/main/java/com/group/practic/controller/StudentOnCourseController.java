@@ -7,6 +7,7 @@ import static com.group.practic.util.ResponseUtils.updateResponse;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStudentDto;
 import com.group.practic.dto.NewStudentReportDto;
+import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
@@ -140,6 +141,21 @@ public class StudentOnCourseController {
         }
     }
 
+    @GetMapping("/practices/my")
+    public ResponseEntity<Collection<PracticeDto>> getAllMyPractices() {
+        PersonEntity student = (PersonEntity) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        Set<StudentPracticeEntity> practices =
+                studentPracticeService.getAllPracticesByStudent(student);
+
+        return getResponse(
+                practices.stream()
+                        .map(Converter::convertToPractice)
+                        .collect(Collectors.toSet())
+        );
+
+    }
 
     @GetMapping("/practices/{practiceState}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -157,6 +173,7 @@ public class StudentOnCourseController {
                 .map(state -> state.name().toLowerCase()).toList();
         return getResponse(practiceStates);
     }
+
 
     @GetMapping("/reports/states")
     public ResponseEntity<Collection<String>> getReportStates() {

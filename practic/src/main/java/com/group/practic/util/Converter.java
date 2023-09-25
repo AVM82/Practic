@@ -4,6 +4,7 @@ import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.dto.PersonApplyOnCourseDto;
 import com.group.practic.dto.PersonDto;
+import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.ChapterEntity;
@@ -30,6 +31,7 @@ public interface Converter {
         applyStudentReportMap(modelMapper);
         applyPersonOnCourseMap(modelMapper);
         applyStudentChapter(modelMapper);
+        applyChapterEntityToChapterDtoMap(modelMapper);
 
         return modelMapper;
     }
@@ -94,6 +96,13 @@ public interface Converter {
         return result;
     }
 
+    static PracticeDto convertToPractice(StudentPracticeEntity studentPracticeEntity) {
+        return new PracticeDto(
+                studentPracticeEntity.getChapterPart().getId(),
+                studentPracticeEntity.getState().name()
+        );
+    }
+
 
     static List<List<StudentReportDto>> convertListOfLists(
             List<List<StudentReportEntity>> studentReportEntityList) {
@@ -152,7 +161,16 @@ public interface Converter {
         modelMapper.createTypeMap(StudentChapterEntity.class, ChapterDto.class)
                 .addMapping(src -> src.getChapter().getId(), ChapterDto::setId)
                 .addMapping(src -> src.getChapter().getNumber(), ChapterDto::setNumber)
-                .addMapping(src -> src.getChapter().getShortName(), ChapterDto::setShortName);
+                .addMapping(src -> src.getChapter().getShortName(), ChapterDto::setShortName)
+                .addMapping(src -> src.getChapter().getParts(), ChapterDto::setChapterPartIds);
+    }
+
+    private static void applyChapterEntityToChapterDtoMap(ModelMapper modelMapper) {
+        modelMapper.createTypeMap(ChapterEntity.class, ChapterDto.class)
+                .addMapping(ChapterEntity::getId, ChapterDto::setId)
+                .addMapping(ChapterEntity::getShortName, ChapterDto::setShortName)
+                .addMapping(ChapterEntity::getNumber, ChapterDto::setNumber)
+                .addMapping(ChapterEntity::getParts, ChapterDto::setChapterPartIds);
     }
 
 }

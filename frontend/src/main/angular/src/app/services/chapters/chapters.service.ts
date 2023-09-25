@@ -22,6 +22,10 @@ export class ChaptersService {
     return this.http.post(ApiUrls.PracticeState, {state, chapterPartId});
   }
 
+  getMyPractices(): Observable<any> {
+    return this.http.get(ApiUrls.MyPractices);
+  }
+
 
 
   /**

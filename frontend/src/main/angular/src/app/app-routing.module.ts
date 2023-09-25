@@ -15,6 +15,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule, NativeDateModule} from "@angular/material/core";
 import localeUk from '@angular/common/locales/uk';
 import {registerLocaleData} from "@angular/common";
+import { FeedbackComponent } from './componets/feedback/feedback.component';
 
 registerLocaleData(localeUk, 'uk');
 
@@ -23,6 +24,8 @@ const routes: Routes = [
   {path: 'courses', component: CoursesComponent},
   {path: 'login', component: LoginComponent},
   {path: 'logout', component: LoginComponent},
+  {path: 'feedback',component: FeedbackComponent},
+
   {
     path: 'admin',
     component: AdminDashboardComponent,

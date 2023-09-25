@@ -13,8 +13,11 @@ export enum ApiUrls {
   OpenChapters = '/api/students/chapters',
   PracticeState = '/api/students/practices',
   PracticeApprove = '/api/mentor/practices',
-  ReportLikeList = '/api/students/reports/likes/'
-}
+  Feedbacks = '/api/feedbacks/',
+  ReportLikeList = '/api/students/reports/likes/',
+  MyPractices = '/api/students/practices/my'
+  }
+
 
 export const getChaptersUrl = (slug: string): string =>
     ApiUrls.Course + slug + `/allchapters`;

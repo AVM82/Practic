@@ -34,6 +34,20 @@ footer {
     text-decoration: none;
 }
 
+.first-line-feedback-button{
+    background-color: transparent;
+     box-shadow: none;
+     border: none; 
+     font-size: 17px;
+    text-align: center;     
+    color: #fff;
+}
+
+.first-line-feedback-button:hover{
+    cursor: pointer;
+
+}
+
 .separate{
     text-decoration: none;
     margin-right: 15px;

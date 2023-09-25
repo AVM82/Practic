@@ -14,7 +14,7 @@
         <groupId>com.group</groupId>
         <artifactId>PRACTIC_PROJECT</artifactId>
         <name>PRACTIC</name>
-        <version>0.0.1</version>
+        <version>1.0.0</version>
         <description>LMS system</description>
 
         <packaging>pom</packaging>

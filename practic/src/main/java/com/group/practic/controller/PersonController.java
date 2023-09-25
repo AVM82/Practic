@@ -124,7 +124,7 @@ public class PersonController {
         );
     }
 
-    public PersonEntity getPrincipal() {
+    private PersonEntity getPrincipal() {
         return (PersonEntity) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
     }
