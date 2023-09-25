@@ -32,6 +32,6 @@ jobs:
           application_name: 'practically' # Замените на имя вашего приложения в Elastic Beanstalk
           environment_name: 'Practically-env' # Замените на имя вашей среды в Elastic Beanstalk
           version_label: 'v${{ github.sha }}' # Используйте хеш последнего коммита в качестве метки версии
-          deployment_package: 'practic/target/practic-0.0.1.jar' # Путь к директории с .jar или .war файлом для деплоя
+          deployment_package: 'practic/target/practic-1.0.0.jar' # Путь к директории с .jar или .war файлом для деплоя
           wait_for_deployment: true # Дожидаться завершения деплоя
           wait_for_environment_recovery: true # Дожидаться восстановления среды после деплоя
