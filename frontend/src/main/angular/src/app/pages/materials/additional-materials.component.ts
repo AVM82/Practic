@@ -8,11 +8,12 @@ import {CoursesService} from 'src/app/services/courses/courses.service';
 import {ActivatedRoute} from '@angular/router';
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
+import { EditBtnComponent } from 'src/app/componets/edit-btn/edit-course.component';
 
 @Component({
   selector: 'app-additional-materials',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, MatIconModule, ApplyBtnComponent],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, MatIconModule, ApplyBtnComponent, EditBtnComponent],
   templateUrl: './additional-materials.component.html',
   styleUrls: ['./additional-materials.component.css']
 })

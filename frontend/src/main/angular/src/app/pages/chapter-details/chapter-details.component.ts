@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {Chapter} from "../../models/chapter/chapter";
 import {ChaptersService} from "../../services/chapters/chapters.service";
@@ -10,6 +10,7 @@ import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {ChapterPart} from "../../models/chapter/chapterpart";
 import {InfoMessagesService} from "../../services/info-messages.service";
+import {EditBtnComponent} from 'src/app/componets/edit-btn/edit-course.component';
 import {MatChipsModule} from "@angular/material/chips";
 import {Practice} from "../../models/practice/practice";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
@@ -19,7 +20,7 @@ import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility
 @Component({
   selector: 'app-chapter-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule,
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, EditBtnComponent,
     CdkAccordionModule, MatTooltipModule, MatChipsModule, PracticeStatePipe, PracticeButtonsVisibilityPipe],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']

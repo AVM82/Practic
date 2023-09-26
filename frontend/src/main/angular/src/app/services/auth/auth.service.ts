@@ -42,7 +42,9 @@ export class User {
       readonly applyCourse: string,
       readonly roles: UserRole[],
       readonly courses: Course[]
-  ) {}
+  ) {
+
+  }
 
   get isAuthenticated(): boolean {
     return this.roles.length != 0;

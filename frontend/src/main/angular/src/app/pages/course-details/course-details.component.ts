@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {Course} from "../../models/course/course";
 import {Chapter} from "../../models/course/chapter";
@@ -12,6 +12,7 @@ import {ReportButtonComponent} from "../../componets/report-button/report-button
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {StudentReport} from "../../models/report/studentReport";
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
+import {EditBtnComponent} from 'src/app/componets/edit-btn/edit-course.component';
 import {Practice} from "../../models/practice/practice";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ChaptersService} from "../../services/chapters/chapters.service";
@@ -20,7 +21,8 @@ import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent, ApplyBtnComponent, PracticeStatePipe],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent,
+     ApplyBtnComponent, EditBtnComponent, PracticeStatePipe],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
@@ -42,7 +44,7 @@ export class CourseDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.setPractices();
     this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug')
+      const slug = params.get('slug');
 
       if(slug) {
         this.slug = slug;
@@ -55,8 +57,10 @@ export class CourseDetailsComponent implements OnInit {
             this.setChapterVisibility();
           });
           this.reportService.getAllActualReports(slug).subscribe(reports => {
-            this.reports.push(...reports);
-            this.reports = [...this.reports];
+            if (reports) {
+              this.reports.push(...reports);
+              this.reports = [...this.reports];
+            }
           });
         });
       }

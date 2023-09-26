@@ -6,7 +6,6 @@ export interface Course {
   authors?: string;
   courseType?: string;
   name: string;
-  shortName: string;
   slug: string;
   chapters: Chapter[];
   svg: string;

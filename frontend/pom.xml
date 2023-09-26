@@ -31,8 +31,8 @@
                         <version>1.13.4</version>
                         <configuration>
                             <workingDirectory>src/main/angular</workingDirectory>
-                            <nodeVersion>v18.18.0</nodeVersion>
-                            <npmVersion>9.8.1</npmVersion>
+                            <nodeVersion>v16.20.2</nodeVersion>
+                            <npmVersion>8.19.4</npmVersion>
                         </configuration>
                         <executions>
                             <execution>
@@ -77,8 +77,8 @@
                         <version>1.13.4</version>
                         <configuration>
                             <workingDirectory>src/main/angular</workingDirectory>
-                            <nodeVersion>v18.18.0</nodeVersion>
-                            <npmVersion>9.8.1</npmVersion>
+                            <nodeVersion>v16.20.2</nodeVersion>
+                            <npmVersion>8.19.4</npmVersion>
                         </configuration>
                         <executions>
                             <execution>

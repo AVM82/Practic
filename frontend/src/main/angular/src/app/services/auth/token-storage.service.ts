@@ -30,7 +30,7 @@ export class TokenStorageService {
   }
 
   public getUser(): any {
-    const userJson = sessionStorage.getItem(USER_KEY);
+    const userJson = window.sessionStorage.getItem(USER_KEY);
     return userJson ? User.fromJson(JSON.parse(userJson)) : null;
   }
 
@@ -54,6 +54,15 @@ export class TokenStorageService {
     if (token) {
       const user: User = this.getUser();
       return user?.hasApplyOnCourse(slug);
+    }
+    return false;
+  }
+
+  public haveIAnyRole(...roles: string[]): boolean {
+    const token = this.getToken();
+    if (token) {
+      const user: User = this.getUser();
+      return user.hasAnyRole(...roles);
     }
     return false;
   }

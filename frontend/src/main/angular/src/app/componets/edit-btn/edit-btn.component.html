@@ -1,0 +1,9 @@
+<div *ngIf="showEditCapability">
+    <div *ngIf="!editMode" class="edit-button-container">
+        <button class="edit-button" (click)="changeMode()">Редагувати</button>
+    </div>
+
+    <div *ngIf="editMode" class="edit-button-container">
+        <button class="edit-button" (click)="changeMode()">меню редагування </button>
+    </div>
+</div>

@@ -12,10 +12,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Entity
 @Table(name = "course")
@@ -35,7 +35,7 @@ public class CourseEntity {
 
     String courseType;
 
-    @NotBlank
+    @Min(5)
     String name;
 
     @Column(length = 1024)
@@ -61,24 +61,17 @@ public class CourseEntity {
     Set<ChapterEntity> chapters = new HashSet<>();
 
     @Column(unique = true)
-    @NotBlank
-    String shortName;
-
-    @Column(unique = true)
-    @NotBlank
+    @Min(5)
     String slug;
 
     @Column(length = 16384)
     String svg;
 
-
-    public CourseEntity() {
-    }
+    public CourseEntity() {}
 
 
-    public CourseEntity(String slug, String shortName, String name, String svg) {
+    public CourseEntity(String slug, String name, String svg) {
         this.slug = slug;
-        this.shortName = shortName;
         this.name = name;
         this.svg = svg;
     }
@@ -201,16 +194,6 @@ public class CourseEntity {
 
     public void setChapters(Set<ChapterEntity> chapters) {
         this.chapters = chapters;
-    }
-
-
-    public String getShortName() {
-        return shortName;
-    }
-
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
     }
 
 
