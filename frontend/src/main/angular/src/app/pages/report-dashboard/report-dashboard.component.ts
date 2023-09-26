@@ -13,6 +13,8 @@ import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {TimeSlot} from "../../models/timeSlot/time-slot";
 import {TimeSlotService} from "../../services/timeSlot/time-slot.service";
 import {Level} from "../../models/level/level";
+import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
+import {MatButtonModule} from "@angular/material/button";
 
 
 @Component({
@@ -25,6 +27,8 @@ import {Level} from "../../models/level/level";
         ChapterReportsComponent,
         ReportCardComponent,
         MatCardModule,
+        CourseNavbarComponent,
+        MatButtonModule,
     ],
     templateUrl: './report-dashboard.component.html'
 })

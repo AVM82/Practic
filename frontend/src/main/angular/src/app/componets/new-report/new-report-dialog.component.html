@@ -1,10 +1,14 @@
-<h1 mat-dialog-title style="text-align: center;font-size: 24px; margin-top: 20px;">Запланувати
+<h1 mat-dialog-title style="text-align: center;font-size: 24px; margin-top: 20px;"> Запланувати
   доповідь</h1>
 <div mat-dialog-content style="padding-left: 100px">
   <div class="date-field">
     <mat-label>Дата</mat-label>
     <mat-form-field appearance="outline">
-      <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" [formControl]="date" [(ngModel)]="newStudentReport.date">
+      <input matInput [min]="minDate"
+             [max]="maxDate"
+             [matDatepicker]="picker"
+             [formControl]="date"
+             [(ngModel)]="newStudentReport.date">
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
