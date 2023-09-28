@@ -3,10 +3,11 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 import static com.group.practic.util.ResponseUtils.updateResponse;
+import static com.group.practic.util.ResponseUtils.deleteResponse;
 
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStudentDto;
-import com.group.practic.dto.NewStudentReportDto;
+import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
@@ -48,6 +49,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -230,10 +232,10 @@ public class StudentOnCourseController {
     @PostMapping("/reports/course/{slug}")
     public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,
             Principal principal,
-            @RequestBody NewStudentReportDto newStudentReportDto) {
+            @RequestBody StudentReportCreationDto studentReportCreationDto) {
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
-                studentReportService.createStudentReport(personEntity, newStudentReportDto);
+                studentReportService.createStudentReport(personEntity, studentReportCreationDto);
         return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
 
@@ -243,16 +245,9 @@ public class StudentOnCourseController {
         return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
     }
 
-    @PutMapping("/reports/course/{slug}/timeslots")
-    public  ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(
-            @PathVariable String slug,
-            @RequestBody Long timeslotId) {
-        return updateResponse(Optional.ofNullable(timeSlotService
-                .updateTimeSlotAvailability(timeslotId)));
-    }
-
     @PostMapping("/reports/course/{slug}/timeslots")
-    public  ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots() {
+    public  ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots(
+            @PathVariable String slug) {
         return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
 
@@ -266,5 +261,19 @@ public class StudentOnCourseController {
 
         return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
 
+    }
+    @PutMapping("/reports/course/{slug}")
+    public ResponseEntity<StudentReportDto> putStudentReport(@PathVariable String slug,
+            @RequestBody StudentReportCreationDto studentReportCreationDto) {
+        Optional<StudentReportEntity> reportEntity =
+                studentReportService.changeReport(studentReportCreationDto);
+        return updateResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
+    }
+    @DeleteMapping("/reports/course/{slug}")
+    public ResponseEntity<StudentReportDto> deleteStudentReport(@PathVariable String slug,
+            @RequestBody StudentReportCreationDto studentReportCreationDto) {
+        Optional<StudentReportEntity> reportEntity =
+                studentReportService.cancelReport(studentReportCreationDto);
+        return deleteResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
 }
