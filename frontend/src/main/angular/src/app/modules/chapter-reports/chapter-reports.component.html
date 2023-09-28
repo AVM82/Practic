@@ -16,7 +16,9 @@
                  [dateValue]="report.date"
                  [timeValue]="report.time"
                  [profilePictureUrl]="report.profilePictureUrl"
-                 [likedPersonsIdList]="report.likedPersonsIdList" ></report-card>
+                 [likedPersonsIdList]="report.likedPersonsIdList"
+                 [studentId]="report.personId"
+                 [currentUserId]="currentUserId"></report-card>
   </div>
   <ng-container *ngIf="isReportsLengthMore()">
     <div style="display: flex;">

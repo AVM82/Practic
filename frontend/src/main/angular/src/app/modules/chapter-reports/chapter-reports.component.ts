@@ -20,6 +20,7 @@ export class ChapterReportsComponent {
   @Input() levels!:Level[];
   @Input() chapterNumber!: number
   @Input() studentReports!: StudentReport[];
+  @Input() currentUserId!:number;
 
   reportsNumberOnPage: number = 5;
   startOfRange: number = 0;
