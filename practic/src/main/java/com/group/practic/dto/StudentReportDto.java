@@ -8,6 +8,7 @@ public class StudentReportDto {
 
     private long id;
     private String personName;
+    private long personId;
     private String profilePictureUrl;
     private String chapterName;
     private LocalDate date;
@@ -39,6 +40,14 @@ public class StudentReportDto {
 
     public void setPersonName(String personName) {
         this.personName = personName;
+    }
+
+    public long getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(long personId) {
+        this.personId = personId;
     }
 
     public String getProfilePictureUrl() {
