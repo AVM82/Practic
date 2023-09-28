@@ -35,19 +35,20 @@ public class TimeSlotService {
         for (TimeSlotEntity timeSlot : timeSlotList) {
             String date = timeSlot.getDate().toString();
             slotMap.computeIfAbsent(date, k -> new ArrayList<>());
-            if (timeSlot.isAvailability()) {
+            if (timeSlot.isAvailability() && !timeSlot.getDate().isBefore(LocalDate.now())
+                    && timeSlot.getTime().isAfter(LocalTime.now())) {
                 slotMap.get(date).add(timeSlot);
             }
         }
         return slotMap;
     }
 
-    public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId) {
+    public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId, boolean availability) {
         Optional<TimeSlotEntity> timeslotOp = timeSlotRepository.findById(timeslotId);
 
         if (timeslotOp.isPresent()) {
             TimeSlotEntity timeSlot = timeslotOp.get();
-            timeSlot.setAvailability(false);
+            timeSlot.setAvailability(availability);
             return Optional.of(timeSlotRepository.save(timeSlot));
         }
         return Optional.empty();
