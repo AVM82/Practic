@@ -6,6 +6,9 @@
   </mat-card-content>
 </mat-card>
 <chapter-reports *ngFor="let chapter of reports; let i = index"
-                 [studentReports]="chapter" [chapterNumber]="i+1" [levels]="levels"></chapter-reports>
+                 [studentReports]="chapter"
+                 [chapterNumber]="i+1"
+                 [levels]="levels"
+                 [currentUserId]="currentUserId"></chapter-reports>
 
 

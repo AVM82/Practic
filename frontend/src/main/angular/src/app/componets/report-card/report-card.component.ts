@@ -21,6 +21,8 @@ export class ReportCardComponent {
     @Input() timeValue!: string
     @Input() profilePictureUrl!: string
     @Input() likedPersonsIdList!: number[];
+    @Input() studentId!:number;
+    @Input() currentUserId!:number;
 
     constructor(
         private reportService: ReportServiceService,
@@ -39,6 +41,15 @@ export class ReportCardComponent {
         this.reportService.updateReportLikeList(this.reportId).subscribe(res => {
           this.likedPersonsIdList = res.likedPersonsIdList;
         });
+
+    }
+    isCurrentUserReport(){
+        return this.studentId == this.currentUserId;
+    }
+    cancelReport(){
+
+    }
+    changeReport(){
 
     }
 }
