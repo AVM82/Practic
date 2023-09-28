@@ -26,7 +26,7 @@ public class TimeSlotService {
         this.timeSlotRepository = timeSlotRepository;
     }
 
-
+//todo fix past timeslots by time
     public Map<String, List<TimeSlotEntity>> getAvailableTimeSlots() {
 
         List<TimeSlotEntity> timeSlotList = timeSlotRepository
@@ -35,8 +35,7 @@ public class TimeSlotService {
         for (TimeSlotEntity timeSlot : timeSlotList) {
             String date = timeSlot.getDate().toString();
             slotMap.computeIfAbsent(date, k -> new ArrayList<>());
-            if (timeSlot.isAvailability() && !timeSlot.getDate().isBefore(LocalDate.now())
-                    && timeSlot.getTime().isAfter(LocalTime.now())) {
+            if (timeSlot.isAvailability() && !timeSlot.getDate().isBefore(LocalDate.now())) {
                 slotMap.get(date).add(timeSlot);
             }
         }
