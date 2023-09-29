@@ -5,18 +5,13 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import com.group.practic.dto.FeedbackDto;
 import com.group.practic.dto.FeedbackLikedDto;
 import com.group.practic.entity.FeedbackEntity;
+import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.service.FeedbackService;
 import jakarta.validation.Valid;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/feedbacks")
@@ -25,8 +20,8 @@ public class FeedbackController {
     FeedbackService service;
 
     @GetMapping("/")
-    public ResponseEntity<Collection<FeedbackEntity>> getAllFeedbacks() {
-        return getResponse(service.getAllFeedbacks());
+    public ResponseEntity<Collection<FeedbackEntity>> getAllFeedbacks( @RequestParam(name = "feedbackSort", defaultValue = "DATE_DESCENDING") FeedbackSortState feedbackSort) {
+        return getResponse(service.getAllFeedbacks(feedbackSort));
     }
 
     @PostMapping("/")

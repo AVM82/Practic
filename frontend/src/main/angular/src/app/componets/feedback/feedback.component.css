@@ -43,6 +43,21 @@
   right: 55px;
 }
 
+.sort-button {
+  background-color: #27AE60;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  position: absolute;
+  top: 35px; 
+  right: 255px;
+  height: 42px;
+  width: 42px;
+}
+
+
+
   .user-info{
     display: table-column-group;
     text-align: center;

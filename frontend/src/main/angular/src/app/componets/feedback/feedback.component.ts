@@ -9,12 +9,13 @@ import { MatTableModule,MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {User} from "../../services/auth/auth.service";
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-feedback',
   standalone: true,
   imports: [CommonModule, HttpClientModule,MatDialogModule,MatPaginatorModule,
-    MatTableModule,MatIconModule],
+    MatTableModule,MatIconModule,MatMenuModule],
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.css']
 })
@@ -28,8 +29,9 @@ export class FeedbackComponent implements OnInit {
   loading: boolean = false;
   loadingIncremend: boolean = false;
   loadingDecremend: boolean = false;
-
-  constructor(private feedbackService: FeedbackService, private dialog: MatDialog,private tokenStorageService:TokenStorageService) { }
+  feedbackSortedState : string = "DATE_DESCENDING";
+  constructor(private feedbackService: FeedbackService, 
+    private dialog: MatDialog,private tokenStorageService:TokenStorageService) { }
   
 
   ngOnInit(): void {
@@ -42,10 +44,15 @@ export class FeedbackComponent implements OnInit {
   }
 
   updateData():void{
-    this.feedbackService.getFeedbacks().subscribe(data => {
+    this.feedbackService.getFeedbacks(this.feedbackSortedState).subscribe(data => {
       this.feedbacks = data;
       this.dataSource = new MatTableDataSource<any>(this.feedbacks);
     });
+  }
+
+  sortData(sortState: string) {
+    this.feedbackSortedState = sortState;
+    this.updateData();
   }
 
   openFeedbackDialog(): void {
