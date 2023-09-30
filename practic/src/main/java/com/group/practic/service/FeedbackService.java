@@ -24,6 +24,7 @@ public class FeedbackService {
     @Autowired
     PersonRepository personRepository;
 
+    Logger logger = LoggerFactory.getLogger(FeedbackService.class);
     public List<FeedbackEntity> getAllFeedbacks(FeedbackSortState sortState) {
         ArrayList<FeedbackEntity> list = new ArrayList<>(repository.findAll());
         list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
@@ -86,6 +87,16 @@ public class FeedbackService {
                 repository.save(feedbackEntity);
                 return feedbackEntity;
             }
+        }
+        return null;
+    }
+
+    public FeedbackEntity deleteFeedback(Long idFeedback) {
+        FeedbackEntity feedback = repository.findById(idFeedback).orElse(null);
+        if (feedback!=null){
+            feedback.setLikedByPerson(null);
+            repository.delete(feedback);
+            return feedback;
         }
         return null;
     }

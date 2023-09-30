@@ -25,6 +25,13 @@
     </div>
     <div class="card-info">
 
+      <div class="delete" [class.visible]="isCreatorOrAdmin(feedback)">
+        <button mat-icon-button class="delete-button" (click)="deleteFeedback(feedback)" >
+          <mat-icon class="delete-icon">clear</mat-icon>
+        </button>
+      </div>
+
+
  <div class="feedback-message">
       <p>{{ feedback.feedback || "Коментар відсутній"}}</p>
     </div>
