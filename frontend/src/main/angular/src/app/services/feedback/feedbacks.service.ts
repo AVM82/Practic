@@ -44,4 +44,11 @@ export class FeedbackService {
   
     return this.http.patch(ApiUrls.Feedbacks, body);
   }
+
+  deleteFeedback(feedbackId: number):Observable<any>{
+    const apiUrl = `${ApiUrls.Feedbacks}${"?idFeedback="+feedbackId}`;
+  
+    return this.http.delete(apiUrl);
+  }
+
 }

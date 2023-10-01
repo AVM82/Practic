@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +37,8 @@ public class FeedbackService {
                     list.sort(Comparator.comparing(FeedbackEntity::getLikes));
             case RATING_ASCENDING ->
                     list.sort(Comparator.comparing(FeedbackEntity::getLikes).reversed());
-            default -> list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
+            default ->
+                    list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
         }
         return list;
     }
@@ -86,6 +85,16 @@ public class FeedbackService {
                 repository.save(feedbackEntity);
                 return feedbackEntity;
             }
+        }
+        return null;
+    }
+
+    public FeedbackEntity deleteFeedback(Long idFeedback) {
+        FeedbackEntity feedback = repository.findById(idFeedback).orElse(null);
+        if (feedback != null) {
+            feedback.setLikedByPerson(null);
+            repository.delete(feedback);
+            return feedback;
         }
         return null;
     }
