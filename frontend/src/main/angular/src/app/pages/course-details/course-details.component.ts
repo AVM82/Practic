@@ -66,7 +66,7 @@ export class CourseDetailsComponent implements OnInit {
   private setChapterVisibility() :void {
     this.coursesService.getOpenChapters().subscribe({
       next: chapters => {
-        this.coursesService.setVisibleChapters(this.chapters, chapters);
+        this.coursesService.setVisibleChapters(this.chapters, chapters);        
       },
       error: error => {
         console.error('Помилка при запиті доступних глав', error);

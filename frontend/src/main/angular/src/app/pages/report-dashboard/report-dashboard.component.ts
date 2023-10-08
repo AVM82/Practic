@@ -26,7 +26,8 @@ import {Level} from "../../models/level/level";
         ReportCardComponent,
         MatCardModule,
     ],
-    templateUrl: './report-dashboard.component.html'
+    templateUrl: './report-dashboard.component.html',
+    styleUrls: ['./report-dashboard.component.css']
 })
 export class ReportDashboardComponent implements OnInit {
     reports: StudentReport[][] = [];
@@ -68,6 +69,7 @@ export class ReportDashboardComponent implements OnInit {
 
     loadChapters(slug: string): void {
         this.coursesService.getChapters(slug).subscribe(chapters => {
+            
             this.chapters = chapters;
             console.log('chapters inside method subscribe');
             console.log(this.chapters)
@@ -96,8 +98,8 @@ export class ReportDashboardComponent implements OnInit {
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
-                height: '60%',
-                width: '50%',
+                height: '500px',
+                width: '850px',
                 data: {
                     chapters: this.chapters,
                     timeslots: this.timeslots
