@@ -10,7 +10,7 @@ public interface ResponseUtils {
 
     /* GET */
 
-    public static ResponseEntity<Boolean> getResponse(boolean result) {
+    public static <T> ResponseEntity<T> getResponse(T result) {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

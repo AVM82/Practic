@@ -7,8 +7,9 @@ import { FeedbackDialogComponent } from 'src/app/componets/feedback-dialog/feedb
 import { MatPaginatorModule,MatPaginator } from '@angular/material/paginator';
 import { MatTableModule,MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {User, UserRole} from "../../services/auth/auth.service";
+import { TokenStorageService } from "../../services/auth/token-storage.service";
+import { User } from 'src/app/models/user/user';
+import { UserRole } from 'src/app/models/user/user.role';
 import { MatMenuModule } from '@angular/material/menu';
 
 @Component({

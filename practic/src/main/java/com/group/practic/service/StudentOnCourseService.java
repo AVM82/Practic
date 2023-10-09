@@ -157,6 +157,12 @@ public class StudentOnCourseService {
     }
 
 
+    public Integer getActiveChapterNumber(CourseEntity course) {
+        StudentOnCourseEntity studentOnCourse = getStudentOfCourse(course);
+        return studentOnCourse != null ? studentOnCourse.getActiveChapter().getNumber() : 0;
+    }
+
+
     public Optional<ChapterEntity> getOpenedChapter(CourseEntity course, int number) {
         ChapterEntity activeChapter = getActiveChapter(course);
         return (activeChapter != null && activeChapter.getNumber() >= number)

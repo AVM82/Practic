@@ -24,7 +24,6 @@ export class CourseNavbarComponent implements OnInit {
   slug: string = '';
 
   constructor(
-    private tokenStorageService:TokenStorageService,
     private coursesService: CoursesService,
       private route: ActivatedRoute
   ) {

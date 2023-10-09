@@ -1,6 +1,6 @@
 <div class="course-container">
-    <mat-card *ngFor="let course of courses" class="course-card">
-        <a [routerLink]="['/courses', course.slug]">
+    <mat-card *ngFor="let course of coursesProp; let " class="course-card">
+        <a [routerLink]="[course.route]">
             <mat-card-content class="course-details">
                 <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
                 <h3 class="course-name">{{ course.name }}</h3>

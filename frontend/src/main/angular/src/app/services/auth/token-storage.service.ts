@@ -77,9 +77,6 @@ export class TokenStorageService {
     const me = this.getMe();
     return me && this.coursesService.getMentors(slug).pipe(
                     map<User[], boolean>(mentors => {
-                      //const m =  (mentors != null && mentors.some(mentor => mentor.id === me.id));
-                      //const result = m == such;
-                      //console.log(" I am ", m ? '':'not', 'mentor.  == (', such, ') =>', result);
                       return (mentors != null && mentors.some(mentor => mentor.id === me.id)) == such;
                     })
                 );

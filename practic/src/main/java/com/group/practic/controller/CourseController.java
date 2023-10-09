@@ -92,6 +92,14 @@ public class CourseController {
     }
 
 
+    @GetMapping("/{slug}/activeChapterNumber")
+    public ResponseEntity<Integer> getActiveChapterNumber(@PathVariable String slug) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        if (course.isEmpty()) { return notAcceptable(); }
+        return getResponse(studentOnCourseService.getActiveChapterNumber(course.get()));
+    }
+
+
     @PostMapping("/NewCourseFromProperties")
     public ResponseEntity<CourseEntity> createCourse(@Valid @RequestBody String propertyFile) {
         return postResponse(courseService.create(propertyFile));

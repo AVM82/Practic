@@ -17,8 +17,9 @@ export enum ApiUrls {
   Feedbacks = '/api/feedbacks/',
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
-  TopicsReports = '/api/topicsreports'
-  }
+  TopicsReports = '/api/topicsreports',
+  getCourseUrl = "getCourseUrl"
+}
 
 
 export const getChaptersUrl = (slug: string): string =>
@@ -53,3 +54,7 @@ export const getMentorsUrl = (slug: string): string =>
 
 export const getStudentAdditionalMaterialUrl = (slug: string, id: number): string =>
     ApiUrls.AdditionalMaterials + slug + `/` + id;
+
+export const getActiveChapterNumber = (slug: string): string =>
+    ApiUrls.Course+ slug +`/activeChapterNumber`;
+

@@ -88,9 +88,9 @@ public class CourseService {
     }
 
 
-    public boolean getAdditionalExist(String slug) {
+    public Boolean getAdditionalExist(String slug) {
         Optional<CourseEntity> course = get(slug);
-        return course.isEmpty() ? false : !course.get().getAdditionalMaterials().isEmpty();
+        return !course.isEmpty() && !course.get().getAdditionalMaterials().isEmpty();
     }
 
 

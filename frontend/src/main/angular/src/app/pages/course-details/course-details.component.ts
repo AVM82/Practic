@@ -64,20 +64,6 @@ export class CourseDetailsComponent implements OnInit {
     })
   }
 
-<<<<<<< HEAD
-=======
-  private setChapterVisibility() :void {
-    this.coursesService.getOpenChapters().subscribe({
-      next: chapters => {
-        this.coursesService.setVisibleChapters(this.chapters, chapters);        
-      },
-      error: error => {
-        console.error('Помилка при запиті доступних глав', error);
-      }
-    })
-  }
-
->>>>>>> refs/remotes/origin/development
   setPractices() {
     const practices = this.tokenStorageService.getPractice();
     if(practices){
