@@ -2,22 +2,21 @@ package com.group.practic.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.Objects;
 
-public class TopicReportDTO {
+public class TopicReportDto {
     private long chapterId;
 
     @NotBlank
     @Min(value = 10)
     private String topicReport;
 
-    public TopicReportDTO(int chapterId, String topicReport) {
+    public TopicReportDto(int chapterId, String topicReport) {
         this.chapterId = chapterId;
         this.topicReport = topicReport;
     }
 
-    public TopicReportDTO() {
+    public TopicReportDto() {
     }
 
     public long getChapterId() {
@@ -38,9 +37,13 @@ public class TopicReportDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TopicReportDTO that = (TopicReportDTO) o;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TopicReportDto that = (TopicReportDto) o;
         return chapterId == that.chapterId && Objects.equals(topicReport, that.topicReport);
     }
 

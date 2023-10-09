@@ -1,9 +1,13 @@
 package com.group.practic.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.Objects;
 
 @Entity
@@ -54,10 +58,15 @@ public class TopicReportEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         TopicReportEntity that = (TopicReportEntity) o;
-        return id == that.id && Objects.equals(chapter, that.chapter) && Objects.equals(topic, that.topic);
+        return id == that.id && Objects.equals(chapter, that.chapter)
+                && Objects.equals(topic, that.topic);
     }
 
     @Override

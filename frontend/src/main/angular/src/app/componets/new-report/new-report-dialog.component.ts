@@ -95,17 +95,15 @@ export class NewReportDialogComponent implements OnInit{
     }
 
     ngOnInit(): void {
-                this.getOpenChapters();
-
-                this.openChapters$.subscribe(chapters => {
-                    if (chapters.length > 0) {
-                      this.activeChapter = chapters[chapters.length - 1]; 
-                    }
-                  });
-
+        this.getOpenChapters();
+    
+        this.openChapters$.subscribe(chapters => {
+            if (chapters.length > 0) {
+                this.activeChapter = chapters[chapters.length - 1]; 
                 this.initTopicsReports();
-
-      }
+            }
+        });
+    }
 
       updateActiveChapter(selectChapter:number){
         this.activeChapter=selectChapter;
@@ -116,7 +114,7 @@ export class NewReportDialogComponent implements OnInit{
         
         this.coursesService.getOpenChapters().subscribe({
           next: chapters => {
-            const ids = chapters.map(chapter => chapter.number).sort((a, b) => a - b);
+            const ids = chapters.map(chapter => chapter.id).sort((a, b) => a - b);
             this.openChapters$.next(ids);
             
           },
@@ -128,23 +126,24 @@ export class NewReportDialogComponent implements OnInit{
       }
 
     initTopicsReports(){
-        console.log("init topics start");
         console.log(this.
             activeChapter+" new student chapt");
         this.topicReportService.getTopicsReportsOnChapter(this.activeChapter).subscribe({
             next: topics => {
-                console.log(this.newStudentReport.chapter);
                 const topicsReports = topics.map((topic:any) => topic.topic);
-               console.log(topics);
-               
-               (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics); // Обновить значение BehaviorSubject
-              
+               (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics); 
             },
             error: error => {
               console.error('Помилка при отриманні доступних тем доповіді', error);
-              (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next([]); // В случае ошибки обновите значение BehaviorSubject пустым массивом
+              (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next([]); 
             }
           });
+    }
+
+
+    getnewStudentReport():NewStudentReport{
+        this.newStudentReport.chapter=this.activeChapter;
+        return this.newStudentReport;
     }
 
     onNoClick(): void {
