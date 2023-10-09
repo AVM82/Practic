@@ -1,5 +1,5 @@
-<mat-card>
-  <mat-card-content (click)="openDialog()" style="text-align: right" >Додати доповідь</mat-card-content>
+<mat-card class="top-line">
+  <mat-card-content class="report-button" (click)="openDialog()" >Додати доповідь</mat-card-content>
 </mat-card>
 <chapter-reports *ngFor="let chapter of reports; let i = index"
                  [studentReports]="chapter" [chapterNumber]="i+1" [levels]="levels"></chapter-reports>

@@ -5,6 +5,7 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.PersonApplyOnCourseDto;
 import com.group.practic.dto.PersonDto;
+import com.group.practic.entity.PersonApplicationEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.PersonApplicationService;
@@ -108,9 +109,15 @@ public class PersonController {
         PersonEntity person = getPrincipal();
 
         if (person != null) {
-            return ResponseEntity.ok(
-                    personApplicationService.addPersonApplication(person, slug)
-            );
+            PersonApplicationEntity application = personApplicationService
+                    .getApplicationByPersonAndCourse(person, slug);
+            if (application == null) {
+                return ResponseEntity.ok(
+                        personApplicationService.addPersonApplication(person, slug));
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

@@ -16,7 +16,8 @@ export enum ApiUrls {
   PracticeApprove = '/api/mentor/practices',
   Feedbacks = '/api/feedbacks/',
   ReportLikeList = '/api/students/reports/likes/',
-  MyPractices = '/api/students/practices/my'
+  MyPractices = '/api/students/practices/my',
+  TopicsReports = '/api/topicsreports'
   }
 
 

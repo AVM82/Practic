@@ -11,8 +11,10 @@ export class FeedbackService {
 
   constructor(private http: HttpClient) { }
 
-  getFeedbacks(): Observable<any> {
-    return this.http.get(ApiUrls.Feedbacks);
+  getFeedbacks(feedbackSortedState:string): Observable<any> {
+    const apiUrl = `${ApiUrls.Feedbacks}${"?feedbackSort="+feedbackSortedState}`;
+
+    return this.http.get(apiUrl);
   }
 
   postData(email:string, feedback:string):  Observable<any>{
@@ -42,4 +44,11 @@ export class FeedbackService {
   
     return this.http.patch(ApiUrls.Feedbacks, body);
   }
+
+  deleteFeedback(feedbackId: number):Observable<any>{
+    const apiUrl = `${ApiUrls.Feedbacks}${"?idFeedback="+feedbackId}`;
+  
+    return this.http.delete(apiUrl);
+  }
+
 }

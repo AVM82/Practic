@@ -26,7 +26,8 @@ import {Level} from "../../models/level/level";
         ReportCardComponent,
         MatCardModule,
     ],
-    templateUrl: './report-dashboard.component.html'
+    templateUrl: './report-dashboard.component.html',
+    styleUrls: ['./report-dashboard.component.css']
 })
 export class ReportDashboardComponent implements OnInit {
     reports: StudentReport[][] = [];
@@ -48,16 +49,22 @@ export class ReportDashboardComponent implements OnInit {
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
             console.log(slug)
-            if (slug) {
+             if (slug) {
+            this.updateData(slug)}
+        });
+    }
+
+    updateData(slug:string):void{
+       
                 this.loadLevels(slug);
                 this.loadChapters(slug);
                 this.loadReports(slug);
                 this.loadTimeSlots(slug);
                 this.createTimeSlots(slug)
 
-            }
-        });
+            
     }
+
 
     loadReports(slug: string): void {
         this.reportService.getAllActualReports(slug).subscribe(reports => {
@@ -68,6 +75,7 @@ export class ReportDashboardComponent implements OnInit {
 
     loadChapters(slug: string): void {
         this.coursesService.getChapters(slug).subscribe(chapters => {
+            
             this.chapters = chapters;
             console.log('chapters inside method subscribe');
             console.log(this.chapters)
@@ -96,8 +104,8 @@ export class ReportDashboardComponent implements OnInit {
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
-                height: '60%',
-                width: '50%',
+                height: '420px',
+                width: '800px',
                 data: {
                     chapters: this.chapters,
                     timeslots: this.timeslots
@@ -106,12 +114,19 @@ export class ReportDashboardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             this.route.paramMap.subscribe(params => {
                 const slug = params.get('slug');
+
                 console.log('The dialog was closed');
                 if (result != null && slug) {
-                    this.reportService.createNewReport(result, slug).subscribe();
-                    this.timeSlotService.updateTimeslotAvailability(result.timeslotId, slug).subscribe();
+                    this.reportService.createNewReport(result, slug).subscribe(
+                        () => {
+                        }
+                    );
+
+this.timeSlotService.updateTimeslotAvailability(result.timeslotId, slug).subscribe(() => {
+                    });                    
                 }
             });
+            
         });
     }
 }
