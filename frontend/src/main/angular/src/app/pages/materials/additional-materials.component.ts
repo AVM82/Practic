@@ -45,7 +45,11 @@ export class AdditionalMaterialsComponent implements OnInit {
 
   changeLearned(event: any) {
     console.log("checkbox id:%d checked:", event.target.id, event.target.checked);
-    this.courseService.postAdditionalChange(this.slug, event.target.id, event.target.checked);
+    this.courseService.putAdditionalChange(this.slug, event.target.id, event.target.checked).subscribe(success => {
+      console.log(' additional material is ', success ? '' : 'not', ' changed');
+      if (!success)
+        event.target.checked = !event.target.checked; //rollback to previous state
+    });
   }
     
 }

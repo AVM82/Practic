@@ -16,10 +16,12 @@ export class PracticeStatePipe implements PipeTransform {
   };
 
   transform(chapterPartId: number, practices: Practice[]): string {
-    const practice = practices.find(practice => practice.chapterPartId === chapterPartId);
-    const state = practice ? practice.state : 'NOT_STARTED';
-
-    return this.stateTranslations[state] || state;
+    if (practices) {
+      const practice = practices.find(practice => practice.chapterPartId === chapterPartId);
+      const state = practice ? practice.state : 'NOT_STARTED';
+      return this.stateTranslations[state] || state;
+    }
+    return '';
   }
 
 }

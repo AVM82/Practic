@@ -16,6 +16,7 @@ import {MatNativeDateModule, NativeDateModule} from "@angular/material/core";
 import localeUk from '@angular/common/locales/uk';
 import {registerLocaleData} from "@angular/common";
 import { FeedbackComponent } from './componets/feedback/feedback.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 
 registerLocaleData(localeUk, 'uk');
 
@@ -40,6 +41,7 @@ const routes: Routes = [
     component: ReportDashboardComponent
 
   },
+  {path: 'courses/:slug/main', component: MainPageComponent},
   {path: 'courses/:slug', component: CourseDetailsComponent},
   {path: 'courses/:slug/chapters/:chapterN', component: ChapterDetailsComponent},
   {path: 'courses/:slug/additional', component: AdditionalMaterialsComponent},

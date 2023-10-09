@@ -1,28 +1,29 @@
 package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.getResponse;
+import static com.group.practic.util.ResponseUtils.getResponseAllowed;
+import static com.group.practic.util.ResponseUtils.notAcceptable;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.ChapterDto;
+import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
 import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.service.CourseService;
-import com.group.practic.service.StudentChapterService;
+import com.group.practic.service.PersonService;
+import com.group.practic.service.StudentOnCourseService;
+import com.group.practic.util.Converter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,26 +37,33 @@ public class CourseController {
 
     private CourseService courseService;
 
-    private StudentChapterService studentChapterService;
+    private PersonService personService;
+
+    private StudentOnCourseService studentOnCourseService;
+
+    static final List<String> ACCESS_ROLES = List.of(PersonService.ROLE_ADMIN,
+            PersonService.ROLE_COLLABORATOR, PersonService.ROLE_MENTOR);
+
 
     @Autowired
-    public CourseController(CourseService courseService,
-            StudentChapterService studentChapterService) {
+    public CourseController(CourseService courseService, PersonService personService,
+            StudentOnCourseService studentOnCourseService) {
         this.courseService = courseService;
-        this.studentChapterService = studentChapterService;
+        this.personService = personService;
+        this.studentOnCourseService = studentOnCourseService;
     }
 
 
     @GetMapping
-    public ResponseEntity<Collection<CourseEntity>> get() {
-        return getResponse(courseService.get());
+    public ResponseEntity<Collection<CourseDto>> get() {
+        return getResponse(Converter.convertCourseEntityList(courseService.get()));
     }
 
 
     @GetMapping("/{slug}/allchapters")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Collection<ChapterDto>> getChapters(@PathVariable String slug) {
-        return getResponse(courseService.getChapters(slug));
+        return getResponse(personService.hasAdvancedRole() ? courseService.getChapters(slug)
+                : studentOnCourseService.getChapters(slug));
     }
 
 
@@ -65,15 +73,15 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{id}/purpose")
-    public ResponseEntity<String> getPurpose(@Min(1) @PathVariable long id) {
-        return getResponse(courseService.getPurpose(id));
+    @GetMapping("/{slug}/description")
+    public ResponseEntity<String> getDescription(@Min(1) @PathVariable String slug) {
+        return getResponse(courseService.getDescription(slug));
     }
 
 
-    @GetMapping("/{id}/description")
-    public ResponseEntity<String> getDescription(@Min(1) @PathVariable long id) {
-        return getResponse(courseService.getDescription(id));
+    @GetMapping("/{slug}/additionalExist")
+    public ResponseEntity<Boolean> getAdditionalExist(@PathVariable String slug) {
+        return getResponse(courseService.getAdditionalExist(slug));
     }
 
 
@@ -104,32 +112,20 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/chapters/{number}")
-    @PreAuthorize("hasRole(#slug)||hasRole('ADMIN')")
     public ResponseEntity<ChapterEntity> getChapterByNumber(@PathVariable("slug") String slug,
             @PathVariable int number) {
-        Optional<ChapterEntity> chapter = courseService.getChapterByNumber(slug, number);
-        if (chapter.isPresent() && isChapterOpen(chapter.get())) {
-            return getResponse(courseService.getChapterByNumber(slug, number));
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (personService.hasAnyRole(ACCESS_ROLES)) {
+            return getResponseAllowed(courseService.getChapterByNumber(slug, number));
         }
-
+        Optional<CourseEntity> course = courseService.get(slug);
+        if (course.isEmpty()) { return notAcceptable(); }
+        return getResponseAllowed(studentOnCourseService.getOpenedChapter(course.get(), number));
     }
 
 
-    private boolean isChapterOpen(ChapterEntity chapter) {
-        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        if (person != null) {
-            Set<StudentChapterEntity> studentChapters =
-                    studentChapterService.findOpenChapters(person);
-
-            return studentChapters.stream().anyMatch(
-                    studentChapter -> studentChapter.getChapter().getId() == chapter.getId());
-
-        } else {
-            return false;
-        }
+    @GetMapping("/{slug}/mentors")
+    public ResponseEntity<Collection<PersonEntity>> getMentors(@PathVariable String slug) {
+        return getResponse(courseService.getMentors(slug));
     }
 
 }

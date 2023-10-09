@@ -22,8 +22,10 @@ export class CoursesComponent implements OnInit{
 
   ngOnInit(): void {
     this.coursesService.getAllCourses().subscribe(courses => {
-      this.courses = courses;
-      courses.forEach(course => this.svg_registry.addSvg(course.slug, course.svg));
+      if (courses) {
+        this.courses = courses;
+        courses.forEach(course => this.svg_registry.addSvg(course.slug, course.svg));
+      }
     });
   }
 }

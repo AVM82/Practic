@@ -5,7 +5,6 @@ import { Course } from 'src/app/models/course/course';
 import {AngularSvgIconModule} from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { CreateMethod } from 'src/app/enums/create-method-enum';
-import { CreationEditCourseCapabilityService } from 'src/app/services/creation-edit-course.capability.service';
 
 @Component({
     selector: 'app-create-course',
@@ -27,7 +26,6 @@ export class CreateCourseComponent implements OnInit{
   });
   
   constructor(
-    private creationEditCourseCapabilityService: CreationEditCourseCapabilityService,
     private coursesService: CoursesService,
     private formBuilder: FormBuilder
   ) {}
@@ -107,7 +105,6 @@ export class CreateCourseComponent implements OnInit{
   processResponse(course: Course): void {
     if (course) {
       console.warn('Course "%s" is created', course.name);
-      this.creationEditCourseCapabilityService.setEditMode(true);
       window.location.href = '/courses/' + course.slug;
     } else
     console.warn('Confict course data');

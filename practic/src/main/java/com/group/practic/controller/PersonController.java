@@ -102,7 +102,7 @@ public class PersonController {
 
 
     @PostMapping("/application/{slug}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('GUEST')")
     public ResponseEntity<PersonEntity> applyOnCourse(
             @PathVariable(value = "slug") String slug) {
         PersonEntity person = getPrincipal();

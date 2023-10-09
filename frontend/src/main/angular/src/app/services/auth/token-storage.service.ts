@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import {User} from "./auth.service";
 import {Practice} from "../../models/practice/practice";
+import { User } from 'src/app/models/user/user';
+import { CoursesService } from '../courses/courses.service';
+import { ActivatedRoute } from '@angular/router';
+import { AdvancedRoles } from 'src/app/enums/roles.enum';
+import { Observable, map, of } from 'rxjs';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -10,6 +14,11 @@ const PRACTICE_KEY = 'practice-data';
   providedIn: 'root'
 })
 export class TokenStorageService {
+  
+  constructor(
+    private coursesService: CoursesService,
+    private route: ActivatedRoute  
+  ) {  }
 
   signOut(): void {
     window.sessionStorage.clear();
@@ -48,22 +57,40 @@ export class TokenStorageService {
     this.savePractice(practice);
   }
 
-
-  public isStudent(slug: string): boolean {
+  public getMe(): User {
     const token = this.getToken();
-    if (token) {
-      const user: User = this.getUser();
-      return user?.hasApplyOnCourse(slug);
-    }
-    return false;
+    return token ? this.getUser() : null;
   }
 
-  public haveIAnyRole(...roles: string[]): boolean {
-    const token = this.getToken();
-    if (token) {
-      const user: User = this.getUser();
-      return user.hasAnyRole(...roles);
-    }
-    return false;
+  public isStudent(slug: string): boolean {
+    const me = this.getMe();
+    return me ? me.hasApplyOnCourse(slug) : false;
+  }
+
+  public isAnyAdvancedRole(slug: string,): Observable<boolean> {
+    if (this.haveIAnyRole(AdvancedRoles))
+      return of(true);
+    return this.isMentor(slug, true);
+  }
+
+  public isMentor(slug: string, such: boolean): Observable<boolean> {
+    const me = this.getMe();
+    return me && this.coursesService.getMentors(slug).pipe(
+                    map<User[], boolean>(mentors => {
+                      //const m =  (mentors != null && mentors.some(mentor => mentor.id === me.id));
+                      //const result = m == such;
+                      //console.log(" I am ", m ? '':'not', 'mentor.  == (', such, ') =>', result);
+                      return (mentors != null && mentors.some(mentor => mentor.id === me.id)) == such;
+                    })
+                );
+  }
+
+  public neitherStudentNorMentor(slug: string): Observable<boolean> {
+    return this.isStudent(slug) ? of(false) : this.isMentor(slug, false);
+  }
+
+  public haveIAnyRole(roles: string[]): boolean {
+    const me = this.getMe();
+    return me ? me.hasAnyRole(...roles) : false;
   }
 }

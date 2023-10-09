@@ -29,6 +29,11 @@ public class AdditionalMaterialsService {
     }
 
 
+    public Optional<AdditionalMaterialsEntity> get(long id) {
+        return additionalMaterialsRepository.findById(id);
+    }
+
+
     public Optional<AdditionalMaterialsEntity> update(
             AdditionalMaterialsEntity additionalMaterialEntity) {
         Optional<AdditionalMaterialsEntity> result = additionalMaterialEntity.getId() == 0
@@ -55,18 +60,18 @@ public class AdditionalMaterialsService {
                 }
             }
         }
-        if (n != max) {
+        if (n != max) { 
             return Set.of();
         }
         Set<AdditionalMaterialsEntity> result = new HashSet<>(max);
         for (int i = 1; i <= max; i++) {
             String item = prop.getProperty(PropertyUtil.ADDITIONAL_PART + i);
             if (item == null) {
-                break;
+                break; 
             }
             String[] part = item.split(PropertyUtil.NAME_SEPARATOR);
-            Optional<AdditionalMaterialsEntity> additionalMaterial = update(
-                    new AdditionalMaterialsEntity(0, course, i, part[0],
+            Optional<AdditionalMaterialsEntity> additionalMaterial =
+                    update(new AdditionalMaterialsEntity(0, course, i, part[0],
                             referenceTitleService.getReferenceTitleEntitySet(part)));
             if (additionalMaterial.isPresent()) {
                 result.add(additionalMaterial.get());

@@ -36,6 +36,7 @@ public interface Converter {
         return modelMapper;
     }
 
+
     static ChapterDto convert(StudentChapterEntity studentChapter) {
         return modelMapper().map(studentChapter, ChapterDto.class);
     }
@@ -80,15 +81,24 @@ public interface Converter {
         return modelMapper().map(studentReportEntity, StudentReportDto.class);
     }
 
+
     static PersonApplyOnCourseDto convert(PersonApplicationEntity personApplication) {
         return modelMapper().map(personApplication, PersonApplyOnCourseDto.class);
     }
 
 
+    static List<CourseDto> convertCourseEntityList(List<CourseEntity> courses) {
+        List<CourseDto> result = new ArrayList<>(courses.size());
+        courses.forEach(course -> {
+            if (!course.getInactive())
+                result.add(convert(course));
+        });
+        return result;
+    }
+
+
     static List<StudentReportDto> convert(List<StudentReportEntity> studentReportEntityList) {
-        if (studentReportEntityList.isEmpty()) {
-            return Collections.emptyList();
-        }
+        if (studentReportEntityList.isEmpty()) { return Collections.emptyList(); }
         List<StudentReportDto> result = new ArrayList<>();
         for (StudentReportEntity reportEntity : studentReportEntityList) {
             result.add(convert(reportEntity));
@@ -96,19 +106,16 @@ public interface Converter {
         return result;
     }
 
+
     static PracticeDto convertToPractice(StudentPracticeEntity studentPracticeEntity) {
-        return new PracticeDto(
-                studentPracticeEntity.getChapterPart().getId(),
-                studentPracticeEntity.getState().name()
-        );
+        return new PracticeDto(studentPracticeEntity.getChapterPart().getId(),
+                studentPracticeEntity.getState().name());
     }
 
 
     static List<List<StudentReportDto>> convertListOfLists(
             List<List<StudentReportEntity>> studentReportEntityList) {
-        if (studentReportEntityList.isEmpty()) {
-            return Collections.emptyList();
-        }
+        if (studentReportEntityList.isEmpty()) { return Collections.emptyList(); }
         List<List<StudentReportDto>> result = new ArrayList<>();
         for (List<StudentReportEntity> reportEntityList : studentReportEntityList) {
             result.add(convert(reportEntityList));
@@ -118,9 +125,14 @@ public interface Converter {
     }
 
 
-    static List<ChapterDto> convertChapterEntityList(List<ChapterEntity> chapterEntityList) {
+    static List<ChapterDto> convertChapterEntityList(List<ChapterEntity> chapterEntityList,
+            int lastVisibleNumber) {
         List<ChapterDto> result = new ArrayList<>();
-        chapterEntityList.forEach(x -> result.add(convert(x)));
+        chapterEntityList.forEach(x -> {
+            ChapterDto d = convert(x);
+            d.setVisible(d.getNumber() <= lastVisibleNumber);
+            result.add(d);
+        });
         return result;
     }
 
@@ -146,6 +158,7 @@ public interface Converter {
                 .addMapping(src -> src.getTimeSlot().getTime(), StudentReportDto::setTime);
     }
 
+
     private static void applyPersonOnCourseMap(ModelMapper modelMapper) {
         modelMapper.createTypeMap(PersonApplicationEntity.class, PersonApplyOnCourseDto.class)
                 .addMapping(src -> src.getPerson().getId(), PersonApplyOnCourseDto::setId)
@@ -157,6 +170,7 @@ public interface Converter {
 
     }
 
+
     private static void applyStudentChapter(ModelMapper modelMapper) {
         modelMapper.createTypeMap(StudentChapterEntity.class, ChapterDto.class)
                 .addMapping(src -> src.getChapter().getId(), ChapterDto::setId)
@@ -164,6 +178,7 @@ public interface Converter {
                 .addMapping(src -> src.getChapter().getShortName(), ChapterDto::setShortName)
                 .addMapping(src -> src.getChapter().getParts(), ChapterDto::setChapterPartIds);
     }
+
 
     private static void applyChapterEntityToChapterDtoMap(ModelMapper modelMapper) {
         modelMapper.createTypeMap(ChapterEntity.class, ChapterDto.class)

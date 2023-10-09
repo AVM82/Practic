@@ -8,7 +8,7 @@ import { MatPaginatorModule,MatPaginator } from '@angular/material/paginator';
 import { MatTableModule,MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {User} from "../../services/auth/auth.service";
+import { User } from 'src/app/models/user/user';
 
 @Component({
   selector: 'app-feedback',

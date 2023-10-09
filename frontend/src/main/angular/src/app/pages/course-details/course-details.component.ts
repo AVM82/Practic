@@ -32,6 +32,7 @@ export class CourseDetailsComponent implements OnInit {
   reports: StudentReport[][]=[];
   slug: string='';
   practices: Practice[] = [];
+  student: boolean = false;
 
   constructor(
       private coursesService: CoursesService,
@@ -42,38 +43,23 @@ export class CourseDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.setPractices();
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug');
 
       if(slug) {
         this.slug = slug;
-        this.coursesService.getCourse(slug).subscribe(course =>
-        {
-          this.course = course;
-          this.coursesService.getChapters(slug).subscribe(chapters =>
-          {
-            this.chapters = chapters;
-            this.setChapterVisibility();
-          });
-          this.reportService.getAllActualReports(slug).subscribe(reports => {
+        this.student = this.tokenStorageService.isStudent(slug);
+        if (this.student)
+          this.setPractices();
+        this.coursesService.getChapters(slug).subscribe(chapters =>
+            this.chapters = chapters
+        );
+        this.reportService.getAllActualReports(slug).subscribe(reports => {
             if (reports) {
               this.reports.push(...reports);
               this.reports = [...this.reports];
             }
-          });
         });
-      }
-    })
-  }
-
-  private setChapterVisibility() :void {
-    this.coursesService.getOpenChapters().subscribe({
-      next: chapters => {
-        this.coursesService.setVisibleChapters(this.chapters, chapters);
-      },
-      error: error => {
-        console.error('Помилка при запиті доступних глав', error);
       }
     })
   }

@@ -37,6 +37,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @ToString
 public class PersonEntity implements UserDetails {
 
+    private static final long serialVersionUID = 2865461614246570865L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;

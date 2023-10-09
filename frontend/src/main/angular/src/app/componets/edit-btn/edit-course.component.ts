@@ -1,6 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { CreationEditCourseCapabilityService } from "src/app/services/creation-edit-course.capability.service";
+import { ActivatedRoute } from "@angular/router";
+import { Observable } from "rxjs";
+import { TokenStorageService } from "src/app/services/auth/token-storage.service";
 
 @Component({
     selector: 'app-edit-btn',
@@ -11,19 +13,24 @@ import { CreationEditCourseCapabilityService } from "src/app/services/creation-e
   })
 export class EditBtnComponent implements OnInit {
     editMode: boolean = false;
-    showEditCapability: boolean = false;
+    slug: string = '';
   
     constructor(
-        private creationEditCourseCapabilityService: CreationEditCourseCapabilityService
-    ) {
-        this.showEditCapability = creationEditCourseCapabilityService.hasCapability();
-    }
+        private tokenStorageService: TokenStorageService,
+        private route: ActivatedRoute
+    ) {}
 
     ngOnInit(): void {
-        this.editMode = this.creationEditCourseCapabilityService.getEditMode();
+        this.route.paramMap.subscribe(params => {
+            this.slug = params.get('slug')!;
+        })
     }
 
     changeMode(): void {
         this.editMode = !this.editMode;
+    }
+
+    showEditCapability(): Observable<boolean> {
+        return this.tokenStorageService.isMentor(this.slug, true);        
     }
 }

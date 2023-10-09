@@ -1,7 +1,7 @@
 .chapter-header {
     min-height: 80px;
     display: flex;
-    background-color: #e8ffef;
+    background-color: #30BE70;
     justify-content: space-between;
     padding: 10px;
     padding-left: 20px;
@@ -74,7 +74,7 @@
 }
 
 .subchapter-header:hover {
-    background-color: #e8f8e8; /* Зміна тону фону при наведенні */
+    background-color: #a9e0a9; /* Зміна тону фону при наведенні */
 }
 
 .horizontal-line {

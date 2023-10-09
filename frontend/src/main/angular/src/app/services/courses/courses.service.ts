@@ -1,35 +1,65 @@
 import {Injectable} from '@angular/core';
 import {Course} from "../../models/course/course";
 import {HttpClient} from "@angular/common/http";
-import {catchError, Observable, of} from "rxjs";
+import {catchError, map, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getCourseUrl, getChaptersUrl, getLevelsUrl, getMaterialsUrl} from "../../enums/api-urls";
+import {ApiUrls, getCourseUrl, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getDescriptionUrl, getMentorsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
+import { User } from 'src/app/models/user/user';
+
+const requestTextResponse: Object = {
+  responseType: 'text'
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoursesService {
+  selectedCourse!: Observable<Course>;
+  levels: Observable<Level[]> | undefined;
+  chapters: Observable<Chapter[]> | undefined;
+  slug: string = '';
 
   constructor(
       private http: HttpClient,
       private _router: Router
       ) {}
 
-  getCourse(slug: string): Observable<Course> {
-    return this.http.get<Course>(getCourseUrl(slug)).pipe(
-        catchError(this.handleError<Course>(`get course = ${slug}`))
-    )
+  setCourse(slug: string): void {
+    if (slug !== this.slug) {
+      console.log(this.slug, ' -> ', slug);
+      this.slug = slug;
+      this.selectedCourse = this.http.get<Course>(getCourseUrl(slug));
+      this.chapters = undefined;
+      this.levels = undefined;
+        console.log('this course : ', this.selectedCourse);
+        console.log('this levels : ', this.levels);
+        console.log('this chapters : ', this.chapters);
+    }
   }
 
+  getCourse(slug: string): Observable<Course> {
+    this.setCourse(slug);
+    return this.selectedCourse;
+  }
+
+
   getChapters(slug: string): Observable<Chapter[]> {
-    return this.http.get<Chapter[]>(getChaptersUrl(slug));
+    this.setCourse(slug);
+    if (!this.chapters)
+      this.chapters = this.http.get<Chapter[]>(getChaptersUrl(slug));
+    return this.chapters;
+    //return this.http.get<Chapter[]>(getChaptersUrl(slug));
   }
 
   getLevels(slug:string):Observable<Level[]>{
-    return this.http.get<Level[]>(getLevelsUrl(slug))
+    this.setCourse(slug);
+    if (!this.levels)
+      this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
+    return this.levels;
+    //return this.http.get<Level[]>(getLevelsUrl(slug))
   }
 
   openChapter(studentId: number, chapterId: number): Observable<any> {
@@ -42,7 +72,7 @@ export class CoursesService {
 
   setFirstChapterVisible(chapters: Chapter[]): void {
     if (chapters !==null && chapters.length > 1) {
-      chapters[0].isVisible = true;
+      chapters[0].visible = true;
     }
   }
 
@@ -56,7 +86,7 @@ export class CoursesService {
 
       for (const chapter of chapters) {
         if (openChapterMap.has(chapter.id)) {
-          chapter.isVisible = true;
+          chapter.visible = true;
         }
       }
     }
@@ -78,10 +108,14 @@ export class CoursesService {
     return this.http.get<AdditionalMaterials[]>(getMaterialsUrl(slug));
   }
 
+  getAdditionalMaterialsExist(slug: string): Observable<boolean> {
+    return this.http.get<boolean>(getMaterialsExistUrl(slug));
+  }
+
   postCourseInteractive(_slug: any,  _name: any, _svg: any): Observable<Course> {
     let course: Course = {
       id: 0,
-      chapters: [],
+      mentors: [],
       slug: _slug,
       name: _name,
       svg: _svg
@@ -93,8 +127,8 @@ export class CoursesService {
     return this.http.post<Course>(ApiUrls.NewCourseFromProperties, properties);
   }
 
-  postAdditionalChange(slug: string, id: number, checked: boolean) {
-
+  putAdditionalChange(slug: string, id: number, checked: boolean): Observable<boolean> {
+    return this.http.put<boolean>(getStudentAdditionalMaterialUrl(slug, id), checked);
   }
 
   
@@ -116,23 +150,15 @@ export class CoursesService {
     };
   }
 
-  setActiveChapter(chapters: Chapter[], chapterId: number) {
-    if (chapters
-        && chapters.length > 0
-        && chapters.some(chapter => chapter.number === chapterId)
-    ) {
-      this.resetAllChapters(chapters);
-      chapters.forEach(chapter => {
-        chapter.isActive = chapter.number === chapterId;
-      });
-    }
+  getDescription(slug: string): Observable<any> {
+    this.setCourse(slug);
+    return this.selectedCourse.pipe(map (course => course.description));
+    //return this.http.get<string>(getDescriptionUrl(slug), requestTextResponse);
   }
 
-  resetAllChapters(chapters: Chapter[]) {
-    if (chapters) {
-      chapters.forEach(chapter => {
-        chapter.isActive = false;
-      });
-    }
+  getMentors(slug: string): Observable<User[]> {
+    this.setCourse(slug);
+    return this.selectedCourse.pipe(map(course => course.mentors));
+    //return this.http.get<User[]>(getMentorsUrl(slug));
   }
 }

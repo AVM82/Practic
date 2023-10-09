@@ -1,12 +1,13 @@
-import {Chapter} from "./chapter";
+import { User } from "../user/user";
 
 export interface Course {
   id: number;
   inactive?: boolean;
-  authors?: string;
+  authors?: string[];
   courseType?: string;
   name: string;
   slug: string;
-  chapters: Chapter[];
+  mentors: User[];
   svg: string;
+  description?: string;
 }

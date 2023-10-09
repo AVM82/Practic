@@ -6,11 +6,12 @@ import {Chapter} from "../../models/course/chapter";
 import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatButtonModule} from "@angular/material/button";
+import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
 
 @Component({
   selector: 'app-course-navbar',
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, MatIconModule, MatButtonModule, RouterLink],
+  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink],
   templateUrl: './course-navbar.component.html',
   styleUrls: ['./course-navbar.component.css']
 })
@@ -23,7 +24,8 @@ export class CourseNavbarComponent implements OnInit {
   slug: string = '';
 
   constructor(
-      private coursesService: CoursesService,
+    private tokenStorageService:TokenStorageService,
+    private coursesService: CoursesService,
       private route: ActivatedRoute
   ) {
   }
@@ -35,36 +37,17 @@ export class CourseNavbarComponent implements OnInit {
 
       if (slug) {
         this.slug = slug;
-        this.coursesService.getCourse(slug).subscribe(course => {
-          this.course = course;
-          this.coursesService.getChapters(slug).subscribe(chapters => {
-            this.showChaptersLink = chapters && chapters.length > 0;
-            this.setChapterVisibility();
-            if(chapterN !== 0) {
-              this.coursesService.setActiveChapter(chapters, chapterN);
-            }else{
-              this.coursesService.resetAllChapters(chapters);
-            }
-            this.chapters = chapters;
-          });
-          this.coursesService.getAdditionalMaterials(slug).subscribe(additionalMaterials => {
-            this.showAdditionalMaterials = additionalMaterials && additionalMaterials.length > 0;
-          });
+        this.coursesService.getChapters(slug).subscribe(chapters => {
+          this.chapters = chapters;
+          this.showChaptersLink = chapters && chapters.length > 0;
         });
+        this.coursesService.getAdditionalMaterialsExist(slug).subscribe(exist => 
+           this.showAdditionalMaterials = exist
+        );
       }
     })
   }
   
-  private setChapterVisibility() :void {
-    this.coursesService.getOpenChapters().subscribe( {
-      next: chapters => {
-        this.coursesService.setVisibleChapters(this.chapters, chapters);
-      },
-      error: error => {
-        console.error('Помилка при запиті доступних глав', error);
-      }
-    })
-  }
 }
 
  

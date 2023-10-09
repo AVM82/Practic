@@ -16,6 +16,7 @@ import {Practice} from "../../models/practice/practice";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
 import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-chapter-details',
@@ -26,15 +27,17 @@ import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility
   styleUrls: ['./chapter-details.component.css']
 })
 export class ChapterDetailsComponent implements OnInit {
+  slug: string = '';
     chapter?: Chapter ;
     showPartNumber: boolean = false;
     practices: Practice[] = [];
+    isStudent: boolean = false;
 
   constructor(
       private chaptersService: ChaptersService,
       private route: ActivatedRoute,
       private messagesService: InfoMessagesService,
-      private tokenStorageService: TokenStorageService
+      private tokenStorageService: TokenStorageService,
   ) {}
 
   ngOnInit(): void {
@@ -43,14 +46,24 @@ export class ChapterDetailsComponent implements OnInit {
       const chapterN =  Number(params.get('chapterN'));
 
       if(slug && chapterN) {
-          this.updatePractices();
-          this.chaptersService.getChapter(slug, chapterN).subscribe(chapter =>
-        {
-          this.chapter = chapter;
-          this.showPartNumber = chapter.parts.length > 1;
-        });
+          this.slug = slug;
+          this.isStudent = this.tokenStorageService.isStudent(slug);
+          if (this.isStudent)
+            this.updatePractices();
+          this.chaptersService.getChapter(slug, chapterN).subscribe(chapter => {
+              this.chapter = chapter;
+              this.showPartNumber = chapter.parts.length > 1;
+          });
       }
     })
+  }
+
+  isMentor(): Observable<boolean> {
+    return this.tokenStorageService.isMentor(this.slug, true);        
+  }
+
+  showApplyButton() {
+    return this.tokenStorageService.neitherStudentNorMentor(this.slug);
   }
 
   setPractices() {

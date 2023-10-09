@@ -25,10 +25,9 @@ public class CourseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
-
     boolean inactive;
 
-    String authors;
+    Set<String> authors;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     Set<PersonEntity> mentors = new HashSet<>();
@@ -37,9 +36,6 @@ public class CourseEntity {
 
     @Min(5)
     String name;
-
-    @Column(length = 1024)
-    String purpose;
 
     @NotBlank
     @Column(length = 8192)
@@ -66,6 +62,7 @@ public class CourseEntity {
 
     @Column(length = 16384)
     String svg;
+
 
     public CourseEntity() {}
 
@@ -97,12 +94,12 @@ public class CourseEntity {
     }
 
 
-    public String getAuthors() {
+    public Set<String> getAuthors() {
         return authors;
     }
 
 
-    public void setAuthors(String authors) {
+    public void setAuthors(Set<String> authors) {
         this.authors = authors;
     }
 
@@ -144,16 +141,6 @@ public class CourseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    public String getPurpose() {
-        return purpose;
-    }
-
-
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
     }
 
 

@@ -12,8 +12,6 @@ import jakarta.persistence.Table;
 @Table(name = "role")
 public class RoleEntity {
 
-    private static final long serialVersionUID = 2978243562527482541L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
@@ -22,8 +20,7 @@ public class RoleEntity {
     private String name;
 
 
-    public RoleEntity() {
-    }
+    public RoleEntity() {}
 
 
     public RoleEntity(String name) {
@@ -49,7 +46,5 @@ public class RoleEntity {
     public void setName(String name) {
         this.name = name;
     }
-
-
 
 }

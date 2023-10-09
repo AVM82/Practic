@@ -13,17 +13,17 @@ public interface StudentOnCourseRepository extends JpaRepository<StudentOnCourse
 
     List<StudentOnCourseEntity> findAllByInactiveAndBan(boolean inactive, boolean ban);
 
-    List<StudentOnCourseEntity> findAllByCourseAndStudentAndInactiveAndBan(
+    StudentOnCourseEntity findByCourseAndStudentAndInactiveAndBan(
             CourseEntity courseEntity, PersonEntity personEntity, boolean inactive, boolean ban);
 
     List<StudentOnCourseEntity> findAllByStudentAndInactiveAndBan(PersonEntity personEntity,
-                                                                  boolean inactive, boolean ban);
+            boolean inactive, boolean ban);
 
     List<StudentOnCourseEntity> findAllByCourseAndInactiveAndBan(CourseEntity courseEntity,
-                                                                 boolean inactive, boolean ban);
+            boolean inactive, boolean ban);
 
-    List<StudentOnCourseEntity>
-            findAllByBanFalseAndInactiveFalseAndActiveChapter_Number(int chapterNumber);
+    List<StudentOnCourseEntity> findAllByBanFalseAndInactiveFalseAndActiveChapter_Number(
+            int chapterNumber);
 
     StudentOnCourseEntity findByStudentId(Long studentId);
 

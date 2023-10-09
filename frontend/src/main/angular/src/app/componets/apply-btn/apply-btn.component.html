@@ -1,4 +1,4 @@
-<div class="apply-button-container" *ngIf="!isApply">
+<div class="apply-button-container" *ngIf="show() | async">
     <button
             class="apply-button"
             (click)="onApplyClick()"

@@ -4,6 +4,7 @@ import {AuthService} from "../../services/auth/auth.service";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ActivatedRoute} from "@angular/router";
 import {InfoMessagesService} from "../../services/info-messages.service";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-apply-btn',
@@ -13,7 +14,6 @@ import {InfoMessagesService} from "../../services/info-messages.service";
   styleUrls: ['./apply-btn.component.css']
 })
 export class ApplyBtnComponent implements OnInit {
-  isApply: boolean = false;
   courseSlug: string = '';
   
   constructor(
@@ -26,20 +26,18 @@ export class ApplyBtnComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug');
-      if(slug) {
-        this.courseSlug = slug;
-        this.isApply = this.tokenStorageService.isStudent(slug);
-      }
+      this.courseSlug = params.get('slug')!;
     });
+  }
 
+  show(): Observable<boolean> {
+    return this.tokenStorageService.neitherStudentNorMentor(this.courseSlug);
   }
 
   onApplyClick() {
     this.authService.applyOnCourse(this.courseSlug).subscribe({
       next: user => {
         this.tokenStorageService.saveUser(user);
-        this.isApply = true;
         this.messagesService.showMessage("Заявка прийнята", "normal")
       },
       error: error => {
