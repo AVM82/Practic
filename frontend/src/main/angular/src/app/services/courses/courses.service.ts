@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Course} from "../../models/course/course";
 import {HttpClient} from "@angular/common/http";
-import {catchError, map, Observable, of} from "rxjs";
+import {map, Observable, of} from "rxjs";
 import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getCourseUrl, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getDescriptionUrl, getMentorsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl} from "../../enums/api-urls";
+import {ApiUrls, getCourseUrl, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl, getActiveChapterNumber} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
 import { User } from 'src/app/models/user/user';
@@ -161,4 +161,11 @@ export class CoursesService {
     return this.selectedCourse.pipe(map(course => course.mentors));
     //return this.http.get<User[]>(getMentorsUrl(slug));
   }
+
+  getActiveChapterNumber(slug: string): any {
+    this.http.get<Number>(getActiveChapterNumber(slug)).subscribe(response => {
+      console.log('active chapter : ', response);
+      return response });
+  }
+
 }

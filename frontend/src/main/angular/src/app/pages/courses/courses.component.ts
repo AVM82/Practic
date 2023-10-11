@@ -7,7 +7,6 @@ import {MatIconModule} from "@angular/material/icon";
 import {AngularSvgIconModule, SvgIconRegistryService} from 'angular-svg-icon';
 import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
 import { CourseProp } from 'src/app/models/course/course.prop';
-import { Observable, of } from 'rxjs';
 
 @Component({
     selector: 'app-courses',

@@ -6,7 +6,6 @@ import {Chapter} from "../../models/course/chapter";
 import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatButtonModule} from "@angular/material/button";
-import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
 
 @Component({
   selector: 'app-course-navbar',
@@ -22,6 +21,7 @@ export class CourseNavbarComponent implements OnInit {
   showChaptersLink: boolean = false;
   showAdditionalMaterials: boolean = false;
   slug: string = '';
+  currentChapter: number = 0;
 
   constructor(
     private coursesService: CoursesService,
@@ -32,7 +32,7 @@ export class CourseNavbarComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug')
-      const chapterN = Number(params.get('chapterN')) | 0;
+      this.currentChapter = Number(params.get('chapterN')) | 0;
 
       if (slug) {
         this.slug = slug;

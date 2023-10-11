@@ -64,7 +64,7 @@ export class TokenStorageService {
 
   public isStudent(slug: string): boolean {
     const me = this.getMe();
-    return me ? me.hasApplyOnCourse(slug) : false;
+    return me?.hasApplyOnCourse(slug);
   }
 
   public isAnyAdvancedRole(slug: string,): Observable<boolean> {
@@ -77,7 +77,7 @@ export class TokenStorageService {
     const me = this.getMe();
     return me && this.coursesService.getMentors(slug).pipe(
                     map<User[], boolean>(mentors => {
-                      return (mentors != null && mentors.some(mentor => mentor.id === me.id)) == such;
+                      return mentors?.some(mentor => mentor.id === me.id) == such;
                     })
                 );
   }
@@ -88,6 +88,6 @@ export class TokenStorageService {
 
   public haveIAnyRole(roles: string[]): boolean {
     const me = this.getMe();
-    return me ? me.hasAnyRole(...roles) : false;
+    return me?.hasAnyRole(...roles);
   }
 }

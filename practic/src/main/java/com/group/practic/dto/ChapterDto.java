@@ -21,7 +21,7 @@ public class ChapterDto {
     public ChapterDto() {}
 
 
-    public ChapterDto(int number, String shortName, boolean visible, boolean active) {
+    public ChapterDto(int number, String shortName, boolean visible) {
         this.number = number;
         this.shortName = shortName;
         this.visible = visible;

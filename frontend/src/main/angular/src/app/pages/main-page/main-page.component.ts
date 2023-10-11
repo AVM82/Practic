@@ -3,7 +3,6 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { ApplyBtnComponent } from "src/app/componets/apply-btn/apply-btn.component";
 import { CourseNavbarComponent } from "src/app/componets/course-navbar/course-navbar.component";
 import { EditBtnComponent } from "src/app/componets/edit-btn/edit-course.component";
-import { ReferenceTitle } from "src/app/models/reference/referenceTitle";
 import { CoursesService } from "src/app/services/courses/courses.service";
 
 @Component({
@@ -27,17 +26,12 @@ export class MainPageComponent implements OnInit {
             if(slug) {
                 this.coursesService.getCourse(slug).subscribe(course => {
                     this.name = course.name;
-                    const author = document.getElementById('author');
-                    if (course.authors && author) {
-                        let many = course.authors.length > 1;
-                        author.innerHTML = 'Автор' + (many ? 'и' : '') + ' : ' + (many ? this.makeAuthorsList(course.authors!) : this.makeA(course.authors![0]));
-                    }
+                    if (course.authors)
+                        document.getElementById('author')!.innerHTML = 'Автор' + (course.authors.length > 1 ? 'и' : '') + ' : ' + this.makeAuthorsList(course.authors!);
                 });
-                this.coursesService.getDescription(slug).subscribe(description => {
-                    const part = document.getElementById('page');
-                    if (part) 
-                        part.innerHTML = description;
-                });
+                this.coursesService.getDescription(slug).subscribe(description =>
+                    document.getElementById('page')!.innerHTML = description
+                );
             }
         });
     }
@@ -48,7 +42,7 @@ export class MainPageComponent implements OnInit {
     }
 
     makeAuthorsList(authors: string[]): string {
-        var list: string[] = [];
+        let list: string[] = [];
         authors.forEach(author => list.push(this.makeA(author)));
         return list.join(', ');
     }
