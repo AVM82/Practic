@@ -6,8 +6,8 @@ import {RouterLink} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {AngularSvgIconModule, SvgIconRegistryService} from 'angular-svg-icon';
 import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
-import { ApiUrls, getActiveChapterNumber, getCourseUrl, getDescriptionUrl } from 'src/app/enums/api-urls';
 import { CourseProp } from 'src/app/models/course/course.prop';
+import { Observable, of } from 'rxjs';
 
 @Component({
     selector: 'app-courses',
@@ -30,23 +30,24 @@ export class CoursesComponent implements OnInit{
       if (courses) {
         courses.forEach(course => {
           this.svg_registry.addSvg(course.slug, course.svg);
-          this.coursesProp.push(new CourseProp (
-            course.name,
-            course.slug,
-            this.getRoute(course.slug) ));
-        });
+          this.tokenStorageService.isMentor(course.slug, true).subscribe(isMentor => {
+            let route;
+            if (isMentor)
+                route = 'courses/' + course.slug;
+            else
+              route = (this.tokenStorageService.isStudent(course.slug)
+                  ? 'courses/' + course.slug + '/chapters/' + this.coursesService.getActiveChapterNumber(course.slug)
+                  : 'courses/' + course.slug + '/main'); 
+            this.coursesProp.push(new CourseProp (
+              course.name,
+              course.slug,
+              route
+             ))
+          });
+        })
       }
+      console.log(this.coursesProp);
     });
-  }
-
-  getRoute(slug: string): string {
-    if (this.tokenStorageService.isMentor(slug, true))
-      return getCourseUrl(slug);
-    else
-      if (this.tokenStorageService.isStudent(slug))
-        return getActiveChapterNumber(slug);
-      else
-        return getDescriptionUrl(slug);
   }
   
 }
