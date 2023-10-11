@@ -51,7 +51,6 @@ export class CoursesService {
     if (!this.chapters)
       this.chapters = this.http.get<Chapter[]>(getChaptersUrl(slug));
     return this.chapters;
-    //return this.http.get<Chapter[]>(getChaptersUrl(slug));
   }
 
   getLevels(slug:string):Observable<Level[]>{
@@ -59,7 +58,6 @@ export class CoursesService {
     if (!this.levels)
       this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
     return this.levels;
-    //return this.http.get<Level[]>(getLevelsUrl(slug))
   }
 
   openChapter(studentId: number, chapterId: number): Observable<any> {
@@ -79,11 +77,9 @@ export class CoursesService {
   setVisibleChapters(chapters: Chapter[], openChapters: Chapter[]): void {
     if (chapters && openChapters) {
       const openChapterMap = new Map<number, Chapter>();
-
       for (const openChapter of openChapters) {
         openChapterMap.set(openChapter.id, openChapter);
       }
-
       for (const chapter of chapters) {
         if (openChapterMap.has(chapter.id)) {
           chapter.visible = true;
@@ -153,18 +149,15 @@ export class CoursesService {
   getDescription(slug: string): Observable<any> {
     this.setCourse(slug);
     return this.selectedCourse.pipe(map (course => course.description));
-    //return this.http.get<string>(getDescriptionUrl(slug), requestTextResponse);
   }
 
   getMentors(slug: string): Observable<User[]> {
     this.setCourse(slug);
     return this.selectedCourse.pipe(map(course => course.mentors));
-    //return this.http.get<User[]>(getMentorsUrl(slug));
   }
 
   getActiveChapterNumber(slug: string): any {
-    this.http.get<Number>(getActiveChapterNumber(slug)).subscribe(response => {
-      console.log('active chapter : ', response);
+    this.http.get<number>(getActiveChapterNumber(slug)).subscribe(response => {
       return response });
   }
 
