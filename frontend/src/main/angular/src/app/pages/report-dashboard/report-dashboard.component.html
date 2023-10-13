@@ -1,8 +1,5 @@
-<app-course-navbar></app-course-navbar>
-<mat-card style="height: 40px; display: flex;justify-content: center;text-align: right;">
-    <mat-card-content>
-        <button mat-button style="background-color:#F2A028; color: black;" (click)="openDialog()">Додати доповідь</button>
-    </mat-card-content>
+<mat-card class="top-line">
+  <mat-card-content class="report-button" (click)="openDialog()" >Додати доповідь</mat-card-content>
 </mat-card>
 <chapter-reports *ngFor="let chapter of reports; let i = index"
                  [studentReports]="chapter"

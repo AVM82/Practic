@@ -49,4 +49,19 @@ public class PersonApplicationService {
                 personApplicationRepository.findAllByIsApply(false);
         return applicants.stream().map(Converter::convert).toList();
     }
+
+    public PersonApplicationEntity getApplicationByPersonAndCourse(
+            PersonEntity person,
+            String courseSlug
+    ) {
+        Optional<CourseEntity> course = courseRepository.findBySlug(courseSlug);
+
+        if (course.isPresent()) {
+            return personApplicationRepository.findByPersonAndCourse(person, course.get());
+        } else  {
+            throw new ResourceNotFoundException("Course", "slug", courseSlug);
+        }
+
+
+    }
 }

@@ -9,8 +9,7 @@
 .feedback-card {
     border: 2px solid #acabab;
     border-radius: 10px;
-    padding: 5px;
-    margin: 20px;
+    margin: 10px;
     width: 1000px; 
     height: 200;
     display: flex;
@@ -43,16 +42,33 @@
   right: 55px;
 }
 
+.sort-button {
+  background-color: #27AE60;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  position: absolute;
+  top: 35px; 
+  right: 255px;
+  height: 42px;
+  width: 42px;
+}
+
+
+
   .user-info{
     display: table-column-group;
     text-align: center;
     margin: 6px;
+    min-width: 180px;
+
   }
  
   .username{
     white-space: nowrap;
     font-size: 17px;
-    margin: 6px;
+    margin: 12px;
     }
 
     .date{
@@ -60,17 +76,21 @@
       font-size: 14px;
       margin: 6px;
     }
+
     .card-info{
       display: table-cell;
     }
+
    .feedback-message {
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    margin-top: 50px;
+    margin-top: 15px;
     margin-right: 40px;
+    border: 2px ;
     font-size: 18px;
+    height: 80px;
   }
 
   h1{
@@ -88,8 +108,9 @@
     align-items: center;
     text-align: right; 
     user-select: none;
-    margin-top: 10px;
-    margin-left: 770px;
+    margin-top: 5px;
+    margin-bottom:0 ;
+    margin-left: 743px;
   }
 
   .like-button{
@@ -99,3 +120,21 @@
     cursor: pointer;
     margin-top: 1px;
   }
+
+.delete{
+  visibility: hidden;
+  margin-top: 9px;
+  margin-left: 764px;
+
+}
+
+.delete.visible {
+  visibility: visible;
+}
+
+.delete-button{
+  background-color: transparent;
+  border: none;
+   box-shadow: none;
+  cursor: pointer;
+}

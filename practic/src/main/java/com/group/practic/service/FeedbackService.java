@@ -3,6 +3,7 @@ package com.group.practic.service;
 import com.group.practic.dto.FeedbackDto;
 import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
 import com.group.practic.repository.PersonRepository;
 import java.time.LocalDateTime;
@@ -21,14 +22,31 @@ public class FeedbackService {
     @Autowired
     PersonRepository personRepository;
 
-    public List<FeedbackEntity> getAllFeedbacks() {
+    public List<FeedbackEntity> getAllFeedbacks(FeedbackSortState sortState) {
         ArrayList<FeedbackEntity> list = new ArrayList<>(repository.findAll());
         list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
+        return getSortFeedbackList(list, sortState);
+    }
+
+    private List<FeedbackEntity> getSortFeedbackList(
+            ArrayList<FeedbackEntity> list, FeedbackSortState sortState) {
+        switch (sortState) {
+            case DATE_ASCENDING ->
+                    list.sort(Comparator.comparing(FeedbackEntity::getDateTime).reversed());
+            case RATING_DESCENDING ->
+                    list.sort(Comparator.comparing(FeedbackEntity::getLikes));
+            case RATING_ASCENDING ->
+                    list.sort(Comparator.comparing(FeedbackEntity::getLikes).reversed());
+            default ->
+                    list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
+        }
         return list;
     }
 
+
     public FeedbackEntity addFeedback(FeedbackDto feedbackDto) {
         String email = feedbackDto.getEmail();
+
         PersonEntity person = personRepository.findPersonEntityByEmail(email).orElse(null);
         if (email.isEmpty() || person == null) {
             throw new NullPointerException();
@@ -36,9 +54,7 @@ public class FeedbackService {
         FeedbackEntity feedback = new FeedbackEntity(person, feedbackDto.getFeedback(), 0);
         feedback.setDateTime(LocalDateTime.now());
         repository.save(feedback);
-
         return feedback;
-
     }
 
     public FeedbackEntity incrementLikeAndSavePerson(Long idFeedback, Long idPerson) {
@@ -69,6 +85,16 @@ public class FeedbackService {
                 repository.save(feedbackEntity);
                 return feedbackEntity;
             }
+        }
+        return null;
+    }
+
+    public FeedbackEntity deleteFeedback(Long idFeedback) {
+        FeedbackEntity feedback = repository.findById(idFeedback).orElse(null);
+        if (feedback != null) {
+            feedback.setLikedByPerson(null);
+            repository.delete(feedback);
+            return feedback;
         }
         return null;
     }

@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
@@ -13,6 +13,14 @@ import * as _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 import 'moment/locale/uk';
+
+import {CoursesService} from "../../services/courses/courses.service";
+import { BehaviorSubject } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { TopicReportService } from '../../services/topic-report.service';
+import { Observable } from 'rxjs';
+
 
 const moment = _rollupMoment || _moment;
 
@@ -39,7 +47,8 @@ export const MY_FORMATS = {
             deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
         },
         {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-        {provide: MAT_DATE_LOCALE, useValue: 'uk'}
+        { provide: MAT_DATE_LOCALE, useValue: 'uk' },
+        AsyncPipe
     ],
 
     standalone: true,
@@ -54,10 +63,11 @@ export const MY_FORMATS = {
         MatInputModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        DatePipe
+        DatePipe,
+        CommonModule
     ],
 })
-export class NewReportDialogComponent {
+export class NewReportDialogComponent implements OnInit{
     minDate: Date;
     maxDate: Date;
     date = new FormControl(moment(), Validators.required);
@@ -69,11 +79,16 @@ export class NewReportDialogComponent {
         Validators.maxLength(100)
     ]));
     dateStr: string = '';
+    openChapters$ = new BehaviorSubject<number[]>([]);
+    activeChapter:number = 1;
+    topicsReport$: Observable<{ topic: string }[]> = new BehaviorSubject<{ topic: string }[]>([]);
 
-    constructor(
+        constructor(
         public dialogRef: MatDialogRef<NewReportDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public newStudentReport: NewStudentReport,
         @Inject(MAT_DIALOG_DATA) public data: any,
+        private coursesService: CoursesService,
+        private topicReportService: TopicReportService
     ) {
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth();
@@ -81,6 +96,58 @@ export class NewReportDialogComponent {
         this.minDate = new Date(currentYear, currentMonth, currentDay);
         this.maxDate = new Date(currentYear, currentMonth, currentDay + 14);
         moment.locale('uk');
+    }
+
+    ngOnInit(): void {
+        this.getOpenChapters();
+
+        this.openChapters$.subscribe(chapters => {
+            if (chapters.length > 0) {
+                this.activeChapter = chapters[chapters.length - 1];
+                this.initTopicsReports();
+            }
+        });
+    }
+
+      updateActiveChapter(selectChapter:number){
+        this.activeChapter=selectChapter;
+        this.initTopicsReports();
+      }
+
+    getOpenChapters(): void {
+
+        this.coursesService.getOpenChapters().subscribe({
+          next: chapters => {
+            const ids = chapters.map(chapter => chapter.id).sort((a, b) => a - b);
+            this.openChapters$.next(ids);
+
+          },
+          error: error => {
+            console.error('Помилка при запиті доступних глав', error);
+            this.openChapters$.next([]);
+          }
+        });
+      }
+
+    initTopicsReports(){
+        console.log(this.
+            activeChapter+" new student chapt");
+        this.topicReportService.getTopicsReportsOnChapter(this.activeChapter).subscribe({
+            next: topics => {
+                const topicsReports = topics.map((topic:any) => topic.topic);
+               (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
+            },
+            error: error => {
+              console.error('Помилка при отриманні доступних тем доповіді', error);
+              (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next([]);
+            }
+          });
+    }
+
+
+    getnewStudentReport():NewStudentReport{
+        this.newStudentReport.chapter=this.activeChapter;
+        return this.newStudentReport;
     }
 
     onNoClick(): void {

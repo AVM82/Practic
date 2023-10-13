@@ -8,13 +8,14 @@ import { MatPaginatorModule,MatPaginator } from '@angular/material/paginator';
 import { MatTableModule,MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {User} from "../../services/auth/auth.service";
+import {User, UserRole} from "../../services/auth/auth.service";
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-feedback',
   standalone: true,
   imports: [CommonModule, HttpClientModule,MatDialogModule,MatPaginatorModule,
-    MatTableModule,MatIconModule],
+    MatTableModule,MatIconModule,MatMenuModule],
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.css']
 })
@@ -28,8 +29,10 @@ export class FeedbackComponent implements OnInit {
   loading: boolean = false;
   loadingIncremend: boolean = false;
   loadingDecremend: boolean = false;
-
-  constructor(private feedbackService: FeedbackService, private dialog: MatDialog,private tokenStorageService:TokenStorageService) { }
+  feedbackSortedState : string = "DATE_DESCENDING";
+  roles : UserRole[] = [];
+  constructor(private feedbackService: FeedbackService, 
+    private dialog: MatDialog,private tokenStorageService:TokenStorageService) { }
   
 
   ngOnInit(): void {
@@ -38,14 +41,20 @@ export class FeedbackComponent implements OnInit {
       if (token) {
         const user: User = this.tokenStorageService.getUser();
         this.id = user.id;
+        this.roles = user.roles;
       }
   }
 
   updateData():void{
-    this.feedbackService.getFeedbacks().subscribe(data => {
+    this.feedbackService.getFeedbacks(this.feedbackSortedState).subscribe(data => {
       this.feedbacks = data;
       this.dataSource = new MatTableDataSource<any>(this.feedbacks);
     });
+  }
+
+  sortData(sortState: string) {
+    this.feedbackSortedState = sortState;
+    this.updateData();
   }
 
   openFeedbackDialog(): void {
@@ -142,5 +151,26 @@ export class FeedbackComponent implements OnInit {
   getDate(feedback: any):string{
     const date = new Date(feedback.dateTime);
     return date.toLocaleDateString();
+  }
+
+
+  deleteFeedback(feedback:any){
+      console.log("click feedback button");
+      
+      const id =  feedback.id;
+      console.log("id feedback :"+ id);
+      
+      this.feedbackService.deleteFeedback(id).subscribe(response=>{
+        console.log("feedback delete",response);
+        this.updateData();
+      },error=>{console.error("feedback not delete:",error);
+      });
+    
+  }
+
+  isCreatorOrAdmin(feedback:any):boolean{
+    const studentId =feedback.student.id;
+    const hasUserRole = this.roles.some(role => role.name === "ADMIN");
+    return(studentId==this.id||hasUserRole) ;  
   }
 }

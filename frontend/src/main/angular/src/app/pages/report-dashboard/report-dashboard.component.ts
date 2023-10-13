@@ -32,7 +32,8 @@ import {User} from "../../services/auth/auth.service";
         CourseNavbarComponent,
         MatButtonModule,
     ],
-    templateUrl: './report-dashboard.component.html'
+    templateUrl: './report-dashboard.component.html',
+    styleUrls: ['./report-dashboard.component.css']
 })
 export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     reports: StudentReport[][] = [];
@@ -61,15 +62,20 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
             console.log(slug)
-            if (slug) {
+             if (slug) {
+            this.updateData(slug)}
+        });
+    }
+
+    updateData(slug:string):void{
+
                 this.loadLevels(slug);
                 this.loadChapters(slug);
                 this.loadReports(slug);
                 this.loadTimeSlots(slug);
                 this.createTimeSlots(slug)
-            }
-        });
     }
+
 
     loadReports(slug: string): void {
         this.reportService.getAllActualReports(slug).subscribe(reports => {
@@ -82,6 +88,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
 
     loadChapters(slug: string): void {
         this.coursesService.getChapters(slug).subscribe(chapters => {
+
             this.chapters = chapters;
             console.log(this.chapters)
         });
@@ -109,8 +116,8 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
-                height: '60%',
-                width: '50%',
+                height: '420px',
+                width: '800px',
                 data: {
                     chapters: this.chapters,
                     timeslots: this.timeslots

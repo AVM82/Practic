@@ -1,7 +1,17 @@
-.create-report-btn-panel {
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    text-align: right;
+.report-button {
+    background-color: #27AE60;
+    color: #fff;
+    border: none;
+    font-size: 19px;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 160px;
+    text-align: center;
+    margin: 5px;
+    line-height: 20px;
+}
 
+.top-line{
+    display: flex;
+    align-items: end;
 }

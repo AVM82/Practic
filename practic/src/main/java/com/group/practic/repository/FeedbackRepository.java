@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface FeedbackRepository extends JpaRepository<FeedbackEntity, Long> {
 
+    void deleteById(long id);
+
     @Modifying
     @Transactional
     @Query("UPDATE FeedbackEntity f SET f.likes = f.likes + 1 WHERE f.id = :id")
