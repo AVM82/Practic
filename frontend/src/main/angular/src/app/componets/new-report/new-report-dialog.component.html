@@ -8,7 +8,7 @@
              [max]="maxDate"
              [matDatepicker]="picker"
              [formControl]="date"
-             [(ngModel)]="newStudentReport.date">
+             [(ngModel)]="newStudentReport.date" >
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
@@ -16,7 +16,8 @@
   <div class="date-field">
     <mat-label>Час</mat-label>
     <mat-form-field appearance="outline" style="align-items: center">
-      <mat-select [(ngModel)]="newStudentReport.timeslotId">
+      <mat-select [(ngModel)]="newStudentReport.timeslotId"
+                  [formControl]="timeslot">
       <mat-option *ngFor="let timeslot of getTimeslots(newStudentReport.date);"
                   [value]="timeslot.id">{{formatTime(timeslot.time)}}</mat-option>
       </mat-select>
@@ -27,8 +28,9 @@
   <div class="chapter-field">
     <mat-label>Розділ</mat-label>
     <mat-form-field appearance="outline" style="width: 100px;">
-      <mat-select [(ngModel)]="newStudentReport.chapter">
-        <mat-option *ngFor="let chapter of chaptersList.chapters; let i = index"
+      <mat-select [(ngModel)]="newStudentReport.chapter"
+                  [formControl]="chapter">
+        <mat-option *ngFor="let chapter of data.chapters; let i = index"
                     [value]="chapter.id">{{i + 1}}</mat-option>
       </mat-select>
     </mat-form-field>
@@ -37,7 +39,10 @@
   <div class="title-field">
     <mat-label>Тема доповіді</mat-label>
     <mat-form-field appearance="outline" style="width: 640px; height: 100px">
-      <input matInput [(ngModel)]="newStudentReport.title">
+     <textarea matInput style="white-space: pre-wrap; overflow-y: auto;"
+               [(ngModel)]="newStudentReport.title"
+               [formControl]="title">
+  </textarea>
     </mat-form-field>
   </div>
 </div>

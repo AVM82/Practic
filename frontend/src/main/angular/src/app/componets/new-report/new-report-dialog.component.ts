@@ -2,21 +2,17 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatSelectModule} from "@angular/material/select";
 import {NewStudentReport} from "../../models/newStudentReport/newStudentReport";
-import {Chapter} from "../../models/course/chapter";
 import {DatePipe, NgForOf} from "@angular/common";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
-import {TimeSlot} from "../../models/timeSlot/time-slot";
 import * as _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 import 'moment/locale/uk';
-
-
 
 const moment = _rollupMoment || _moment;
 
@@ -43,7 +39,7 @@ export const MY_FORMATS = {
             deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
         },
         {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-        { provide: MAT_DATE_LOCALE, useValue: 'uk' }
+        {provide: MAT_DATE_LOCALE, useValue: 'uk'}
     ],
 
     standalone: true,
@@ -64,14 +60,20 @@ export const MY_FORMATS = {
 export class NewReportDialogComponent {
     minDate: Date;
     maxDate: Date;
-    date = new FormControl(moment());
+    date = new FormControl(moment(), Validators.required);
+    timeslot = new FormControl('', Validators.required);
+    chapter = new FormControl('', Validators.required);
+    title = new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(100)
+    ]));
     dateStr: string = '';
 
     constructor(
         public dialogRef: MatDialogRef<NewReportDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public newStudentReport: NewStudentReport,
-        @Inject(MAT_DIALOG_DATA) public chaptersList: { chapters: Chapter[] },
-        @Inject(MAT_DIALOG_DATA) public timeslotsMap: { timeslots: Map<string, TimeSlot[]> },
+        @Inject(MAT_DIALOG_DATA) public data: any,
     ) {
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth();
@@ -90,9 +92,10 @@ export class NewReportDialogComponent {
             this.dateStr = date.format('YYYY-MM-DD');
         }
         // @ts-ignore
-        return this.timeslotsMap.timeslots[this.dateStr];
+        return this.data.timeslots[this.dateStr];
     }
-    formatTime(timeValue:string): string {
+
+    formatTime(timeValue: string): string {
         const parts = timeValue.split(':');
         if (parts.length >= 2) {
             return `${parts[0]}:${parts[1]}`;
