@@ -10,7 +10,6 @@
   flex-direction: column;
   margin-right: 30px;
   margin-left: -20px;
-
   margin-top: 50px;
 }
 .chapter-field {
@@ -33,6 +32,7 @@
   font-size: 19px;
   cursor: pointer;
   border-radius: 5px;
+  margin-top: 10px;
 }
 
 .ok-button {
@@ -43,6 +43,7 @@ font-size: 19px;
 cursor: pointer;
 border-radius: 5px;
   margin-right: 10px;
+  margin-top: 10px;
 }
 
 
