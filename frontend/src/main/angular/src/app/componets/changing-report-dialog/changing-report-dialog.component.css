@@ -1,0 +1,17 @@
+.changing-title-field {
+    display: flex;
+    flex-direction: column;
+    white-space: pre-wrap;
+
+}
+.changing-date-field {
+    display: inline-flex;
+    flex-direction: column;
+    margin-right: 20px;
+    margin-top: 100px;
+}
+.changing-dialog-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

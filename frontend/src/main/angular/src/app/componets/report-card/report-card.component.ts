@@ -5,12 +5,26 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {RouterLink} from "@angular/router";
 import {ReportServiceService} from "../../services/report/report-service.service";
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {ChangingReportDialogComponent} from "../changing-report-dialog/changing-report-dialog.component";
+import {CancelingReportDialogComponent} from "../canceling-report-dialog/canceling-report-dialog.component";
+import {TimeSlot} from "../../models/timeSlot/time-slot";
+import {ReportDashboardComponent} from "../../pages/report-dashboard/report-dashboard.component";
 
 @Component({
     selector: 'report-card',
     standalone: true,
     templateUrl: './report-card.component.html',
-    imports: [CommonModule, NgFor, NgIf, MatIconModule, MatButtonModule, RouterLink, MatButtonModule, MatButtonModule, MatCardModule],
+    imports: [CommonModule,
+        NgFor,
+        NgIf,
+        MatIconModule,
+        MatButtonModule,
+        RouterLink,
+        MatButtonModule,
+        MatButtonModule,
+        MatCardModule,
+        MatDialogModule,],
     styleUrls: ['/report-card.component.css']
 })
 export class ReportCardComponent {
@@ -19,13 +33,18 @@ export class ReportCardComponent {
     @Input() studentName!: string
     @Input() dateValue!: string
     @Input() timeValue!: string
+    @Input() timeslotId!: number
     @Input() profilePictureUrl!: string
     @Input() likedPersonsIdList!: number[];
-    @Input() studentId!:number;
-    @Input() currentUserId!:number;
+    @Input() studentId!: number;
+    @Input() currentUserId!: number;
+    @Input() timeslots!: { timeslots: Map<string, TimeSlot[]> };
 
     constructor(
         private reportService: ReportServiceService,
+        private reportDashboard: ReportDashboardComponent,
+        public changingReportDialog: MatDialog,
+        public cancelingReportDialog: MatDialog,
     ) {
     }
 
@@ -39,17 +58,67 @@ export class ReportCardComponent {
 
     pressLikeButton() {
         this.reportService.updateReportLikeList(this.reportId).subscribe(res => {
-          this.likedPersonsIdList = res.likedPersonsIdList;
+            this.likedPersonsIdList = res.likedPersonsIdList;
         });
 
     }
-    isCurrentUserReport(){
+
+    isCurrentUserReport() {
         return this.studentId == this.currentUserId;
     }
-    cancelReport(){
 
+    openChangeReportDialog(): void {
+        const dialogRef = this.changingReportDialog.open(ChangingReportDialogComponent,
+            {
+                height: '60%',
+                width: '50%',
+                data: {
+                    studentReport: {
+                        id: this.reportId,
+                        title: this.reportTopic,
+                        date: this.dateValue,
+                        time: this.timeValue,
+                        timeslotId: this.timeslotId
+                    },
+                    timeslots: this.timeslots,
+                },
+            });
+
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log("res of changing dialog")
+            console.log(result);
+            if (result != null ) {
+                this.reportService.updateReport(result).subscribe(() => {
+                    this.reportDashboard.ngOnInit();// Перенаправление на текущую страницу
+                });
+            }
+        });
     }
-    changeReport(){
 
+    openCancelReportDialog(): void {
+        const dialogRef = this.cancelingReportDialog.open(CancelingReportDialogComponent,
+            {
+                height: '25%',
+                width: '30%',
+                data: {
+                    studentReport: {
+                        id: this.reportId,
+                        title: this.reportTopic,
+                        date: this.dateValue,
+                        time: this.timeValue,
+                        timeslotId: this.timeslotId
+                    },
+                    reportId: this.reportId,
+                },
+            });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log("res of canceling dialog")
+            console.log(result);
+            this.reportService.deleteReport(result).subscribe(() => {
+                this.reportDashboard.ngOnInit();// Перенаправление на текущую страницу
+            });
+        });
     }
 }

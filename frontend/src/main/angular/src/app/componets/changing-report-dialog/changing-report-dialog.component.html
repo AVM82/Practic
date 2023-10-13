@@ -1,0 +1,42 @@
+<h1 mat-dialog-title style="text-align: center;font-size: 24px; margin-top: 20px;"> Редагувати доповідь</h1>
+<div mat-dialog-content style="padding-left: 100px">
+    <div class="changing-date-field">
+        <mat-label>Дата</mat-label>
+        <mat-form-field appearance="outline">
+            <input matInput [min]="minDate"
+                   [max]="maxDate"
+                   [matDatepicker]="picker"
+                   [(ngModel)]="data.studentReport.date"
+                   [formControl]="dateCF">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </div>
+    <div class="changing-date-field">
+        <mat-label>Час</mat-label>
+        <mat-form-field appearance="outline" style="align-items: center">
+            <mat-select [(ngModel)]="data.studentReport.timeslotId"
+                        [formControl]="timeslotCF">
+                <!-- <mat-option [value]="changedStudentReport.studentReport.timeslotId">{{formatTime(changedStudentReport.studentReport.time)}} </mat-option>-->
+                <mat-option *ngFor="let timeslot of getTimeslots(data.studentReport.date);"
+                            [value]="timeslot.id">{{formatTime(timeslot.time)}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="changing-title-field">
+        <mat-label>Тема доповіді</mat-label>
+        <mat-form-field appearance="outline" style="width: 640px; height: 100px">
+            <textarea matInput style="white-space: pre-wrap; overflow-y: auto;"
+                      [(ngModel)]="data.studentReport.title"
+                      [formControl]="titleCF">
+  </textarea>
+        </mat-form-field>
+    </div>
+</div>
+<div mat-dialog-actions class="changing-dialog-buttons">
+    <button mat-button (click)="onNoClick()">Відхилити</button>
+    <button mat-button style="background-color: #27AE60;color: black" [mat-dialog-close]="data.studentReport"
+            cdkFocusInitial>
+        Прийняти
+    </button>
+</div>

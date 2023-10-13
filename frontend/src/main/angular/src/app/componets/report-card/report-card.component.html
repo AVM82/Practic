@@ -14,8 +14,8 @@
         <mat-card-title class="report-topic-text">{{reportTopic}}</mat-card-title>
         <div class="like-counter-location">
             <ng-container *ngIf="isCurrentUserReport()">
-                <button mat-button class="change-report-btn" (click)="changeReport()">Змінити</button>
-                <button mat-button class="cancel-report-btn" (click)="cancelReport()">Скасувати</button>
+                <button mat-button class="change-report-btn" (click)="openChangeReportDialog()">Змінити</button>
+                <button mat-button class="cancel-report-btn" (click)="openCancelReportDialog()">Скасувати</button>
             </ng-container>
             <mat-card-title class="like-counter-number ">
                 {{likedPersonsIdList.length}}
