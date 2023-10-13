@@ -93,8 +93,8 @@ public class StudentReportService {
             }
         }
     }
-    public Optional<StudentReportEntity> cancelReport(StudentReportCreationDto reportDto){
-        Optional<StudentReportEntity> report = studentReportRepository.findById(reportDto.id());
+    public Optional<StudentReportEntity> deleteReport(int reportId ){
+        Optional<StudentReportEntity> report = studentReportRepository.findById(reportId);
         if(report.isPresent()){
             StudentReportEntity reportEntity = report.get();
             Optional<TimeSlotEntity> timeslot =

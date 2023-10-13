@@ -13,6 +13,7 @@ public class StudentReportDto {
     private String chapterName;
     private LocalDate date;
     private LocalTime time;
+    private long timeslotId;
     private String state;
     private String title;
 
@@ -80,6 +81,14 @@ public class StudentReportDto {
 
     public void setTime(LocalTime time) {
         this.time = time;
+    }
+
+    public long getTimeslotId() {
+        return timeslotId;
+    }
+
+    public void setTimeslotId(long timeslotId) {
+        this.timeslotId = timeslotId;
     }
 
     public String getState() {

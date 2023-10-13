@@ -26,16 +26,19 @@ public class TimeSlotService {
         this.timeSlotRepository = timeSlotRepository;
     }
 
-//todo fix past timeslots by time
     public Map<String, List<TimeSlotEntity>> getAvailableTimeSlots() {
 
         List<TimeSlotEntity> timeSlotList = timeSlotRepository
                 .findAllByAvailabilityTrueOrderByTime();
         Map<String, List<TimeSlotEntity>> slotMap = new HashMap<>();
         for (TimeSlotEntity timeSlot : timeSlotList) {
-            String date = timeSlot.getDate().toString();
-            slotMap.computeIfAbsent(date, k -> new ArrayList<>());
-            if (timeSlot.isAvailability() && !timeSlot.getDate().isBefore(LocalDate.now())) {
+            LocalDate slotDate = timeSlot.getDate();
+            LocalTime slotTime = timeSlot.getTime();
+
+            if (!slotDate.isBefore(LocalDate.now()) && !(slotDate.isEqual(LocalDate.now())
+                    && slotTime.isBefore(LocalTime.now()))) {
+                String date = slotDate.toString();
+                slotMap.computeIfAbsent(date, k -> new ArrayList<>());
                 slotMap.get(date).add(timeSlot);
             }
         }

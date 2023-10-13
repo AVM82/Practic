@@ -260,20 +260,18 @@ public class StudentOnCourseController {
                 studentReportService.changeReportLikeList(reportId, studentId);
 
         return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
-
     }
-    @PutMapping("/reports/course/{slug}")
-    public ResponseEntity<StudentReportDto> putStudentReport(@PathVariable String slug,
-            @RequestBody StudentReportCreationDto studentReportCreationDto) {
+
+    @PutMapping("/reports/course/")
+    public ResponseEntity<StudentReportDto> putStudentReport(@RequestBody StudentReportCreationDto studentReportCreationDto) {
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.changeReport(studentReportCreationDto);
         return updateResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
-    @DeleteMapping("/reports/course/{slug}")
-    public ResponseEntity<StudentReportDto> deleteStudentReport(@PathVariable String slug,
-            @RequestBody StudentReportCreationDto studentReportCreationDto) {
+    @DeleteMapping("/reports/course/{reportId}")
+    public ResponseEntity<StudentReportDto> deleteStudentReport(@PathVariable Integer reportId) {
         Optional<StudentReportEntity> reportEntity =
-                studentReportService.cancelReport(studentReportCreationDto);
+                studentReportService.deleteReport(reportId);
         return deleteResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
 }
