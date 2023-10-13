@@ -45,7 +45,8 @@ public class TimeSlotService {
         return slotMap;
     }
 
-    public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId, boolean availability) {
+    public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId,
+                                                               boolean availability) {
         Optional<TimeSlotEntity> timeslotOp = timeSlotRepository.findById(timeslotId);
 
         if (timeslotOp.isPresent()) {

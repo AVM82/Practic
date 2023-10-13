@@ -34,7 +34,8 @@ public class StudentReportService {
     public StudentReportService(StudentReportRepository studentReportRepository,
                                 CourseService courseService,
                                 ChapterService chapterService,
-                                TimeSlotRepository timeSlotRepository, TimeSlotService timeSlotService) {
+                                TimeSlotRepository timeSlotRepository,
+                                TimeSlotService timeSlotService) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
         this.chapterService = chapterService;
@@ -61,7 +62,8 @@ public class StudentReportService {
         Optional<ChapterEntity> chapter = chapterService.get(studentReportCreationDto.chapter());
         Optional<TimeSlotEntity> timeslot = timeSlotRepository
                 .findById(studentReportCreationDto.timeslotId());
-        timeslot.ifPresent(timeSlot -> timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), false));
+        timeslot.ifPresent(timeSlot -> timeSlotService
+                .updateTimeSlotAvailability(timeSlot.getId(), false));
         return (student.isPresent() && chapter.isPresent())
             ? Optional.ofNullable(studentReportRepository
             .save(new StudentReportEntity(chapter.get(), student.get(),
@@ -84,22 +86,23 @@ public class StudentReportService {
         return Optional.empty();
     }
 
-    public void setStatesOfFinishedReports(){
-        List<StudentReportEntity>result = studentReportRepository.findAll();
-        for(StudentReportEntity report:result){
-            if( report.getTimeSlot().getDate().isBefore(LocalDate.now())){
+    public void setStatesOfFinishedReports() {
+        List<StudentReportEntity> result = studentReportRepository.findAll();
+        for (StudentReportEntity report : result) {
+            if (report.getTimeSlot().getDate().isBefore(LocalDate.now())) {
                 report.setState(ReportState.FINISHED);
                 studentReportRepository.save(report);
             }
         }
     }
-    public Optional<StudentReportEntity> deleteReport(int reportId ){
+
+    public Optional<StudentReportEntity> deleteReport(int reportId) {
         Optional<StudentReportEntity> report = studentReportRepository.findById(reportId);
-        if(report.isPresent()){
+        if (report.isPresent()) {
             StudentReportEntity reportEntity = report.get();
             Optional<TimeSlotEntity> timeslot =
                     timeSlotRepository.findById(report.get().getTimeSlot().getId());
-            if(timeslot.isPresent()){
+            if (timeslot.isPresent()) {
                 timeslot.ifPresent(timeSlot ->
                         timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), true));
             }
@@ -111,12 +114,13 @@ public class StudentReportService {
 
     public Optional<StudentReportEntity> changeReport(StudentReportCreationDto reportDto) {
         Optional<StudentReportEntity> report = studentReportRepository.findById(reportDto.id());
-        if(report.isPresent()){
+        if (report.isPresent()) {
             StudentReportEntity reportEntity = report.get();
             reportEntity.setTitle(reportDto.title());
-            if(reportDto.timeslotId()!= reportEntity.getTimeSlot().getId()) {
-                Optional<TimeSlotEntity> newTimeslot = timeSlotRepository.findById(reportDto.timeslotId());
-                if(newTimeslot.isPresent()){
+            if (reportDto.timeslotId() != reportEntity.getTimeSlot().getId()) {
+                Optional<TimeSlotEntity> newTimeslot = timeSlotRepository
+                        .findById(reportDto.timeslotId());
+                if (newTimeslot.isPresent()) {
                     timeSlotService
                             .updateTimeSlotAvailability(newTimeslot.get().getId(), false);
                     TimeSlotEntity oldTimeslot = reportEntity.getTimeSlot();

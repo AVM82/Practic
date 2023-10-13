@@ -1,16 +1,16 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.deleteResponse;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 import static com.group.practic.util.ResponseUtils.updateResponse;
-import static com.group.practic.util.ResponseUtils.deleteResponse;
 
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStudentDto;
-import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
+import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
@@ -45,11 +45,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -263,11 +263,13 @@ public class StudentOnCourseController {
     }
 
     @PutMapping("/reports/course/")
-    public ResponseEntity<StudentReportDto> putStudentReport(@RequestBody StudentReportCreationDto studentReportCreationDto) {
+    public ResponseEntity<StudentReportDto> putStudentReport(
+            @RequestBody StudentReportCreationDto studentReportCreationDto) {
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.changeReport(studentReportCreationDto);
         return updateResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
+
     @DeleteMapping("/reports/course/{reportId}")
     public ResponseEntity<StudentReportDto> deleteStudentReport(@PathVariable Integer reportId) {
         Optional<StudentReportEntity> reportEntity =
