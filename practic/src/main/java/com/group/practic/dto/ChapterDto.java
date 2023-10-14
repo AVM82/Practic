@@ -1,8 +1,5 @@
 package com.group.practic.dto;
 
-import com.group.practic.entity.ChapterPartEntity;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ChapterDto {
 
@@ -10,41 +7,16 @@ public class ChapterDto {
 
     int number;
 
-    String shortName;
-
-    boolean visible;
-
-
-    Set<Long> chapterPartIds;
+    boolean visible = true;
 
 
     public ChapterDto() {}
 
 
-    public ChapterDto(int number, String shortName, boolean visible) {
+    public ChapterDto(long id, int number, boolean visible) {
+        this.id = id;
         this.number = number;
-        this.shortName = shortName;
         this.visible = visible;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-
-    public String getShortName() {
-        return shortName;
-    }
-
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
     }
 
 
@@ -58,6 +30,16 @@ public class ChapterDto {
     }
 
 
+    public int getNumber() {
+        return number;
+    }
+
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+
     public boolean isVisible() {
         return visible;
     }
@@ -65,20 +47,6 @@ public class ChapterDto {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-
-    public Set<Long> getChapterPartIds() {
-        return chapterPartIds;
-    }
-
-
-    public void setChapterPartIds(Set<ChapterPartEntity> chapterParts) {
-        if (!chapterParts.isEmpty()) {
-            this.chapterPartIds =
-                    chapterParts.stream().map(ChapterPartEntity::getId).collect(Collectors.toSet());
-        }
-
     }
 
 }

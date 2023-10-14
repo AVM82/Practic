@@ -3,7 +3,7 @@
         [routerLink]="['/courses', slug, 'main']">
         Головна
     </div>
-    <div *ngIf="showChaptersLink" class="progress active"
+    <div *ngIf="chapters.length > 0" class="progress active"
         [routerLink]="['/courses', slug]">
         Розділи
     </div>
@@ -19,3 +19,5 @@
         Матеріали
     </div>
 </div>
+<app-edit-btn [showEditCapability]="showEdit"></app-edit-btn>
+<app-apply-btn [showApplyButton]="showApply" [slug]="slug"></app-apply-btn>

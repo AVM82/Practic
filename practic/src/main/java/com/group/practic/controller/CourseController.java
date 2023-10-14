@@ -6,7 +6,6 @@ import static com.group.practic.util.ResponseUtils.notAcceptable;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.ChapterDto;
-import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
@@ -15,7 +14,6 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentOnCourseService;
-import com.group.practic.util.Converter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -55,15 +53,20 @@ public class CourseController {
 
 
     @GetMapping
-    public ResponseEntity<Collection<CourseDto>> get() {
-        return getResponse(Converter.convertCourseEntityList(courseService.get()));
+    public ResponseEntity<Collection<CourseEntity>> get() {
+        return getResponse(courseService.get());
     }
 
 
     @GetMapping("/{slug}/allchapters")
-    public ResponseEntity<Collection<ChapterDto>> getChapters(@PathVariable String slug) {
-        return getResponse(personService.hasAdvancedRole() ? courseService.getChapters(slug)
-                : studentOnCourseService.getChapters(slug));
+    public ResponseEntity<Collection<ChapterEntity>> getChapters(@PathVariable String slug) {
+        return getResponse(courseService.getChapters(slug));
+    }
+
+
+    @GetMapping("/{slug}/navchapters")
+    public ResponseEntity<Collection<ChapterDto>> getNavChapters(@PathVariable String slug) {
+        return getResponse(studentOnCourseService.getChapters(slug));
     }
 
 
@@ -95,7 +98,9 @@ public class CourseController {
     @GetMapping("/{slug}/activeChapterNumber")
     public ResponseEntity<Integer> getActiveChapterNumber(@PathVariable String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
-        if (course.isEmpty()) { return notAcceptable(); }
+        if (course.isEmpty()) { 
+            return notAcceptable();
+        }
         return getResponse(studentOnCourseService.getActiveChapterNumber(course.get()));
     }
 

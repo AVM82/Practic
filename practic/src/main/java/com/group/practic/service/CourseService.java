@@ -1,7 +1,6 @@
 package com.group.practic.service;
 
 import com.group.practic.PropertyLoader;
-import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
@@ -60,11 +59,9 @@ public class CourseService {
     }
 
 
-    public List<ChapterDto> getChapters(String slug) {
+    public List<ChapterEntity> getChapters(String slug) {
         Optional<CourseEntity> course = courseRepository.findBySlug(slug);
-        return course.isEmpty() ? List.of()
-                : Converter.convertChapterEntityList(chapterService.getAll(course.get()),
-                        Integer.MAX_VALUE);
+        return course.isEmpty() ? List.of() : chapterService.getAll(course.get());
     }
 
 

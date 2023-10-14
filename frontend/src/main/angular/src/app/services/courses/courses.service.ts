@@ -2,12 +2,14 @@ import {Injectable} from '@angular/core';
 import {Course} from "../../models/course/course";
 import {HttpClient} from "@angular/common/http";
 import {map, Observable, of} from "rxjs";
-import {Chapter} from "../../models/course/chapter";
 import {Router} from "@angular/router";
-import {ApiUrls, getCourseUrl, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl, getActiveChapterNumber} from "../../enums/api-urls";
+import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl, getActiveChapterNumber, getCourseUrl} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
 import { User } from 'src/app/models/user/user';
+import { Chapter } from 'src/app/models/chapter/chapter';
+import { TokenStorageService } from '../auth/token-storage.service';
+import { AdvancedRoles } from 'src/app/enums/roles.enum';
 
 const requestTextResponse: Object = {
   responseType: 'text'
@@ -17,27 +19,42 @@ const requestTextResponse: Object = {
   providedIn: 'root'
 })
 export class CoursesService {
-  selectedCourse!: Observable<Course>;
-  levels: Observable<Level[]> | undefined;
-  chapters: Observable<Chapter[]> | undefined;
   slug: string = '';
+  selectedCourse!: Observable<Course>;
+  levels!: Observable<Level[]>;
+  chapters!: Observable<Chapter[]>;
+  active: number = 0;
+  me: User;
+  id: number = 0;
+  isStudent: boolean = false;
 
   constructor(
-      private http: HttpClient,
-      private _router: Router
-      ) {}
+    private tokenStorageService: TokenStorageService,
+    private http: HttpClient,
+    private _router: Router
+  ) {
+    this.me = tokenStorageService.getMe();
+    if (this.me)
+      this.id = this.me.id;
+  }
 
+  
   setCourse(slug: string): void {
     if (slug !== this.slug) {
       console.log(this.slug, ' -> ', slug);
       this.slug = slug;
+      this.getActiveChapterNumber(slug).subscribe(value => this.active = value);
+      this.chapters = this.http.get<Chapter[]>(getChaptersUrl(slug));
+      this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
+      this.isStudent = this.tokenStorageService.isStudent(slug);
+      this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
       this.selectedCourse = this.http.get<Course>(getCourseUrl(slug));
-      this.chapters = undefined;
-      this.levels = undefined;
-        console.log('this course : ', this.selectedCourse);
-        console.log('this levels : ', this.levels);
-        console.log('this chapters : ', this.chapters);
     }
+  }
+
+  public isAnyAdvancedRole(slug: string): boolean {
+    this.setCourse(slug);
+    return this.tokenStorageService.haveIAnyRole(AdvancedRoles);
   }
 
   getCourse(slug: string): Observable<Course> {
@@ -48,15 +65,24 @@ export class CoursesService {
 
   getChapters(slug: string): Observable<Chapter[]> {
     this.setCourse(slug);
-    if (!this.chapters)
-      this.chapters = this.http.get<Chapter[]>(getChaptersUrl(slug));
-    return this.chapters;
+    return this.chapters!;
+  }
+
+  getChapter(slug: string, number: number): Observable<Chapter> {
+    this.setCourse(slug);
+    return this.getChapters(slug).pipe(map<Chapter[], Chapter>( chapters  => {
+        return chapters.find(chapter => chapter.number === number)!
+    }));
+  }
+
+  setVisibleChapters(chapters: Chapter[]): void {
+      chapters.forEach(chapter => 
+          chapter.visible = this.active >= chapter.number
+      )
   }
 
   getLevels(slug:string):Observable<Level[]>{
     this.setCourse(slug);
-    if (!this.levels)
-      this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
     return this.levels;
   }
 
@@ -69,22 +95,8 @@ export class CoursesService {
   }
 
   setFirstChapterVisible(chapters: Chapter[]): void {
-    if (chapters !==null && chapters.length > 1) {
+    if (chapters?.length > 1) {
       chapters[0].visible = true;
-    }
-  }
-
-  setVisibleChapters(chapters: Chapter[], openChapters: Chapter[]): void {
-    if (chapters && openChapters) {
-      const openChapterMap = new Map<number, Chapter>();
-      for (const openChapter of openChapters) {
-        openChapterMap.set(openChapter.id, openChapter);
-      }
-      for (const chapter of chapters) {
-        if (openChapterMap.has(chapter.id)) {
-          chapter.visible = true;
-        }
-      }
     }
   }
 
@@ -153,12 +165,37 @@ export class CoursesService {
 
   getMentors(slug: string): Observable<User[]> {
     this.setCourse(slug);
-    return this.selectedCourse.pipe(map(course => course.mentors));
+    return this.selectedCourse.pipe(map (course => course.mentors));
   }
 
-  getActiveChapterNumber(slug: string): any {
-    this.http.get<number>(getActiveChapterNumber(slug)).subscribe(response => {
-      return response });
+  amIAmongOthers(others: User[]): boolean {
+    return this.id != 0 && others?.some(other => other.id === this.id);
+  }
+
+  isMentor(slug: string): Observable<boolean> {
+    return this.getMentors(slug).pipe(map<User[], boolean>(
+      mentors => {
+        return this.amIAmongOthers(mentors);
+    })); 
+  }
+
+  isNotMentor(slug: string): Observable<boolean> {
+    return this.getMentors(slug).pipe(map<User[], boolean>(
+      mentors => {
+        return !this.amIAmongOthers(mentors);
+    })); 
+  }
+
+  isUninvolved(slug: string): Observable<boolean> {
+    return this.getMentors(slug).pipe(map<User[], boolean>(
+      mentors => {
+        return !this.isStudent && (mentors == null || !mentors.some(mentor => mentor.id === this.me!.id));
+    }));
+  }
+
+  getActiveChapterNumber(slug: string): Observable<any> {
+    this.setCourse(slug);
+    return  this.http.get<number>(getActiveChapterNumber(slug));
   }
 
 }

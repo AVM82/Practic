@@ -1,8 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {Course} from "../../models/course/course";
-import {Chapter} from "../../models/course/chapter";
 import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
@@ -17,17 +16,17 @@ import {Practice} from "../../models/practice/practice";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ChaptersService} from "../../services/chapters/chapters.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
+import { Chapter } from 'src/app/models/chapter/chapter';
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, MatButtonModule, ReportButtonComponent,
-     ApplyBtnComponent, EditBtnComponent, PracticeStatePipe],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink,
+     MatIconModule, MatButtonModule, ReportButtonComponent, PracticeStatePipe],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
 export class CourseDetailsComponent implements OnInit {
-  course: Course | undefined;
   chapters: Chapter[] = [];
   reports: StudentReport[][]=[];
   slug: string='';
@@ -35,7 +34,6 @@ export class CourseDetailsComponent implements OnInit {
   student: boolean = false;
 
   constructor(
-      private coursesService: CoursesService,
       private route: ActivatedRoute,
       private reportService: ReportServiceService,
       private chaptersService: ChaptersService,
@@ -48,12 +46,9 @@ export class CourseDetailsComponent implements OnInit {
 
       if(slug) {
         this.slug = slug;
-        this.student = this.tokenStorageService.isStudent(slug);
+      this.student = this.tokenStorageService.isStudent(slug);
         if (this.student)
           this.setPractices();
-        this.coursesService.getChapters(slug).subscribe(chapters =>
-            this.chapters = chapters
-        );
         this.reportService.getAllActualReports(slug).subscribe(reports => {
             if (reports) {
               this.reports.push(...reports);
@@ -62,6 +57,10 @@ export class CourseDetailsComponent implements OnInit {
         });
       }
     })
+  }
+
+  getChapters(chapters: Chapter[]) {
+    this.chapters = chapters;
   }
 
   setPractices() {

@@ -1,6 +1,4 @@
-<app-course-navbar></app-course-navbar>
-<app-edit-btn></app-edit-btn>
-<app-edit-btn></app-edit-btn>
+<app-course-navbar (navchapterN)="getChapter($event)"></app-course-navbar>
 
 <div class="chapter-header">
 	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>

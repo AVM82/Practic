@@ -7,7 +7,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatSelectModule} from "@angular/material/select";
 import {NewStudentReport} from "../../models/newStudentReport/newStudentReport";
-import {Chapter} from "../../models/course/chapter";
+import {Chapter} from "../../models/chapter/chapter";
 import {DatePipe, NgForOf} from "@angular/common";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
 import {TimeSlot} from "../../models/timeSlot/time-slot";

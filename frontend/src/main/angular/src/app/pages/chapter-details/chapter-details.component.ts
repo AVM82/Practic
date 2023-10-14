@@ -16,7 +16,7 @@ import {Practice} from "../../models/practice/practice";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
 import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
-import { Observable } from 'rxjs';
+import { CoursesService } from 'src/app/services/courses/courses.service';
 
 @Component({
   selector: 'app-chapter-details',
@@ -27,13 +27,13 @@ import { Observable } from 'rxjs';
   styleUrls: ['./chapter-details.component.css']
 })
 export class ChapterDetailsComponent implements OnInit {
-  slug: string = '';
     chapter?: Chapter ;
     showPartNumber: boolean = false;
     practices: Practice[] = [];
     isStudent: boolean = false;
 
   constructor(
+    private coursesService: CoursesService,
       private chaptersService: ChaptersService,
       private route: ActivatedRoute,
       private messagesService: InfoMessagesService,
@@ -41,28 +41,14 @@ export class ChapterDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug');
-      const chapterN =  Number(params.get('chapterN'));      
-      if(slug && chapterN) {
-          this.slug = slug;
-          this.isStudent = this.tokenStorageService.isStudent(slug);
-          if (this.isStudent)
-            this.updatePractices();
-          this.chaptersService.getChapter(slug, chapterN).subscribe(chapter => {
-              this.chapter = chapter;
-              this.showPartNumber = chapter.parts.length > 1;
-          });
-      }
-    })
+    this.isStudent = this.coursesService.isStudent;
+    if (this.isStudent)
+      this.updatePractices();
   }
 
-  isMentor(): Observable<boolean> {
-    return this.tokenStorageService.isMentor(this.slug, true);        
-  }
-
-  showApplyButton() {
-    return this.tokenStorageService.neitherStudentNorMentor(this.slug);
+  getChapter(chapter: Chapter) {
+    this.chapter = chapter;
+    this.showPartNumber = chapter.parts.length > 1;
   }
 
   setPractices() {

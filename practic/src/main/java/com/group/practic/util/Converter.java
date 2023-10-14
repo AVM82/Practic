@@ -133,9 +133,11 @@ public interface Converter {
     static List<ChapterDto> convertChapterEntityList(List<ChapterEntity> chapterEntityList,
             int lastVisibleNumber) {
         List<ChapterDto> result = new ArrayList<>();
+        boolean remain = lastVisibleNumber < Integer.MAX_VALUE;
         chapterEntityList.forEach(x -> {
             ChapterDto d = convert(x);
-            d.setVisible(d.getNumber() <= lastVisibleNumber);
+            if (remain && d.getNumber() > lastVisibleNumber)
+                d.setVisible(false);
             result.add(d);
         });
         return result;
@@ -180,17 +182,19 @@ public interface Converter {
         modelMapper.createTypeMap(StudentChapterEntity.class, ChapterDto.class)
                 .addMapping(src -> src.getChapter().getId(), ChapterDto::setId)
                 .addMapping(src -> src.getChapter().getNumber(), ChapterDto::setNumber)
-                .addMapping(src -> src.getChapter().getShortName(), ChapterDto::setShortName)
-                .addMapping(src -> src.getChapter().getParts(), ChapterDto::setChapterPartIds);
+//                .addMapping(src -> src.getChapter().getShortName(), ChapterDto::setShortName)
+//                .addMapping(src -> src.getChapter().getParts(), ChapterDto::setChapterPartIds)
+                ;
     }
 
 
     private static void applyChapterEntityToChapterDtoMap(ModelMapper modelMapper) {
         modelMapper.createTypeMap(ChapterEntity.class, ChapterDto.class)
                 .addMapping(ChapterEntity::getId, ChapterDto::setId)
-                .addMapping(ChapterEntity::getShortName, ChapterDto::setShortName)
+//                .addMapping(ChapterEntity::getShortName, ChapterDto::setShortName)
                 .addMapping(ChapterEntity::getNumber, ChapterDto::setNumber)
-                .addMapping(ChapterEntity::getParts, ChapterDto::setChapterPartIds);
+//                .addMapping(ChapterEntity::getParts, ChapterDto::setChapterPartIds)
+                ;
     }
 
     static AnswerDto toDto(AnswerEntity entity) {

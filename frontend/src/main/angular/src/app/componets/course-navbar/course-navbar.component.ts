@@ -1,31 +1,37 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule, NgFor, NgIf} from '@angular/common';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {Course} from "../../models/course/course";
 import {MatIconModule} from "@angular/material/icon";
-import {Chapter} from "../../models/course/chapter";
 import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatButtonModule} from "@angular/material/button";
+import { Chapter } from 'src/app/models/chapter/chapter';
+import { ApplyBtnComponent } from '../apply-btn/apply-btn.component';
+import { EditBtnComponent } from '../edit-btn/edit-course.component';
 
 @Component({
   selector: 'app-course-navbar',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink],
+  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink, ApplyBtnComponent, EditBtnComponent],
   templateUrl: './course-navbar.component.html',
   styleUrls: ['./course-navbar.component.css']
 })
 
 export class CourseNavbarComponent implements OnInit {
   course: Course | undefined;
+  @Output() navchapters: EventEmitter<Chapter[]> = new EventEmitter();
+  @Output() navchapterN: EventEmitter<Chapter> = new EventEmitter();
+  @Output() navCourse: EventEmitter<Course> = new EventEmitter();
+  showEdit: boolean = false;
+  showApply: boolean = false;
   chapters: Chapter[] = [];
-  showChaptersLink: boolean = false;
   showAdditionalMaterials: boolean = false;
   slug: string = '';
   currentChapter: number = 0;
 
   constructor(
     private coursesService: CoursesService,
-      private route: ActivatedRoute
+    private route: ActivatedRoute
   ) {
   }
 
@@ -33,12 +39,22 @@ export class CourseNavbarComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug')
       this.currentChapter = Number(params.get('chapterN')) | 0;
-
+      
       if (slug) {
         this.slug = slug;
+        this.coursesService.getCourse(slug).subscribe(course => {
+          this.showEdit = this.coursesService.amIAmongOthers(course.mentors);
+          this.showApply = !this.coursesService.isStudent && !this.showEdit;
+          if (this.currentChapter == 0)
+            this.navCourse.emit(course);
+        });
         this.coursesService.getChapters(slug).subscribe(chapters => {
           this.chapters = chapters;
-          this.showChaptersLink = chapters && chapters.length > 0;
+          this.coursesService.setVisibleChapters(this.chapters);
+          if (this.currentChapter == 0)
+            this.navchapters.emit(chapters);
+          else 
+            this.navchapterN.emit(chapters.find(chapter => chapter.number === this.currentChapter));
         });
         this.coursesService.getAdditionalMaterialsExist(slug).subscribe(exist => 
            this.showAdditionalMaterials = exist

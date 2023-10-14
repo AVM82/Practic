@@ -7,7 +7,7 @@ import {StudentReport} from "../../models/report/studentReport";
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {MatCardModule} from "@angular/material/card";
 import {CoursesService} from "../../services/courses/courses.service";
-import {Chapter} from "../../models/course/chapter";
+import {Chapter} from "../../models/chapter/chapter";
 import {NewReportDialogComponent} from "../../componets/new-report/new-report-dialog.component";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {TimeSlot} from "../../models/timeSlot/time-slot";
@@ -55,14 +55,11 @@ export class ReportDashboardComponent implements OnInit {
     }
 
     updateData(slug:string):void{
-       
                 this.loadLevels(slug);
                 this.loadChapters(slug);
                 this.loadReports(slug);
                 this.loadTimeSlots(slug);
                 this.createTimeSlots(slug)
-
-            
     }
 
 

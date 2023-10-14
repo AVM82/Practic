@@ -27,11 +27,11 @@ export class CoursesComponent implements OnInit{
   ngOnInit(): void {
     this.coursesService.getAllCourses().subscribe(courses => {
       if (courses) {
+        const meId = this.coursesService.me.id;
         courses.forEach(course => {
           this.svg_registry.addSvg(course.slug, course.svg);
-          this.tokenStorageService.isMentor(course.slug, true).subscribe(isMentor => {
             let route;
-            if (isMentor)
+            if (course.mentors.some(mentor => mentor.id == meId))
                 route = 'courses/' + course.slug;
             else
               route = (this.tokenStorageService.isStudent(course.slug)
@@ -42,11 +42,12 @@ export class CoursesComponent implements OnInit{
               course.slug,
               route
              ))
-          });
         })
       }
-      console.log(this.coursesProp);
     });
   }
   
+  onSelect(slug: string): void {
+    this.coursesService.setCourse(slug);
+  }
 }

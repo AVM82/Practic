@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { ApplyBtnComponent } from "src/app/componets/apply-btn/apply-btn.component";
 import { CourseNavbarComponent } from "src/app/componets/course-navbar/course-navbar.component";
 import { EditBtnComponent } from "src/app/componets/edit-btn/edit-course.component";
+import { Course } from "src/app/models/course/course";
 import { CoursesService } from "src/app/services/courses/courses.service";
 
 @Component({
@@ -14,6 +15,8 @@ import { CoursesService } from "src/app/services/courses/courses.service";
   })
 export class MainPageComponent implements OnInit {
     name: string = '';
+    authors!: HTMLElement ;
+    page!: HTMLElement ;
 
     constructor(
         private coursesService: CoursesService,
@@ -21,19 +24,8 @@ export class MainPageComponent implements OnInit {
     ) {}
     
     ngOnInit(): void {
-        this.route.paramMap.subscribe(params => {
-            const slug = params.get('slug');
-            if(slug) {
-                this.coursesService.getCourse(slug).subscribe(course => {
-                    this.name = course.name;
-                    if (course.authors)
-                        document.getElementById('author')!.innerHTML = 'Автор' + (course.authors.length > 1 ? 'и' : '') + ' : ' + this.makeAuthorsList(course.authors!);
-                });
-                this.coursesService.getDescription(slug).subscribe(description =>
-                    document.getElementById('page')!.innerHTML = description
-                );
-            }
-        });
+        this.authors = document.getElementById('author')!;
+        this.page = document.getElementById('page')!;
     }
 
     makeA(author: string): string {
@@ -45,5 +37,11 @@ export class MainPageComponent implements OnInit {
         let list: string[] = [];
         authors.forEach(author => list.push(this.makeA(author)));
         return list.join(', ');
+    }
+
+    getPage(course: Course) {
+        this.name = course.name;
+        this.authors.innerHTML = 'Автор' + (course.authors!.length > 1 ? 'и' : '') + ' : ' + this.makeAuthorsList(course.authors!);
+        this.page.innerHTML = course.description!;
     }
 }

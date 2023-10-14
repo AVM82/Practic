@@ -1,6 +1,6 @@
 <div class="course-container">
     <mat-card *ngFor="let course of coursesProp" class="course-card">
-        <a [routerLink]="course.route">
+        <a [routerLink]="course.route" (click)="onSelect(course.slug)">
             <mat-card-content class="course-details">
                 <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
                 <h3 class="course-name">{{ course.name }}</h3>

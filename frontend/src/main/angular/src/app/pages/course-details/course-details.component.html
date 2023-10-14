@@ -1,9 +1,7 @@
-<app-course-navbar></app-course-navbar>
-<app-edit-btn></app-edit-btn>
-<app-apply-btn></app-apply-btn>
+<app-course-navbar (navchapters)="getChapters($event)"></app-course-navbar>
 
 <div class="chapter-card-container">
-  <mat-card *ngFor="let chapter of chapters" class="chapter-card"
+  <mat-card *ngFor="let chapter of chapters; index as i" class="chapter-card"
             [class.locked]="!chapter.visible">
     <ng-container *ngIf="chapter.visible">
 
@@ -22,8 +20,8 @@
           <div class="info-tag">
             Теорія: не розпочато
           </div>
-            <div *ngFor="let partId of chapter.chapterPartIds" class="info-tag">
-                Практика: {{ partId | practiceState: practices }}
+            <div *ngFor="let part of chapter.parts" class="info-tag">
+                Практика: {{ part.id | practiceState: practices }}
             </div>
           <div class="info-tag">
             Доповідь: не проведена
