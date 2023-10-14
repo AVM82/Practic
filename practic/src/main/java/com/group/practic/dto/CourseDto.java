@@ -12,7 +12,7 @@ public final class CourseDto {
     private String shortName;
 
 
-    CourseDto() {
+    public CourseDto() {
     }
 
 

@@ -14,11 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @Slf4j
-
-public class StateServiceTest {
+class StateServiceTest {
 
     @Mock
     private StateRepository stateRepository;
@@ -120,6 +119,7 @@ public class StateServiceTest {
         boolean allowChange = stateService.allowChange(state, expectedName);
         assertFalse(allowChange);
     }
+
     @Test
     void testUpdateStateWithValidIdAndCluster() {
         long id = 1L;
@@ -138,6 +138,7 @@ public class StateServiceTest {
         assertTrue(updatedState.isPresent());
         assertEquals(newCluster, updatedState.get().getCluster());
     }
+
     @Test
     void testUpdateStateWithInvalidId() {
 
@@ -148,6 +149,7 @@ public class StateServiceTest {
         Optional<StateEntity> updatedState = stateService.update(id, newCluster);
         assertFalse(updatedState.isPresent());
     }
+
     @Test
     void testUpdateStateWithValidIdAndName() {
         long id = 1L;
@@ -165,6 +167,7 @@ public class StateServiceTest {
         assertTrue(updatedState.isPresent());
         assertEquals(newName, updatedState.get().getName());
     }
+
     @Test
     void testUpdateStateWithInvalidName() {
         long id = 1L;
@@ -181,6 +184,7 @@ public class StateServiceTest {
 
         assertFalse(updatedState.isPresent());
     }
+
     @Test
     void testUpdateStateWithValidClusterAndNames() {
         int cluster = 1;
@@ -199,6 +203,7 @@ public class StateServiceTest {
         assertTrue(updatedState.isPresent());
         assertEquals(newName, updatedState.get().getName());
     }
+
     @Test
     void testUpdateStateWithInvalidClusterAndNames() {
         int cluster = 1;
@@ -208,6 +213,7 @@ public class StateServiceTest {
         Optional<StateEntity> updatedState = stateService.update(cluster, oldName, newName);
         assertFalse(updatedState.isPresent());
     }
+
     @Test
     void testAllowChangeWithValidIdAndName() {
         long id = 1L;
@@ -219,5 +225,32 @@ public class StateServiceTest {
 
         boolean allowChange = stateService.allowChange(id, expectedName);
         assertTrue(allowChange);
+    }
+
+    @Test
+    void testAddChangeWhenClusterDiffers() {
+        StateEntity stateUpdatable = new StateEntity(1, "State1");
+        StateEntity stateTransition = new StateEntity(2, "State2");
+
+        when(stateRepository.findById(1L)).thenReturn(Optional.of(stateUpdatable));
+        when(stateRepository.findById(2L)).thenReturn(Optional.of(stateTransition));
+
+        Optional<StateEntity> result = stateService.addChange(1L, 2L);
+
+        assertTrue(result.isEmpty());
+        assertFalse(stateUpdatable.getChangesTo().contains(stateTransition));
+    }
+
+    @Test
+    void testAddChangeWhenEntityNotFound() {
+        StateEntity stateUpdatable = new StateEntity(1, "State1");
+        StateEntity stateTransition = new StateEntity(1, "State2");
+
+        when(stateRepository.findById(1L)).thenReturn(Optional.of(stateUpdatable));
+        when(stateRepository.findById(2L)).thenReturn(Optional.empty());
+
+        Optional<StateEntity> result = stateService.addChange(1L, 2L);
+
+        assertTrue(result.isEmpty());
     }
 }

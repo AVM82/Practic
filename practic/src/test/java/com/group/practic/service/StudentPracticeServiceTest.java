@@ -6,16 +6,13 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentPracticeRepository;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -23,13 +20,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-
-public class StudentPracticeServiceTest {
+class StudentPracticeServiceTest {
 
     @Mock
     private StudentPracticeRepository studentPracticeRepository;
@@ -48,7 +44,7 @@ public class StudentPracticeServiceTest {
     }
 
     @Test
-    public void testGetAllStudentsByState() {
+    void testGetAllStudentsByState() {
         List<StudentPracticeEntity> expectedStudents = new ArrayList<>();
         StudentPracticeEntity student1 = new StudentPracticeEntity();
         student1.setId(1L);
@@ -66,11 +62,10 @@ public class StudentPracticeServiceTest {
 
     @Test
     public void testGetAllPracticesByChapter() {
-        // Підготовка даних для тесту
+
         PersonEntity student = new PersonEntity();
         ChapterEntity chapter = new ChapterEntity();
 
-        // Створення об'єктів StudentPracticeEntity, які будуть очікуваним результатом
         StudentPracticeEntity practice1 = new StudentPracticeEntity();
         practice1.setId(1L);
         practice1.setStudent(student);
@@ -93,8 +88,8 @@ public class StudentPracticeServiceTest {
 
 
     @Test
-    public void testAddPractice() {
-        // Підготовка даних для тесту
+    void testAddPractice() {
+
         PersonEntity student = new PersonEntity();
         ChapterPartEntity chapterPart = new ChapterPartEntity();
         ChapterEntity chapter = new ChapterEntity();
@@ -105,26 +100,20 @@ public class StudentPracticeServiceTest {
         expectedPractice.setChapter(chapter);
         expectedPractice.setState(PracticeState.NOT_STARTED);
 
-        // Повернення очікуваного об'єкта при виклику методу save
         when(studentPracticeRepository.save(any(StudentPracticeEntity.class))).thenReturn(expectedPractice);
 
-        // Виклик методу addPractice
         StudentPracticeEntity practice = studentPracticeService.addPractice(student, chapterPart, chapter);
 
-        // Перевірка, що метод save був викликаний один раз з параметром, який має бути еквівалентним expectedPractice
         verify(studentPracticeRepository, times(1)).save(argThat(arg -> arg.getStudent() == student &&
                 arg.getChapterPart() == chapterPart &&
                 arg.getChapter() == chapter &&
                 arg.getState() == PracticeState.NOT_STARTED));
 
-        // Перевірка, що повернутий результат співпадає з очікуваним результатом
         assertEquals(expectedPractice, practice);
-        log.info(String.valueOf(expectedPractice));
-        log.info(String.valueOf(practice));
-
     }
+
     @Test
-    public void testGetPractice() {
+    void testGetPractice() {
         PersonEntity student = new PersonEntity();
         long chapterPartId = 123;
         ChapterPartEntity chapterPart = new ChapterPartEntity();
@@ -139,11 +128,13 @@ public class StudentPracticeServiceTest {
         verify(chapterPartService, times(1)).getChapterPartById(chapterPartId);
         verify(studentPracticeRepository, times(1))
                 .findByStudentAndChapterPart(student, chapterPart);
+
         assertEquals(expectedPractice, practice);
 
     }
+
     @Test
-    public void testSave() {
+    void testSave() {
         StudentPracticeEntity practiceToSave = new StudentPracticeEntity();
         StudentPracticeEntity savedPractice = new StudentPracticeEntity();
         when(studentPracticeRepository.save(practiceToSave)).thenReturn(savedPractice);
@@ -151,8 +142,9 @@ public class StudentPracticeServiceTest {
         verify(studentPracticeRepository, times(1)).save(practiceToSave);
         assertEquals(savedPractice, result);
     }
+
     @Test
-    public void testGetAllPracticesByStudent() {
+    void testGetAllPracticesByStudent() {
         PersonEntity student = new PersonEntity();
 
         Set<StudentPracticeEntity> expectedPractices = new HashSet<>();

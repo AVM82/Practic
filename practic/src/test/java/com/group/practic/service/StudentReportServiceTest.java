@@ -25,9 +25,7 @@ import static org.mockito.Mockito.when;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-
-public class StudentReportServiceTest {
-
+class StudentReportServiceTest {
     @Mock
     private StudentReportRepository studentReportRepository;
     @Mock
@@ -45,7 +43,7 @@ public class StudentReportServiceTest {
     }
 
     @Test
-    public void testGetAllStudentsActualReports() {
+    void testGetAllStudentsActualReports() {
         String courseSlug = "example-slug";
 
         CourseEntity course = new CourseEntity();
@@ -71,25 +69,11 @@ public class StudentReportServiceTest {
                 .iterator().next(), StudentReportService.ACTUAL_STATES)).thenReturn(reportsForChapter2);
 
         List<List<StudentReportEntity>> result = studentReportService.getAllStudentsActualReports(courseSlug);
-
-//        log.info(String.valueOf(result.size()));
-//        log.info(String.valueOf(result.toString()));
-//        log.info(String.valueOf(result));
-//        log.info(String.valueOf(result.get(0).size()));
-//        log.info(String.valueOf(result.get(0).get(0)));
-//        log.info(String.valueOf(result.get(0).get(1)));
-//        log.info(String.valueOf(result.get(0)));
-//        log.info(String.valueOf(result.get(1)));
-//        log.info(String.valueOf(reportsForChapter1));
-//        log.info(String.valueOf(reportsForChapter2));
-
-      //  assertEquals(reportsForChapter2, result.get(0));
         assertEquals(reportsForChapter2, result.get(0));
     }
 
     @Test
-
-    public void testCreateStudentReportWithValidInput() {
+    void testCreateStudentReportWithValidInput() {
         NewStudentReportDto newStudentReportDto =
                 new NewStudentReportDto(1L, "Test Report", LocalDate.now(),
                         LocalTime.now(), 2L);
@@ -113,7 +97,7 @@ public class StudentReportServiceTest {
     }
 
     @Test
-    public void testCreateStudentReportWithInvalidInput() {
+    void testCreateStudentReportWithInvalidInput() {
         NewStudentReportDto newStudentReportDto = new NewStudentReportDto(
                 1L, "Test Report", LocalDate.now(), LocalTime.now(), 2L);
         PersonEntity student = new PersonEntity();
@@ -125,7 +109,7 @@ public class StudentReportServiceTest {
     }
 
     @Test
-    public void testChangeReportLikeList() {
+    void testChangeReportLikeList() {
         int reportId = 1;
         long studentId = 2;
 

@@ -50,7 +50,7 @@ class ReferenceTitleServiceTest {
         Set<ReferenceTitleEntity> entities = new HashSet<>();
         entities.add(entity1);
         entities.add(entity2);
-        when(referenceTitleRepository.findAll()).thenReturn(new ArrayList<>(entities)); // Перетворюємо Set на List
+        when(referenceTitleRepository.findAll()).thenReturn(new ArrayList<>(entities));
         Set<ReferenceTitleEntity> result = referenceTitleService.get();
         assertEquals(entities, result);
     }
@@ -69,7 +69,6 @@ class ReferenceTitleServiceTest {
         assertEquals(title, result.getTitle());
     }
 
-    @SuppressWarnings("checkstyle:VariableDeclarationUsageDistance")
     @Test
     void testGetTitle() {
         String reference = "TestReference";
@@ -158,7 +157,6 @@ class ReferenceTitleServiceTest {
 
     @Test
     void testUpdateListOfReferenceTitleDto() {
-        // Arrange
         ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
         ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);
 
@@ -201,9 +199,9 @@ class ReferenceTitleServiceTest {
             }
         }
     }
+
     @Test
     void testCreate1() {
-        // Arrange
         ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
         FunctionThreadPool<String, ReferenceTitleEntity> functionThreadPool = mock(FunctionThreadPool.class);
         ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);

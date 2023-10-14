@@ -39,11 +39,9 @@ public class StudentOnCourseServiceTest {
 
     @Mock
     private PersonApplicationRepository personApplicationRepository;
-
-
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -111,7 +109,6 @@ public class StudentOnCourseServiceTest {
 
         when(courseService.get(courseId)).thenReturn(Optional.of(courseEntity));
         when(personService.get(studentId)).thenReturn(Optional.of(studentEntity));
-
         when(studentOnCourseRepository
                 .findAllByCourseAndStudentAndInactiveAndBan(courseEntity, studentEntity, inactive, ban))
                 .thenReturn(expectedStudentCourseRelationships);
@@ -120,7 +117,6 @@ public class StudentOnCourseServiceTest {
 
         assertEquals(expectedStudentCourseRelationships, result);
     }
-
     @Test
     public void testGetCoursesOfStudent() {
         long studentId = 1L;
@@ -157,7 +153,6 @@ public class StudentOnCourseServiceTest {
         );
 
         when(courseService.get(courseId)).thenReturn(Optional.of(courseEntity));
-
         when(studentOnCourseRepository.findAllByCourseAndInactiveAndBan(courseEntity, inactive, ban))
                 .thenReturn(expectedStudentsOfCourse);
 
@@ -166,7 +161,6 @@ public class StudentOnCourseServiceTest {
 
         assertEquals(expectedStudentsOfCourse, result);
     }
-
 
     @Test
     public void testCreateStudentOnCourse() {
@@ -195,9 +189,7 @@ public class StudentOnCourseServiceTest {
         when(roleRepository.findByName("STUDENT")).thenReturn(studentRole);
         when(roleRepository.findByName(courseEntity.getSlug())).thenReturn(courseRole);
 
-        Optional<StudentOnCourseEntity> student = (courseEntity != null && user != null)
-                ? Optional.ofNullable(studentOnCourseRepository.save(studentOnCourseEntity))
-                : Optional.empty();
+        Optional<StudentOnCourseEntity> student = Optional.of(studentOnCourseRepository.save(studentOnCourseEntity));
 
         assertTrue(student.isPresent());
         assertEquals(studentOnCourseEntity, student.get());

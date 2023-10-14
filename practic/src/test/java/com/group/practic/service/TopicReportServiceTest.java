@@ -19,14 +19,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
 @Slf4j
 
-public class TopicReportServiceTest {
+ class TopicReportServiceTest {
 
     @InjectMocks
     private TopicReportService topicReportService;
-
     @Mock
     private ChapterService chapterService;
     @Mock

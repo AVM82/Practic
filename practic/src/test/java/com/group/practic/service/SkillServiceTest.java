@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class SkillServiceTest {
+class SkillServiceTest {
 
     @Mock
     private SkillRepository skillRepository;
@@ -66,7 +66,6 @@ public class SkillServiceTest {
         assertTrue(result.isPresent());
         assertEquals(skillName, result.get().getName());
     }
-
 
     @Test
     void testSave() {
@@ -127,8 +126,8 @@ public class SkillServiceTest {
         SubChapterEntity subChapter = new SubChapterEntity();
         subChapter.setId(subChapterId);
 
-        when(skillRepository.findByName(skillName)).thenReturn(Optional.of(skill)); // Моделюємо успішне знаходження SkillEntity
-        when(chapterPartService.getSub(subChapterId)).thenReturn(Optional.of(subChapter)); // Моделюємо успішне знаходження SubChapterEntity
+        when(skillRepository.findByName(skillName)).thenReturn(Optional.of(skill));
+        when(chapterPartService.getSub(subChapterId)).thenReturn(Optional.of(subChapter));
         when(skillRepository.save(skill)).thenReturn(skill);
 
         Optional<SkillEntity> result = skillService.addSkillToChapter(skillName, subChapterId);

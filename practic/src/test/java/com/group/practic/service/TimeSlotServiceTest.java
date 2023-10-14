@@ -11,14 +11,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -26,14 +24,10 @@ import static org.mockito.Mockito.*;
 @Slf4j
 
 public class TimeSlotServiceTest {
-
     @InjectMocks
     private TimeSlotService timeSlotService;
-
     @Mock
     private TimeSlotRepository timeSlotRepository;
-    @Mock
-    private PropertyLoader propertyLoader;
 
     @Before
     public void setup() {
@@ -93,14 +87,11 @@ public class TimeSlotServiceTest {
         when(timeSlotRepository.save(any(TimeSlotEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Optional<TimeSlotEntity> result = timeSlotService.updateTimeSlotAvailability(timeslotId);
-
-
         verify(timeSlotRepository, times(1)).findById(timeslotId);
         verify(timeSlotRepository, times(1)).save(timeSlotEntity);
 
         assertTrue(result.isPresent());
         assertFalse(result.get().isAvailability());
-
         assertEquals(timeslotId, result.get().getId());
     }
 
@@ -119,7 +110,6 @@ public class TimeSlotServiceTest {
 
     @Test
     public void testCreateTimeslot() {
-        // Вхідні дані для тесту
         LocalDate date = LocalDate.of(2023, 10, 15);
         LocalTime time = LocalTime.of(14, 30);
 

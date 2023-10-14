@@ -4,6 +4,7 @@ import com.group.practic.entity.*;
 import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.repository.StudentChapterRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,14 +15,12 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-
-public class StudentChapterServiceTest {
+class StudentChapterServiceTest {
 
     @Mock
     private StudentChapterRepository studentChapterRepository;
@@ -42,9 +41,12 @@ public class StudentChapterServiceTest {
     }
 
 
+    @Mock
+    private StudentPracticeService studentPracticeService;
+
+
     @Test
-    public void testFindOpenChapters() {
-        // Arrange
+    void testFindOpenChapters() {
         PersonEntity student = new PersonEntity();
         StudentChapterEntity chapter1 = new StudentChapterEntity();
         StudentChapterEntity chapter2 = new StudentChapterEntity();
@@ -56,12 +58,11 @@ public class StudentChapterServiceTest {
 
         Set<StudentChapterEntity> openChapters = studentChapterService.findOpenChapters(student);
 
-        assertEquals(expectedChapters, openChapters);
+        Assertions.assertEquals(expectedChapters, openChapters);
     }
 
-
     @Test
-    public void testAddChapterWhenChapterDoesNotExist() {
+    void testAddChapterWhenChapterDoesNotExist() {
         long studentId = 1L;
         long chapterId = 2L;
 
@@ -71,7 +72,7 @@ public class StudentChapterServiceTest {
     }
 
     @Test
-    public void testAddChapterWhenStudentDoesNotExist() {
+    void testAddChapterWhenStudentDoesNotExist() {
         long studentId = 1L;
         long chapterId = 2L;
 
@@ -81,6 +82,26 @@ public class StudentChapterServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> studentChapterService.addChapter(studentId, chapterId));
     }
 
+    @Test
+    void testAddPractices() {
+        long studentId = 1L;
+        long chapterId = 2L;
 
+        ChapterPartEntity chapterPart1 = new ChapterPartEntity();
+        Set<ChapterPartEntity> chapterParts = new HashSet<>();
+        chapterParts.add(chapterPart1);
+
+        when(chapterPartService.getAllPractices(chapterId)).thenReturn(Optional.of(chapterParts));
+        ChapterEntity chapter = new ChapterEntity();
+        when(chapterService.get(chapterId)).thenReturn(Optional.of(chapter));
+        PersonEntity student = new PersonEntity();
+        StudentOnCourseEntity studentOnCourse = new StudentOnCourseEntity(student, new CourseEntity());
+        when(studentOnCourseService.get(studentId)).thenReturn(studentOnCourse);
+        when(studentPracticeService.addPractice(student, chapterPart1, chapter))
+                .thenReturn(new StudentPracticeEntity());
+        Set<StudentPracticeEntity> practices = studentChapterService.addPractices(studentId, chapterId);
+        assertNotNull(practices);
+        Assertions.assertEquals(1, practices.size());
+    }
 
 }
