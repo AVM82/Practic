@@ -65,7 +65,7 @@ export class CoursesService {
 
   getChapters(slug: string): Observable<Chapter[]> {
     this.setCourse(slug);
-    return this.chapters!;
+    return this.chapters;
   }
 
   getChapter(slug: string, number: number): Observable<Chapter> {
@@ -189,7 +189,7 @@ export class CoursesService {
   isUninvolved(slug: string): Observable<boolean> {
     return this.getMentors(slug).pipe(map<User[], boolean>(
       mentors => {
-        return !this.isStudent && (mentors == null || !mentors.some(mentor => mentor.id === this.me!.id));
+        return !this.isStudent && (mentors == null || !mentors.some(mentor => mentor.id === this.me.id));
     }));
   }
 

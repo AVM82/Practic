@@ -1,8 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
-import {Course} from "../../models/course/course";
-import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
@@ -10,8 +8,6 @@ import {MatButtonModule} from "@angular/material/button";
 import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {StudentReport} from "../../models/report/studentReport";
-import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
-import {EditBtnComponent} from 'src/app/componets/edit-btn/edit-course.component';
 import {Practice} from "../../models/practice/practice";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ChaptersService} from "../../services/chapters/chapters.service";

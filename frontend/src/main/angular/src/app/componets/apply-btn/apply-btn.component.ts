@@ -1,11 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {AuthService} from "../../services/auth/auth.service";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {ActivatedRoute} from "@angular/router";
 import {InfoMessagesService} from "../../services/info-messages.service";
-import { CoursesService } from 'src/app/services/courses/courses.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-apply-btn',

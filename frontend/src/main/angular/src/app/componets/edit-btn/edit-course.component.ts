@@ -1,8 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { Observable } from "rxjs";
-import { CoursesService } from "src/app/services/courses/courses.service";
+import { Component, Input } from "@angular/core";
 
 @Component({
     selector: 'app-edit-btn',

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Course} from "../../models/course/course";
 import {MatIconModule} from "@angular/material/icon";
