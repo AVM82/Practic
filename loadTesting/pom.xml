@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -16,6 +16,7 @@
     <gatling.version>3.9.5</gatling.version>
     <gatling-maven-plugin.version>4.3.0</gatling-maven-plugin.version>
     <faker.version>1.0.2</faker.version>
+    <gatling.simulationClass>com.group.practic.gatlingtest.GatlingTest</gatling.simulationClass>
   </properties>
 
   <dependencies>
@@ -44,7 +45,7 @@
         <version>${gatling-maven-plugin.version}</version>
         <configuration>
           <includes>
-            <include>com.group.practic.gatlingtest.StudentAddingSimulation</include>
+            <include>com.group.practic.gatlingtest.GatlingTest</include>
           </includes>
         </configuration>
       </plugin>
