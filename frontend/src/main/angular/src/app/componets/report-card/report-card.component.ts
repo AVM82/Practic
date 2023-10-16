@@ -88,9 +88,9 @@ export class ReportCardComponent {
         dialogRef.afterClosed().subscribe(result => {
             console.log("res of changing dialog")
             console.log(result);
-            if (result != null ) {
+            if (result) {
                 this.reportService.updateReport(result).subscribe(() => {
-                    this.reportDashboard.ngOnInit();// Перенаправление на текущую страницу
+                    this.reportDashboard.ngOnInit();
                 });
             }
         });
@@ -116,9 +116,12 @@ export class ReportCardComponent {
         dialogRef.afterClosed().subscribe(result => {
             console.log("res of canceling dialog")
             console.log(result);
-            this.reportService.deleteReport(result).subscribe(() => {
-                this.reportDashboard.ngOnInit();// Перенаправление на текущую страницу
-            });
+            if (result) {
+                this.reportService.deleteReport(result).subscribe(() => {
+                    this.reportDashboard.ngOnInit();
+
+                });
+            }
         });
     }
 }

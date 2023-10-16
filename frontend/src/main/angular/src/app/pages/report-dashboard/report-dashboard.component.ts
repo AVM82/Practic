@@ -62,6 +62,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
             console.log(slug)
+            console.log(this.reports)
              if (slug) {
             this.updateData(slug)}
         });
