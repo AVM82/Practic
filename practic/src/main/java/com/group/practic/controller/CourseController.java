@@ -98,7 +98,7 @@ public class CourseController {
     @GetMapping("/{slug}/activeChapterNumber")
     public ResponseEntity<Integer> getActiveChapterNumber(@PathVariable String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
-        if (course.isEmpty()) { 
+        if (course.isEmpty()) {
             return notAcceptable();
         }
         return getResponse(studentOnCourseService.getActiveChapterNumber(course.get()));
@@ -131,8 +131,8 @@ public class CourseController {
             return getResponseAllowed(courseService.getChapterByNumber(slug, number));
         }
         Optional<CourseEntity> course = courseService.get(slug);
-        if (course.isEmpty()) { return notAcceptable(); }
-        return getResponseAllowed(studentOnCourseService.getOpenedChapter(course.get(), number));
+        return course.isEmpty() ? notAcceptable()
+                : getResponseAllowed(studentOnCourseService.getOpenedChapter(course.get(), number));
     }
 
 

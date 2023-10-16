@@ -151,7 +151,7 @@ public class StudentOnCourseController {
 
 
     @GetMapping("/practices/{practiceState}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MENTOR')")
     public ResponseEntity<Collection<StudentPracticeDto>> getPracticeWithStateFilter(
             @PathVariable String practiceState) {
         PracticeState state = PracticeState.fromString(practiceState);
@@ -269,11 +269,13 @@ public class StudentOnCourseController {
     public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable String slug,
             @PathVariable long id, @RequestParam boolean state) {
         Optional<CourseEntity> course = courseService.get(slug);
-        if (course.isEmpty()) { return notAcceptable(); }
+        if (course.isEmpty()) {
+            return notAcceptable();
+        }
         StudentOnCourseEntity student = studentOnCourseService.getStudentOfCourse(course.get());
-        if (student == null) { return ResponseUtils.forbidden(); }
-        return updateResponse(
-                studentOnCourseService.changeStudentAdditionalMaterial(student, id, state));
+        return student == null ? ResponseUtils.forbidden()
+                : updateResponse(
+                        studentOnCourseService.changeStudentAdditionalMaterial(student, id, state));
     }
 
 }

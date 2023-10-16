@@ -18,6 +18,7 @@ export class CreateCourseComponent implements OnInit{
   newCourse?: Course;
   createMethod: CreateMethod = 'Interactive';
   properties: string = '';
+  capability: boolean = false;
 
   checkoutForm = this.formBuilder.group({
     slug: '',
@@ -31,9 +32,11 @@ export class CreateCourseComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    this.coursesService.getAllCourses().subscribe(courses => {
-      this.courses = courses;
-    })
+    this.capability = this.coursesService.me.hasAnyRole('ADMIN', 'COLLABORATOR');
+    if (this.capability)
+      this.coursesService.getAllCourses().subscribe(courses => {
+        this.courses = courses;
+      })
   }
 
   setMethod(method: CreateMethod): void {

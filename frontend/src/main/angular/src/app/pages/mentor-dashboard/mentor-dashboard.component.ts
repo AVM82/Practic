@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import {RouterOutlet} from "@angular/router";
 
 @Component({
-  selector: 'app-admin-dashboard',
+  selector: 'app-mentor-dashboard',
   standalone: true,
   imports: [CommonModule, RouterOutlet],
-  templateUrl: './admin-dashboard.component.html'
+  templateUrl: './mentor-dashboard.component.html'
 })
-export class AdminDashboardComponent {
+export class MentorDashboardComponent {
 
 }

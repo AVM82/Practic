@@ -158,8 +158,9 @@ public class StudentOnCourseService {
 
 
     public Integer getActiveChapterNumber(CourseEntity course) {
-        if (personService.hasAdvancedRole() || personService.amIMentor(course))
+        if (personService.hasAdvancedRole() || personService.amImentor(course)) {
             return Integer.MAX_VALUE;
+        }
         StudentOnCourseEntity studentOnCourse = getStudentOfCourse(course);
         return studentOnCourse != null ? studentOnCourse.getActiveChapter().getNumber() : 0;
     }
@@ -168,7 +169,7 @@ public class StudentOnCourseService {
     public Optional<ChapterEntity> getOpenedChapter(CourseEntity course, int number) {
         ChapterEntity activeChapter = getActiveChapter(course);
         return (activeChapter != null && activeChapter.getNumber() >= number)
-                || personService.amIMentor(course)
+                || personService.amImentor(course)
                         ? chapterService.getChapterByNumber(course, number)
                         : Optional.empty();
     }
@@ -187,8 +188,9 @@ public class StudentOnCourseService {
 
 
     public Integer getLastVisibleChapterNumber(CourseEntity course) {
-        if (personService.hasAdvancedRole() || personService.amIMentor(course))
+        if (personService.hasAdvancedRole() || personService.amImentor(course)) {
             return Integer.MAX_VALUE;
+        }
         StudentOnCourseEntity studentOnCourse = getStudentOfCourse(course);
         return studentOnCourse == null ? 0 : studentOnCourse.getActiveChapter().getNumber();
     }

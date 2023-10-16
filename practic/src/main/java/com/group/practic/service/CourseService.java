@@ -116,18 +116,28 @@ public class CourseService {
     public Optional<CourseEntity> create(PropertyLoader prop) {
         CourseEntity courseEntity;
         String slug = prop.getProperty(PropertyUtil.SLUG_KEY, "");
-        if (slug.length() < 5) { return Optional.empty(); }
+        if (slug.length() < 5) {
+            return Optional.empty();
+        }
         Optional<CourseEntity> course = get(slug);
         String name = prop.getProperty(PropertyUtil.NAME_KEY, "");
         String svg = prop.getProperty(PropertyUtil.SVG_KEY, "");
-        if (name.length() < 5) { return Optional.empty(); }
+        if (name.length() < 5) {
+            return Optional.empty();
+        }
         if (course.isPresent()) {
             courseEntity = course.get();
-            if (!name.isEmpty()) { courseEntity.setName(name); }
-            if (!svg.isEmpty()) { courseEntity.setSvg(svg); }
+            if (!name.isEmpty()) {
+                courseEntity.setName(name);
+            }
+            if (!svg.isEmpty()) {
+                courseEntity.setSvg(svg);
+            }
         } else {
             course = save(new CourseEntity(slug, name, svg));
-            if (course.isEmpty()) { return Optional.empty(); }
+            if (course.isEmpty()) {
+                return Optional.empty();
+            }
             courseEntity = course.get();
         }
         courseEntity.setAuthors(getAuthorSet(prop));

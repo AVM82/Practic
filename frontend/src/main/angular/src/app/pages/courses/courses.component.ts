@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CoursesService} from "../../services/courses/courses.service";
 import {MatCardModule} from '@angular/material/card';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {RouterLink} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {AngularSvgIconModule, SvgIconRegistryService} from 'angular-svg-icon';
@@ -13,10 +13,11 @@ import { CourseProp } from 'src/app/models/course/course.prop';
     templateUrl: './courses.component.html',
     styleUrls: ['./courses.component.css'],
     standalone: true,
-    imports: [NgForOf, MatCardModule, RouterLink, MatIconModule, AngularSvgIconModule]
+    imports: [NgForOf, NgIf, MatCardModule, RouterLink, MatIconModule, AngularSvgIconModule]
 })
 export class CoursesComponent implements OnInit{
   coursesProp: CourseProp[] = [];
+  createCapability: boolean = false;
 
   constructor(
     private tokenStorageService: TokenStorageService,
@@ -28,6 +29,7 @@ export class CoursesComponent implements OnInit{
     this.coursesService.getAllCourses().subscribe(courses => {
       if (courses) {
         const meId = this.coursesService.me.id;
+        this.createCapability = this.coursesService.me.hasAnyRole('ADMIN', 'COLLABORATOR');
         courses.forEach(course => {
           this.svg_registry.addSvg(course.slug, course.svg);
             let route;

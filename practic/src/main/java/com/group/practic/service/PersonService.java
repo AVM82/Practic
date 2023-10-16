@@ -250,9 +250,10 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public boolean amIMentor(CourseEntity course) {
+    public boolean amImentor(CourseEntity course) {
         PersonEntity me = getPerson();
-        return me != null && course.getMentors().stream().anyMatch(mentor -> mentor.getId() == me.getId());
+        return me != null
+                && course.getMentors().stream().anyMatch(mentor -> mentor.getId() == me.getId());
     }
 
 }

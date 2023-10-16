@@ -1,0 +1,29 @@
+.split-page {
+    display: flex;
+}
+
+.panel {
+    margin: 5px;
+    width: 200px;
+  }
+  
+.content {
+    position: relative;
+    width: 100%;
+    background-color: #20c0d0;
+  }
+  
+mat-card {
+    margin: 5px;
+    padding: 3px;
+    height: 36px;
+    color: #f0f0f0;
+    background-color: #505050;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+mat-card:hover {
+    background-color: #409840;
+}
