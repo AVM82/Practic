@@ -64,7 +64,7 @@ public class StudentReportService {
                 .findById(studentReportCreationDto.timeslotId());
         timeslot.ifPresent(timeSlot -> timeSlotService
                 .updateTimeSlotAvailability(timeSlot.getId(), false));
-        return (student.isPresent() && chapter.isPresent())
+        return (student.isPresent() && chapter.isPresent() && timeslot.isPresent())
             ? Optional.ofNullable(studentReportRepository
             .save(new StudentReportEntity(chapter.get(), student.get(),
                     timeslot.get(), studentReportCreationDto.title()))) : Optional.empty();

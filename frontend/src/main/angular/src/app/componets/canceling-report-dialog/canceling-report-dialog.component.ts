@@ -7,7 +7,6 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
-import {NewStudentReport} from "../../models/newStudentReport/newStudentReport";
 
 @Component({
     selector: 'app-canceling-report-dialog',
@@ -32,8 +31,6 @@ export class CancelingReportDialogComponent {
         public dialogRef: MatDialogRef<CancelingReportDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: { reportId: number }) {
     }
-
-
     onNoClick(): void {
         this.dialogRef.close();
     }

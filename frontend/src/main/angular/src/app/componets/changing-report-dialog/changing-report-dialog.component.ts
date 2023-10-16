@@ -135,7 +135,7 @@ export class ChangingReportDialogComponent {
 
     getTimeslots(date: any) {
 
-        if (date != null && date.format) {
+        if (date?.format) {
             this.dateStr = date.format('YYYY-MM-DD');
             // @ts-ignore
             return this.data.timeslots[this.dateStr];
