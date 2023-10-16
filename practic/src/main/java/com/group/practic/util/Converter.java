@@ -162,6 +162,7 @@ public interface Converter {
                 .addMapping(src -> src.getStudent().getName(), StudentReportDto::setPersonName)
                 .addMapping(src -> src.getStudent().getProfilePictureUrl(),
                         StudentReportDto::setProfilePictureUrl)
+                .addMapping(src -> src.getStudent().getId(), StudentReportDto::setPersonId)
                 .addMapping(src -> src.getChapter().getShortName(),
                         StudentReportDto::setChapterName)
                 .addMapping(StudentReportEntity::getState, StudentReportDto::setState)

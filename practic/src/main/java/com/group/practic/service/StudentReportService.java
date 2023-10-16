@@ -1,6 +1,6 @@
 package com.group.practic.service;
 
-import com.group.practic.dto.NewStudentReportDto;
+import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
@@ -9,20 +9,24 @@ import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.repository.StudentReportRepository;
 import com.group.practic.repository.TimeSlotRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class StudentReportService {
 
     private final StudentReportRepository studentReportRepository;
     private final CourseService courseService;
     private final ChapterService chapterService;
     private final TimeSlotRepository timeSlotRepository;
+    private final TimeSlotService timeSlotService;
     static final List<ReportState> ACTUAL_STATES = List.of(ReportState.STARTED,
             ReportState.ANNOUNCED);
 
@@ -30,14 +34,17 @@ public class StudentReportService {
     public StudentReportService(StudentReportRepository studentReportRepository,
                                 CourseService courseService,
                                 ChapterService chapterService,
-                                TimeSlotRepository timeSlotRepository) {
+                                TimeSlotRepository timeSlotRepository,
+                                TimeSlotService timeSlotService) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
         this.chapterService = chapterService;
         this.timeSlotRepository = timeSlotRepository;
+        this.timeSlotService = timeSlotService;
     }
 
     public List<List<StudentReportEntity>> getAllStudentsActualReports(String slug) {
+        setStatesOfFinishedReports();
         Optional<CourseEntity> course = courseService.get(slug);
         List<List<StudentReportEntity>> result = Collections.emptyList();
         if (course.isPresent()) {
@@ -51,15 +58,16 @@ public class StudentReportService {
     }
 
     public Optional<StudentReportEntity> createStudentReport(Optional<PersonEntity> student,
-            NewStudentReportDto newStudentReportDto) {
-        Optional<ChapterEntity> chapter = chapterService.get(newStudentReportDto.chapter());
+            StudentReportCreationDto studentReportCreationDto) {
+        Optional<ChapterEntity> chapter = chapterService.get(studentReportCreationDto.chapter());
         Optional<TimeSlotEntity> timeslot = timeSlotRepository
-                .findById(newStudentReportDto.timeslotId());
-
+                .findById(studentReportCreationDto.timeslotId());
+        timeslot.ifPresent(timeSlot -> timeSlotService
+                .updateTimeSlotAvailability(timeSlot.getId(), false));
         return (student.isPresent() && chapter.isPresent() && timeslot.isPresent())
             ? Optional.ofNullable(studentReportRepository
             .save(new StudentReportEntity(chapter.get(), student.get(),
-                    timeslot.get(), newStudentReportDto.title()))) : Optional.empty();
+                    timeslot.get(), studentReportCreationDto.title()))) : Optional.empty();
     }
 
     public Optional<StudentReportEntity> changeReportLikeList(int reportId, long studentId) {
@@ -73,6 +81,53 @@ public class StudentReportService {
                 reportLikedPersonsIdList.add(studentId);
             }
             reportEntity.setLikedPersonsIdList(reportLikedPersonsIdList);
+            return Optional.of(studentReportRepository.save(reportEntity));
+        }
+        return Optional.empty();
+    }
+
+    public void setStatesOfFinishedReports() {
+        List<StudentReportEntity> result = studentReportRepository.findAll();
+        for (StudentReportEntity report : result) {
+            if (report.getTimeSlot().getDate().isBefore(LocalDate.now())) {
+                report.setState(ReportState.FINISHED);
+                studentReportRepository.save(report);
+            }
+        }
+    }
+
+    public Optional<StudentReportEntity> deleteReport(int reportId) {
+        Optional<StudentReportEntity> report = studentReportRepository.findById(reportId);
+        if (report.isPresent()) {
+            StudentReportEntity reportEntity = report.get();
+            Optional<TimeSlotEntity> timeslot =
+                    timeSlotRepository.findById(report.get().getTimeSlot().getId());
+            if (timeslot.isPresent()) {
+                timeslot.ifPresent(timeSlot ->
+                        timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), true));
+            }
+            studentReportRepository.delete(reportEntity);
+            return Optional.of(reportEntity);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<StudentReportEntity> changeReport(StudentReportCreationDto reportDto) {
+        Optional<StudentReportEntity> report = studentReportRepository.findById(reportDto.id());
+        if (report.isPresent()) {
+            StudentReportEntity reportEntity = report.get();
+            reportEntity.setTitle(reportDto.title());
+            if (reportDto.timeslotId() != reportEntity.getTimeSlot().getId()) {
+                Optional<TimeSlotEntity> newTimeslot = timeSlotRepository
+                        .findById(reportDto.timeslotId());
+                if (newTimeslot.isPresent()) {
+                    timeSlotService
+                            .updateTimeSlotAvailability(newTimeslot.get().getId(), false);
+                    TimeSlotEntity oldTimeslot = reportEntity.getTimeSlot();
+                    timeSlotService.updateTimeSlotAvailability(oldTimeslot.getId(), true);
+                    reportEntity.setTimeSlot(newTimeslot.get());
+                }
+            }
             return Optional.of(studentReportRepository.save(reportEntity));
         }
         return Optional.empty();

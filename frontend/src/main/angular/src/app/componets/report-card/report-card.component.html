@@ -13,6 +13,10 @@
         <mat-card-title class="report-topic-header">Доповідь на тему:</mat-card-title>
         <mat-card-title class="report-topic-text">{{reportTopic}}</mat-card-title>
         <div class="like-counter-location">
+            <ng-container *ngIf="isCurrentUserReport()">
+                <button mat-button class="change-report-btn" (click)="openChangeReportDialog()">Змінити</button>
+                <button mat-button class="cancel-report-btn" (click)="openCancelReportDialog()">Скасувати</button>
+            </ng-container>
             <mat-card-title class="like-counter-number ">
                 {{likedPersonsIdList.length}}
             </mat-card-title>
@@ -22,7 +26,6 @@
                           fill="#27AE60"/>
                 </svg>
             </div>
-
         </div>
     </mat-card>
 </div>

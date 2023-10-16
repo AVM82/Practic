@@ -6,5 +6,4 @@ import java.time.LocalTime;
 
 public record NewStudentReportDto(@NotEmpty Long chapter, @NotEmpty String title, LocalDate date,
                                   LocalTime time, @NotEmpty Long timeslotId) {
-
 }

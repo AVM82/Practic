@@ -1,5 +1,6 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.deleteResponse;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.notAcceptable;
 import static com.group.practic.util.ResponseUtils.postResponse;
@@ -11,6 +12,7 @@ import com.group.practic.dto.NewStudentReportDto;
 import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
+import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
@@ -46,6 +48,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -137,16 +140,11 @@ public class StudentOnCourseController {
 
 
     @GetMapping("/practices/my")
+    @PreAuthorize("hasRole('STUDENT)")
     public ResponseEntity<Collection<PracticeDto>> getAllMyPractices() {
-        PersonEntity student = (PersonEntity) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-
-        Set<StudentPracticeEntity> practices =
-                studentPracticeService.getAllPracticesByStudent(student);
-
-        return getResponse(
-                practices.stream().map(Converter::convertToPractice).collect(Collectors.toSet()));
-
+        PersonEntity student = personService.getPerson();
+        return getResponse(studentPracticeService.getAllPracticesByStudent(student).stream()
+                .map(Converter::convertToPractice).collect(Collectors.toSet()));
     }
 
 
@@ -186,20 +184,17 @@ public class StudentOnCourseController {
 
 
     @GetMapping("/chapters")
+    @PreAuthorize("hasRole('STUDENT)")
     public ResponseEntity<Set<ChapterDto>> getOpenChapters() {
-        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        Set<StudentChapterEntity> studentOpenChapters =
-                studentChapterService.findOpenChapters(person);
-        return ResponseEntity.ok(
-                studentOpenChapters.stream().map(Converter::convert).collect(Collectors.toSet()));
+        PersonEntity student = personService.getPerson();
+        return ResponseEntity.ok(studentChapterService.findOpenChapters(student).stream()
+                .map(Converter::convert).collect(Collectors.toSet()));
     }
 
 
     @PostMapping("/chapters")
     public ResponseEntity<StudentChapterEntity> createStudentChapter(
             @RequestBody @Valid StudentChapterDto student) {
-
         return ResponseEntity.ok(
                 studentChapterService.addChapter(student.getStudentId(), student.getChapterId()));
     }
@@ -222,13 +217,13 @@ public class StudentOnCourseController {
 
     @PostMapping("/reports/course/{slug}")
     public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,
-            Principal principal, @RequestBody NewStudentReportDto newStudentReportDto) {
+            Principal principal,
+            @RequestBody StudentReportCreationDto studentReportCreationDto) {
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
-                studentReportService.createStudentReport(personEntity, newStudentReportDto);
+                studentReportService.createStudentReport(personEntity, studentReportCreationDto);
         return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
     }
-
 
     @GetMapping("/reports/course/{slug}/timeslots")
     public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(
@@ -236,46 +231,39 @@ public class StudentOnCourseController {
         return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
     }
 
-
-    @PutMapping("/reports/course/{slug}/timeslots")
-    public ResponseEntity<Optional<TimeSlotEntity>> updateTimeslotAvailability(
-            @PathVariable String slug, @RequestBody Long timeslotId) {
-        return updateResponse(
-                Optional.ofNullable(timeSlotService.updateTimeSlotAvailability(timeslotId)));
-    }
-
-
     @PostMapping("/reports/course/{slug}/timeslots")
-    public ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots() {
+    public  ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots(
+            @PathVariable String slug) {
         return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
 
-
     @PutMapping("/reports/likes/")
     public ResponseEntity<StudentReportDto> changeLikeCount(@RequestBody int reportId,
-            Principal principal) {
-        Optional<PersonEntity> person = personService.get(principal.getName());
-        if (person.isPresent()) {
-            long studentId = person.get().getId();
-            Optional<StudentReportEntity> reportEntity =
-                    studentReportService.changeReportLikeList(reportId, studentId);
-            return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
-        }
-        return ResponseUtils.forbidden();
+                                                                      Principal principal) {
+        Optional<PersonEntity> personEntity = personService.get(principal.getName());
+        long studentId = personEntity.get().getId();
+        Optional<StudentReportEntity> reportEntity =
+                studentReportService.changeReportLikeList(reportId, studentId);
+
+        return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
     }
 
-
-    @PutMapping("/additionalMaterials/course/{slug}/{id}")
-    public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable String slug,
-            @PathVariable long id, @RequestParam boolean state) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        if (course.isEmpty()) {
-            return notAcceptable();
-        }
-        StudentOnCourseEntity student = studentOnCourseService.getStudentOfCourse(course.get());
-        return student == null ? ResponseUtils.forbidden()
-                : updateResponse(
-                        studentOnCourseService.changeStudentAdditionalMaterial(student, id, state));
+    @PutMapping("/reports/course/")
+    public ResponseEntity<StudentReportDto> putStudentReport(
+            @RequestBody StudentReportCreationDto studentReportCreationDto) {
+        Optional<StudentReportEntity> reportEntity =
+                studentReportService.changeReport(studentReportCreationDto);
+        return reportEntity.isPresent()
+                ? updateResponse(Optional.of(Converter.convert(reportEntity.get())))
+                : updateResponse(Optional.empty());
     }
 
+    @DeleteMapping("/reports/course/{reportId}")
+    public ResponseEntity<StudentReportDto> deleteStudentReport(@PathVariable Integer reportId) {
+        Optional<StudentReportEntity> reportEntity =
+                studentReportService.deleteReport(reportId);
+        return reportEntity.isPresent()
+                ? deleteResponse(Optional.of(Converter.convert(reportEntity.get())))
+                : deleteResponse(Optional.empty());
+    }
 }
