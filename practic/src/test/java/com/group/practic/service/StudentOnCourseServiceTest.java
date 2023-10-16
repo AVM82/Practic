@@ -19,8 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-
-public class StudentOnCourseServiceTest {
+class StudentOnCourseServiceTest {
 
     @InjectMocks
     private StudentOnCourseService studentOnCourseService;
@@ -46,7 +45,7 @@ public class StudentOnCourseServiceTest {
     }
 
     @Test
-    public void testGetAllStudentCourseRelationships() {
+    void testGetAllStudentCourseRelationships() {
         List<StudentOnCourseEntity> expectedStudentCourseRelationships = List.of(
                 new StudentOnCourseEntity(),
                 new StudentOnCourseEntity()
@@ -59,7 +58,7 @@ public class StudentOnCourseServiceTest {
     }
 
     @Test
-    public void testGetStudentCourseRelationshipById() {
+    void testGetStudentCourseRelationshipById() {
         long studentId = 1L;
         StudentOnCourseEntity expectedStudentCourseRelationship = new StudentOnCourseEntity();
         when(studentOnCourseRepository.findByStudentId(studentId)).thenReturn(expectedStudentCourseRelationship);
@@ -68,7 +67,7 @@ public class StudentOnCourseServiceTest {
     }
 
     @Test
-    public void testGetAllStudentOnCourses() {
+     void testGetAllStudentOnCourses() {
         List<StudentOnCourseEntity> expectedStudentOnCourses = List.of(
                 new StudentOnCourseEntity(), new StudentOnCourseEntity());
         when(studentOnCourseRepository.findAll()).thenReturn(expectedStudentOnCourses);
@@ -77,7 +76,7 @@ public class StudentOnCourseServiceTest {
     }
 
     @Test
-    public void testGetStudentCourseRelationshipsByInactiveAndBan() {
+    void testGetStudentCourseRelationshipsByInactiveAndBan() {
         boolean inactive = true;
         boolean ban = false;
         List<StudentOnCourseEntity> expectedStudentCourseRelationships = List.of(
@@ -94,7 +93,7 @@ public class StudentOnCourseServiceTest {
     }
 
     @Test
-    public void testGetStudentCourseRelationshipsByCourseAndStudent() {
+    void testGetStudentCourseRelationshipsByCourseAndStudent() {
         long courseId = 1L;
         long studentId = 2L;
         boolean inactive = true;
@@ -120,7 +119,7 @@ public class StudentOnCourseServiceTest {
     }
 
     @Test
-    public void testGetCoursesOfStudent() {
+    void testGetCoursesOfStudent() {
         long studentId = 1L;
         boolean inactive = true;
         boolean ban = false;
@@ -142,7 +141,7 @@ public class StudentOnCourseServiceTest {
     }
 
     @Test
-    public void testGetStudentsOfCourse() {
+    void testGetStudentsOfCourse() {
         long courseId = 1L;
         boolean inactive = true;
         boolean ban = false;
@@ -165,7 +164,7 @@ public class StudentOnCourseServiceTest {
     }
 
     @Test
-    public void testCreateStudentOnCourse() {
+    void testCreateStudentOnCourse() {
         long courseId = 1L;
         long studentId = 2L;
 

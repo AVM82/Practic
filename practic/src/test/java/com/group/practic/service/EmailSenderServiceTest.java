@@ -16,7 +16,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EmailSenderServiceTest {
+ class EmailSenderServiceTest {
     @InjectMocks
     private EmailSenderService emailSenderService;
 

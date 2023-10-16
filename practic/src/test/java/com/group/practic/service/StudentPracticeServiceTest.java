@@ -7,7 +7,6 @@ import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentPracticeRepository;
 import lombok.extern.slf4j.Slf4j;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,7 +61,7 @@ class StudentPracticeServiceTest {
     }
 
     @Test
-    public void testGetAllPracticesByChapter() {
+     void testGetAllPracticesByChapter() {
 
         PersonEntity student = new PersonEntity();
         ChapterEntity chapter = new ChapterEntity();

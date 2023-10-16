@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 @Slf4j
 
-public class TimeSlotServiceTest {
+ class TimeSlotServiceTest {
     @InjectMocks
     private TimeSlotService timeSlotService;
     @Mock
