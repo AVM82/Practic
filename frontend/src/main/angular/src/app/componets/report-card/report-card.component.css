@@ -90,6 +90,20 @@
   font-family: serif;
   text-decoration: underline;
 }
+.change-report-btn{
+  font-size: 10px;
+  color: black;
+  background-color: gold;
+  height: 20px;
+  margin: 5px;
+}
+.cancel-report-btn{
+  font-size: 10px;
+  color: black;
+  background-color: #f44336;
+  height: 20px;
+  margin: 5px;
+}
 
 
 

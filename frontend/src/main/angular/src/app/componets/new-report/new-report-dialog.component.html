@@ -6,7 +6,11 @@
   <div class="date-field">
     <mat-label>Дата</mat-label>
     <mat-form-field appearance="outline">
-      <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" [formControl]="date" [(ngModel)]="newStudentReport.date">
+      <input matInput [min]="minDate"
+             [max]="maxDate"
+             [matDatepicker]="picker"
+             [formControl]="date"
+             [(ngModel)]="newStudentReport.date" >
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
@@ -14,7 +18,8 @@
   <div class="date-field">
     <mat-label>Час</mat-label>
     <mat-form-field appearance="outline" style="align-items: center">
-      <mat-select [(ngModel)]="newStudentReport.timeslotId">
+      <mat-select [(ngModel)]="newStudentReport.timeslotId"
+                  [formControl]="timeslot">
       <mat-option *ngFor="let timeslot of getTimeslots(newStudentReport.date);"
                   [value]="timeslot.id">{{formatTime(timeslot.time)}}</mat-option>
       </mat-select>
@@ -25,7 +30,8 @@
   <div class="chapter-field">
     <mat-label>Розділ</mat-label>
     <mat-form-field appearance="outline" style="width: 100px;">
-      <mat-select [(ngModel)]="activeChapter" (selectionChange)="updateActiveChapter($event.value)">
+      <mat-select [(ngModel)]="activeChapter"
+                  [formControl]="chapter"(selectionChange)="updateActiveChapter($event.value)">
         <mat-option *ngFor="let chapter of openChapters$ | async; let i = index" [value]="chapter">
           {{ i + 1 }}
         </mat-option>
@@ -35,16 +41,18 @@
 
   <div class="title-field">
     <mat-label>Тема доповіді</mat-label>
-    <mat-form-field appearance="outline" style="width: 640px;"> 
-        <mat-select [(ngModel)]="newStudentReport.title">
+    <mat-form-field appearance="outline" style="width: 640px;">
+        <mat-select [(ngModel)]="newStudentReport.title"
+                    [formControl]="title">
             <mat-option *ngFor="let topic of topicsReport$ | async; let i = index"
                         [value]="topic.topic">{{ topic.topic }}</mat-option>
         </mat-select>
     </mat-form-field>
+  </div>
 </div>
 <div mat-dialog-actions class="dialog-actions">
   <button mat-button class ="cancel-button" (click)="onNoClick()">Відхилити</button>
-  <button mat-button class="ok-button" style="background-color: #27AE60;color: black" [mat-dialog-close]="getnewStudentReport()" cdkFocusInitial>
+  <button mat-button class="ok-button" [mat-dialog-close]="getnewStudentReport()" cdkFocusInitial>
     Прийняти
   </button>
 </div>

@@ -26,28 +26,32 @@ public class TimeSlotService {
         this.timeSlotRepository = timeSlotRepository;
     }
 
-
     public Map<String, List<TimeSlotEntity>> getAvailableTimeSlots() {
 
         List<TimeSlotEntity> timeSlotList = timeSlotRepository
                 .findAllByAvailabilityTrueOrderByTime();
         Map<String, List<TimeSlotEntity>> slotMap = new HashMap<>();
         for (TimeSlotEntity timeSlot : timeSlotList) {
-            String date = timeSlot.getDate().toString();
-            slotMap.computeIfAbsent(date, k -> new ArrayList<>());
-            if (timeSlot.isAvailability()) {
+            LocalDate slotDate = timeSlot.getDate();
+            LocalTime slotTime = timeSlot.getTime();
+
+            if (!slotDate.isBefore(LocalDate.now()) && !(slotDate.isEqual(LocalDate.now())
+                    && slotTime.isBefore(LocalTime.now()))) {
+                String date = slotDate.toString();
+                slotMap.computeIfAbsent(date, k -> new ArrayList<>());
                 slotMap.get(date).add(timeSlot);
             }
         }
         return slotMap;
     }
 
-    public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId) {
+    public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId,
+                                                               boolean availability) {
         Optional<TimeSlotEntity> timeslotOp = timeSlotRepository.findById(timeslotId);
 
         if (timeslotOp.isPresent()) {
             TimeSlotEntity timeSlot = timeslotOp.get();
-            timeSlot.setAvailability(false);
+            timeSlot.setAvailability(availability);
             return Optional.of(timeSlotRepository.save(timeSlot));
         }
         return Optional.empty();

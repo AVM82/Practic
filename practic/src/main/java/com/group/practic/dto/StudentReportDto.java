@@ -8,10 +8,12 @@ public class StudentReportDto {
 
     private long id;
     private String personName;
+    private long personId;
     private String profilePictureUrl;
     private String chapterName;
     private LocalDate date;
     private LocalTime time;
+    private long timeslotId;
     private String state;
     private String title;
 
@@ -39,6 +41,14 @@ public class StudentReportDto {
 
     public void setPersonName(String personName) {
         this.personName = personName;
+    }
+
+    public long getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(long personId) {
+        this.personId = personId;
     }
 
     public String getProfilePictureUrl() {
@@ -71,6 +81,14 @@ public class StudentReportDto {
 
     public void setTime(LocalTime time) {
         this.time = time;
+    }
+
+    public long getTimeslotId() {
+        return timeslotId;
+    }
+
+    public void setTimeslotId(long timeslotId) {
+        this.timeslotId = timeslotId;
     }
 
     public String getState() {
