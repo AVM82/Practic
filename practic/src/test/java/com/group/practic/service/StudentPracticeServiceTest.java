@@ -7,7 +7,8 @@ import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentPracticeRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,7 +37,7 @@ class StudentPracticeServiceTest {
 
     private StudentPracticeService studentPracticeService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         studentPracticeService = new StudentPracticeService(

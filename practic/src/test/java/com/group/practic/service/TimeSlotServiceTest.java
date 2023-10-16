@@ -1,12 +1,10 @@
 package com.group.practic.service;
 
-import com.group.practic.PropertyLoader;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.repository.TimeSlotRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -16,9 +14,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @Slf4j
@@ -29,21 +25,15 @@ public class TimeSlotServiceTest {
     @Mock
     private TimeSlotRepository timeSlotRepository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        timeSlotService = new TimeSlotService(timeSlotRepository);
-    }
 
     @Test
-    public void testGetAvailableTimeSlots() {
+     void testGetAvailableTimeSlots() {
         List<TimeSlotEntity> timeSlotList = new ArrayList<>();
         timeSlotList.add(new TimeSlotEntity(LocalDate.of(2023, 10, 21), LocalTime.of(9, 0)));
         timeSlotList.add(new TimeSlotEntity(LocalDate.of(2023, 10, 22), LocalTime.of(10, 0)));
@@ -77,7 +67,7 @@ public class TimeSlotServiceTest {
     }
 
     @Test
-    public void testUpdateTimeSlotAvailability() {
+     void testUpdateTimeSlotAvailability() {
         Long timeslotId = 1L;
         TimeSlotEntity timeSlotEntity = new TimeSlotEntity();
         timeSlotEntity.setId(timeslotId);
@@ -96,7 +86,7 @@ public class TimeSlotServiceTest {
     }
 
     @Test
-    public void testUpdateTimeSlotAvailabilityWhenTimeSlotNotFound() {
+     void testUpdateTimeSlotAvailabilityWhenTimeSlotNotFound() {
         Long timeslotId = 1L;
 
         when(timeSlotRepository.findById(timeslotId)).thenReturn(Optional.empty());
@@ -109,7 +99,7 @@ public class TimeSlotServiceTest {
     }
 
     @Test
-    public void testCreateTimeslot() {
+     void testCreateTimeslot() {
         LocalDate date = LocalDate.of(2023, 10, 15);
         LocalTime time = LocalTime.of(14, 30);
 

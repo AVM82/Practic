@@ -17,9 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -124,18 +123,18 @@ class StudentReportServiceTest {
 
         Optional<StudentReportEntity> result = studentReportService.changeReportLikeList(reportId, studentId);
 
-        Assertions.assertTrue(result.isPresent());
+        assertTrue(result.isPresent());
         StudentReportEntity updatedReport = result.get();
         List<Long> updatedLikedPersonsIdList = updatedReport.getLikedPersonsIdList();
 
-        Assertions.assertFalse(updatedLikedPersonsIdList.contains(studentId));
+        assertFalse(updatedLikedPersonsIdList.contains(studentId));
 
         result = studentReportService.changeReportLikeList(reportId, studentId);
 
-        Assertions.assertTrue(result.isPresent());
+        assertTrue(result.isPresent());
         updatedReport = result.get();
         updatedLikedPersonsIdList = updatedReport.getLikedPersonsIdList();
-        Assertions.assertTrue(updatedLikedPersonsIdList.contains(studentId));
+        assertTrue(updatedLikedPersonsIdList.contains(studentId));
     }
 }
 

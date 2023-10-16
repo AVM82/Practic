@@ -5,8 +5,8 @@ import com.group.practic.repository.PersonApplicationRepository;
 import com.group.practic.repository.RoleRepository;
 import com.group.practic.repository.StudentOnCourseRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,8 +14,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -39,7 +39,8 @@ public class StudentOnCourseServiceTest {
 
     @Mock
     private PersonApplicationRepository personApplicationRepository;
-    @Before
+
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
@@ -117,6 +118,7 @@ public class StudentOnCourseServiceTest {
 
         assertEquals(expectedStudentCourseRelationships, result);
     }
+
     @Test
     public void testGetCoursesOfStudent() {
         long studentId = 1L;
