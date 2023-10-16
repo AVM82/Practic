@@ -8,10 +8,10 @@ import io.gatling.javaapi.core.CoreDsl;
 import io.gatling.javaapi.core.ScenarioBuilder;
 
 public class Scenario {
-    private static Steps steps = new Steps();
-    private static StudentOnCourseSteps studentSteps = new StudentOnCourseSteps();
-    private static CoursesSteps coursesSteps = new CoursesSteps();
-    private static PersonSteps personSteps = new PersonSteps();
+    private static final Steps steps = new Steps();
+    private static final StudentOnCourseSteps studentSteps = new StudentOnCourseSteps();
+    private static final CoursesSteps coursesSteps = new CoursesSteps();
+    private static final PersonSteps personSteps = new PersonSteps();
 
     public static ScenarioBuilder userScenario = CoreDsl.scenario("user running site")
             .exec(steps.getFirstPage())
@@ -76,9 +76,4 @@ public class Scenario {
             .exec(coursesSteps.getAllCourses())
             .exec(coursesSteps.getCourseById())
             .exec(coursesSteps.getAllCourses());
-
-    public static ScenarioBuilder scenario() {
-        return CoreDsl.scenario("get Persons")
-                .exec(personSteps.getPersonById());
-    }
 }

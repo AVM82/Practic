@@ -10,9 +10,7 @@ public class Feeders {
     public static FeederBuilder<String> courses = csv("courses.csv").random();
     public static FeederBuilder<String> persons = csv("persons.csv").random();
     public static FeederBuilder<String> states = csv("practiceState.csv").random();
-    public static FeederBuilder<String> studentOnCourse = csv("student-on-course.csv").random();
     public static FeederBuilder<String> chapters = csv("chapters.csv").random();
-    public static FeederBuilder<String> roles = csv("roles.csv").random();
     public static  FeederBuilder<String> emails = csv("emails.csv").random();
 
 }
