@@ -267,13 +267,17 @@ public class StudentOnCourseController {
             @RequestBody StudentReportCreationDto studentReportCreationDto) {
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.changeReport(studentReportCreationDto);
-        return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
+        return reportEntity.isPresent()
+                ? updateResponse(Optional.of(Converter.convert(reportEntity.get())))
+                : updateResponse(Optional.empty());
     }
 
     @DeleteMapping("/reports/course/{reportId}")
     public ResponseEntity<StudentReportDto> deleteStudentReport(@PathVariable Integer reportId) {
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.deleteReport(reportId);
-        return deleteResponse(Optional.of(Converter.convert(reportEntity.get())));
+        return reportEntity.isPresent()
+                ? deleteResponse(Optional.of(Converter.convert(reportEntity.get())))
+                : deleteResponse(Optional.empty());
     }
 }
