@@ -42,3 +42,5 @@ export const getLevelsUrl = (slug: string): string =>
 
 export const timeslotsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}/timeslots`;
+export const deleteReportsUrl = (reportId: number): string =>
+    `/api/students/reports/course/${reportId}`;

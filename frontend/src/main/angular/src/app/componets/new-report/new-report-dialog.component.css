@@ -1,28 +1,30 @@
 
-
 .title-field {
   display: flex;
   flex-direction: column;
-  height: 40px;
   align-items: center;
-  margin-left: -75px;
+  margin-right: 100px;
+
 }
+
 .date-field {
   display: inline-flex;
   flex-direction: column;
-  margin-right: 30px;
-  margin-left: -20px;
+  margin-right: 20px;
 
   margin-top: 50px;
 }
+
 .chapter-field {
   display: inline-flex;
   flex-direction: column;
-  margin-left: 40px;
+  margin-left: 20px;
 }
+
 .dialog-actions {
-  margin-top: 75px;
-  margin-right: 80px;
+  height: 40px;
+  margin-top: 50px;
+  margin-right: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,20 +33,18 @@
 .cancel-button {
   background-color: #ee7777;
   color: #fff;
-  padding: 8px 8px;
+  padding: 8px 16px;
   font-size: 19px;
   cursor: pointer;
   border-radius: 5px;
+
 }
 
 .ok-button {
   background-color: #27AE60;
-color: #fff;
-padding: 8px 8px;
-font-size: 19px;
-cursor: pointer;
-border-radius: 5px;
-  margin-right: 10px;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 19px;
+  cursor: pointer;
+  border-radius: 5px;
 }
-
-
