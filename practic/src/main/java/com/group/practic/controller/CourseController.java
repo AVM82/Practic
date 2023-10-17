@@ -64,12 +64,6 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{slug}/navchapters")
-    public ResponseEntity<Collection<ChapterDto>> getNavChapters(@PathVariable String slug) {
-        return getResponse(studentOnCourseService.getChapters(slug));
-    }
-
-
     @GetMapping("/{slug}/levels")
     public ResponseEntity<Collection<LevelEntity>> getLevels(@PathVariable String slug) {
         return getResponse(courseService.getLevels(slug));
