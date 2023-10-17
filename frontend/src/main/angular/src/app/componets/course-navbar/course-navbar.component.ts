@@ -5,7 +5,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {CoursesService} from "../../services/courses/courses.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatButtonModule} from "@angular/material/button";
-import { Chapter } from 'src/app/models/chapter/chapter';
+import { ShortChapter } from 'src/app/models/course/chapter';
 import { ApplyBtnComponent } from '../apply-btn/apply-btn.component';
 import { EditBtnComponent } from '../edit-btn/edit-course.component';
 
@@ -19,12 +19,12 @@ import { EditBtnComponent } from '../edit-btn/edit-course.component';
 
 export class CourseNavbarComponent implements OnInit {
   course: Course | undefined;
-  @Output() navchapters: EventEmitter<Chapter[]> = new EventEmitter();
-  @Output() navchapterN: EventEmitter<Chapter> = new EventEmitter();
+  @Output() navchapters: EventEmitter<ShortChapter[]> = new EventEmitter();
+//  @Output() navchapterN: EventEmitter<Chapter> = new EventEmitter();
   @Output() navCourse: EventEmitter<Course> = new EventEmitter();
   showEdit: boolean = false;
   showApply: boolean = false;
-  chapters: Chapter[] = [];
+  chapters: ShortChapter[] = [];
   showAdditionalMaterials: boolean = false;
   slug: string = '';
   currentChapter: number = 0;
@@ -47,18 +47,16 @@ export class CourseNavbarComponent implements OnInit {
           this.showApply = !this.coursesService.isStudent && !this.showEdit;
           if (this.currentChapter == 0)
             this.navCourse.emit(course);
+          this.showAdditionalMaterials = course.additionalMaterialsExist;
         });
         this.coursesService.getChapters(slug).subscribe(chapters => {
           this.chapters = chapters;
-          this.coursesService.setVisibleChapters(this.chapters);
-          if (this.currentChapter == 0)
-            this.navchapters.emit(chapters);
-          else 
-            this.navchapterN.emit(chapters.find(chapter => chapter.number === this.currentChapter));
+          if (chapters) {
+//            this.coursesService.setVisibleChapters(this.chapters);
+            if (this.currentChapter == 0)
+              this.navchapters.emit(chapters);
+          }
         });
-        this.coursesService.getAdditionalMaterialsExist(slug).subscribe(exist => 
-           this.showAdditionalMaterials = exist
-        );
       }
     })
   }

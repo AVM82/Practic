@@ -5,23 +5,22 @@
             [class.locked]="!chapter.visible">
     <ng-container *ngIf="chapter.visible">
 
-      <a class="link" [routerLink]="['/courses', slug, 'chapters', chapter.number]">
-        <div class="chapter-button">
+      <div class="chapter-button">
+        <a class="link" [routerLink]="['/courses', slug, 'chapters', chapter.number]">
           <mat-card-header class="course-details">
             <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
           </mat-card-header>
-
+        </a>
         <report-button [reportsNumber]="reports[chapter.number-1] ? reports[chapter.number-1].length : 0"></report-button>
       </div>
-    </a>
 
       <mat-card-footer *ngIf="student">
         <div class="info-tags">
           <div class="info-tag">
             Теорія: не розпочато
           </div>
-            <div *ngFor="let part of chapter.parts" class="info-tag">
-                Практика: {{ part.id | practiceState: practices }}
+            <div *ngFor="let part of chapter.partsId" class="info-tag">
+                Практика: {{ part | practiceState: practices }}
             </div>
           <div class="info-tag">
             Доповідь: не проведена

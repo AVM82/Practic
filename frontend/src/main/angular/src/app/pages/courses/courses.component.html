@@ -7,11 +7,9 @@
             </mat-card-content>
         </a>
     </mat-card>
-    <mat-card *ngIf="createCapability" class="course-card">
-        <a [routerLink]="['/courses/create']">
-            <mat-card-content class="course-details">
-                <h3 class="course-name">+</h3>
-            </mat-card-content>
-        </a>
+    <mat-card *ngIf="createCapability" class="course-create" (click)="router.navigate(['/courses/create'])">
+        <mat-card-content class="course-details">
+            <h3 class="course-name"># Створити новий курс #</h3>
+        </mat-card-content>
     </mat-card>
 </div>

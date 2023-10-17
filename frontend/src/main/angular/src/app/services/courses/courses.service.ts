@@ -3,13 +3,14 @@ import {Course} from "../../models/course/course";
 import {HttpClient} from "@angular/common/http";
 import {map, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl, getActiveChapterNumber, getCourseUrl} from "../../enums/api-urls";
+import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl, getActiveChapterNumber, getCourseUrl, getChapterUrl} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
 import { User } from 'src/app/models/user/user';
 import { Chapter } from 'src/app/models/chapter/chapter';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AdvancedRoles } from 'src/app/enums/roles.enum';
+import { ShortChapter } from 'src/app/models/course/chapter';
 
 const requestTextResponse: Object = {
   responseType: 'text'
@@ -22,7 +23,8 @@ export class CoursesService {
   slug: string = '';
   selectedCourse!: Observable<Course>;
   levels!: Observable<Level[]>;
-  chapters!: Observable<Chapter[]>;
+  shortChapters!: Observable<ShortChapter[]>;
+  chapters: Chapter[] = [];
   active: number = 0;
   me: User;
   id: number = 0;
@@ -44,7 +46,8 @@ export class CoursesService {
       console.log(this.slug, ' -> ', slug);
       this.slug = slug;
       this.getActiveChapterNumber(slug).subscribe(value => this.active = value);
-      this.chapters = this.http.get<Chapter[]>(getChaptersUrl(slug));
+      this.chapters = [];
+      this.shortChapters = this.http.get<ShortChapter[]>(getChaptersUrl(slug));
       this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
       this.isStudent = this.tokenStorageService.isStudent(slug);
       this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
@@ -63,22 +66,20 @@ export class CoursesService {
   }
 
 
-  getChapters(slug: string): Observable<Chapter[]> {
+  getChapters(slug: string): Observable<ShortChapter[]> {
     this.setCourse(slug);
-    return this.chapters;
+    return this.shortChapters;
   }
 
-  getChapter(slug: string, number: number): Observable<Chapter> {
+  loadChapter(slug: string, number: number): Observable<Chapter> {
     this.setCourse(slug);
-    return this.getChapters(slug).pipe(map<Chapter[], Chapter>( chapters  => {
-        return chapters.find(chapter => chapter.number === number)!
-    }));
-  }
-
-  setVisibleChapters(chapters: Chapter[]): void {
-      chapters.forEach(chapter => 
-          chapter.visible = this.active >= chapter.number
-      )
+    for(let loadedChapter of this.chapters)
+      if (loadedChapter.number === number) 
+        return of(loadedChapter);
+    return this.http.get<Chapter>(getChapterUrl(slug,number)).pipe(map<Chapter, Chapter> (loadedChapter => {
+      this.chapters.push(loadedChapter);
+      return loadedChapter;
+    }))
   }
 
   getLevels(slug:string):Observable<Level[]>{
@@ -94,7 +95,7 @@ export class CoursesService {
     return this.http.get<Chapter[]>(ApiUrls.OpenChapters);
   }
 
-  setFirstChapterVisible(chapters: Chapter[]): void {
+  setFirstChapterVisible(chapters: ShortChapter[]): void {
     if (chapters?.length > 1) {
       chapters[0].visible = true;
     }
@@ -126,7 +127,8 @@ export class CoursesService {
       mentors: [],
       slug: _slug,
       name: _name,
-      svg: _svg
+      svg: _svg,
+      additionalMaterialsExist: false
     };
     return this.http.post<Course>(ApiUrls.Courses, course);
   }

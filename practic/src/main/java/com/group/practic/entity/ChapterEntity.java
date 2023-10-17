@@ -42,6 +42,7 @@ public class ChapterEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     QuizEntity quiz;
 
+    @JsonIgnore
     String shortName;
 
 

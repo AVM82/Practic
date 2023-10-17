@@ -7,7 +7,6 @@ import {StudentReport} from "../../models/report/studentReport";
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {MatCardModule} from "@angular/material/card";
 import {CoursesService} from "../../services/courses/courses.service";
-import {Chapter} from "../../models/chapter/chapter";
 import {NewReportDialogComponent} from "../../componets/new-report/new-report-dialog.component";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {TimeSlot} from "../../models/timeSlot/time-slot";
@@ -16,6 +15,7 @@ import {Level} from "../../models/level/level";
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatButtonModule} from "@angular/material/button";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
+import { ShortChapter } from 'src/app/models/course/chapter';
 
 
 @Component({
@@ -36,7 +36,7 @@ import {TokenStorageService} from "../../services/auth/token-storage.service";
 })
 export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     reports: StudentReport[][] = [];
-    chapters: Chapter[] = [];
+    chapters: ShortChapter[] = [];
     levels: Level[] = []
     timeslots!: Map<string, TimeSlot[]>;
     currentUserId!: any;
@@ -58,34 +58,29 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
             const slug = params.get('slug');
             console.log(slug)
             console.log(this.reports)
-             if (slug) {
-            this.updateData(slug)}
+            if (slug) 
+                this.updateData(slug)
         });
     }
 
     updateData(slug:string):void{
                 this.loadLevels(slug);
-                this.loadChapters(slug);
                 this.loadReports(slug);
                 this.loadTimeSlots(slug);
                 this.createTimeSlots(slug)
     }
 
-
+    getChapters(chapters: ShortChapter[]) {
+        this.chapters = chapters;
+      }
+    
+    
     loadReports(slug: string): void {
         this.reportService.getAllActualReports(slug).subscribe(reports => {
             this.reports = [];
             this.reports.push(...reports);
             this.reports = [...this.reports];
             this.loadTimeSlots(slug);
-        });
-    }
-
-    loadChapters(slug: string): void {
-        this.coursesService.getChapters(slug).subscribe(chapters => {
-
-            this.chapters = chapters;
-            console.log(this.chapters)
         });
     }
 

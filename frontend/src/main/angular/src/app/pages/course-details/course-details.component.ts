@@ -12,7 +12,7 @@ import {Practice} from "../../models/practice/practice";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ChaptersService} from "../../services/chapters/chapters.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
-import { Chapter } from 'src/app/models/chapter/chapter';
+import {ShortChapter} from 'src/app/models/course/chapter';
 
 @Component({
   selector: 'app-course-details',
@@ -23,7 +23,7 @@ import { Chapter } from 'src/app/models/chapter/chapter';
   styleUrls: ['./course-details.component.css']
 })
 export class CourseDetailsComponent implements OnInit {
-  chapters: Chapter[] = [];
+  chapters: ShortChapter[] = [];
   reports: StudentReport[][]=[];
   slug: string='';
   practices: Practice[] = [];
@@ -55,7 +55,7 @@ export class CourseDetailsComponent implements OnInit {
     })
   }
 
-  getChapters(chapters: Chapter[]) {
+  getChapters(chapters: ShortChapter[]) {
     this.chapters = chapters;
   }
 

@@ -136,14 +136,8 @@ public interface Converter {
     static List<ChapterDto> convertChapterEntityList(List<ChapterEntity> chapterEntityList,
             int lastVisibleNumber) {
         List<ChapterDto> result = new ArrayList<>();
-        boolean remain = lastVisibleNumber < Integer.MAX_VALUE;
-        chapterEntityList.forEach(x -> {
-            ChapterDto d = convert(x);
-            if (remain && d.getNumber() > lastVisibleNumber) {
-                d.setVisible(false);
-            }
-            result.add(d);
-        });
+        chapterEntityList
+                .forEach(x -> result.add(new ChapterDto(x, lastVisibleNumber >= x.getNumber())));
         return result;
     }
 

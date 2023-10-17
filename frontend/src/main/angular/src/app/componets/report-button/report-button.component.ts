@@ -34,6 +34,7 @@ export class ReportButtonComponent{
     }
     return true;
   }
+  
   navigate(event: Event) {
     event.stopPropagation();
     this.route.paramMap.subscribe(params => {

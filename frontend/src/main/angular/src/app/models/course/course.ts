@@ -10,4 +10,5 @@ export interface Course {
   mentors: User[];
   svg: string;
   description?: string;
+  additionalMaterialsExist: boolean;
 }
