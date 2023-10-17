@@ -61,7 +61,8 @@ public class CourseController {
 
     @GetMapping("/{slug}/allchapters")
     public ResponseEntity<Collection<ChapterDto>> getChapters(@PathVariable String slug) {
-        return getResponse(Converter.convertChapterEntityList(courseService.getChapters(slug), Integer.MAX_VALUE));
+        return getResponse(Converter.convertChapterEntityList(courseService.getChapters(slug),
+                Integer.MAX_VALUE));
     }
 
 
