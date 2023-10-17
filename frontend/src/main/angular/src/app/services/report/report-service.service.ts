@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
-import {ApiUrls, deleteReportsUrl, getReportsUrl, postReportsUrl} from "../../enums/api-urls";
+import {ApiUrls, deleteReportsUrl, getReportsUrl} from "../../enums/api-urls";
 import {StudentReport} from "../../models/report/studentReport";
 import {NewStudentReport} from "../../models/newStudentReport/newStudentReport";
 import {Router} from "@angular/router";
@@ -27,7 +27,7 @@ export class ReportServiceService {
     return this.http.get<any[]>(ApiUrls.ReportStates);
   }
   createNewReport(newReport: NewStudentReport,slug: string):Observable<any> {
-    return this.http.post<NewStudentReport>(postReportsUrl(slug), JSON.stringify(newReport),{ headers: this.headers } )
+    return this.http.post<NewStudentReport>(getReportsUrl(slug), JSON.stringify(newReport),{ headers: this.headers } )
     .pipe(catchError(this.handleError<StudentReport>(`post new student report = ${slug}`)));
 
   }

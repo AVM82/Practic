@@ -118,7 +118,6 @@ export class ChangingReportDialogComponent {
         console.log(this.activeChapter + " new student chapt");
         this.topicReportService.getTopicsReportsOnChapter(this.activeChapter).subscribe({
             next: topics => {
-                const topicsReports = topics.map((topic: any) => topic.topic);
                 (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
             },
             error: error => {

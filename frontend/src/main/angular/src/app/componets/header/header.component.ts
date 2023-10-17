@@ -3,11 +3,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatButtonModule} from "@angular/material/button";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {User} from "../../services/auth/auth.service";
 import {NgIf} from "@angular/common";
 import {environment} from "../../../enviroments/enviroment";
 import {Router, RouterLink} from "@angular/router";
 import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
+import { User } from 'src/app/models/user/user';
 
 @Component({
     selector: 'app-header',

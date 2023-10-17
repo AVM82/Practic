@@ -8,11 +8,12 @@ import {CoursesService} from 'src/app/services/courses/courses.service';
 import {ActivatedRoute} from '@angular/router';
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
+import { EditBtnComponent } from 'src/app/componets/edit-btn/edit-course.component';
 
 @Component({
   selector: 'app-additional-materials',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, MatIconModule, ApplyBtnComponent],
+  imports: [CommonModule, CourseNavbarComponent, MatCardModule, MatIconModule, ApplyBtnComponent, EditBtnComponent],
   templateUrl: './additional-materials.component.html',
   styleUrls: ['./additional-materials.component.css']
 })
@@ -44,7 +45,11 @@ export class AdditionalMaterialsComponent implements OnInit {
 
   changeLearned(event: any) {
     console.log("checkbox id:%d checked:", event.target.id, event.target.checked);
-    this.courseService.postAdditionalChange(this.slug, event.target.id, event.target.checked);
+    this.courseService.putAdditionalChange(this.slug, event.target.id, event.target.checked).subscribe(success => {
+      console.log(' additional material is ', success ? '' : 'not', ' changed');
+      if (!success)
+        event.target.checked = !event.target.checked; //rollback to previous state
+    });
   }
     
 }

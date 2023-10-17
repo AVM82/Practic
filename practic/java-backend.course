@@ -1,48 +1,64 @@
 slug=java-dev-tools
 
-shortname=Java Development
-
 name=Java Dev Tools: the first experience.
 
-svg-icon=<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">\
-<!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->\
-<path d="M277.74 312.9c9.8-6.7 23.4-12.5 23.4-12.5s-38.7 7-77.2 10.2c-47.1 3.9-97.7 4.7-123.1 1.3-60.1-8 33-30.1 33-30.1s-36.1-2.4-80.6 19c-52.5 25.4 130 37 224.5 12.1zm-85.4-32.1c-19-42.7-83.1-80.2 0-145.8C296 53.2 242.84 0 242.84 0c21.5 84.5-75.6 110.1-110.7 162.6-23.9 35.9 11.7 74.4 60.2 118.2zm114.6-176.2c.1 0-175.2 43.8-91.5 140.2 24.7 28.4-6.5 54-6.5 54s62.7-32.4 33.9-72.9c-26.9-37.8-47.5-56.6 64.1-121.3zm-6.1 270.5a12.19 12.19 0 0 1-2 2.6c128.3-33.7 81.1-118.9 19.8-97.3a17.33 17.33 0 0 0-8.2 6.3 70.45 70.45 0 0 1 11-3c31-6.5 75.5 41.5-20.6 91.4zM348 437.4s14.5 11.9-15.9 21.2c-57.9 17.5-240.8 22.8-291.6.7-18.3-7.9 16-19 26.8-21.3 11.2-2.4 17.7-2 17.7-2-20.3-14.3-131.3 28.1-56.4 40.2C232.84 509.4 401 461.3 348 437.4zM124.44 396c-78.7 22 47.9 67.4 148.1 24.5a185.89 185.89 0 0 1-28.2-13.8c-44.7 8.5-65.4 9.1-106 4.5-33.5-3.8-13.9-15.2-13.9-15.2zm179.8 97.2c-78.7 14.8-175.8 13.1-233.3 3.6 0-.1 11.8 9.7 72.4 13.6 92.2 5.9 233.8-3.3 237.1-46.9 0 0-6.4 16.5-76.2 29.7zM260.64 353c-59.2 11.4-93.5 11.1-136.8 6.6-33.5-3.5-11.6-19.7-11.6-19.7-86.8 28.8 48.2 61.4 169.5 25.9a60.37 60.37 0 0 1-21.1-12.8z"/>\
+svg-icon=<svg viewBox="0 0 48 48" width="48px" height="48px">\
+<path fill="#F44336" d="M23.65,24.898c-0.998-1.609-1.722-2.943-2.725-5.455C19.229,15.2,31.24,11.366,26.37,3.999c2.111,5.089-7.577,8.235-8.477,12.473C17.07,20.37,23.645,24.898,23.65,24.898z"/>\
+<path fill="#F44336" d="M23.878,17.27c-0.192,2.516,2.229,3.857,2.299,5.695c0.056,1.496-1.447,2.743-1.447,2.743s2.728-0.536,3.579-2.818c0.945-2.534-1.834-4.269-1.548-6.298c0.267-1.938,6.031-5.543,6.031-5.543S24.311,11.611,23.878,17.27z"/>\
+<g>\
+<path fill="#1565C0" d="M32.084 25.055c1.754-.394 3.233.723 3.233 2.01 0 2.901-4.021 5.643-4.021 5.643s6.225-.742 6.225-5.505C37.521 24.053 34.464 23.266 32.084 25.055zM29.129 27.395c0 0 1.941-1.383 2.458-1.902-4.763 1.011-15.638 1.147-15.638.269 0-.809 3.507-1.638 3.507-1.638s-7.773-.112-7.773 2.181C11.683 28.695 21.858 28.866 29.129 27.395z"/><path fill="#1565C0" d="M27.935,29.571c-4.509,1.499-12.814,1.02-10.354-0.993c-1.198,0-2.974,0.963-2.974,1.889c0,1.857,8.982,3.291,15.63,0.572L27.935,29.571z"/><path fill="#1565C0" d="M18.686,32.739c-1.636,0-2.695,1.054-2.695,1.822c0,2.391,9.76,2.632,13.627,0.205l-2.458-1.632C24.271,34.404,17.014,34.579,18.686,32.739z"/><path fill="#1565C0" d="M36.281,36.632c0-0.936-1.055-1.377-1.433-1.588c2.228,5.373-22.317,4.956-22.317,1.784c0-0.721,1.807-1.427,3.477-1.093l-1.42-0.839C11.26,34.374,9,35.837,9,37.017C9,42.52,36.281,42.255,36.281,36.632z"/>\
+<path fill="#1565C0" d="M39,38.604c-4.146,4.095-14.659,5.587-25.231,3.057C24.341,46.164,38.95,43.628,39,38.604z"/>\
+</g>\
 </svg>
 
-author=Пісковий Андрій Віталійович https://www.linkedin.com/in/piskovyy
+author=Пісковий Андрій Віталійович<>https://www.linkedin.com/in/piskovyy
 
 type=backend
 
-purpose=Програма-мінімум на позицію backend Junior Java Developer. \
-Як продовження курсу CS від https://programming.org.ua/ua \
-мотивація 2021:  підготувати/обрати джава-джуна у команду (done) \
-мотивація 2022/23:  підготувати за рік 9+ нових програмістів із гідною з/п - це просто більше ніж донат
-
-description=Краще коли починаєте в понеділок і ідете зі швидкістю розділ за тиждень/два. \
-Дуже бажано починати і йти одночасно групою 4+ людей, а ще краще 8 - буде по двоє на тему. \
-(є сенс зачекати, щоб розподіляти теми наступного тижня по доповідачам-одногрупникам).  \
-Всі питання задавайте в діскорд-чатах відповідного рівня level#1(2,3,4), \
-продивляйтесь історію чатів, там щось уже є. Користуйтесь голосовими чатами в будь-який час. \
-Якщо знаходите цікаві лінки - додавайте в цей документ через коментарі.  \
-Кожну неділю демо зробленого за тиждень, 20:00-22:00. \
-(в інші дні можу прийти у цей же час, а можу і не з’явитись) \
-Use __only__ JDK 11 please. \
-Без англійської хоча б А2 рівня - і не починайте, прокачайте English, тоді приходьте. \
-Книги https://dou.ua/lenta/articles/dou-books-enterprise-java/ \
-https://dou.ua/lenta/articles/top-books-2017/#java \
-https://nashformat.ua/products/chystyj-kod-stvorennya-analiz-refaktoryng-916337 \
-https://www.youtube.com/watch?v=stIwXoRaYis \
-Порада: гугліть з обмеженням в один рік і не російською. \
-Курси - теж проходьте, паралельно з цим \
-https://www.youtube.com/channel/UCW1IBhEQlart1KAImKFMmdQ \
-https://training.epam.ua/Training/Details/3501?lang=ua \
-– ще: – https://www.youtube.com/c/BobocodeUA \
-https://www.youtube.com/@java-tkach/playlists \
-https://robotdreams.cc/uk/course/477-t-sql-dlya-analitiki \
-https://www.javatpoint.com/java-tutorial \
-+ поради, багато: https://dev.ua/news/java-manual-1667244523  \
-І ще - цей курс умовно безкоштовний - заплатіть будь ласка своїм часом своїм наступникам ;) \
-Наостанок порада: тут читайте всі всі всі букви, не пропускаючи. Успіхів! 
+description=Програма-мінімум на позицію backend Junior Java Developer.<br>\
+Як продовження курсу CS від <a href="https://programming.org.ua/ua" target="_blank" rel="noopener">Ш++</a><br>\
+Ментор <a href="https://www.linkedin.com/in/piskovyy" target="_blank" rel="noopener">Пісковий Андрій Віталійович</a><br>\
+<font size="2" color="#20AF20">мотивація 2021:  підготувати/обрати джава-джуна у команду (done)<br>\
+мотивація 2022/23:  підготувати за рік 9+ нових програмістів із гідною з/п - це просто більше ніж донат</font><br>\
+<br>\
+<a href="https://drive.google.com/drive/folders/1z_1W1tXGXgoj0alJjh46VLT6Ml9hqN1N?usp=sharing" target="_blank" rel="noopener">Презенташки студентів</a> : задача кожному - підготувати хоч одну тему із кожного розділу<br>\
+і презентувати одногрупникам, презенташки (краще українською, хоча можна і англійською) складайте тут же.<br>\
+<br>\
+Самостійне опрацювання 5 практик по обов’язковим java-backend темам.<br>\
+<br>\
+<font size="2">Краще коли починаєте в понеділок і ідете зі швидкістю розділ за тиждень/два.<br>\
+Дуже бажано починати і йти одночасно групою 4+ людей, а ще краще 8: буде по двоє на тему.<br>\
+(є сенс зачекати, щоб розподіляти теми наступного тижня по доповідачам-одногрупникам).</font><br>\
+<br>\
+Всі питання (конкретні пліз) задавайте(і відповідайте) в діскорд-чатах відповідного рівня level#1(2,3,4),<br>\
+продивляйтесь історію чатів, там щось уже є. Користуйтесь голосовими чатами  в будь-який час.<br>\
+Якщо знаходите цікаві лінки - додавайте в цей документ через коментарі.<br>\
+<br>\
+Кожну неділю демо зробленого за тиждень, 20:00-22:00.<br>\
+<font size="2">(в інші дні можу прийти у цей же час, а можу і не з’явитись)</font><br>\
+<ul>\
+    <li>Use _only_ JDK 11 please</li>\
+    <li>Без англійської хоча б А2 рівня - і не починайте, прокачайте English, тоді приходьте.</li>\
+    <li>Книги:<br>\
+        <a href="https://dou.ua/lenta/articles/dou-books-enterprise-java/" target="_blank" rel="noopener">5 книг для Enterprise Java разработчика</a>,<br>\
+        <a target="_blank" rel="noopener" href="https://dou.ua/lenta/articles/top-books-2017/#java">Рейтинг ИТ-книг</a>,<br>\
+        <a target="_blank" rel="noopener" href="https://nashformat.ua/products/chystyj-kod-stvorennya-analiz-refaktoryng-916337">Чистий код: створення, аналіз, рефакторинг</a>,<br>\
+        <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=stIwXoRaYis">Найкраща література для Java-розробників!</a><br>\
+    </li>\
+    <li>Порада: гугліть з обмеженням в один рік і не російською.</li>\
+    <li>Курси - теж проходьте, паралельно з цим:<br>\
+        <a target="_blank" rel="noopener" href="https://www.youtube.com/channel/UCW1IBhEQlart1KAImKFMmdQ">Mykola Murza — IT українською</a>,<br>\
+        <a target="_blank" rel="noopener" href="https://training.epam.ua/ua/training/3501">Java Self-Paced</a>,<br>\
+        <a target="_blank" rel="noopener" href="https://www.youtube.com/c/BobocodeUA">Bobocode</a>,<br>\
+        <a target="_blank" rel="noopener" href="https://www.youtube.com/@java-tkach/playlists">Онлайн уроки по Java</a>,<br>\
+        <a target="_blank" rel="noopener" href="https://robotdreams.cc/uk/course/477-t-sql-dlya-analitiki">SQL для аналітики та розробки</a>,<br>\
+        <a target="_blank" rel="noopener" href="https://www.javatpoint.com/java-tutorial">Java Tutorial</a>,<br>\
+        + поради, багато: <a target="_blank" rel="noopener" href="https://dev.ua/news/java-manual-1667244523">Мануал для джуна</a>\
+    </li>\
+</ul>\
+<br>\
+І ще - цей курс умовно безкоштовний - заплатіть будь ласка своїм часом своїм наступникам <br>\
+Наостанок порада: тут <b>читайте всі <font size="5">всі</font> <font size="6"> всі</font></b> букви, не пропускаючи. Успіхів!<br>
 
 level1=1,2
 level2=3
@@ -293,7 +309,7 @@ http://www.extremeprogramming.org/ https://www.geeksforgeeks.org/software-develo
 9.3.=Планування і естімейт (оцінка) задач
 9.4.=Code review<>https://www.linkedin.com/posts/milanmilanovic_softwareengineering-programming-systemdesign-activity-6995271545484906496-2DhQ/ https://dzone.com/articles/what-is-code-review-amp-how-it-can-save-time-devel?edition=599292
 9.5.=Командна робота - вебінар від Epam<>https://www.youtube.com/watch?v=vxWghZhoSpI https://youtu.be/vxWghZhoSpI?t=2371
-9.6.=Kлючове із відео: xp без scrum працює нормально, а scrum без xp взагалі не працює. Тут розжовано, дуже рекомендую прочитати всі букви (але після відосика із веселими стариганами) \
+9.6.=Kлючове із відео: xp без scrum працює нормально, а scrum без xp взагалі не працює. Тут розжовано, дуже рекомендую прочитати всі букви (але після відосика із веселими стариганами) <>\
 https://www.youtube.com/watch?v=WSflPE_oIRI https://www.youtube.com/watch?v=vSuJqMRG1WM https://worksection.com/ua/blog/extreme-programming.html
 9.7.=Culture fit (на роботі про роботу, чесний естімейт, взаємоповага)<>https://itexpert.work/uk/povna-synergiya-shho-vazhlyvishe-v-komandi-cultural-fit-chy-vminnya-vykonuvaty-zavdannya/ https://dou.ua/lenta/articles/usa-cultural-fit/
 9.8.=What else<>https://medium.com/javarevisited/my-interview-experience-with-vmware-for-the-senior-java-developer-role-3fc6efec4442 https://careers.epam.ua/blog/what-does-a-java-developer-need-to-learn-today-to-be-in-demand-tomorrow \

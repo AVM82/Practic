@@ -70,4 +70,3 @@ export class ChapterReportsComponent {
     return this.chapterColor;
   }
 }
-

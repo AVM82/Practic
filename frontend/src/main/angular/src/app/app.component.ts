@@ -38,4 +38,5 @@ export class AppComponent implements OnDestroy{
       panelClass: type === 'error' ? 'error-snackbar' : 'normal-snackbar'
     });
   }
+ 
 }

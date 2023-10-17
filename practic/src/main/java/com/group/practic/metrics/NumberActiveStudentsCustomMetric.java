@@ -15,34 +15,37 @@ public class NumberActiveStudentsCustomMetric {
 
     MeterRegistry meterRegistry;
 
-    @Autowired
-    StudentOnCourseRepository studentOnCourseRepo;
+    StudentOnCourseRepository studentOnCourseRepository;
 
-    @Autowired
     ChapterRepository chapterRepository;
 
 
     @Autowired
-    public NumberActiveStudentsCustomMetric(MeterRegistry meterRegistry) {
+    public NumberActiveStudentsCustomMetric(MeterRegistry meterRegistry,
+            StudentOnCourseRepository studentOnCourseRepository,
+            ChapterRepository chapterRepository) {
         this.meterRegistry = meterRegistry;
+        this.studentOnCourseRepository = studentOnCourseRepository;
+        this.chapterRepository = chapterRepository;
     }
+
 
     @PostConstruct
     private void createMetricsForAllChapters() {
         for (ChapterEntity chapter : chapterRepository.findAll()) {
             String description = String.format(
                     "Custom metric: Number of active student by chapter №%d %s. On course: %s",
-                            chapter.getNumber(), chapter.getShortName(),
-                            chapter.getCourse().getName());
-            Gauge.builder("number_active_student_by_chapter_" + chapter.getNumber(),
-                    this, instance -> calculateNumberStudent(chapter.getNumber()))
-                    .description(description)
-                    .register(meterRegistry);
+                    chapter.getNumber(), chapter.getShortName(), chapter.getCourse().getName());
+            Gauge.builder("number_active_student_by_chapter_" + chapter.getNumber(), this,
+                    instance -> calculateNumberStudent(chapter.getNumber()))
+                    .description(description).register(meterRegistry);
         }
     }
 
+
     private int calculateNumberStudent(int numbChapter) {
-        return studentOnCourseRepo
+        return studentOnCourseRepository
                 .findAllByBanFalseAndInactiveFalseAndActiveChapter_Number(numbChapter).size();
     }
+
 }

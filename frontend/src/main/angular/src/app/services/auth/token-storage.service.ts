@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {User} from "./auth.service";
 import {Practice} from "../../models/practice/practice";
+import { User } from 'src/app/models/user/user';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -10,7 +10,7 @@ const PRACTICE_KEY = 'practice-data';
   providedIn: 'root'
 })
 export class TokenStorageService {
-
+  
   signOut(): void {
     window.sessionStorage.clear();
   }
@@ -30,7 +30,7 @@ export class TokenStorageService {
   }
 
   public getUser(): any {
-    const userJson = sessionStorage.getItem(USER_KEY);
+    const userJson = window.sessionStorage.getItem(USER_KEY);
     return userJson ? User.fromJson(JSON.parse(userJson)) : null;
   }
 
@@ -48,13 +48,19 @@ export class TokenStorageService {
     this.savePractice(practice);
   }
 
-
-  public isStudent(slug: string): boolean {
+  public getMe(): User {
     const token = this.getToken();
-    if (token) {
-      const user: User = this.getUser();
-      return user?.hasApplyOnCourse(slug);
-    }
-    return false;
+    return token ? this.getUser() : null;
+  }
+
+  isStudent(slug: string): boolean {
+    const me = this.getMe();
+    return me?.hasApplyOnCourse(slug);
+  }
+
+
+  public haveIAnyRole(roles: string[]): boolean {
+    const me = this.getMe();
+    return me?.hasAnyRole(...roles);
   }
 }

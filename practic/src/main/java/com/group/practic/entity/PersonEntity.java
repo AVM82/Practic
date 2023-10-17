@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,7 +35,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class PersonEntity implements UserDetails {
+
+    private static final long serialVersionUID = 2865461614246570865L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -42,6 +47,8 @@ public class PersonEntity implements UserDetails {
     boolean inactive;
 
     boolean ban;
+    
+    LocalDateTime registered;
 
     private String email;
 
@@ -78,6 +85,7 @@ public class PersonEntity implements UserDetails {
     public PersonEntity(String name, String linkedin) {
         this.name = name;
         this.linkedin = linkedin;
+        this.registered = LocalDateTime.now();
     }
 
 
@@ -85,6 +93,7 @@ public class PersonEntity implements UserDetails {
         this.name = name;
         this.linkedin = linkedin;
         this.roles = roles;
+        this.registered = LocalDateTime.now();
     }
 
 
@@ -98,7 +107,6 @@ public class PersonEntity implements UserDetails {
             authorities = roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
                     .collect(Collectors.toUnmodifiableSet());
         }
-
         return authorities;
     }
 

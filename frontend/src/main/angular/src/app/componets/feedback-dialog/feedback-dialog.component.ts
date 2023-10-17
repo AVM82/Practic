@@ -6,8 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FeedbackService } from 'src/app/services/feedback/feedbacks.service';
 import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {User} from "../../services/auth/auth.service";
 import { MatInputModule } from '@angular/material/input';
+import { User } from 'src/app/models/user/user';
 
 @Component({
   selector: 'app-feedback-dialog',

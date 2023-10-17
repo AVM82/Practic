@@ -1,8 +1,7 @@
-export interface Chapter {
-  id: number;
-  number: number;
-  shortName: string;
-  isVisible: boolean;
-  isActive: boolean;
-  chapterPartIds: number[];
+export interface ShortChapter {
+    id: number;
+    number: number;
+    shortName: string;
+    visible: boolean;
+    partsId: number[];
 }

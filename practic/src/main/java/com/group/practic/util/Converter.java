@@ -35,11 +35,10 @@ public interface Converter {
         applyStudentPracticeMap(modelMapper);
         applyStudentReportMap(modelMapper);
         applyPersonOnCourseMap(modelMapper);
-        applyStudentChapter(modelMapper);
-        applyChapterEntityToChapterDtoMap(modelMapper);
 
         return modelMapper;
     }
+
 
     static ChapterDto convert(StudentChapterEntity studentChapter) {
         return modelMapper().map(studentChapter, ChapterDto.class);
@@ -85,6 +84,7 @@ public interface Converter {
         return modelMapper().map(studentReportEntity, StudentReportDto.class);
     }
 
+
     static PersonApplyOnCourseDto convert(PersonApplicationEntity personApplication) {
         return modelMapper().map(personApplication, PersonApplyOnCourseDto.class);
     }
@@ -101,11 +101,21 @@ public interface Converter {
         return result;
     }
 
+
+    static List<CourseDto> convertCourseEntityList(List<CourseEntity> courses) {
+        List<CourseDto> result = new ArrayList<>(courses.size());
+        courses.forEach(course -> {
+            if (!course.getInactive()) {
+                result.add(convert(course));
+            }
+        });
+        return result;
+    }
+
+
     static PracticeDto convertToPractice(StudentPracticeEntity studentPracticeEntity) {
-        return new PracticeDto(
-                studentPracticeEntity.getChapterPart().getId(),
-                studentPracticeEntity.getState().name()
-        );
+        return new PracticeDto(studentPracticeEntity.getChapterPart().getId(),
+                studentPracticeEntity.getState().name());
     }
 
 
@@ -123,9 +133,11 @@ public interface Converter {
     }
 
 
-    static List<ChapterDto> convertChapterEntityList(List<ChapterEntity> chapterEntityList) {
+    static List<ChapterDto> convertChapterEntityList(List<ChapterEntity> chapterEntityList,
+            int lastVisibleNumber) {
         List<ChapterDto> result = new ArrayList<>();
-        chapterEntityList.forEach(x -> result.add(convert(x)));
+        chapterEntityList
+                .forEach(x -> result.add(new ChapterDto(x, lastVisibleNumber >= x.getNumber())));
         return result;
     }
 
@@ -152,6 +164,7 @@ public interface Converter {
                 .addMapping(src -> src.getTimeSlot().getTime(), StudentReportDto::setTime);
     }
 
+
     private static void applyPersonOnCourseMap(ModelMapper modelMapper) {
         modelMapper.createTypeMap(PersonApplicationEntity.class, PersonApplyOnCourseDto.class)
                 .addMapping(src -> src.getPerson().getId(), PersonApplyOnCourseDto::setId)
@@ -163,45 +176,30 @@ public interface Converter {
 
     }
 
-    private static void applyStudentChapter(ModelMapper modelMapper) {
-        modelMapper.createTypeMap(StudentChapterEntity.class, ChapterDto.class)
-                .addMapping(src -> src.getChapter().getId(), ChapterDto::setId)
-                .addMapping(src -> src.getChapter().getNumber(), ChapterDto::setNumber)
-                .addMapping(src -> src.getChapter().getShortName(), ChapterDto::setShortName)
-                .addMapping(src -> src.getChapter().getParts(), ChapterDto::setChapterPartIds);
-    }
-
-    private static void applyChapterEntityToChapterDtoMap(ModelMapper modelMapper) {
-        modelMapper.createTypeMap(ChapterEntity.class, ChapterDto.class)
-                .addMapping(ChapterEntity::getId, ChapterDto::setId)
-                .addMapping(ChapterEntity::getShortName, ChapterDto::setShortName)
-                .addMapping(ChapterEntity::getNumber, ChapterDto::setNumber)
-                .addMapping(ChapterEntity::getParts, ChapterDto::setChapterPartIds);
-    }
 
     static AnswerDto toDto(AnswerEntity entity) {
         return new AnswerDto(entity.getId(), entity.getAnswer(), false);
     }
 
+
     static QuestionDto toDto(QuestionEntity entity) {
         QuestionDto dto = new QuestionDto();
         dto.setId(entity.getId());
         dto.setQuestion(entity.getQuestion());
-        List<AnswerDto> answerDtos = entity.getAnswers().stream()
-                .map(Converter::toDto)
-                .toList();
+        List<AnswerDto> answerDtos = entity.getAnswers().stream().map(Converter::toDto).toList();
         dto.setAnswers(answerDtos);
         return dto;
     }
+
 
     static QuizDto toDto(QuizEntity entity) {
         QuizDto dto = new QuizDto();
         dto.setId(entity.getId());
         dto.setQuizName(entity.getChapterName());
-        List<QuestionDto> questionDtos = entity.getQuestions().stream()
-                .map(Converter::toDto)
-                .toList();
+        List<QuestionDto> questionDtos =
+                entity.getQuestions().stream().map(Converter::toDto).toList();
         dto.setQuestions(questionDtos);
         return dto;
     }
+
 }

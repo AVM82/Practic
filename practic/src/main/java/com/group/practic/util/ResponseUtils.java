@@ -10,6 +10,11 @@ public interface ResponseUtils {
 
     /* GET */
 
+    public static <T> ResponseEntity<T> getResponse(T result) {
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
     public static <T> ResponseEntity<T> getResponse(Optional<T> result) {
         return result.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(result.get(), HttpStatus.OK);
@@ -21,7 +26,13 @@ public interface ResponseUtils {
                 : new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    
+
+    public static <T> ResponseEntity<T> getResponseAllowed(Optional<T> result) {
+        return result.isEmpty() ? new ResponseEntity<>(HttpStatus.FORBIDDEN)
+                : new ResponseEntity<>(result.get(), HttpStatus.OK);
+    }
+
+
     /* POST */
 
 
@@ -30,7 +41,7 @@ public interface ResponseUtils {
                 : new ResponseEntity<>(result.get(), HttpStatus.CREATED);
     }
 
-    
+
     /* PUT */
     /* PATCH */
 
@@ -40,7 +51,7 @@ public interface ResponseUtils {
                 : new ResponseEntity<>(result.get(), HttpStatus.OK);
     }
 
-    
+
     /* DELETE */
 
 
@@ -54,7 +65,7 @@ public interface ResponseUtils {
         return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
     }
 
-    
+
     /* OTHERS */
 
 
