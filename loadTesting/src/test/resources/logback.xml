@@ -11,7 +11,11 @@
            <immediateFlush>false</immediateFlush>
        </encoder>
     </appender>
-    <logger name=" io.gatling.http.engine.responce" level = "TRACE"/>
+
+    <!-- uncomment and set to DEBUG to log all failing HTTP requests -->
+    <!-- uncomment and set to TRACE to log all HTTP requests -->
+    <!--    <logger name=" io.gatling.http.engine.responce" level = "TRACE"/>-->
+
     <root level = "WARN">
         <appender-ref ref = "CONSOLE"/>
     </root>

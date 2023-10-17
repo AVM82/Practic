@@ -1,4 +1,4 @@
-package com.group.practic.gatlingtest;
+package com.group.practic.gatlingtest.simulations;
 
 import static io.gatling.javaapi.core.CoreDsl.StringBody;
 import static io.gatling.javaapi.core.CoreDsl.atOnceUsers;
