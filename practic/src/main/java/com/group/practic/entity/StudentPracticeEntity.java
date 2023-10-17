@@ -21,6 +21,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @Setter
 public class StudentPracticeEntity {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

@@ -11,10 +11,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.List;
 
 @Entity
 @Table(name = "questions")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class QuestionEntity {
 
     @Id
@@ -22,43 +30,14 @@ public class QuestionEntity {
     private Long id;
 
     private String question;
+
     @ManyToOne
     @JoinColumn(name = "quiz_id")
     @JsonBackReference
     private QuizEntity quiz;
+
     @OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<AnswerEntity> answers;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public QuizEntity getQuiz() {
-        return quiz;
-    }
-
-    public void setQuiz(QuizEntity quiz) {
-        this.quiz = quiz;
-    }
-
-    public List<AnswerEntity> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<AnswerEntity> answers) {
-        this.answers = answers;
-    }
 }

@@ -20,6 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 @Entity
 public class StudentChapterEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
