@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
 import { Router, RouterLink } from "@angular/router";
 import { User } from "src/app/models/user/user";
