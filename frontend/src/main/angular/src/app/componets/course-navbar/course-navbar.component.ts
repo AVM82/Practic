@@ -52,7 +52,6 @@ export class CourseNavbarComponent implements OnInit {
         this.coursesService.getChapters(slug).subscribe(chapters => {
           this.chapters = chapters;
           if (chapters) {
-//            this.coursesService.setVisibleChapters(this.chapters);
             if (this.currentChapter == 0)
               this.navchapters.emit(chapters);
           }

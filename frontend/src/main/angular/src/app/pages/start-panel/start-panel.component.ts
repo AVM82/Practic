@@ -12,7 +12,7 @@ import { TokenStorageService } from "src/app/services/auth/token-storage.service
     templateUrl: './start-panel.component.html',
     styleUrls: ['./start-panel.component.css']
   })
-export class StartPanelComponent implements OnInit {
+export class StartPanelComponent {
     router!: Router;
     me!: User;
     isAdmin: boolean = false;
@@ -23,7 +23,7 @@ export class StartPanelComponent implements OnInit {
 
     constructor(
         private router0: Router,
-        tokenStorageService: TokenStorageService
+        private tokenStorageService: TokenStorageService
     ) {
         this.router = router0;
         this.me = tokenStorageService.getMe();
@@ -37,11 +37,6 @@ export class StartPanelComponent implements OnInit {
             this.router.navigate(['/login']);
     }
 
-
-    ngOnInit(): void {
-        
-    }
- 
     mentorPanel() {
         this.router.navigate(['/mentor']);
     }
