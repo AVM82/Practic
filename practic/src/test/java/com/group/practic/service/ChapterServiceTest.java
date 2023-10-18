@@ -1,20 +1,21 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.repository.ChapterRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class ChapterServiceTest {
 
@@ -59,7 +60,8 @@ class ChapterServiceTest {
         String shortname = "chapter1";
         String name = "Chapter 1";
         ChapterEntity existingChapter = null;
-        when(chapterRepository.findByCourseAndShortName(course, shortname)).thenReturn(existingChapter);
+        when(chapterRepository.findByCourseAndShortName(course, shortname))
+                .thenReturn(existingChapter);
 
         ChapterEntity newChapter = new ChapterEntity(0, course, number, shortname, name);
         when(chapterRepository.save(newChapter)).thenReturn(newChapter);
@@ -71,7 +73,7 @@ class ChapterServiceTest {
 
     @Test
     void testSaveChapter() {
-        ChapterEntity chapter = new ChapterEntity(1, new CourseEntity(), 1, "chapter1", "Chapter 1");
+        ChapterEntity chapter = new ChapterEntity(1, new CourseEntity(), 1, "chapt1", "Chaptr 1");
 
         when(chapterRepository.save(chapter)).thenReturn(chapter);
 
@@ -98,7 +100,8 @@ class ChapterServiceTest {
         CourseEntity course = new CourseEntity();
         int number = 1;
         ChapterEntity chapter = new ChapterEntity(1, course, number, "chapter1", "Chapter 1");
-        when(chapterRepository.findByCourseAndNumber(course, number)).thenReturn(Optional.of(chapter));
+        when(chapterRepository.findByCourseAndNumber(course, number))
+                .thenReturn(Optional.of(chapter));
 
         Optional<ChapterEntity> result = chapterService.getChapterByNumber(course, number);
 

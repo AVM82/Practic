@@ -1,9 +1,26 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.dto.NewStudentReportDto;
-import com.group.practic.entity.*;
+import com.group.practic.entity.ChapterEntity;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentReportEntity;
+import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.repository.StudentReportRepository;
 import com.group.practic.repository.TimeSlotRepository;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,14 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -50,22 +59,30 @@ class StudentReportServiceTest {
         )));
 
         List<StudentReportEntity> reportsForChapter1 = Arrays.asList(
-                new StudentReportEntity(course.getChapters().iterator().next(), new PersonEntity(), new TimeSlotEntity(), "Report 1"),
-                new StudentReportEntity(course.getChapters().iterator().next(), new PersonEntity(), new TimeSlotEntity(), "Report 2")
+                new StudentReportEntity(course.getChapters().iterator().next(),
+                        new PersonEntity(), new TimeSlotEntity(), "Report 1"),
+                new StudentReportEntity(course.getChapters().iterator().next(),
+                        new PersonEntity(), new TimeSlotEntity(), "Report 2")
         );
 
         List<StudentReportEntity> reportsForChapter2 = Arrays.asList(
-                new StudentReportEntity(course.getChapters().iterator().next(), new PersonEntity(), new TimeSlotEntity(), "Report 3"),
-                new StudentReportEntity(course.getChapters().iterator().next(), new PersonEntity(), new TimeSlotEntity(), "Report 4")
+                new StudentReportEntity(course.getChapters().iterator().next(),
+                        new PersonEntity(), new TimeSlotEntity(), "Report 3"),
+                new StudentReportEntity(course.getChapters().iterator().next(),
+                        new PersonEntity(), new TimeSlotEntity(), "Report 4")
         );
 
         when(courseService.get(courseSlug)).thenReturn(Optional.of((course)));
-        when(studentReportRepository.findAllByChapterAndStateInOrderByTimeSlotId(course.getChapters().
-                iterator().next(), StudentReportService.ACTUAL_STATES)).thenReturn(reportsForChapter1);
-        when(studentReportRepository.findAllByChapterAndStateInOrderByTimeSlotId(course.getChapters()
-                .iterator().next(), StudentReportService.ACTUAL_STATES)).thenReturn(reportsForChapter2);
+        when(studentReportRepository.findAllByChapterAndStateInOrderByTimeSlotId(
+                course.getChapters().iterator().next(), StudentReportService.ACTUAL_STATES))
+                .thenReturn(reportsForChapter1);
+        when(studentReportRepository
+                .findAllByChapterAndStateInOrderByTimeSlotId(course.getChapters()
+                        .iterator().next(), StudentReportService.ACTUAL_STATES))
+                .thenReturn(reportsForChapter2);
 
-        List<List<StudentReportEntity>> result = studentReportService.getAllStudentsActualReports(courseSlug);
+        List<List<StudentReportEntity>> result =
+                studentReportService.getAllStudentsActualReports(courseSlug);
         assertEquals(reportsForChapter2, result.get(0));
     }
 
@@ -119,7 +136,8 @@ class StudentReportServiceTest {
         when(studentReportRepository.findById(reportId)).thenReturn(Optional.of(initialReport));
         when(studentReportRepository.save(any())).thenReturn(initialReport);
 
-        Optional<StudentReportEntity> result = studentReportService.changeReportLikeList(reportId, studentId);
+        Optional<StudentReportEntity> result =
+                studentReportService.changeReportLikeList(reportId, studentId);
 
         assertTrue(result.isPresent());
         StudentReportEntity updatedReport = result.get();

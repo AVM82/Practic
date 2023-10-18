@@ -1,19 +1,29 @@
 package com.group.practic.service;
 
-import com.group.practic.entity.*;
-import com.group.practic.repository.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+import com.group.practic.entity.AdditionalEntity;
+import com.group.practic.entity.ChapterPartEntity;
+import com.group.practic.entity.PraxisEntity;
+import com.group.practic.entity.SubChapterEntity;
+import com.group.practic.entity.SubSubChapterEntity;
+import com.group.practic.repository.AdditionalRepository;
+import com.group.practic.repository.ChapterPartRepository;
+import com.group.practic.repository.PraxisRepository;
+import com.group.practic.repository.SubChapterRepository;
+import com.group.practic.repository.SubSubChapterRepository;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class ChapterPartServiceTest {
 
@@ -89,7 +99,8 @@ class ChapterPartServiceTest {
         long subSubChapterId = 1;
         SubSubChapterEntity subSubChapterEntity = new SubSubChapterEntity();
 
-        when(subSubChapterRepository.findById(subSubChapterId)).thenReturn(Optional.of(subSubChapterEntity));
+        when(subSubChapterRepository.findById(subSubChapterId))
+                .thenReturn(Optional.of(subSubChapterEntity));
 
         Optional<SubSubChapterEntity> result = chapterPartService.getSubSub(subSubChapterId);
 

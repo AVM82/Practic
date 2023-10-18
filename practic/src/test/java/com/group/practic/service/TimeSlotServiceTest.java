@@ -1,7 +1,23 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.repository.TimeSlotRepository;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,17 +25,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @Slf4j
-
- class TimeSlotServiceTest {
+class TimeSlotServiceTest {
     @InjectMocks
     private TimeSlotService timeSlotService;
     @Mock
@@ -31,9 +38,8 @@ import static org.mockito.Mockito.*;
     }
 
 
-
     @Test
-     void testGetAvailableTimeSlots() {
+    void testGetAvailableTimeSlots() {
         List<TimeSlotEntity> timeSlotList = new ArrayList<>();
         timeSlotList.add(new TimeSlotEntity(LocalDate.of(2023, 10, 21), LocalTime.of(9, 0)));
         timeSlotList.add(new TimeSlotEntity(LocalDate.of(2023, 10, 22), LocalTime.of(10, 0)));
@@ -67,14 +73,15 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void testUpdateTimeSlotAvailability() {
+    void testUpdateTimeSlotAvailability() {
         Long timeslotId = 1L;
         TimeSlotEntity timeSlotEntity = new TimeSlotEntity();
         timeSlotEntity.setId(timeslotId);
         timeSlotEntity.setAvailability(true);
 
         when(timeSlotRepository.findById(timeslotId)).thenReturn(Optional.of(timeSlotEntity));
-        when(timeSlotRepository.save(any(TimeSlotEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(timeSlotRepository.save(any(TimeSlotEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         Optional<TimeSlotEntity> result = timeSlotService.updateTimeSlotAvailability(timeslotId);
         verify(timeSlotRepository, times(1)).findById(timeslotId);
@@ -86,7 +93,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void testUpdateTimeSlotAvailabilityWhenTimeSlotNotFound() {
+    void testUpdateTimeSlotAvailabilityWhenTimeSlotNotFound() {
         Long timeslotId = 1L;
 
         when(timeSlotRepository.findById(timeslotId)).thenReturn(Optional.empty());
@@ -99,7 +106,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void testCreateTimeslot() {
+    void testCreateTimeslot() {
         LocalDate date = LocalDate.of(2023, 10, 15);
         LocalTime time = LocalTime.of(14, 30);
 

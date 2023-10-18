@@ -1,5 +1,7 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.group.practic.dto.SendMessageDto;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
@@ -14,9 +16,7 @@ import org.slf4j.Logger;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
- class EmailSenderServiceTest {
+class EmailSenderServiceTest {
     @InjectMocks
     private EmailSenderService emailSenderService;
 

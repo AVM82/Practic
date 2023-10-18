@@ -1,22 +1,25 @@
 package com.group.practic.service;
 
-import com.group.practic.entity.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonApplicationEntity;
+import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.RoleEntity;
+import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.repository.PersonApplicationRepository;
 import com.group.practic.repository.RoleRepository;
 import com.group.practic.repository.StudentOnCourseRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 class StudentOnCourseServiceTest {
@@ -61,13 +64,14 @@ class StudentOnCourseServiceTest {
     void testGetStudentCourseRelationshipById() {
         long studentId = 1L;
         StudentOnCourseEntity expectedStudentCourseRelationship = new StudentOnCourseEntity();
-        when(studentOnCourseRepository.findByStudentId(studentId)).thenReturn(expectedStudentCourseRelationship);
+        when(studentOnCourseRepository.findByStudentId(studentId))
+                .thenReturn(expectedStudentCourseRelationship);
         StudentOnCourseEntity result = studentOnCourseService.get(studentId);
         assertEquals(expectedStudentCourseRelationship, result);
     }
 
     @Test
-     void testGetAllStudentOnCourses() {
+    void testGetAllStudentOnCourses() {
         List<StudentOnCourseEntity> expectedStudentOnCourses = List.of(
                 new StudentOnCourseEntity(), new StudentOnCourseEntity());
         when(studentOnCourseRepository.findAll()).thenReturn(expectedStudentOnCourses);
@@ -110,10 +114,12 @@ class StudentOnCourseServiceTest {
         when(courseService.get(courseId)).thenReturn(Optional.of(courseEntity));
         when(personService.get(studentId)).thenReturn(Optional.of(studentEntity));
         when(studentOnCourseRepository
-                .findAllByCourseAndStudentAndInactiveAndBan(courseEntity, studentEntity, inactive, ban))
+                .findAllByCourseAndStudentAndInactiveAndBan(courseEntity, studentEntity,
+                        inactive, ban))
                 .thenReturn(expectedStudentCourseRelationships);
 
-        List<StudentOnCourseEntity> result = studentOnCourseService.get(courseId, studentId, inactive, ban);
+        List<StudentOnCourseEntity> result =
+                studentOnCourseService.get(courseId, studentId, inactive, ban);
 
         assertEquals(expectedStudentCourseRelationships, result);
     }
@@ -132,10 +138,12 @@ class StudentOnCourseServiceTest {
         );
         when(personService.get(studentId)).thenReturn(Optional.of(studentEntity));
 
-        when(studentOnCourseRepository.findAllByStudentAndInactiveAndBan(studentEntity, inactive, ban))
+        when(studentOnCourseRepository
+                .findAllByStudentAndInactiveAndBan(studentEntity, inactive, ban))
                 .thenReturn(expectedCoursesOfStudent);
 
-        List<StudentOnCourseEntity> result = studentOnCourseService.getCoursesOfStudent(studentId, inactive, ban);
+        List<StudentOnCourseEntity> result =
+                studentOnCourseService.getCoursesOfStudent(studentId, inactive, ban);
 
         assertEquals(expectedCoursesOfStudent, result);
     }
@@ -154,7 +162,8 @@ class StudentOnCourseServiceTest {
         );
 
         when(courseService.get(courseId)).thenReturn(Optional.of(courseEntity));
-        when(studentOnCourseRepository.findAllByCourseAndInactiveAndBan(courseEntity, inactive, ban))
+        when(studentOnCourseRepository
+                .findAllByCourseAndInactiveAndBan(courseEntity, inactive, ban))
                 .thenReturn(expectedStudentsOfCourse);
 
         List<StudentOnCourseEntity> result = studentOnCourseService
@@ -165,9 +174,6 @@ class StudentOnCourseServiceTest {
 
     @Test
     void testCreateStudentOnCourse() {
-        long courseId = 1L;
-        long studentId = 2L;
-
         PersonEntity user = new PersonEntity();
         user.setName("John Doe");
         user.setLinkedin("linkedin-url");
@@ -175,14 +181,18 @@ class StudentOnCourseServiceTest {
                 new CourseEntity("course-slug", "Course Short Name", "Course Name", "SVG");
         PersonEntity studentEntity = new PersonEntity();
 
+        long courseId = 1L;
+        long studentId = 2L;
         when(courseService.get(courseId)).thenReturn(Optional.of(courseEntity));
         when(personService.get(studentId)).thenReturn(Optional.of(studentEntity));
 
         StudentOnCourseEntity studentOnCourseEntity = new StudentOnCourseEntity(user, courseEntity);
-        when(studentOnCourseRepository.save(studentOnCourseEntity)).thenReturn(studentOnCourseEntity);
+        when(studentOnCourseRepository.save(studentOnCourseEntity))
+                .thenReturn(studentOnCourseEntity);
 
         PersonApplicationEntity applicant = new PersonApplicationEntity();
-        when(personApplicationRepository.findByPersonAndCourse(studentEntity, courseEntity)).thenReturn(applicant);
+        when(personApplicationRepository.findByPersonAndCourse(studentEntity, courseEntity))
+                .thenReturn(applicant);
         when(personApplicationRepository.save(applicant)).thenReturn(applicant);
 
         RoleEntity studentRole = new RoleEntity("STUDENT");
@@ -190,7 +200,8 @@ class StudentOnCourseServiceTest {
         when(roleRepository.findByName("STUDENT")).thenReturn(studentRole);
         when(roleRepository.findByName(courseEntity.getSlug())).thenReturn(courseRole);
 
-        Optional<StudentOnCourseEntity> student = Optional.of(studentOnCourseRepository.save(studentOnCourseEntity));
+        Optional<StudentOnCourseEntity> student =
+                Optional.of(studentOnCourseRepository.save(studentOnCourseEntity));
 
         assertTrue(student.isPresent());
         assertEquals(studentOnCourseEntity, student.get());

@@ -1,24 +1,27 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.dto.ReferenceTitleDto;
 import com.group.practic.entity.ReferenceTitleEntity;
 import com.group.practic.repository.ReferenceTitleRepository;
 import com.group.practic.util.FunctionThreadPool;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @Slf4j
 class ReferenceTitleServiceTest {
@@ -62,7 +65,8 @@ class ReferenceTitleServiceTest {
         ReferenceTitleEntity existingEntity = new ReferenceTitleEntity();
         existingEntity.setReference(reference);
         existingEntity.setTitle(title);
-        when(referenceTitleRepository.findByReference(reference)).thenReturn(existingEntity); // Повертаємо існуючий запис
+        when(referenceTitleRepository.findByReference(reference))
+                .thenReturn(existingEntity); // Повертаємо існуючий запис
         ReferenceTitleEntity result = referenceTitleService.create(reference);
         assertNotNull(result);
         assertEquals(reference, result.getReference());
@@ -74,11 +78,12 @@ class ReferenceTitleServiceTest {
         String reference = "TestReference";
         String expectedTitle = "TestTitle";
         ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
-        ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);
         ReferenceTitleEntity referenceTitleEntity = new ReferenceTitleEntity();
         referenceTitleEntity.setReference(reference);
         referenceTitleEntity.setTitle(expectedTitle);
         when(referenceTitleRepository.findByReference(reference)).thenReturn(referenceTitleEntity);
+        ReferenceTitleService referenceTitleService =
+                new ReferenceTitleService(referenceTitleRepository);
         String result = referenceTitleService.getTitle(reference);
         assertEquals(expectedTitle, result);
     }
@@ -87,7 +92,8 @@ class ReferenceTitleServiceTest {
     void testGetTitleForNonExistentReference() {
         String reference = "NonExistentReference";
         ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
-        ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);
+        ReferenceTitleService referenceTitleService =
+                new ReferenceTitleService(referenceTitleRepository);
         when(referenceTitleRepository.findByReference(reference)).thenReturn(null);
         String result = referenceTitleService.getTitle(reference);
         assertNull(result);
@@ -95,19 +101,20 @@ class ReferenceTitleServiceTest {
 
     @Test
     void testUpdateExistingReference() {
-        String reference = "TestReference";
-        String originalTitle = "OriginalTitle";
-        String updatedTitle = "UpdatedTitle";
-        ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
-        ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);
         ReferenceTitleEntity existingEntity = new ReferenceTitleEntity();
+        String reference = "TestReference";
         existingEntity.setReference(reference);
+        String originalTitle = "OriginalTitle";
         existingEntity.setTitle(originalTitle);
         ReferenceTitleDto updatedDto = new ReferenceTitleDto();
         updatedDto.setReference(reference);
+        String updatedTitle = "UpdatedTitle";
         updatedDto.setTitle(updatedTitle);
+        ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
         when(referenceTitleRepository.findByReference(reference)).thenReturn(existingEntity);
         when(referenceTitleRepository.save(existingEntity)).thenReturn(existingEntity);
+        ReferenceTitleService referenceTitleService =
+                new ReferenceTitleService(referenceTitleRepository);
         ReferenceTitleEntity result = referenceTitleService.update(updatedDto);
         assertEquals(updatedTitle, result.getTitle());
     }
@@ -117,7 +124,6 @@ class ReferenceTitleServiceTest {
         String reference = "NonExistentReference";
         String updatedTitle = "UpdatedTitle";
         ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
-        ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);
         ReferenceTitleDto updatedDto = new ReferenceTitleDto();
         updatedDto.setReference(reference);
         updatedDto.setTitle(updatedTitle);
@@ -129,6 +135,8 @@ class ReferenceTitleServiceTest {
                     return savedEntity;
                 }
         );
+        ReferenceTitleService referenceTitleService =
+                new ReferenceTitleService(referenceTitleRepository);
         ReferenceTitleEntity result = referenceTitleService.update(updatedDto);
         assertEquals(updatedTitle, result.getTitle());
     }
@@ -138,7 +146,6 @@ class ReferenceTitleServiceTest {
         String reference = "NonExistentReference";
         String updatedTitle = "UpdatedTitle";
         ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
-        ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);
         when(referenceTitleRepository.findByReference(reference)).thenReturn(null);
         ReferenceTitleEntity updatedEntity = new ReferenceTitleEntity();
         updatedEntity.setReference(reference);
@@ -151,14 +158,14 @@ class ReferenceTitleServiceTest {
                     return savedEntity;
                 }
         );
+        ReferenceTitleService referenceTitleService =
+                new ReferenceTitleService(referenceTitleRepository);
         ReferenceTitleEntity result = referenceTitleService.update(updatedEntity);
         assertEquals(updatedTitle, result.getTitle());
     }
 
     @Test
     void testUpdateListOfReferenceTitleDto() {
-        ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
-        ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);
 
         ReferenceTitleDto dto1 = new ReferenceTitleDto();
         dto1.setReference("Reference1");
@@ -180,6 +187,7 @@ class ReferenceTitleServiceTest {
         entity2.setReference("Reference2");
         entity2.setTitle("OriginalTitle2");
 
+        ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
         when(referenceTitleRepository.findByReference("Reference1")).thenReturn(entity1);
         when(referenceTitleRepository.findByReference("Reference2")).thenReturn(entity2);
 
@@ -189,6 +197,8 @@ class ReferenceTitleServiceTest {
                     return savedEntity;
                 }
         );
+        ReferenceTitleService referenceTitleService =
+                new ReferenceTitleService(referenceTitleRepository);
         Set<ReferenceTitleEntity> result = referenceTitleService.update(dtoList);
         assertEquals(dtoList.size(), result.size());
         for (ReferenceTitleEntity entity : result) {
@@ -203,8 +213,10 @@ class ReferenceTitleServiceTest {
     @Test
     void testCreate1() {
         ReferenceTitleRepository referenceTitleRepository = mock(ReferenceTitleRepository.class);
-        FunctionThreadPool<String, ReferenceTitleEntity> functionThreadPool = mock(FunctionThreadPool.class);
-        ReferenceTitleService referenceTitleService = new ReferenceTitleService(referenceTitleRepository);
+        FunctionThreadPool<String, ReferenceTitleEntity> functionThreadPool =
+                mock(FunctionThreadPool.class);
+        ReferenceTitleService referenceTitleService =
+                new ReferenceTitleService(referenceTitleRepository);
         referenceTitleService.functionThreadPool = functionThreadPool;
 
         Collection<String> references = Set.of("Reference1", "Reference2");

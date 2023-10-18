@@ -1,5 +1,10 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.PropertyLoader;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
@@ -7,17 +12,19 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.util.PropertyUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class CourseServiceTest {
 
@@ -190,7 +197,8 @@ class CourseServiceTest {
         when(propertyLoader.getEntrySet()).thenReturn(properties.entrySet());
 
         String result = courseService.getAuthorSet(propertyLoader);
-        Set<String> resultSet = Arrays.stream(result.split(PropertyUtil.AUTHOR_SEPARATOR)).collect(Collectors.toSet());
+        Set<String> resultSet = Arrays.stream(result.split(PropertyUtil.AUTHOR_SEPARATOR))
+                .collect(Collectors.toSet());
 
         assertEquals(Set.of("Author 1", "Author 2"), resultSet);
     }

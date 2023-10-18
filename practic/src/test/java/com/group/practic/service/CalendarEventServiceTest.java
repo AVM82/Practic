@@ -1,9 +1,14 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.group.practic.dto.EventDto;
 import com.group.practic.dto.MessageSendingResultDto;
 import com.group.practic.dto.SendMessageDto;
 import com.group.practic.entity.PersonEntity;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,13 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
- class CalendarEventServiceTest {
+class CalendarEventServiceTest {
 
     @InjectMocks
     private CalendarEventService calendarEventService;
@@ -32,15 +31,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        ReflectionTestUtils.setField(calendarEventService, "emailMessage", "|+\n" +
-                "      Привіт, на менторському курсі по Java %s о %s\n" +
-                "      Відбудеться доповідь на тему \"%s\". Запрошуємо тебе долучитися до нас у\n" +
-                "      Discord кімнату m-java -> https://discord.com/channels/534496884849639455/843878435067002930\n" +
-                "      link на додання події у google Calendar -> %s");
-        ReflectionTestUtils.setField(calendarEventService, "emailMessageHeader", "|\n" +
-                "      Заходь послухати доповідь");
-        ReflectionTestUtils.setField(calendarEventService, "calendarHeader", "|+\n" +
-                "      Доповідь на тему - %s");
+        ReflectionTestUtils.setField(calendarEventService, "emailMessage", "|+\n"
+                + "      Привіт, на менторському курсі по Java %s о %s\n"
+                + "      Відбудеться доповідь на тему \"%s\". "
+                + "Запрошуємо тебе долучитися до нас у\n"
+                + "      Discord кімнату m-java -> "
+                + "https://discord.com/channels/534496884849639455/843878435067002930\n"
+                + "      link на додання події у google Calendar -> %s");
+        ReflectionTestUtils.setField(calendarEventService, "emailMessageHeader", "|\n"
+                + "      Заходь послухати доповідь");
+        ReflectionTestUtils.setField(calendarEventService, "calendarHeader", "|+\n"
+                + "      Доповідь на тему - %s");
         ReflectionTestUtils.setField(calendarEventService, "calendarLocation", "discord m-java");
     }
 
@@ -58,7 +59,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         Mockito.when(personService.get()).thenReturn(personEntities);
         Mockito.when(sender.sendMessage(Mockito.any(SendMessageDto.class))).thenReturn(true);
 
-        MessageSendingResultDto result = calendarEventService.sendEventMessageAllPerson(sender, eventDto);
+        MessageSendingResultDto result =
+                calendarEventService.sendEventMessageAllPerson(sender, eventDto);
 
         assertEquals(1, result.getSuccessfulDeliveries());
     }

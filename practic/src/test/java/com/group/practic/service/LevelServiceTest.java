@@ -1,21 +1,27 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.PropertyLoader;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
 import com.group.practic.repository.LevelRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 class LevelServiceTest {
 
@@ -50,7 +56,8 @@ class LevelServiceTest {
         int number = 1;
         List<Integer> chapterN = Arrays.asList(1, 2, 3);
         LevelEntity existingLevel = new LevelEntity(1, course, number, chapterN);
-        when(levelRepository.findByCourseAndNumber(course, number)).thenReturn(Optional.of(existingLevel));
+        when(levelRepository.findByCourseAndNumber(course, number))
+                .thenReturn(Optional.of(existingLevel));
 
         when(levelRepository.save(existingLevel)).thenReturn(existingLevel);
 
@@ -72,7 +79,6 @@ class LevelServiceTest {
 
     @Test
     void testGetLevelsSet() {
-        CourseEntity course = new CourseEntity();
 
         Properties properties = new Properties();
         properties.setProperty("level1", "1,2,3");
@@ -80,6 +86,8 @@ class LevelServiceTest {
 
         when(propertyLoader.getEntrySet()).thenReturn(properties.entrySet());
         LevelEntity level1 = new LevelEntity();
+
+        CourseEntity course = new CourseEntity();
         level1.setCourse(new CourseEntity());
         when(levelRepository.save(any())).thenReturn(level1);
 

@@ -1,24 +1,28 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.dto.FeedbackDto;
 import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
 import com.group.practic.repository.PersonRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class FeedbackServiceTest {
 
@@ -45,7 +49,8 @@ class FeedbackServiceTest {
 
         when(feedbackRepository.findAll()).thenReturn(List.of(feedback1, feedback2));
 
-        List<FeedbackEntity> result = feedbackService.getAllFeedbacks(FeedbackSortState.DATE_ASCENDING);
+        List<FeedbackEntity> result =
+                feedbackService.getAllFeedbacks(FeedbackSortState.DATE_ASCENDING);
 
         assertEquals(2, result.size());
         assertEquals(feedback1, result.get(1));
@@ -61,7 +66,8 @@ class FeedbackServiceTest {
         PersonEntity person = new PersonEntity();
         person.setEmail("test@example.com");
 
-        when(personRepository.findPersonEntityByEmail(feedbackDto.getEmail())).thenReturn(Optional.of(person));
+        when(personRepository.findPersonEntityByEmail(feedbackDto.getEmail()))
+                .thenReturn(Optional.of(person));
 
         FeedbackEntity savedFeedback = new FeedbackEntity(person, "Test feedback", 0);
         savedFeedback.setDateTime(LocalDateTime.now());
@@ -86,7 +92,8 @@ class FeedbackServiceTest {
         FeedbackDto feedbackDto = new FeedbackDto();
         feedbackDto.setEmail("nonexisting@example.com");
 
-        when(personRepository.findPersonEntityByEmail(feedbackDto.getEmail())).thenReturn(Optional.empty());
+        when(personRepository.findPersonEntityByEmail(feedbackDto.getEmail()))
+                .thenReturn(Optional.empty());
 
         assertThrows(NullPointerException.class, () -> feedbackService.addFeedback(feedbackDto));
     }

@@ -1,5 +1,13 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.dto.AuthUserDto;
 import com.group.practic.dto.SignUpRequestDto;
 import com.group.practic.entity.PersonEntity;
@@ -10,6 +18,11 @@ import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
 import jakarta.persistence.EntityExistsException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,12 +31,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 class PersonServiceTest {
 
@@ -196,13 +203,6 @@ class PersonServiceTest {
 
     @Test
     void testUpdateExistingUser() {
-        PersonEntity personEntity = new PersonEntity();
-        Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(Map.of(
-                "localizedFirstName", "name",
-                "localizedLastName", "surname",
-                "emailAddress", "email",
-                "pictureUrl", "pictureUrl"
-        ));
 
         PersonEntity mustBePersonEntity = new PersonEntity();
         mustBePersonEntity.setName("name surname");
@@ -211,7 +211,16 @@ class PersonServiceTest {
 
         when(personRepository.save(any(PersonEntity.class)))
                 .thenReturn(mustBePersonEntity);
-        PersonEntity updatedPersonEntity = personService.updateExistingUser(personEntity, oauth2UserInfo);
+        Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(Map.of(
+                "localizedFirstName", "name",
+                "localizedLastName", "surname",
+                "emailAddress", "email",
+                "pictureUrl", "pictureUrl"
+        ));
+
+        PersonEntity personEntity = new PersonEntity();
+        PersonEntity updatedPersonEntity =
+                personService.updateExistingUser(personEntity, oauth2UserInfo);
 
         assertEquals(mustBePersonEntity, updatedPersonEntity);
     }
@@ -275,9 +284,9 @@ class PersonServiceTest {
 
         when(authentication.getPrincipal()).thenReturn(authUserDto);
 
-        AuthUserDto oAuth2User = (AuthUserDto) personService.getOauth2User();
+        AuthUserDto oauth2User = (AuthUserDto) personService.getOauth2User();
 
-        assertEquals("name", oAuth2User.getName());
+        assertEquals("name", oauth2User.getName());
     }
 
     @Test

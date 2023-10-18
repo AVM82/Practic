@@ -1,22 +1,21 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.dto.SkillDto;
 import com.group.practic.entity.SkillEntity;
 import com.group.practic.entity.SubChapterEntity;
 import com.group.practic.repository.SkillRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 class SkillServiceTest {
 
@@ -37,13 +36,14 @@ class SkillServiceTest {
 
     @Test
     void testFindAll() {
-        List<SkillEntity> skills = new ArrayList<>();
         SkillEntity skill1 = new SkillEntity();
         skill1.setId(1L);
         skill1.setName("Skill1");
         SkillEntity skill2 = new SkillEntity();
         skill2.setId(2L);
         skill2.setName("Skill2");
+
+        List<SkillEntity> skills = new ArrayList<>();
         skills.add(skill1);
         skills.add(skill2);
 

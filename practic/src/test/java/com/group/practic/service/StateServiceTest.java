@@ -1,20 +1,21 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.entity.StateEntity;
 import com.group.practic.repository.StateRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 class StateServiceTest {
@@ -123,7 +124,6 @@ class StateServiceTest {
     @Test
     void testUpdateStateWithValidIdAndCluster() {
         long id = 1L;
-        int newCluster = 10;
 
         StateEntity existingState = new StateEntity();
         existingState.setId(id);
@@ -133,6 +133,7 @@ class StateServiceTest {
         when(stateRepository.saveAndFlush(existingState)).thenReturn(existingState);
 
 
+        int newCluster = 10;
         Optional<StateEntity> updatedState = stateService.update(id, newCluster);
 
         assertTrue(updatedState.isPresent());
@@ -153,7 +154,6 @@ class StateServiceTest {
     @Test
     void testUpdateStateWithValidIdAndName() {
         long id = 1L;
-        String newName = "NewStateName";
 
         StateEntity existingState = new StateEntity();
         existingState.setId(id);
@@ -162,6 +162,7 @@ class StateServiceTest {
         when(stateRepository.findById(id)).thenReturn(Optional.of(existingState));
         when(stateRepository.saveAndFlush(existingState)).thenReturn(existingState);
 
+        String newName = "NewStateName";
         Optional<StateEntity> updatedState = stateService.update(id, newName);
 
         assertTrue(updatedState.isPresent());
@@ -171,7 +172,6 @@ class StateServiceTest {
     @Test
     void testUpdateStateWithInvalidName() {
         long id = 1L;
-        String newName = "NewStateName";
 
         StateEntity existingState = new StateEntity();
         existingState.setId(id);
@@ -180,6 +180,7 @@ class StateServiceTest {
         when(stateRepository.findById(id)).thenReturn(Optional.of(existingState));
         when(stateRepository.saveAndFlush(existingState)).thenReturn(null);
 
+        String newName = "NewStateName";
         Optional<StateEntity> updatedState = stateService.update(id, newName);
 
         assertFalse(updatedState.isPresent());
@@ -189,15 +190,16 @@ class StateServiceTest {
     void testUpdateStateWithValidClusterAndNames() {
         int cluster = 1;
         String oldName = "OldStateName";
-        String newName = "NewStateName";
 
         StateEntity existingState = new StateEntity();
         existingState.setCluster(cluster);
         existingState.setName(oldName);
 
-        when(stateRepository.findAllByClusterAndName(cluster, oldName)).thenReturn(Optional.of(existingState));
+        when(stateRepository.findAllByClusterAndName(cluster, oldName))
+                .thenReturn(Optional.of(existingState));
         when(stateRepository.saveAndFlush(existingState)).thenReturn(existingState);
 
+        String newName = "NewStateName";
         Optional<StateEntity> updatedState = stateService.update(cluster, oldName, newName);
 
         assertTrue(updatedState.isPresent());
@@ -209,7 +211,8 @@ class StateServiceTest {
         int cluster = 1;
         String oldName = "OldStateName";
         String newName = "NewStateName";
-        when(stateRepository.findAllByClusterAndName(cluster, oldName)).thenReturn(Optional.empty());
+        when(stateRepository.findAllByClusterAndName(cluster, oldName))
+                .thenReturn(Optional.empty());
         Optional<StateEntity> updatedState = stateService.update(cluster, oldName, newName);
         assertFalse(updatedState.isPresent());
     }

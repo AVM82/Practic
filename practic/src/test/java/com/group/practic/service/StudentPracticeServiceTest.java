@@ -1,11 +1,22 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentPracticeRepository;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,14 +25,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -45,23 +48,26 @@ class StudentPracticeServiceTest {
 
     @Test
     void testGetAllStudentsByState() {
-        List<StudentPracticeEntity> expectedStudents = new ArrayList<>();
         StudentPracticeEntity student1 = new StudentPracticeEntity();
         student1.setId(1L);
         student1.setState(PracticeState.NOT_STARTED);
         StudentPracticeEntity student2 = new StudentPracticeEntity();
         student2.setId(2L);
         student2.setState(PracticeState.NOT_STARTED);
+
+        List<StudentPracticeEntity> expectedStudents = new ArrayList<>();
         expectedStudents.add(student1);
         expectedStudents.add(student2);
-        when(studentPracticeRepository.findByState(PracticeState.NOT_STARTED)).thenReturn(expectedStudents);
-        List<StudentPracticeEntity> students = studentPracticeService.getAllStudentsByState(PracticeState.NOT_STARTED);
+        when(studentPracticeRepository.findByState(PracticeState.NOT_STARTED))
+                .thenReturn(expectedStudents);
+        List<StudentPracticeEntity> students =
+                studentPracticeService.getAllStudentsByState(PracticeState.NOT_STARTED);
         assertEquals(expectedStudents, students);
         verify(studentPracticeRepository, times(1)).findByState(PracticeState.NOT_STARTED);
     }
 
     @Test
-     void testGetAllPracticesByChapter() {
+    void testGetAllPracticesByChapter() {
 
         PersonEntity student = new PersonEntity();
         ChapterEntity chapter = new ChapterEntity();
@@ -80,8 +86,10 @@ class StudentPracticeServiceTest {
         expectedPractices.add(practice1);
         expectedPractices.add(practice2);
 
-        when(studentPracticeRepository.findByStudentAndChapter(student, chapter)).thenReturn(expectedPractices);
-        Set<StudentPracticeEntity> practices = studentPracticeService.getAllPracticesByChapter(student, chapter);
+        when(studentPracticeRepository.findByStudentAndChapter(student, chapter))
+                .thenReturn(expectedPractices);
+        Set<StudentPracticeEntity> practices = studentPracticeService
+                .getAllPracticesByChapter(student, chapter);
         assertEquals(expectedPractices, practices);
         verify(studentPracticeRepository, times(1)).findByStudentAndChapter(student, chapter);
     }
@@ -100,14 +108,17 @@ class StudentPracticeServiceTest {
         expectedPractice.setChapter(chapter);
         expectedPractice.setState(PracticeState.NOT_STARTED);
 
-        when(studentPracticeRepository.save(any(StudentPracticeEntity.class))).thenReturn(expectedPractice);
+        when(studentPracticeRepository.save(any(StudentPracticeEntity.class)))
+                .thenReturn(expectedPractice);
 
-        StudentPracticeEntity practice = studentPracticeService.addPractice(student, chapterPart, chapter);
+        StudentPracticeEntity practice = studentPracticeService
+                .addPractice(student, chapterPart, chapter);
 
-        verify(studentPracticeRepository, times(1)).save(argThat(arg -> arg.getStudent() == student &&
-                arg.getChapterPart() == chapterPart &&
-                arg.getChapter() == chapter &&
-                arg.getState() == PracticeState.NOT_STARTED));
+        verify(studentPracticeRepository, times(1))
+                .save(argThat(arg -> arg.getStudent() == student
+                        && arg.getChapterPart() == chapterPart
+                        && arg.getChapter() == chapter
+                        && arg.getState() == PracticeState.NOT_STARTED));
 
         assertEquals(expectedPractice, practice);
     }
@@ -122,7 +133,9 @@ class StudentPracticeServiceTest {
         expectedPractice.setStudent(student);
 
         when(chapterPartService.getChapterPartById(chapterPartId)).thenReturn(chapterPart);
-        when(studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart)).thenReturn(expectedPractice);
+        when(studentPracticeRepository
+                .findByStudentAndChapterPart(student, chapterPart))
+                .thenReturn(expectedPractice);
         StudentPracticeEntity practice = studentPracticeService.getPractice(student, chapterPartId);
 
         verify(chapterPartService, times(1)).getChapterPartById(chapterPartId);
@@ -151,7 +164,8 @@ class StudentPracticeServiceTest {
 
         when(studentPracticeRepository.findAllByStudent(student)).thenReturn(expectedPractices);
 
-        Set<StudentPracticeEntity> practices = studentPracticeService.getAllPracticesByStudent(student);
+        Set<StudentPracticeEntity> practices =
+                studentPracticeService.getAllPracticesByStudent(student);
 
         verify(studentPracticeRepository, times(1)).findAllByStudent(student);
 

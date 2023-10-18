@@ -1,5 +1,11 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.dto.PersonApplyOnCourseDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonApplicationEntity;
@@ -8,18 +14,14 @@ import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.repository.PersonApplicationRepository;
 import com.group.practic.repository.PersonRepository;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class PersonApplicationServiceTest {
 
@@ -63,7 +65,8 @@ class PersonApplicationServiceTest {
 
         when(courseRepository.findBySlug(courseSlug)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> personApplicationService.addPersonApplication(person, courseSlug));
+        assertThrows(ResourceNotFoundException.class,
+                () -> personApplicationService.addPersonApplication(person, courseSlug));
     }
 
     @Test
@@ -73,7 +76,8 @@ class PersonApplicationServiceTest {
         PersonApplicationEntity application2 = new PersonApplicationEntity();
         application2.setApply(false);
 
-        when(personApplicationRepository.findAllByIsApply(false)).thenReturn(List.of(application1, application2));
+        when(personApplicationRepository.findAllByIsApply(false))
+                .thenReturn(List.of(application1, application2));
 
         List<PersonApplyOnCourseDto> result = personApplicationService.getNotApplyPerson();
 
@@ -92,9 +96,11 @@ class PersonApplicationServiceTest {
         application.setPerson(person);
         application.setCourse(course);
 
-        when(personApplicationRepository.findByPersonAndCourse(person, course)).thenReturn(application);
+        when(personApplicationRepository.findByPersonAndCourse(person, course))
+                .thenReturn(application);
 
-        PersonApplicationEntity result = personApplicationService.getApplicationByPersonAndCourse(person, courseSlug);
+        PersonApplicationEntity result =
+                personApplicationService.getApplicationByPersonAndCourse(person, courseSlug);
 
         assertNotNull(result);
         assertEquals(person, result.getPerson());
@@ -108,6 +114,7 @@ class PersonApplicationServiceTest {
 
         when(courseRepository.findBySlug(courseSlug)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> personApplicationService.getApplicationByPersonAndCourse(person, courseSlug));
+        assertThrows(ResourceNotFoundException.class,
+                () -> personApplicationService.getApplicationByPersonAndCourse(person, courseSlug));
     }
 }

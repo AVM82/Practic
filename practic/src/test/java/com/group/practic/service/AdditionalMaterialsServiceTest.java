@@ -1,24 +1,23 @@
 package com.group.practic.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.group.practic.PropertyLoader;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.repository.AdditionalMaterialsRepository;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class AdditionalMaterialsServiceTest {
 
@@ -46,7 +45,8 @@ class AdditionalMaterialsServiceTest {
         when(additionalMaterialsRepository.save(additionalMaterialEntity))
                 .thenReturn(additionalMaterialEntity);
 
-        Optional<AdditionalMaterialsEntity> result = additionalMaterialsService.update(additionalMaterialEntity);
+        Optional<AdditionalMaterialsEntity> result =
+                additionalMaterialsService.update(additionalMaterialEntity);
         assertTrue(result.isPresent());
         assertEquals(additionalMaterialEntity, result.get());
     }
@@ -65,7 +65,8 @@ class AdditionalMaterialsServiceTest {
         when(additionalMaterialsRepository.save(updatedMaterial))
                 .thenReturn(updatedMaterial);
 
-        Optional<AdditionalMaterialsEntity> result = additionalMaterialsService.update(updatedMaterial);
+        Optional<AdditionalMaterialsEntity> result =
+                additionalMaterialsService.update(updatedMaterial);
         assertTrue(result.isPresent());
         assertEquals(updatedMaterial, result.get());
     }
