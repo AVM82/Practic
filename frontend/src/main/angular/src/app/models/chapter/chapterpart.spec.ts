@@ -1,6 +1,6 @@
 import { ChapterPart } from './chapterpart';
 
-describe('ChapterPart', () => {
+  describe('ChapterPart', () => {
   it('should create an instance', () => {
     expect(new ChapterPart()).toBeTruthy();
   });

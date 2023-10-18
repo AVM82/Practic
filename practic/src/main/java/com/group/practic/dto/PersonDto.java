@@ -31,7 +31,7 @@ public class PersonDto {
     }
 
 
-    PersonDto(String name, String discord) {
+    public PersonDto(String name, String discord) {
         this.name = name;
         this.discord = discord;
     }

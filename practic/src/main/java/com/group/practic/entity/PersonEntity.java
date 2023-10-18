@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +36,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 @ToString
 public class PersonEntity implements UserDetails {
 

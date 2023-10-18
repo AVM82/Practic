@@ -129,7 +129,7 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    private static OAuth2User getOauth2User() {
+    public OAuth2User getOauth2User() {
         return (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
@@ -188,8 +188,8 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    private PersonEntity updateExistingUser(PersonEntity existingUser,
-            Oauth2UserInfo oauth2UserInfo) {
+    public PersonEntity updateExistingUser(PersonEntity existingUser,
+                                            Oauth2UserInfo oauth2UserInfo) {
         existingUser.setName(oauth2UserInfo.getName());
         existingUser.setLinkedin(oauth2UserInfo.getId());
         existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());

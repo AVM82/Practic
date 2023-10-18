@@ -10,7 +10,8 @@ public final class CourseDto {
     private String svg;
 
 
-    public CourseDto() {}
+    public CourseDto() {
+    }
 
 
     public CourseDto(String name, String svg, String slug) {
