@@ -1,7 +1,6 @@
 package com.group.practic.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,13 +35,14 @@ public class ChapterEntity {
     @Column(length = 1024)
     String name;
 
-    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "chapter", fetch = FetchType.EAGER)
     @OrderBy("number")
     Set<ChapterPartEntity> parts = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     QuizEntity quiz;
 
+    @JsonIgnore
     String shortName;
 
 

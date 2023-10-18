@@ -20,6 +20,8 @@ export class ChapterReportsComponent {
   @Input() levels!:Level[];
   @Input() chapterNumber!: number
   @Input() studentReports!: StudentReport[];
+  @Input() currentUserId!:number;
+  @Input() timeslots!: any;
 
   reportsNumberOnPage: number = 5;
   startOfRange: number = 0;
@@ -68,4 +70,3 @@ export class ChapterReportsComponent {
     return this.chapterColor;
   }
 }
-

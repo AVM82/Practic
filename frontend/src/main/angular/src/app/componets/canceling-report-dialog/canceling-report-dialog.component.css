@@ -1,0 +1,23 @@
+.canceling-dialog-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cancel-button {
+    background-color: #27AE60;
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 19px;
+    cursor: pointer;
+    border-radius: 5px;
+
+}
+
+.ok-button {
+    background-color: #ee7777;
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 19px;
+    cursor: pointer;
+    border-radius: 5px;
+}

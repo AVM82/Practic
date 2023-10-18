@@ -1,9 +1,13 @@
 package com.group.practic.dto;
 
+import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.Getter;
 
+
+@Getter
 public class ChapterDto {
 
     long id;
@@ -12,57 +16,35 @@ public class ChapterDto {
 
     String shortName;
 
-    Set<Long> chapterPartIds;
+    boolean visible;
+
+    Set<Long> partsId = new HashSet<>();
 
 
-    public ChapterDto() {
+    public ChapterDto() {}
+
+
+    public ChapterDto(ChapterEntity chapter, boolean visible) {
+        this.id = chapter.getId();
+        this.number = chapter.getNumber();
+        this.shortName = chapter.getShortName();
+        this.visible = visible;
+        chapter.getParts().forEach(part -> this.partsId.add(part.getId()));
     }
 
 
-    public ChapterDto(int number, String shortName) {
-        super();
-        this.number = number;
-        this.shortName = shortName;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public String getShortName() {
-        return shortName;
-    }
-
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
+    public ChapterDto(long id, int number, String shortName, boolean visible,
+            Set<ChapterPartEntity> parts) {
         this.id = id;
+        this.number = number;
+        this.shortName = shortName;
+        this.visible = visible;
+        parts.forEach(part -> this.partsId.add(part.getId()));
     }
 
-    public Set<Long> getChapterPartIds() {
-        return chapterPartIds;
+
+    public void setVisible(boolean value) {
+        this.visible = value;
     }
 
-    public void setChapterPartIds(Set<ChapterPartEntity> chapterParts) {
-        if (!chapterParts.isEmpty()) {
-            this.chapterPartIds = chapterParts.stream()
-                    .map(ChapterPartEntity::getId)
-                    .collect(Collectors.toSet());
-        }
-
-    }
 }

@@ -80,7 +80,6 @@ public class PersonController {
 
 
     @GetMapping("/{id}/roles")
-
     public ResponseEntity<Collection<RoleEntity>> findAllRoles(@PathVariable long id) {
         return getResponse(personService.findUserRolesById(id));
 
@@ -99,14 +98,12 @@ public class PersonController {
     public ResponseEntity<PersonEntity> getCurrentUser() {
         PersonEntity person = (PersonEntity) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-
         return ResponseEntity.ok(person);
-
     }
 
 
     @PostMapping("/application/{slug}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('GUEST')")
     public ResponseEntity<PersonEntity> applyOnCourse(
             @PathVariable(value = "slug") String slug) {
         PersonEntity person = getPrincipal();

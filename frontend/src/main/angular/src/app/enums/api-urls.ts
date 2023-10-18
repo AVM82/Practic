@@ -1,10 +1,13 @@
 export enum ApiUrls {
   Courses = '/api/courses',
   Course = '/api/courses/',
+  NewCourseFromProperties = '/api/courses/NewCourseFromProperties',
+  Students = '/api/students',
   Practices = '/api/students/practices/',
   PracticeStates = '/api/students/practices/states',
   Reports = '/api/students/reports/course/',
   ReportStates = '/api/students/reports/states',
+  AdditionalMaterials = '/api/students/additionalMaterials/course/',
   Chapters = '/api/chapters',
   Me = '/api/persons/me',
   Applicants = '/api/persons/applicants',
@@ -15,7 +18,7 @@ export enum ApiUrls {
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
   TopicsReports = '/api/topicsreports'
-  }
+}
 
 
 export const getChaptersUrl = (slug: string): string =>
@@ -24,17 +27,16 @@ export const getChaptersUrl = (slug: string): string =>
 export const getMaterialsUrl = (slug: string): string =>
     ApiUrls.Course + slug + `/additional`;
 
+export const getMaterialsExistUrl = (slug: string): string =>
+    ApiUrls.Course + slug + `/additionalExist`;
+
 export const getChapterUrl = (slug: string, chapterN: number): string =>
     ApiUrls.Course + slug + `/chapters/` + chapterN;
 
 export const getCourseUrl = (slug: string): string =>
     ApiUrls.Course + slug;
 
-export const postCourse = window.location.origin + ApiUrls.Courses;
-
 export const getReportsUrl = (slug: string): string =>
-    `/api/students/reports/course/${slug}`;
-export const postReportsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}`;
 
 export const getLevelsUrl = (slug: string): string =>
@@ -42,3 +44,18 @@ export const getLevelsUrl = (slug: string): string =>
 
 export const timeslotsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}/timeslots`;
+
+export const getDescriptionUrl = (slug: string): string =>
+    ApiUrls.Course + slug + `/description`;
+
+export const getMentorsUrl = (slug: string): string =>
+    ApiUrls.Course+ slug +`/mentors`;
+
+export const getStudentAdditionalMaterialUrl = (slug: string, id: number): string =>
+    ApiUrls.AdditionalMaterials + slug + `/` + id;
+
+export const getActiveChapterNumber = (slug: string): string =>
+    ApiUrls.Course+ slug +`/activeChapterNumber`;
+
+export const deleteReportsUrl = (reportId: number): string =>
+    `/api/students/reports/course/${reportId}`;

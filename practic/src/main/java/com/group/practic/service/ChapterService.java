@@ -107,7 +107,8 @@ public class ChapterService {
             if (PropertyUtil.countDots(key) == 1 && key.endsWith(".")
                     && (n = PropertyUtil.getChapterNumber(1, key)) != 0) {
                 String[] names = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
-                ChapterEntity chapter = create(course, n, names[0], names[1]);
+                String fullName = names.length > 1 ? names[1] : names[0];
+                ChapterEntity chapter = create(course, n, names[0], fullName);
                 if (chapter != null) {
                     chapterPartService.getChapterPartSet(chapter, prop);
                     result.add(chapter);

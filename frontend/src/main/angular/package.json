@@ -1,6 +1,6 @@
 {
   "name": "Practic",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --hmr --proxy-config proxy.config.json",

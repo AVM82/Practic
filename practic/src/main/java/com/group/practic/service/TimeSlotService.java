@@ -14,12 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-
-
 @Service
 public class TimeSlotService {
 
     private final TimeSlotRepository timeSlotRepository;
+
 
     @Autowired
     public TimeSlotService(TimeSlotRepository timeSlotRepository) {
@@ -29,25 +28,29 @@ public class TimeSlotService {
 
     public Map<String, List<TimeSlotEntity>> getAvailableTimeSlots() {
 
-        List<TimeSlotEntity> timeSlotList = timeSlotRepository
-                .findAllByAvailabilityTrueOrderByTime();
+        List<TimeSlotEntity> timeSlotList =
+                timeSlotRepository.findAllByAvailabilityTrueOrderByTime();
         Map<String, List<TimeSlotEntity>> slotMap = new HashMap<>();
         for (TimeSlotEntity timeSlot : timeSlotList) {
-            String date = timeSlot.getDate().toString();
-            slotMap.computeIfAbsent(date, k -> new ArrayList<>());
-            if (timeSlot.isAvailability()) {
+            LocalDate slotDate = timeSlot.getDate();
+            LocalTime slotTime = timeSlot.getTime();
+            if (!slotDate.isBefore(LocalDate.now())
+                    && !(slotDate.isEqual(LocalDate.now()) && slotTime.isBefore(LocalTime.now()))) {
+                String date = slotDate.toString();
+                slotMap.computeIfAbsent(date, k -> new ArrayList<>());
                 slotMap.get(date).add(timeSlot);
             }
         }
         return slotMap;
     }
 
-    public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId) {
-        Optional<TimeSlotEntity> timeslotOp = timeSlotRepository.findById(timeslotId);
 
+    public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId,
+            boolean availability) {
+        Optional<TimeSlotEntity> timeslotOp = timeSlotRepository.findById(timeslotId);
         if (timeslotOp.isPresent()) {
             TimeSlotEntity timeSlot = timeslotOp.get();
-            timeSlot.setAvailability(false);
+            timeSlot.setAvailability(availability);
             return Optional.of(timeSlotRepository.save(timeSlot));
         }
         return Optional.empty();
@@ -57,17 +60,16 @@ public class TimeSlotService {
     public Optional<List<TimeSlotEntity>> fillTimeSlots() {
         PropertyLoader loader = new PropertyLoader("practic/reportTimeslot.properties");
         if (loader.initialized) {
-            int reportDuration = Integer.parseInt(
-                    loader.getProperty("reportDurationMinutes", "30"));
+            int reportDuration =
+                    Integer.parseInt(loader.getProperty("reportDurationMinutes", "30"));
             int daysNum = Integer.parseInt(loader.getProperty("numberOfDays", "5"));
             LocalDate currentDate = LocalDate.now();
             LocalDate endDate = currentDate.plusDays(daysNum);
-
             while (currentDate.isBefore(endDate)) {
-                Optional<List<TimeSlotEntity>> timeSlotEntities = timeSlotRepository
-                        .findAllByDateOrderByDate(currentDate);
-                LocalTime firstReportTime = LocalTime.parse(loader.getProperty("firstReportTime",
-                        "16:00"));
+                Optional<List<TimeSlotEntity>> timeSlotEntities =
+                        timeSlotRepository.findAllByDateOrderByDate(currentDate);
+                LocalTime firstReportTime =
+                        LocalTime.parse(loader.getProperty("firstReportTime", "16:00"));
                 LocalTime endTime = LocalTime.parse(loader.getProperty("lastReportTime", "22:00"));
                 if (timeSlotEntities.isPresent() && timeSlotEntities.get().isEmpty()) {
                     while (firstReportTime.isBefore(endTime.plusMinutes(1))) {
@@ -81,8 +83,9 @@ public class TimeSlotService {
         return timeSlotRepository.findAllByDateOrderByDate(LocalDate.now());
     }
 
+
     public Optional<TimeSlotEntity> createTimeslot(LocalDate date, LocalTime time) {
-        return Optional.of(timeSlotRepository
-                .save(new TimeSlotEntity(date, time)));
+        return Optional.of(timeSlotRepository.save(new TimeSlotEntity(date, time)));
     }
+
 }

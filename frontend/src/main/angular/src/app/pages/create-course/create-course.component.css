@@ -3,8 +3,7 @@ h2 {
     align-items: center;
     flex-wrap: wrap;
     gap: 20px;
-    display: flex;
-    
+    text-align: center;
 }
 
 form {

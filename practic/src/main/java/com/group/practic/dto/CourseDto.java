@@ -1,31 +1,26 @@
 package com.group.practic.dto;
 
-import java.util.Objects;
-
 
 public final class CourseDto {
 
+    private String slug;
+
     private String name;
 
-    private String description;
-
-    private String shortName;
+    private String svg;
 
 
     public CourseDto() {
     }
 
 
-    CourseDto(String name, String description) {
+    public CourseDto(String name, String svg, String slug) {
+        super();
         this.name = name;
-        this.description = description;
+        this.svg = svg;
+        this.slug = slug;
     }
 
-    public CourseDto(String name, String description, String shortName) {
-        this.name = name;
-        this.description = description;
-        this.shortName = shortName;
-    }
 
     public String getName() {
         return name;
@@ -37,46 +32,24 @@ public final class CourseDto {
     }
 
 
-    public String getDescription() {
-        return description;
+    public String getSvg() {
+        return svg;
     }
 
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
+    public void setSvg(String svg) {
+        this.svg = svg;
     }
 
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
-        CourseDto that = (CourseDto) obj;
-        return this == that || (Objects.equals(this.name, that.name)
-                && Objects.equals(this.description, that.description)
-                && Objects.equals(this.shortName, that.shortName));
+    public String getSlug() {
+        return slug;
     }
 
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, shortName);
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
-
-    @Override
-    public String toString() {
-        return "CourseDto[" + "name=" + name + ", " + "description=" + description
-                + ", " + "shortName=" + shortName + ']';
-    }
 
 }
