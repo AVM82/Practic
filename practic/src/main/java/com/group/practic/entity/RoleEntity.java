@@ -14,7 +14,7 @@ public class RoleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
 
     @Column
     private String name;
@@ -28,12 +28,12 @@ public class RoleEntity {
     }
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

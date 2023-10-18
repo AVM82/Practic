@@ -42,7 +42,7 @@ public class PersonEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
 
     boolean inactive;
 

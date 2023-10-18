@@ -154,13 +154,13 @@ public class PersonService implements UserDetailsService {
 
 
     public boolean isCurrentPersonMentor() {
-        Optional<PersonEntity> currentPerson = getCurrentPerson();
+        Optional<PersonEntity> currentPerson = Optional.ofNullable(getPerson());
         return currentPerson.isPresent() && currentPerson.get().containsRole(ROLE_MENTOR);
     }
 
 
     public Optional<PersonEntity> addEmailToCurrentUser(String email) {
-        Optional<PersonEntity> currentPerson = getCurrentPerson();
+        Optional<PersonEntity> currentPerson = Optional.ofNullable(getPerson());
         if (currentPerson.isPresent()) {
             currentPerson.get().setContacts(email);
             return Optional.of(personRepository.save(currentPerson.get()));
