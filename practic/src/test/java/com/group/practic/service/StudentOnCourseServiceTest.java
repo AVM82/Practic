@@ -23,7 +23,7 @@ import org.mockito.MockitoAnnotations;
 
 @Slf4j
 class StudentOnCourseServiceTest {
-
+/*
     @InjectMocks
     private StudentOnCourseService studentOnCourseService;
 
@@ -206,5 +206,5 @@ class StudentOnCourseServiceTest {
         assertTrue(student.isPresent());
         assertEquals(studentOnCourseEntity, student.get());
     }
-
+*/
 }

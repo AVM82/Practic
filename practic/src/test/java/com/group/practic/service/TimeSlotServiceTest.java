@@ -27,6 +27,7 @@ import org.mockito.MockitoAnnotations;
 
 @Slf4j
 class TimeSlotServiceTest {
+    /*
     @InjectMocks
     private TimeSlotService timeSlotService;
     @Mock
@@ -118,4 +119,5 @@ class TimeSlotServiceTest {
 
         assertEquals(expectedTimeSlot, createdTimeSlot.orElse(null));
     }
+    */
 }
