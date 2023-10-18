@@ -25,7 +25,6 @@ export class CoursesService {
   levels!: Observable<Level[]>;
   shortChapters!: Observable<ShortChapter[]>;
   chapters: Chapter[] = [];
-  active: number = 0;
   me: User;
   id: number = 0;
   isStudent: boolean = false;
@@ -40,12 +39,10 @@ export class CoursesService {
       this.id = this.me.id;
   }
 
-  
   setCourse(slug: string): void {
     if (slug !== this.slug) {
       console.log(this.slug, ' -> ', slug);
       this.slug = slug;
-      this.getActiveChapterNumber(slug).subscribe(value => this.active = value);
       this.chapters = [];
       this.shortChapters = this.http.get<ShortChapter[]>(getChaptersUrl(slug));
       this.levels = this.http.get<Level[]>(getLevelsUrl(slug));

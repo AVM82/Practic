@@ -40,16 +40,14 @@ public class StudentReportEntity {
     @Enumerated(EnumType.STRING)
     ReportState state = ReportState.ANNOUNCED;
 
-
     List<Long> likedPersonsIdList = new ArrayList<>();
 
 
-    public StudentReportEntity() {
-    }
+    public StudentReportEntity() {}
 
 
-    public StudentReportEntity(ChapterEntity chapter, PersonEntity student,
-                               TimeSlotEntity timeslot, @NotBlank String title) {
+    public StudentReportEntity(ChapterEntity chapter, PersonEntity student, TimeSlotEntity timeslot,
+            @NotBlank String title) {
         this.chapter = chapter;
         this.student = student;
         this.timeSlot = timeslot;
@@ -114,19 +112,24 @@ public class StudentReportEntity {
         this.state = state;
     }
 
+
     public TimeSlotEntity getTimeSlot() {
         return timeSlot;
     }
+
 
     public void setTimeSlot(TimeSlotEntity timeSlot) {
         this.timeSlot = timeSlot;
     }
 
+
     public List<Long> getLikedPersonsIdList() {
         return likedPersonsIdList;
     }
 
+
     public void setLikedPersonsIdList(List<Long> likedPersonsIdList) {
         this.likedPersonsIdList = likedPersonsIdList;
     }
+
 }

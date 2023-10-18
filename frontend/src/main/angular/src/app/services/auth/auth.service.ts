@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ApiUrls} from "../../enums/api-urls";
+import { User } from 'src/app/models/user/user';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({'Content-Type':'application/json'})
 };
 
 @Injectable({
@@ -17,7 +18,7 @@ export class AuthService {
   ) { }
 
   getCurrentUser(): Observable<any> {
-    return this.http.get(ApiUrls.Me, httpOptions);
+    return this.http.get<User>(ApiUrls.Me, httpOptions);
   }
 
   applyOnCourse(slug :string): Observable<any> {

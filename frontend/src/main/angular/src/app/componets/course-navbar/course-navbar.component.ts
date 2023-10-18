@@ -20,7 +20,6 @@ import { EditBtnComponent } from '../edit-btn/edit-course.component';
 export class CourseNavbarComponent implements OnInit {
   course: Course | undefined;
   @Output() navchapters: EventEmitter<ShortChapter[]> = new EventEmitter();
-//  @Output() navchapterN: EventEmitter<Chapter> = new EventEmitter();
   @Output() navCourse: EventEmitter<Course> = new EventEmitter();
   showEdit: boolean = false;
   showApply: boolean = false;
@@ -47,7 +46,6 @@ export class CourseNavbarComponent implements OnInit {
           this.showApply = !this.coursesService.isStudent && !this.showEdit;
           if (this.currentChapter == 0)
             this.navCourse.emit(course);
-          this.showAdditionalMaterials = course.additionalMaterialsExist;
         });
         this.coursesService.getChapters(slug).subscribe(chapters => {
           this.chapters = chapters;
@@ -56,6 +54,8 @@ export class CourseNavbarComponent implements OnInit {
               this.navchapters.emit(chapters);
           }
         });
+        this.coursesService.getAdditionalMaterialsExist(slug).subscribe(exist =>
+          this.showAdditionalMaterials = exist )
       }
     })
   }

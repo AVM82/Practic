@@ -13,6 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "topic_report")
 public class TopicReportEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
@@ -24,37 +25,45 @@ public class TopicReportEntity {
     @Min(value = 10)
     String topic;
 
+
     public TopicReportEntity(ChapterEntity chapter, String topic) {
         this.chapter = chapter;
         this.topic = topic;
     }
 
-    public TopicReportEntity() {
-    }
+
+    public TopicReportEntity() {}
+
 
     public long getId() {
         return id;
     }
 
+
     public void setId(long id) {
         this.id = id;
     }
+
 
     public ChapterEntity getChapter() {
         return chapter;
     }
 
+
     public void setChapter(ChapterEntity chapter) {
         this.chapter = chapter;
     }
+
 
     public String getTopic() {
         return topic;
     }
 
+
     public void setTopic(String topic) {
         this.topic = topic;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -69,8 +78,10 @@ public class TopicReportEntity {
                 && Objects.equals(topic, that.topic);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(id, chapter, topic);
     }
+
 }

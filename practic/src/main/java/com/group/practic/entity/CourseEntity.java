@@ -64,11 +64,7 @@ public class CourseEntity {
     @Column(length = 16384)
     String svg;
 
-    @JsonGetter
-    boolean additionalMaterialsExist() {
-        return !additionalMaterials.isEmpty();
-    }
-    
+
     public CourseEntity() {}
 
 

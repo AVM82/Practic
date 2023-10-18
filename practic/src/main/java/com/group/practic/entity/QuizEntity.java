@@ -9,16 +9,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "quiz")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class QuizEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
+
     @Column(name = "chapter_name")
     private String chapterName;
 
@@ -29,35 +38,4 @@ public class QuizEntity {
     @JsonIgnore
     Set<ChapterEntity> chapter;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getChapterName() {
-        return chapterName;
-    }
-
-    public void setChapterName(String chapterName) {
-        this.chapterName = chapterName;
-    }
-
-    public List<QuestionEntity> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<QuestionEntity> questions) {
-        this.questions = questions;
-    }
-
-    public Set<ChapterEntity> getChapter() {
-        return chapter;
-    }
-
-    public void setChapter(Set<ChapterEntity> chapter) {
-        this.chapter = chapter;
-    }
 }

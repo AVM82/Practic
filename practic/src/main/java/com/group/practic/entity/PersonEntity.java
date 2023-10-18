@@ -44,13 +44,13 @@ public class PersonEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
 
     boolean inactive;
 
     boolean ban;
-    
-    LocalDateTime registered;
+
+    LocalDateTime registered = LocalDateTime.now();
 
     private String email;
 
@@ -87,7 +87,6 @@ public class PersonEntity implements UserDetails {
     public PersonEntity(String name, String linkedin) {
         this.name = name;
         this.linkedin = linkedin;
-        this.registered = LocalDateTime.now();
     }
 
 
@@ -95,9 +94,7 @@ public class PersonEntity implements UserDetails {
         this.name = name;
         this.linkedin = linkedin;
         this.roles = roles;
-        this.registered = LocalDateTime.now();
     }
-
 
 
 

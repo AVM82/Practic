@@ -23,12 +23,14 @@ import java.util.Set;
 @Entity
 @Table(name = "feedback")
 public class FeedbackEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @ManyToOne
     private PersonEntity student;
+
     @NotBlank
     @Min(5)
     @Column(length = 320)
@@ -38,13 +40,10 @@ public class FeedbackEntity {
 
     private int likes;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "feedback_likes",
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "feedback_likes",
             joinColumns = @JoinColumn(name = "feedback_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"))
     Set<PersonEntity> likedByPerson = new HashSet<>();
 
 
@@ -54,36 +53,44 @@ public class FeedbackEntity {
         this.likes = likes;
     }
 
-    public FeedbackEntity() {
-    }
+
+    public FeedbackEntity() {}
+
 
     public long getId() {
         return id;
     }
 
+
     public void setId(long id) {
         this.id = id;
     }
+
 
     public PersonEntity getStudent() {
         return student;
     }
 
+
     public void setStudent(PersonEntity student) {
         this.student = student;
     }
+
 
     public String getFeedback() {
         return feedback;
     }
 
+
     public void setFeedback(String feedback) {
         this.feedback = feedback;
     }
 
+
     public int getLikes() {
         return likes;
     }
+
 
     public void setLikes(int likes) {
         this.likes = likes;
@@ -94,17 +101,21 @@ public class FeedbackEntity {
         return likedByPerson;
     }
 
+
     public void setLikedByPerson(Set<PersonEntity> likedByPerson) {
         this.likedByPerson = likedByPerson;
     }
+
 
     public LocalDateTime getDateTime() {
         return dateTime;
     }
 
+
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -122,8 +133,10 @@ public class FeedbackEntity {
                 && Objects.equals(likedByPerson, feedback1.likedByPerson);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(id, student, feedback, dateTime, likes, likedByPerson);
     }
+
 }
