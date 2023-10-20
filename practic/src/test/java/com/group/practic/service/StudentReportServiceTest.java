@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.group.practic.dto.NewStudentReportDto;
+import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
@@ -14,8 +14,6 @@ import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.repository.StudentReportRepository;
 import com.group.practic.repository.TimeSlotRepository;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,6 +38,8 @@ class StudentReportServiceTest {
     private ChapterService chapterService;
     @Mock
     private TimeSlotRepository timeSlotRepository;
+    @Mock
+    private TimeSlotService timeSlotService;
 
     @InjectMocks
     private StudentReportService studentReportService;
@@ -88,9 +88,8 @@ class StudentReportServiceTest {
 
     @Test
     void testCreateStudentReportWithValidInput() {
-        NewStudentReportDto newStudentReportDto =
-                new NewStudentReportDto(1L, "Test Report", LocalDate.now(),
-                        LocalTime.now(), 2L);
+        StudentReportCreationDto newStudentReportDto
+                =  new StudentReportCreationDto(1, 1L, "Test Report", 2L);
         PersonEntity student = new PersonEntity();
         ChapterEntity chapter = new ChapterEntity();
         TimeSlotEntity timeSlot = new TimeSlotEntity();
@@ -112,8 +111,8 @@ class StudentReportServiceTest {
 
     @Test
     void testCreateStudentReportWithInvalidInput() {
-        NewStudentReportDto newStudentReportDto = new NewStudentReportDto(
-                1L, "Test Report", LocalDate.now(), LocalTime.now(), 2L);
+        StudentReportCreationDto newStudentReportDto = new StudentReportCreationDto(
+                1, 1L, "Test Report", 2L);
         PersonEntity student = new PersonEntity();
         when(chapterService.get(1L)).thenReturn(Optional.empty());
         when(timeSlotRepository.findById(2L)).thenReturn(Optional.empty());
@@ -153,10 +152,3 @@ class StudentReportServiceTest {
         assertTrue(updatedLikedPersonsIdList.contains(studentId));
     }
 }
-
-
-
-
-
-
-

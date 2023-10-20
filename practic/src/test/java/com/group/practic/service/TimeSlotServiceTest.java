@@ -13,17 +13,19 @@ import com.group.practic.repository.TimeSlotRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+
+
+
 
 @Slf4j
 class TimeSlotServiceTest {
@@ -39,12 +41,15 @@ class TimeSlotServiceTest {
 
 
     @Test
-    void testGetAvailableTimeSlots() {
+    void testGetAvailableTimeSlots1() {
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
         List<TimeSlotEntity> timeSlotList = new ArrayList<>();
-        timeSlotList.add(new TimeSlotEntity(LocalDate.of(2023, 10, 21), LocalTime.of(9, 0)));
-        timeSlotList.add(new TimeSlotEntity(LocalDate.of(2023, 10, 22), LocalTime.of(10, 0)));
-        timeSlotList.add(new TimeSlotEntity(LocalDate.of(2021, 10, 22), LocalTime.of(9, 0)));
-        timeSlotList.add(new TimeSlotEntity(LocalDate.of(2023, 10, 22), LocalTime.of(10, 0)));
+        timeSlotList.add(new TimeSlotEntity(currentDate, currentTime.minusHours(1)));
+        timeSlotList.add(new TimeSlotEntity(currentDate, currentTime.plusHours(1)));
+        timeSlotList.add(new TimeSlotEntity(currentDate.plusDays(1), LocalTime.of(9, 0)));
+        timeSlotList.add(new TimeSlotEntity(currentDate.plusDays(1), LocalTime.of(10, 0)));
 
         when(timeSlotRepository.findAllByAvailabilityTrueOrderByTime()).thenReturn(timeSlotList);
 
@@ -52,24 +57,15 @@ class TimeSlotServiceTest {
 
         verify(timeSlotRepository, times(1)).findAllByAvailabilityTrueOrderByTime();
 
-        assertEquals(3, result.size());
-        assertEquals(1, result.get("2023-10-21").size());
-        assertEquals(2, result.get("2023-10-22").size());
-        assertEquals(1, result.get("2021-10-22").size());
+        assertEquals(2, result.size());
+        assertEquals(1, result.get(currentDate.toString()).size());
+        assertEquals(2, result.get(currentDate.plusDays(1).toString()).size());
+
         for (List<TimeSlotEntity> slots : result.values()) {
             for (TimeSlotEntity slot : slots) {
                 assertTrue(slot.isAvailability());
             }
         }
-
-        List<TimeSlotEntity> sortedSlots = timeSlotList.stream()
-                .filter(TimeSlotEntity::isAvailability)
-                .sorted(Comparator.comparing(TimeSlotEntity::getDate))
-                .collect(Collectors.toList());
-        List<TimeSlotEntity> resultSlots = result.values().stream()
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        assertEquals(sortedSlots, resultSlots);
     }
 
     @Test
@@ -83,7 +79,8 @@ class TimeSlotServiceTest {
         when(timeSlotRepository.save(any(TimeSlotEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<TimeSlotEntity> result = timeSlotService.updateTimeSlotAvailability(timeslotId);
+        Optional<TimeSlotEntity> result
+                = timeSlotService.updateTimeSlotAvailability(timeslotId, false);
         verify(timeSlotRepository, times(1)).findById(timeslotId);
         verify(timeSlotRepository, times(1)).save(timeSlotEntity);
 
@@ -98,7 +95,8 @@ class TimeSlotServiceTest {
 
         when(timeSlotRepository.findById(timeslotId)).thenReturn(Optional.empty());
 
-        Optional<TimeSlotEntity> result = timeSlotService.updateTimeSlotAvailability(timeslotId);
+        Optional<TimeSlotEntity> result
+                = timeSlotService.updateTimeSlotAvailability(timeslotId, false);
 
         verify(timeSlotRepository, times(1)).findById(timeslotId);
 

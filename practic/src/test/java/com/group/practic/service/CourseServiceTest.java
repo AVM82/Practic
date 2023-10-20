@@ -1,15 +1,19 @@
 package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.group.practic.PropertyLoader;
+import com.group.practic.dto.CourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
+import com.group.practic.entity.PersonEntity;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.util.PropertyUtil;
 import java.util.ArrayList;
@@ -19,13 +23,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+
+@Slf4j
 class CourseServiceTest {
 
     @InjectMocks
@@ -42,6 +48,8 @@ class CourseServiceTest {
 
     @Mock
     private PropertyLoader propertyLoader;
+    @Mock
+    private AdditionalMaterialsService additionalMaterialsService;
 
     @BeforeEach
     public void setup() {
@@ -83,6 +91,34 @@ class CourseServiceTest {
     }
 
     @Test
+    void testGetChapters() {
+        CourseEntity course = new CourseEntity();
+        course.setId(1);
+
+        ChapterEntity chapter1 = new ChapterEntity();
+        chapter1.setId(1);
+        chapter1.setCourse(course);
+        chapter1.setName("Chapter 1");
+
+        ChapterEntity chapter2 = new ChapterEntity();
+        chapter2.setId(2);
+        chapter2.setCourse(course);
+        chapter2.setName("Chapter 2");
+        List<ChapterEntity> chapters = new ArrayList<>();
+        chapters.add(chapter1);
+        chapters.add(chapter2);
+        String slug = "example-slug";
+        when(courseRepository.findBySlug(slug)).thenReturn(Optional.of(course));
+        when(chapterService.getAll(course)).thenReturn(chapters);
+
+        List<ChapterEntity> result = courseService.getChapters(slug);
+
+        assertEquals(2, result.size());
+        assertEquals(chapter1, result.get(0));
+        assertEquals(chapter2, result.get(1));
+    }
+
+    @Test
     void testGetLevels() {
         String slug = "course-slug";
         CourseEntity course = new CourseEntity();
@@ -113,29 +149,73 @@ class CourseServiceTest {
     }
 
     @Test
-    void testGetPurpose() {
-        long courseId = 1;
+    void testGetDescription() {
+        String slug = "example-slug";
         CourseEntity course = new CourseEntity();
-        course.setPurpose("Test purpose");
-        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        course.setId(1);
+        course.setDescription("Course Description");
 
-        Optional<String> result = courseService.getPurpose(courseId);
+        when(courseRepository.findBySlug(slug)).thenReturn(Optional.of(course));
 
-        assertTrue(result.isPresent());
-        assertEquals("Test purpose", result.get());
+        Optional<String> result = courseService.getDescription(slug);
+
+        assertEquals("Course Description", result.orElse(null));
     }
 
     @Test
-    void testGetDescription() {
-        long courseId = 1;
+    void testGetDescriptionCourseNotFound() {
+        String slug = "non-existent-slug";
+
+        when(courseRepository.findBySlug(slug)).thenReturn(Optional.empty());
+
+        Optional<String> result = courseService.getDescription(slug);
+
+        assertEquals(Optional.empty(), result);
+    }
+
+    @Test
+    void testGetAdditionalExistWithAdditionalMaterials() {
         CourseEntity course = new CourseEntity();
-        course.setDescription("Test description");
-        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        course.setId(1);
 
-        Optional<String> result = courseService.getDescription(courseId);
+        Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
+        AdditionalMaterialsEntity material = new AdditionalMaterialsEntity();
+        material.setId(1);
+        additionalMaterials.add(material);
+        course.setAdditionalMaterials(additionalMaterials);
+        String slug = "example-slug";
+        when(courseRepository.findBySlug(slug)).thenReturn(Optional.of(course));
 
-        assertTrue(result.isPresent());
-        assertEquals("Test description", result.get());
+        Boolean result = courseService.getAdditionalExist(slug);
+
+        assertEquals(true, result);
+    }
+
+    @Test
+    void testGetAdditionalExistWithoutAdditionalMaterials() {
+        String slug = "example-slug";
+        CourseEntity course = new CourseEntity();
+        course.setId(1);
+
+        Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
+        course.setAdditionalMaterials(additionalMaterials);
+
+        when(courseRepository.findBySlug(slug)).thenReturn(Optional.of(course));
+
+        Boolean result = courseService.getAdditionalExist(slug);
+
+        assertEquals(false, result);
+    }
+
+    @Test
+    void testGetAdditionalExistCourseNotFound() {
+        String slug = "non-existent-slug";
+
+        when(courseRepository.findBySlug(slug)).thenReturn(Optional.empty());
+
+        Boolean result = courseService.getAdditionalExist(slug);
+
+        assertEquals(false, result);
     }
 
     @Test
@@ -151,30 +231,6 @@ class CourseServiceTest {
         assertSame(additionalMaterials, result);
     }
 
-    @Test
-    void testGetByShortName() {
-        String shortName = "courseShortName";
-        CourseEntity course = new CourseEntity();
-        when(courseRepository.findByShortName(shortName)).thenReturn(Optional.of(course));
-
-        Optional<CourseEntity> result = courseService.getByShortName(shortName);
-
-        assertTrue(result.isPresent());
-        assertSame(course, result.get());
-    }
-
-    @Test
-    void testChangeShortName() {
-        long courseId = 1;
-        CourseEntity course = new CourseEntity();
-        when(courseService.get(courseId)).thenReturn(Optional.of(course));
-
-        String newShortName = "new-short-name";
-        Optional<CourseEntity> result = courseService.changeShortName(courseId, newShortName);
-
-        assertTrue(result.isPresent());
-        assertEquals(newShortName, result.get().getShortName());
-    }
 
     @Test
     void testSaveCourse() {
@@ -188,6 +244,36 @@ class CourseServiceTest {
     }
 
     @Test
+    void testCreateCourseFromDto() {
+        CourseDto courseDto = new CourseDto();
+        courseDto.setSlug("example-slug");
+        courseDto.setName("Example Course");
+
+        CourseEntity createdCourse = new CourseEntity();
+        createdCourse.setId(1);
+        createdCourse.setSlug(courseDto.getSlug());
+        createdCourse.setName(courseDto.getName());
+
+        when(courseRepository.save(any(CourseEntity.class))).thenReturn(createdCourse);
+
+        Optional<CourseEntity> result = courseService.create(courseDto);
+
+        assertEquals(true, result.isPresent());
+        assertEquals(1, result.get().getId());
+        assertEquals(courseDto.getSlug(), result.get().getSlug());
+        assertEquals(courseDto.getName(), result.get().getName());
+    }
+
+    @Test
+    void testCreateCourseFromDtoWithInvalidData() {
+        CourseDto courseDto = new CourseDto();
+
+        Optional<CourseEntity> result = courseService.create(courseDto);
+
+        assertEquals(false, result.isPresent());
+    }
+
+    @Test
     void testGetAuthorSet() {
         Properties properties = new Properties();
         properties.setProperty(PropertyUtil.AUTHOR_KEY + "1", "Author 1");
@@ -196,10 +282,29 @@ class CourseServiceTest {
 
         when(propertyLoader.getEntrySet()).thenReturn(properties.entrySet());
 
-        String result = courseService.getAuthorSet(propertyLoader);
-        Set<String> resultSet = Arrays.stream(result.split(PropertyUtil.AUTHOR_SEPARATOR))
-                .collect(Collectors.toSet());
+        Set<String> resultSet = courseService.getAuthorSet(propertyLoader);
 
-        assertEquals(Set.of("Author 1", "Author 2"), resultSet);
+        Set<String> expectedSet = new HashSet<>(Arrays.asList("Author 1", "Author 2"));
+
+        assertEquals(expectedSet, resultSet);
+    }
+
+    @Test
+    void testGetMentorsForExistingCourse() {
+        CourseEntity course = new CourseEntity("example-slug", "Example Course", "example.svg");
+        PersonEntity mentor1 = new PersonEntity("Mentor 1", "linkedin.com/mentor1");
+        PersonEntity mentor2 = new PersonEntity("Mentor 2", "linkedin.com/mentor2");
+
+        course.getMentors().add(mentor1);
+        course.getMentors().add(mentor2);
+
+        when(courseRepository.findBySlug("example-slug")).thenReturn(Optional.of(course));
+
+        Set<PersonEntity> mentors = courseService.getMentors("example-slug");
+
+        assertFalse(mentors.isEmpty());
+        assertEquals(2, mentors.size());
+        assertTrue(mentors.contains(mentor1));
+        assertTrue(mentors.contains(mentor2));
     }
 }

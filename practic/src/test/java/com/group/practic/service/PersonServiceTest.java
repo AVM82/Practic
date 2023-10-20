@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,6 +33,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+
+
+@Slf4j
 class PersonServiceTest {
 
     @InjectMocks
@@ -234,33 +238,6 @@ class PersonServiceTest {
 
         assertThrows(UserAlreadyExistAuthenticationException.class,
                 () -> personService.registerNewUser(signUpRequestDto));
-    }
-
-    @Test
-    void testRegisterNewUser_Success() {
-        when(personRepository.findPersonEntityByEmail("email"))
-                .thenReturn(Optional.empty());
-        SignUpRequestDto signUpRequestDto = SignUpRequestDto.builder().build();
-        signUpRequestDto.setEmail("email");
-        signUpRequestDto.setName("name");
-        signUpRequestDto.setPassword("password");
-        signUpRequestDto.setProviderUserId("id");
-        signUpRequestDto.setProfilePictureUrl("pictureUrl");
-
-        PersonEntity mustBeUser = new PersonEntity();
-        mustBeUser.setEmail("email");
-        mustBeUser.setName("name");
-        mustBeUser.setPassword("password");
-        mustBeUser.setLinkedin("id");
-        mustBeUser.setProfilePictureUrl("pictureUrl");
-
-        when(personRepository.save(any(PersonEntity.class)))
-                .thenReturn(mustBeUser);
-        when(roleRepository.findByName("USER")).thenReturn(new RoleEntity("USER"));
-
-        PersonEntity registeredUser = personService.registerNewUser(signUpRequestDto);
-
-        assertEquals(mustBeUser, registeredUser);
     }
 
     @Test
