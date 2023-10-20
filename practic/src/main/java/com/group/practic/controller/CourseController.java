@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -100,12 +101,14 @@ public class CourseController {
 
 
     @PostMapping("/NewCourseFromProperties")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR', 'MENTOR')")
     public ResponseEntity<CourseEntity> createCourse(@Valid @RequestBody String propertyFile) {
         return postResponse(courseService.create(propertyFile));
     }
 
 
-    @PostMapping
+    @PostMapping("/NewCourse")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
     public ResponseEntity<CourseEntity> createCourse(
             @NotBlank @RequestBody CourseEntity courseEntity) {
         return postResponse(courseService.save(courseEntity));

@@ -31,7 +31,7 @@ export class FeedbackComponent implements OnInit {
   loadingIncremend: boolean = false;
   loadingDecremend: boolean = false;
   feedbackSortedState : string = "DATE_DESCENDING";
-  roles : UserRole[] = [];
+  roles : string[] = [];
   constructor(private feedbackService: FeedbackService, 
     private dialog: MatDialog,private tokenStorageService:TokenStorageService) { }
   
@@ -42,7 +42,7 @@ export class FeedbackComponent implements OnInit {
       if (token) {
         const user: User = this.tokenStorageService.getUser();
         this.id = user.id;
-        this.roles = user.roles;
+        this.roles = user.roles ? user.roles : [];
       }
   }
 
@@ -171,7 +171,7 @@ export class FeedbackComponent implements OnInit {
 
   isCreatorOrAdmin(feedback:any):boolean{
     const studentId =feedback.student.id;
-    const hasUserRole = this.roles.some(role => role.name === "ADMIN");
+    const hasUserRole = this.roles.some(role => role === "ADMIN");
     return(studentId==this.id||hasUserRole) ;  
   }
 }

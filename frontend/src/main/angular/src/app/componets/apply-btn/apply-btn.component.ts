@@ -1,8 +1,9 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {AuthService} from "../../services/auth/auth.service";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {InfoMessagesService} from "../../services/info-messages.service";
+import { CoursesService } from 'src/app/services/courses/courses.service';
 
 @Component({
   selector: 'app-apply-btn',
@@ -11,22 +12,34 @@ import {InfoMessagesService} from "../../services/info-messages.service";
   templateUrl: './apply-btn.component.html',
   styleUrls: ['./apply-btn.component.css']
 })
-export class ApplyBtnComponent {
+export class ApplyBtnComponent implements OnInit {
   @Input() showApplyButton: boolean = false;
   @Input() slug: string = '';
+  buttonDisabled: boolean = false;
 
   constructor(
-      private tokenStorageService:TokenStorageService,
-      private authService:AuthService,
+      private courseService: CoursesService,
+      private tokenStorageService: TokenStorageService,
+      private authService: AuthService,
       private messagesService: InfoMessagesService
   ) {
+  }
+
+  ngOnInit() {
+    if (!this.courseService.isStudent) {
+      this.courseService.isAppliedOnCourse(this.slug).subscribe(applied => {
+        console.log('Applied : ',applied);
+        this.buttonDisabled = applied; });
+    } 
   }
 
   onApplyClick() {
     this.authService.applyOnCourse(this.slug).subscribe({
       next: user => {
         this.tokenStorageService.saveUser(user);
-        this.messagesService.showMessage("Заявка прийнята", "normal")
+        this.messagesService.showMessage("Заявка прийнята", "normal");
+        document.getElementById('apply')?.setAttribute('disables', 'true');
+        this.buttonDisabled = true;
       },
       error: error => {
         console.error('Помилка при відправці заявки', error);

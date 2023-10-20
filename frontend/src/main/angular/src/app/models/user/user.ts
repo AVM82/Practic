@@ -15,20 +15,20 @@ export class User {
       readonly contacts: string | null,
       readonly profilePictureUrl: string,
       readonly applyCourse: string,
-      readonly roles: UserRole[],
-      readonly courses: Course[]
+      readonly roles?: string[],
+      readonly courses?: string[]
   ) {}
 
   get isAuthenticated(): boolean {
-    return this.roles.length != 0;
+    return this.roles?.length != 0;
   }
 
   hasAnyRole(...roles: string[]): boolean {
-    return roles.some(roleName => this.roles.some(userRole => userRole.name === roleName));
+    return roles.some(roleName => this.roles?.some(userRole => userRole === roleName));
   }
 
   hasApplyOnCourse(...courses: string[]): boolean {
-   return courses.some(courseSlug => this.courses.some(course => course.slug === courseSlug));
+   return courses.some(courseSlug => this.courses?.some(course => course === courseSlug));
   }
 
   static fromJson(json: any): User {

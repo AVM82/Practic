@@ -10,10 +10,10 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.PersonApplicationService;
 import com.group.practic.service.PersonService;
+import com.group.practic.util.Converter;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
 
     private final PersonService personService;
+
     private final PersonApplicationService personApplicationService;
 
 
     @Autowired
     public PersonController(PersonService personService,
-                            PersonApplicationService personApplicationService) {
+            PersonApplicationService personApplicationService) {
         this.personService = personService;
         this.personApplicationService = personApplicationService;
     }
@@ -95,22 +96,27 @@ public class PersonController {
 
 
     @GetMapping("/me")
-    public ResponseEntity<PersonEntity> getCurrentUser() {
-        return getResponse(Optional.ofNullable(personService.getPerson()));
+    public ResponseEntity<PersonDto> getCurrentUser() {
+        PersonDto dto = Converter.convert(personService.getPerson());
+        return getResponse(dto);
+    }
+
+
+    @GetMapping("/application/{slug}")
+    public ResponseEntity<Boolean> isApplied(@PathVariable String slug) {
+        return getResponse(personApplicationService.amIpresent(slug, personService.getPerson()));
     }
 
 
     @PostMapping("/application/{slug}")
-    public ResponseEntity<PersonEntity> applyOnCourse(
-            @PathVariable(value = "slug") String slug) {
+    public ResponseEntity<PersonEntity> applyOnCourse(@PathVariable(value = "slug") String slug) {
         PersonEntity person = personService.getPerson();
-
         if (person != null) {
-            PersonApplicationEntity application = personApplicationService
-                    .getApplicationByPersonAndCourse(person, slug);
+            PersonApplicationEntity application =
+                    personApplicationService.getApplicationByPersonAndCourse(person, slug);
             if (application == null) {
-                return ResponseEntity.ok(
-                        personApplicationService.addPersonApplication(person, slug));
+                return ResponseEntity
+                        .ok(personApplicationService.addPersonApplication(person, slug));
             } else {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
@@ -120,12 +126,11 @@ public class PersonController {
         }
     }
 
+
     @GetMapping("/applicants")
     @PreAuthorize("hasRole('ADMIN') || hasRole('MENTOR')")
     public ResponseEntity<List<PersonApplyOnCourseDto>> personApplication() {
-        return ResponseEntity.ok(
-                personApplicationService.getNotApplyPerson()
-        );
+        return ResponseEntity.ok(personApplicationService.getNotApplyPerson());
     }
 
 }

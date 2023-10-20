@@ -20,6 +20,8 @@ import com.group.practic.entity.QuizEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
+import com.group.practic.mapper.PersonMapper;
+import com.group.practic.mapper.StudentReportMapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +68,7 @@ public interface Converter {
 
 
     static PersonDto convert(PersonEntity personEntity) {
-        return modelMapper().map(personEntity, PersonDto.class);
+        return PersonMapper.INSTANCE.map(personEntity);
     }
 
 
@@ -81,7 +83,7 @@ public interface Converter {
 
 
     static StudentReportDto convert(StudentReportEntity studentReportEntity) {
-        return modelMapper().map(studentReportEntity, StudentReportDto.class);
+        return StudentReportMapper.INSTANCE.map(studentReportEntity);
     }
 
 
@@ -91,14 +93,15 @@ public interface Converter {
 
 
     static List<StudentReportDto> convert(List<StudentReportEntity> studentReportEntityList) {
-        if (studentReportEntityList.isEmpty()) {
+        return StudentReportMapper.INSTANCE.map(studentReportEntityList);
+/*        if (studentReportEntityList.isEmpty()) {
             return Collections.emptyList();
         }
         List<StudentReportDto> result = new ArrayList<>();
         for (StudentReportEntity reportEntity : studentReportEntityList) {
             result.add(convert(reportEntity));
         }
-        return result;
+        return result; */
     }
 
 

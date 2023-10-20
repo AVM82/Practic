@@ -46,6 +46,7 @@ export class CourseNavbarComponent implements OnInit {
           this.showApply = !this.coursesService.isStudent && !this.showEdit;
           if (this.currentChapter == 0)
             this.navCourse.emit(course);
+          this.showAdditionalMaterials = course.additionalMaterialsExist;
         });
         this.coursesService.getChapters(slug).subscribe(chapters => {
           this.chapters = chapters;
@@ -54,8 +55,6 @@ export class CourseNavbarComponent implements OnInit {
               this.navchapters.emit(chapters);
           }
         });
-        this.coursesService.getAdditionalMaterialsExist(slug).subscribe(exist =>
-          this.showAdditionalMaterials = exist )
       }
     })
   }

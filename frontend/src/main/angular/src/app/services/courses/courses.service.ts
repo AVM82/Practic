@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Course} from "../../models/course/course";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl, getActiveChapterNumber, getCourseUrl, getChapterUrl} from "../../enums/api-urls";
+import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl, getActiveChapterNumber, getCourseUrl, getChapterUrl, getApplicationUrl} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
 import { User } from 'src/app/models/user/user';
@@ -11,6 +11,7 @@ import { Chapter } from 'src/app/models/chapter/chapter';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AdvancedRoles } from 'src/app/enums/roles.enum';
 import { ShortChapter } from 'src/app/models/course/chapter';
+import { httpOptions } from 'src/app/constants';
 
 const requestTextResponse: Object = {
   responseType: 'text'
@@ -102,8 +103,12 @@ export class CoursesService {
     return this.http.get<Course[]>(ApiUrls.Courses);
   }
 
+  isAppliedOnCourse(slug: string): Observable<boolean> {
+    return this.http.get<boolean>(getApplicationUrl(slug));
+  }
+
   confirmApplyOnCourse(courseSlug: string, userId: number): Observable<any> {
-    return this.http.post('/api/students', {courseSlug, userId});
+    return this.http.post(ApiUrls.Students, {courseSlug, userId});
   }
 
   approvePractice(studentId: number, chapterPartId: number): Observable<any> {
@@ -114,11 +119,7 @@ export class CoursesService {
     return this.http.get<AdditionalMaterials[]>(getMaterialsUrl(slug));
   }
 
-  getAdditionalMaterialsExist(slug: string): Observable<boolean> {
-    return this.http.get<boolean>(getMaterialsExistUrl(slug));
-  }
-
-  postCourseInteractive(_slug: any,  _name: any, _svg: any): Observable<Course> {
+  postCourseInteractive(_slug: string,  _name: string, _svg: string): Observable<Course> {
     let course: Course = {
       id: 0,
       mentors: [],
@@ -127,7 +128,7 @@ export class CoursesService {
       svg: _svg,
       additionalMaterialsExist: false
     };
-    return this.http.post<Course>(ApiUrls.Courses, course);
+    return this.http.post<Course>(ApiUrls.NewCourse, course);
   }
 
   postCourseProperties(properties: string): Observable<Course> {
@@ -155,11 +156,6 @@ export class CoursesService {
       this._router.navigateByUrl('/404');
       return of(result as T);
     };
-  }
-
-  getDescription(slug: string): Observable<any> {
-    this.setCourse(slug);
-    return this.selectedCourse.pipe(map (course => course.description));
   }
 
   getMentors(slug: string): Observable<User[]> {
@@ -192,7 +188,7 @@ export class CoursesService {
     }));
   }
 
-  getActiveChapterNumber(slug: string): Observable<any> {
+  getActiveChapterNumber(slug: string): Observable<number> {
     this.setCourse(slug);
     return  this.http.get<number>(getActiveChapterNumber(slug));
   }

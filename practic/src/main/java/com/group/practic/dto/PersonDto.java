@@ -1,5 +1,6 @@
 package com.group.practic.dto;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PersonDto {
 
+    private long id;
+
     private String name;
 
     private String discord;
@@ -23,36 +26,18 @@ public class PersonDto {
 
     private String profilePictureUrl;
 
+    private LocalDateTime registered;
+    
     private Set<String> roles;
 
     private Set<String> courses;
 
-    PersonDto() {
-    }
+
+    PersonDto() {}
 
 
     public PersonDto(String name, String discord) {
         this.name = name;
-        this.discord = discord;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public String getDiscord() {
-        return discord;
-    }
-
-
-    public void setDiscord(String discord) {
         this.discord = discord;
     }
 
