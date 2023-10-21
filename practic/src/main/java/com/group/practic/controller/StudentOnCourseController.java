@@ -124,7 +124,7 @@ public class StudentOnCourseController {
     }
 
 
-    @PostMapping
+    @PostMapping("/apply")
     @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR', 'COLLABORATOR')")
     public ResponseEntity<StudentOnCourseEntity> create(@RequestBody @Valid NewStudentDto student) {
         Optional<CourseEntity> courseOptional = courseService.get(student.getCourseSlug());
