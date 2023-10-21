@@ -6,7 +6,6 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
 import com.group.practic.repository.PersonRepository;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,11 +15,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FeedbackService {
+
     @Autowired
     FeedbackRepository repository;
 
     @Autowired
     PersonRepository personRepository;
+
 
     public List<FeedbackEntity> getAllFeedbacks(FeedbackSortState sortState) {
         ArrayList<FeedbackEntity> list = new ArrayList<>(repository.findAll());
@@ -28,17 +29,16 @@ public class FeedbackService {
         return getSortFeedbackList(list, sortState);
     }
 
-    private List<FeedbackEntity> getSortFeedbackList(
-            ArrayList<FeedbackEntity> list, FeedbackSortState sortState) {
+
+    private List<FeedbackEntity> getSortFeedbackList(ArrayList<FeedbackEntity> list,
+            FeedbackSortState sortState) {
         switch (sortState) {
-            case DATE_ASCENDING ->
-                    list.sort(Comparator.comparing(FeedbackEntity::getDateTime).reversed());
-            case RATING_DESCENDING ->
-                    list.sort(Comparator.comparing(FeedbackEntity::getLikes));
-            case RATING_ASCENDING ->
-                    list.sort(Comparator.comparing(FeedbackEntity::getLikes).reversed());
-            default ->
-                    list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
+            case DATE_ASCENDING -> list
+                    .sort(Comparator.comparing(FeedbackEntity::getDateTime).reversed());
+            case RATING_DESCENDING -> list.sort(Comparator.comparing(FeedbackEntity::getLikes));
+            case RATING_ASCENDING -> list
+                    .sort(Comparator.comparing(FeedbackEntity::getLikes).reversed());
+            default -> list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
         }
         return list;
     }
@@ -46,16 +46,11 @@ public class FeedbackService {
 
     public FeedbackEntity addFeedback(FeedbackDto feedbackDto) {
         String email = feedbackDto.getEmail();
-
         PersonEntity person = personRepository.findPersonEntityByEmail(email).orElse(null);
-        if (email.isEmpty() || person == null) {
-            throw new NullPointerException();
-        }
-        FeedbackEntity feedback = new FeedbackEntity(person, feedbackDto.getFeedback(), 0);
-        feedback.setDateTime(LocalDateTime.now());
-        repository.save(feedback);
-        return feedback;
+        return email.isEmpty() || person == null ? null
+                : repository.save(new FeedbackEntity(person, feedbackDto.getFeedback()));
     }
+
 
     public FeedbackEntity incrementLikeAndSavePerson(Long idFeedback, Long idPerson) {
         Optional<FeedbackEntity> feedbackOption = repository.findById(idFeedback);
@@ -73,6 +68,7 @@ public class FeedbackService {
         return null;
     }
 
+
     public FeedbackEntity decrementLikeAndRemovePerson(Long idFeedback, Long idPerson) {
         Optional<FeedbackEntity> feedbackOption = repository.findById(idFeedback);
         Optional<PersonEntity> personOption = personRepository.findById(idPerson);
@@ -89,6 +85,7 @@ public class FeedbackService {
         return null;
     }
 
+
     public FeedbackEntity deleteFeedback(Long idFeedback) {
         FeedbackEntity feedback = repository.findById(idFeedback).orElse(null);
         if (feedback != null) {
@@ -98,4 +95,5 @@ public class FeedbackService {
         }
         return null;
     }
+
 }

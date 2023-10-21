@@ -1,61 +1,48 @@
 package com.group.practic.dto;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.RoleEntity;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import java.util.stream.Collectors;
 import lombok.Getter;
-import lombok.Setter;
 
-@Builder
 @Getter
-@Setter
-@AllArgsConstructor
 public class PersonDto {
 
-    private long id;
+    long id;
 
-    private String name;
+    String name;
 
-    private String discord;
+    String discord;
 
-    private String email;
+    String email;
 
-    private String linkedin;
+    String linkedin;
 
-    private String profilePictureUrl;
+    String profilePictureUrl;
 
-    private LocalDateTime registered;
-    
-    private Set<String> roles;
+    Set<String> roles;
 
-    private Set<String> courses;
+    Set<String> courses;
 
 
     PersonDto() {}
 
 
-    public PersonDto(String name, String discord) {
-        this.name = name;
-        this.discord = discord;
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
-        PersonDto that = (PersonDto) obj;
-        return this == that || (Objects.equals(this.name, that.name)
-                && Objects.equals(this.discord, that.discord));
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, discord);
+    public static PersonDto map(PersonEntity person) {
+        PersonDto personDto = new PersonDto();
+        personDto.id = person.getId();
+        personDto.name = person.getName();
+        personDto.discord = person.getDiscord();
+        personDto.email = person.getEmail();
+        personDto.linkedin = person.getLinkedin();
+        personDto.profilePictureUrl = person.getProfilePictureUrl();
+        personDto.roles = person.getRoles().stream()
+                .map(RoleEntity::getName).collect(Collectors.toSet());
+        personDto.courses = person.getCourses().stream()
+                .map(CourseEntity::getSlug).collect(Collectors.toSet());
+        return personDto;
     }
 
 }

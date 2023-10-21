@@ -1,5 +1,6 @@
 package com.group.practic.service;
 
+import com.group.practic.dto.AdditionalMaterialsDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.SendMessageDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
@@ -14,6 +15,7 @@ import com.group.practic.repository.StudentOnCourseRepository;
 import com.group.practic.util.Converter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -133,7 +135,7 @@ public class StudentOnCourseService {
     }
 
 
-    public boolean isStudentofCourse(CourseEntity course) {
+    public boolean isStudentOfCourse(CourseEntity course) {
         return getStudentOfCourse(course) != null;
     }
 
@@ -164,18 +166,19 @@ public class StudentOnCourseService {
     }
 
 
-    public Optional<Boolean> changeStudentAdditionalMaterial(String slug, long id,  boolean state) {
+    public Optional<Boolean> changeStudentAdditionalMaterial(String slug, long id, boolean state) {
         Optional<CourseEntity> course = courseService.get(slug);
-        if (course.isEmpty())
-            return Optional.empty();
-        StudentOnCourseEntity student = getStudentOfCourse(course.get());
-        if (student == null)
-            return Optional.empty();
-        Optional<AdditionalMaterialsEntity> additionalMaterial = additionalMaterialsService.get(id);
-        if (additionalMaterial.isPresent()) {
-            student.changeAdditionalMaterial(additionalMaterial.get(), state);
-            studentOnCourseRepository.save(student);
-            return Optional.of(true);
+        if (course.isPresent()) {
+            StudentOnCourseEntity student = getStudentOfCourse(course.get());
+            if (student != null) {
+                Optional<AdditionalMaterialsEntity> additionalMaterial =
+                        additionalMaterialsService.get(id);
+                if (additionalMaterial.isPresent()) {
+                    student.changeAdditionalMaterial(additionalMaterial.get(), state);
+                    studentOnCourseRepository.save(student);
+                    return Optional.of(true);
+                }
+            }
         }
         return Optional.empty();
     }
@@ -193,8 +196,26 @@ public class StudentOnCourseService {
     public List<ChapterDto> getChapters(String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
         return course.isEmpty() ? List.of()
-                : Converter.convertChapterEntityList(chapterService.getAll(course.get()),
+                : Converter.convertChapterList(chapterService.getAll(course.get()),
                         getLastVisibleChapterNumber(course.get()));
+    }
+
+
+    public List<AdditionalMaterialsDto> getStudentAdditionalMaterial(String slug) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        if (course.isPresent()) {
+            StudentOnCourseEntity student =
+                    studentOnCourseRepository.findByCourseAndStudentAndInactiveAndBan(course.get(),
+                            personService.getPerson(), false, false);
+            if (student != null) {
+                Set<AdditionalMaterialsEntity> studentsAdditional = student.getAdditionalMaterial();
+                return course.get().getAdditionalMaterials().stream().map(
+                        add -> AdditionalMaterialsDto.map(add, studentsAdditional.contains(add)))
+                        .toList();
+            }
+            return List.of();
+        }
+        return null;
     }
 
 }

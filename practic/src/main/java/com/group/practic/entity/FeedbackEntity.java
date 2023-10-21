@@ -36,7 +36,7 @@ public class FeedbackEntity {
     @Column(length = 320)
     private String feedback;
 
-    private LocalDateTime dateTime;
+    private LocalDateTime dateTime = LocalDateTime.now();
 
     private int likes;
 
@@ -47,14 +47,20 @@ public class FeedbackEntity {
     Set<PersonEntity> likedByPerson = new HashSet<>();
 
 
+    public FeedbackEntity() {}
+
+
+    public FeedbackEntity(PersonEntity student, String feedback) {
+        this.student = student;
+        this.feedback = feedback;
+    }
+
+
     public FeedbackEntity(PersonEntity student, String feedback, int likes) {
         this.student = student;
         this.feedback = feedback;
         this.likes = likes;
     }
-
-
-    public FeedbackEntity() {}
 
 
     public long getId() {

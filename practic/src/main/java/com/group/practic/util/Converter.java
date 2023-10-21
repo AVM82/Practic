@@ -20,10 +20,7 @@ import com.group.practic.entity.QuizEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
-import com.group.practic.mapper.PersonMapper;
-import com.group.practic.mapper.StudentReportMapper;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -32,33 +29,17 @@ public interface Converter {
 
     @Bean
     static ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-
-        applyStudentPracticeMap(modelMapper);
-        applyStudentReportMap(modelMapper);
-        applyPersonOnCourseMap(modelMapper);
-
-        return modelMapper;
+        return new ModelMapper();
     }
 
 
     static ChapterDto convert(StudentChapterEntity studentChapter) {
-        return modelMapper().map(studentChapter, ChapterDto.class);
-    }
-
-
-    static CourseDto convert(CourseEntity courseEntity) {
-        return modelMapper().map(courseEntity, CourseDto.class);
+        return ChapterDto.map(studentChapter.getChapter());
     }
 
 
     static CourseEntity convert(CourseDto courseDto) {
         return modelMapper().map(courseDto, CourseEntity.class);
-    }
-
-
-    static ChapterDto convert(ChapterEntity chapterEntity) {
-        return modelMapper().map(chapterEntity, ChapterDto.class);
     }
 
 
@@ -68,7 +49,7 @@ public interface Converter {
 
 
     static PersonDto convert(PersonEntity personEntity) {
-        return PersonMapper.INSTANCE.map(personEntity);
+        return PersonDto.map(personEntity);
     }
 
 
@@ -78,30 +59,22 @@ public interface Converter {
 
 
     static StudentPracticeDto convert(StudentPracticeEntity studentPracticeEntity) {
-        return modelMapper().map(studentPracticeEntity, StudentPracticeDto.class);
+        return StudentPracticeDto.map(studentPracticeEntity);
     }
 
 
     static StudentReportDto convert(StudentReportEntity studentReportEntity) {
-        return StudentReportMapper.INSTANCE.map(studentReportEntity);
+        return StudentReportDto.map(studentReportEntity);
     }
 
 
     static PersonApplyOnCourseDto convert(PersonApplicationEntity personApplication) {
-        return modelMapper().map(personApplication, PersonApplyOnCourseDto.class);
+        return PersonApplyOnCourseDto.map(personApplication);
     }
 
 
     static List<StudentReportDto> convert(List<StudentReportEntity> studentReportEntityList) {
-        return StudentReportMapper.INSTANCE.map(studentReportEntityList);
-/*        if (studentReportEntityList.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<StudentReportDto> result = new ArrayList<>();
-        for (StudentReportEntity reportEntity : studentReportEntityList) {
-            result.add(convert(reportEntity));
-        }
-        return result; */
+        return studentReportEntityList.stream().map(StudentReportDto::map).toList();
     }
 
 
@@ -109,7 +82,7 @@ public interface Converter {
         List<CourseDto> result = new ArrayList<>(courses.size());
         courses.forEach(course -> {
             if (!course.getInactive()) {
-                result.add(convert(course));
+                result.add(CourseDto.map(course));
             }
         });
         return result;
@@ -124,59 +97,14 @@ public interface Converter {
 
     static List<List<StudentReportDto>> convertListOfLists(
             List<List<StudentReportEntity>> studentReportEntityList) {
-        if (studentReportEntityList.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<List<StudentReportDto>> result = new ArrayList<>();
-        for (List<StudentReportEntity> reportEntityList : studentReportEntityList) {
-            result.add(convert(reportEntityList));
-        }
-        return result;
-
+        return studentReportEntityList.stream().map(Converter::convert).toList();
     }
 
 
-    static List<ChapterDto> convertChapterEntityList(List<ChapterEntity> chapterEntityList,
-            int lastVisibleNumber) {
+    static List<ChapterDto> convertChapterList(List<ChapterEntity> chapterList, int lastNumber) {
         List<ChapterDto> result = new ArrayList<>();
-        chapterEntityList
-                .forEach(x -> result.add(new ChapterDto(x, lastVisibleNumber >= x.getNumber())));
+        chapterList.forEach(x -> result.add(ChapterDto.map(x, lastNumber >= x.getNumber())));
         return result;
-    }
-
-
-    private static void applyStudentPracticeMap(ModelMapper modelMapper) {
-        modelMapper.createTypeMap(StudentPracticeEntity.class, StudentPracticeDto.class)
-                .addMapping(src -> src.getStudent().getName(), StudentPracticeDto::setPersonName)
-                .addMapping(src -> src.getChapterPart().getPraxisPurpose(),
-                        StudentPracticeDto::setChapterName)
-                .addMapping(StudentPracticeEntity::getState, StudentPracticeDto::setState);
-    }
-
-
-    private static void applyStudentReportMap(ModelMapper modelMapper) {
-        modelMapper.createTypeMap(StudentReportEntity.class, StudentReportDto.class)
-                .addMapping(src -> src.getStudent().getName(), StudentReportDto::setPersonName)
-                .addMapping(src -> src.getStudent().getProfilePictureUrl(),
-                        StudentReportDto::setProfilePictureUrl)
-                .addMapping(src -> src.getStudent().getId(), StudentReportDto::setPersonId)
-                .addMapping(src -> src.getChapter().getShortName(),
-                        StudentReportDto::setChapterName)
-                .addMapping(StudentReportEntity::getState, StudentReportDto::setState)
-                .addMapping(src -> src.getTimeSlot().getDate(), StudentReportDto::setDate)
-                .addMapping(src -> src.getTimeSlot().getTime(), StudentReportDto::setTime);
-    }
-
-
-    private static void applyPersonOnCourseMap(ModelMapper modelMapper) {
-        modelMapper.createTypeMap(PersonApplicationEntity.class, PersonApplyOnCourseDto.class)
-                .addMapping(src -> src.getPerson().getId(), PersonApplyOnCourseDto::setId)
-                .addMapping(src -> src.getPerson().getName(), PersonApplyOnCourseDto::setName)
-                .addMapping(src -> src.getPerson().getProfilePictureUrl(),
-                        PersonApplyOnCourseDto::setProfilePictureUrl)
-                .addMapping(src -> src.getCourse().getSlug(),
-                        PersonApplyOnCourseDto::setCourseSlug);
-
     }
 
 

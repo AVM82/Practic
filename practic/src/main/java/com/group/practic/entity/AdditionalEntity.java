@@ -66,8 +66,8 @@ public class AdditionalEntity {
             return false;
         }
         AdditionalEntity other = (AdditionalEntity) obj;
-        return Objects.equals(name, other.name) && number == other.number
-                && Objects.equals(refs, other.refs);
+        return this == obj || (Objects.equals(name, other.name) && number == other.number
+                && Objects.equals(refs, other.refs));
     }
 
 

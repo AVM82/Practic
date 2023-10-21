@@ -52,6 +52,9 @@ export const getDescriptionUrl = (slug: string): string =>
 export const getMentorsUrl = (slug: string): string =>
     ApiUrls.Course+ slug +`/mentors`;
 
+export const getStudentsAllAdditionalMaterialsUrl = (slug: string): string =>
+    ApiUrls.AdditionalMaterials + slug;
+
 export const getStudentAdditionalMaterialUrl = (slug: string, id: number): string =>
     ApiUrls.AdditionalMaterials + slug + `/` + id;
 

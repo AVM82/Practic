@@ -15,7 +15,8 @@
 .chapter-part {
     margin-left: 40px;
     margin-right: 40px;    
-    margin-top: 6px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     display: flex;
     padding: 10px;
     border-radius: 3px;

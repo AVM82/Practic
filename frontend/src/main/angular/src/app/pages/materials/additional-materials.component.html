@@ -18,7 +18,7 @@
     </div>
     <form *ngIf="showCheckbox" class="column-right">
         <label>
-            <input type="checkbox" [id]="item.id" (change)="changeLearned($event)" />
+            <input type="checkbox" [id]="item.id" [checked]="item.checked" (change)="changeLearned($event)" />
             вивчено
         </label>
     </form>

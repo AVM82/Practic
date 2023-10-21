@@ -3,7 +3,7 @@ import {Course} from "../../models/course/course";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getMaterialsExistUrl, getActiveChapterNumber, getCourseUrl, getChapterUrl, getApplicationUrl} from "../../enums/api-urls";
+import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getActiveChapterNumber, getCourseUrl, getChapterUrl, getApplicationUrl, getStudentsAllAdditionalMaterialsUrl} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
 import { User } from 'src/app/models/user/user';
@@ -116,7 +116,8 @@ export class CoursesService {
   }
 
   getAdditionalMaterials(slug: string): Observable<AdditionalMaterials[]> {
-    return this.http.get<AdditionalMaterials[]>(getMaterialsUrl(slug));
+    this.setCourse(slug);
+    return this.http.get<AdditionalMaterials[]>(this.isStudent ?  getStudentsAllAdditionalMaterialsUrl(slug) : getMaterialsUrl(slug));
   }
 
   postCourseInteractive(_slug: string,  _name: string, _svg: string): Observable<Course> {

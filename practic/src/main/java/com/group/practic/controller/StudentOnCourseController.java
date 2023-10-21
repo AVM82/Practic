@@ -5,6 +5,7 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 import static com.group.practic.util.ResponseUtils.updateResponse;
 
+import com.group.practic.dto.AdditionalMaterialsDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStudentDto;
 import com.group.practic.dto.PracticeDto;
@@ -182,7 +183,6 @@ public class StudentOnCourseController {
 
 
     @GetMapping("/chapters")
-    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Set<ChapterDto>> getOpenChapters() {
         PersonEntity student = personService.getPerson();
         return ResponseEntity.ok(studentChapterService.findOpenChapters(student).stream()
@@ -268,10 +268,20 @@ public class StudentOnCourseController {
                 : deleteResponse(Optional.empty());
     }
 
+
+    @GetMapping("/additionalMaterials/{slug}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Collection<AdditionalMaterialsDto>> getAdditionalMaterials(
+            @PathVariable String slug) {
+        return getResponse(studentOnCourseService.getStudentAdditionalMaterial(slug));
+    }
+
+
     @PutMapping("/additionalMaterials/{slug}/{id}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable String slug, @PathVariable long id,
-            @RequestBody boolean state) {
+    public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable String slug,
+            @PathVariable long id, @RequestBody boolean state) {
         return getResponse(studentOnCourseService.changeStudentAdditionalMaterial(slug, id, state));
     }
+
 }
