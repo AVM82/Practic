@@ -33,11 +33,11 @@ export class AdditionalMaterialsComponent implements OnInit {
       const slug = params.get('slug');
 
       if(slug) {
-          this.courseService.getAdditionalMaterials(slug).subscribe(materials => {
+        this.showCheckbox = this.tokenStorageService.isStudent(slug);
+        console.log(this.showCheckbox);
+        this.courseService.getAdditionalMaterials(slug).subscribe(materials => {
             this.materials = materials;
-            console.log(materials);
             this.slug = slug;
-            this.showCheckbox = this.tokenStorageService.isStudent(slug);
         });
       }
     })

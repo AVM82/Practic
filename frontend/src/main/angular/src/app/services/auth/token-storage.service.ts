@@ -55,7 +55,7 @@ export class TokenStorageService {
 
   isStudent(slug: string): boolean {
     const me = this.getMe();
-    return me?.hasApplyOnCourse(slug);
+    return me?.hasAnyRole('STUDENT') && me.hasApplyOnCourse(slug);
   }
 
 
