@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Course} from "../../models/course/course";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {map, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
 import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getActiveChapterNumber, getCourseUrl, getChapterUrl, getApplicationUrl, getStudentsAllAdditionalMaterialsUrl} from "../../enums/api-urls";
@@ -11,7 +11,6 @@ import { Chapter } from 'src/app/models/chapter/chapter';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AdvancedRoles } from 'src/app/enums/roles.enum';
 import { ShortChapter } from 'src/app/models/course/chapter';
-import { httpOptions } from 'src/app/constants';
 
 const requestTextResponse: Object = {
   responseType: 'text'
