@@ -213,9 +213,8 @@ public class StudentOnCourseService {
                         add -> AdditionalMaterialsDto.map(add, studentsAdditional.contains(add)))
                         .toList();
             }
-            return List.of();
         }
-        return null;
+        return List.of();
     }
 
 }

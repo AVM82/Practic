@@ -14,7 +14,4 @@ public class StudentChapterDto {
     @Min(1)
     long chapterId;
 
-
-    public StudentChapterDto() {}
-
 }

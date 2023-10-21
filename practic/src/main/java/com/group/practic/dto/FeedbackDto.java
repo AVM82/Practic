@@ -18,7 +18,4 @@ public class FeedbackDto {
     @Min(5)
     private String feedback;
 
-
-    public FeedbackDto() {}
-
 }
