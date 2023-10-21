@@ -64,7 +64,7 @@ public class StudentReportDto {
     }
 
 
-    public void setPersonId(Long personId) {
+    public void setPersonId(long personId) {
         this.personId = personId;
     }
 
@@ -86,11 +86,6 @@ public class StudentReportDto {
 
     public void setChapterName(String chapterName) {
         this.chapterName = chapterName;
-    }
-
-
-    public void setPersonId(long personId) {
-        this.personId = personId;
     }
 
 
