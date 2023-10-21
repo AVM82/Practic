@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -14,11 +15,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.group.practic.dto.ChapterDto;
-import com.group.practic.entity.AdditionalMaterialsEntity;
-import com.group.practic.entity.ChapterEntity;
-import com.group.practic.entity.CourseEntity;
-import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.StudentOnCourseEntity;
+import com.group.practic.entity.*;
 import com.group.practic.repository.PersonApplicationRepository;
 import com.group.practic.repository.RoleRepository;
 import com.group.practic.repository.StudentOnCourseRepository;
@@ -42,7 +39,8 @@ class StudentOnCourseServiceTest {
 
     @InjectMocks
     private StudentOnCourseService studentOnCourseService;
-
+    @Mock
+    private PersonEntity personEntity;
     @Mock
     private StudentOnCourseRepository studentOnCourseRepository;
     @Mock
@@ -196,24 +194,24 @@ class StudentOnCourseServiceTest {
     }
 
 
-//    @Test
-//    void testCreateStudentOnCourseStudentIsNotPresent() {
-//        long courseId = 1L;
-//        long studentId = 2L;
-//        when(courseService.get(courseId)).thenReturn(Optional.empty());
-//        when(personService.get(studentId)).thenReturn(Optional.empty());
-//
-//        Optional<StudentOnCourseEntity> result = studentOnCourseService.create(courseId, studentId);
-//
-//        assertNotNull(result);
-//        assertFalse(result.isPresent());
-//
-//        reset(personService);
-//
-//        verifyNoInteractions(personService, studentOnCourseRepository,
-//                personApplicationRepository, roleRepository, emailSenderService);
-//    }
+    @Test
+    void testCreateStudentOnCourse() {
+        CourseEntity course = new CourseEntity();
+        PersonEntity user = new PersonEntity();
+        Optional<ChapterEntity> firstChapter = Optional.of(new ChapterEntity());
+        PersonApplicationEntity personApplication = new PersonApplicationEntity();
 
+        Mockito.when(courseService.getFirstChapter(course)).thenReturn(firstChapter);
+        Mockito.doNothing().when(personService).addRolesToPerson(user, PersonService.ROLE_STUDENT);
+        Mockito.when(personApplicationRepository.findByPersonAndCourse(user, course)).thenReturn(personApplication);
+        Mockito.when(emailSenderService.sendMessage(Mockito.any())).thenReturn(true);
+
+        Optional<StudentOnCourseEntity> result = studentOnCourseService.create(course, user);
+
+
+        Mockito.verify(emailSenderService).sendMessage(Mockito.any());  // перевірка виклику emailSenderService
+        Mockito.verify(studentOnCourseRepository).save(Mockito.any());
+    }
     @Test
     void testNotify() {
         PersonEntity student = new PersonEntity();
@@ -258,18 +256,18 @@ class StudentOnCourseServiceTest {
         assertNotNull(result);
     }
 
-//    @Test
-//    void testIsStudentofCourse() {
-//        CourseEntity course = new CourseEntity();
-//        PersonEntity person = new PersonEntity();
-//
-//        when(personService.getPerson()).thenReturn(person);
-//        when(studentOnCourseRepository.findByCourseAndStudentAndInactiveAndBan(
-//                course, person, false, false)).thenReturn(new StudentOnCourseEntity());
-//
-//        boolean result = studentOnCourseService.isStudentofCourse(course);
-//        assertTrue(result);
-//    }
+    @Test
+    void testIsStudentofCourse() {
+        CourseEntity course = new CourseEntity();
+        PersonEntity person = new PersonEntity();
+
+        when(personService.getPerson()).thenReturn(person);
+        when(studentOnCourseRepository.findByCourseAndStudentAndInactiveAndBan(
+                course, person, false, false)).thenReturn(new StudentOnCourseEntity());
+
+        boolean result = studentOnCourseService.isStudentOfCourse(course);
+        assertTrue(result);
+    }
 
 
     @Test
@@ -390,38 +388,38 @@ class StudentOnCourseServiceTest {
         assertEquals(3, lastVisibleChapterNumber);
     }
 
-//    @Test
-//    void testGetChaptersWhenCourseIsNotEmpty() {
-//
-//        String slug = "example-slug";
-//        CourseEntity course = new CourseEntity();
-//        when(courseService.get(slug)).thenReturn(Optional.of(course));
-//
-//        List<ChapterEntity> chapters = new ArrayList<>();
-//        ChapterEntity chapter1 = new ChapterEntity();
-//        ChapterEntity chapter2 = new ChapterEntity();
-//        chapters.add(chapter1);
-//        chapters.add(chapter2);
-//        when(chapterService.getAll(course)).thenReturn(chapters);
-//
-//
-//        List<ChapterDto> expectedChapters = new ArrayList<>();
-//        expectedChapters.add(new ChapterDto(chapter1, true));
-//        expectedChapters.add(new ChapterDto(chapter2, true));
-//
-//
-//        List<ChapterDto> result = studentOnCourseService.getChapters(slug);
-//
-//
-//        assertEquals(expectedChapters.size(), result.size());
-//        for (int i = 0; i < expectedChapters.size(); i++) {
-//            assertEquals(expectedChapters.get(i).getId(), result.get(i).getId());
-//            assertEquals(expectedChapters.get(i).getNumber(), result.get(i).getNumber());
-//            assertEquals(expectedChapters.get(i).getShortName(), result.get(i).getShortName());
-//            assertEquals(expectedChapters.get(i).isVisible(), result.get(i).isVisible());
-//
-//        }
-    //  }
+    @Test
+    void testGetChaptersWhenCourseIsNotEmpty() {
+
+        String slug = "example-slug";
+        CourseEntity course = new CourseEntity();
+        when(courseService.get(slug)).thenReturn(Optional.of(course));
+
+        List<ChapterEntity> chapters = new ArrayList<>();
+        ChapterEntity chapter1 = new ChapterEntity();
+        ChapterEntity chapter2 = new ChapterEntity();
+        chapters.add(chapter1);
+        chapters.add(chapter2);
+        when(chapterService.getAll(course)).thenReturn(chapters);
+
+
+        List<ChapterDto> expectedChapters = new ArrayList<>();
+        expectedChapters.add(ChapterDto.map(chapter1, true));
+        expectedChapters.add(ChapterDto.map(chapter2, true));
+
+
+        List<ChapterDto> result = studentOnCourseService.getChapters(slug);
+
+
+        assertEquals(expectedChapters.size(), result.size());
+        for (int i = 0; i < expectedChapters.size(); i++) {
+            assertEquals(expectedChapters.get(i).getId(), result.get(i).getId());
+            assertEquals(expectedChapters.get(i).getNumber(), result.get(i).getNumber());
+            assertEquals(expectedChapters.get(i).getShortName(), result.get(i).getShortName());
+            assertEquals(expectedChapters.get(i).isVisible(), result.get(i).isVisible());
+
+        }
+      }
 
     @Test
     void testGetChaptersWhenCourseIsEmpty() {
