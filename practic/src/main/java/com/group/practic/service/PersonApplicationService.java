@@ -19,30 +19,32 @@ import org.springframework.stereotype.Service;
 public class PersonApplicationService {
 
     private final PersonApplicationRepository personApplicationRepository;
+
     private final PersonRepository personRepository;
+
     private final CourseRepository courseRepository;
 
     @Autowired
     public PersonApplicationService(PersonApplicationRepository personApplicationRepository,
-                                    PersonRepository personRepository,
-                                    CourseRepository courseRepository) {
+            PersonRepository personRepository, CourseRepository courseRepository) {
         this.personApplicationRepository = personApplicationRepository;
         this.personRepository = personRepository;
         this.courseRepository = courseRepository;
     }
 
+
     public PersonEntity addPersonApplication(PersonEntity person, String courseSlug) {
         Set<CourseEntity> applyOnCourseSet = person.getCourses();
         Optional<CourseEntity> course = courseRepository.findBySlug(courseSlug);
-
         if (course.isPresent()) {
             applyOnCourseSet.add(course.get());
             person.setCourses(applyOnCourseSet);
             return personRepository.save(person);
-        } else  {
+        } else {
             throw new ResourceNotFoundException("Course", "slug", courseSlug);
         }
     }
+
 
     public List<PersonApplyOnCourseDto> getNotApplyPerson() {
         List<PersonApplicationEntity> applicants =
@@ -50,18 +52,23 @@ public class PersonApplicationService {
         return applicants.stream().map(Converter::convert).toList();
     }
 
-    public PersonApplicationEntity getApplicationByPersonAndCourse(
-            PersonEntity person,
-            String courseSlug
-    ) {
-        Optional<CourseEntity> course = courseRepository.findBySlug(courseSlug);
 
+    public PersonApplicationEntity getApplicationByPersonAndCourse(PersonEntity person,
+            String courseSlug) {
+        Optional<CourseEntity> course = courseRepository.findBySlug(courseSlug);
         if (course.isPresent()) {
             return personApplicationRepository.findByPersonAndCourse(person, course.get());
-        } else  {
+        } else {
             throw new ResourceNotFoundException("Course", "slug", courseSlug);
         }
-
-
     }
+
+
+    public Optional<Boolean> amIpresent(String slug, PersonEntity person) {
+        Optional<CourseEntity> course = courseRepository.findBySlug(slug);
+        return person == null || course.isEmpty() ? Optional.empty()
+                : Optional.of(personApplicationRepository.findByPersonAndCourse(person,
+                        course.get()) != null);
+    }
+
 }

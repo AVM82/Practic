@@ -37,22 +37,31 @@ export class CoursesComponent implements OnInit{
         courses.forEach(course => {
           this.svg_registry.addSvg(course.slug, course.svg);
             let route;
-            if (course.mentors.some(mentor => mentor.id == meId))
-                route = course.slug;
-            else
-              route = (this.tokenStorageService.isStudent(course.slug)
-                  ? course.slug + '/chapters/' + this.coursesService.getActiveChapterNumber(course.slug)
-                  : course.slug + '/main'); 
-            this.coursesProp.push(new CourseProp (
-              course.name,
-              course.slug,
-              route
-             ))
+            if (this.tokenStorageService.isStudent(course.slug))
+              this.coursesService.getActiveChapterNumber(course.slug).subscribe(number =>
+                this.coursesProp.push(new CourseProp (
+                  course.name,
+                  course.slug,
+                  course.slug + this.activeChapterRoute(number)
+                ))
+              )
+            else 
+              this.coursesProp.push(new CourseProp (
+                course.name,
+                course.slug,
+                course.slug + (course.mentors.some(mentor => mentor.id == meId) ? '' : '/main')
+              ))
         })
       }
     });
   }
-  
+
+  private activeChapterRoute(number: number): string {
+    if (!number)
+      return '/main';
+    return number === 0x7fffffff ? '' : '/chapters/' + number;
+  }
+
   onSelect(slug: string): void {
     this.coursesService.setCourse(slug);
   }

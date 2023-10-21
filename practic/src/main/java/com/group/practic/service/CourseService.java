@@ -166,4 +166,10 @@ public class CourseService {
         return course.isPresent() ? course.get().getMentors() : Set.of();
     }
 
+
+    public Optional<ChapterEntity> getFirstChapter(CourseEntity course) {
+        return course.getChapters().stream()
+                .min((a, b) -> Integer.compare(a.getNumber(), b.getNumber()));
+    }
+
 }

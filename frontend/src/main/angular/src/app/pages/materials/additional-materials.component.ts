@@ -33,11 +33,11 @@ export class AdditionalMaterialsComponent implements OnInit {
       const slug = params.get('slug');
 
       if(slug) {
-          this.courseService.getAdditionalMaterials(slug).subscribe(materials =>
-        {
-          this.materials = materials;
-          this.slug = slug;
-          this.showCheckbox = this.tokenStorageService.isStudent(slug);
+          this.courseService.getAdditionalMaterials(slug).subscribe(materials => {
+            this.materials = materials;
+            console.log(materials);
+            this.slug = slug;
+            this.showCheckbox = this.tokenStorageService.isStudent(slug);
         });
       }
     })
@@ -46,9 +46,9 @@ export class AdditionalMaterialsComponent implements OnInit {
   changeLearned(event: any) {
     console.log("checkbox id:%d checked:", event.target.id, event.target.checked);
     this.courseService.putAdditionalChange(this.slug, event.target.id, event.target.checked).subscribe(success => {
-      console.log(' additional material is ', success ? '' : 'not', ' changed');
+      console.warn(' additional material is ', success ? '' : 'not', ' changed');
       if (!success)
-        event.target.checked = !event.target.checked; //rollback to previous state
+        event.target.checked = !event.target.checked;
     });
   }
     

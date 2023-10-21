@@ -22,6 +22,9 @@ public interface ResponseUtils {
 
 
     public static <T> ResponseEntity<Collection<T>> getResponse(Collection<T> result) {
+        if (result == null) {
+            return notAcceptable();
+        }
         return result.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(result, HttpStatus.OK);
     }

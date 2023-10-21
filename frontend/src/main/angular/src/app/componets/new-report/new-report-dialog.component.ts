@@ -101,6 +101,7 @@ export class NewReportDialogComponent implements OnInit{
         this.getOpenChapters();
 
         this.openChapters$.subscribe(chapters => {
+            console.log(chapters);
             if (chapters.length > 0) {
                 this.activeChapter = chapters[chapters.length - 1];
                 this.initTopicsReports();
@@ -129,12 +130,14 @@ export class NewReportDialogComponent implements OnInit{
       }
 
     initTopicsReports(){
-        console.log(this.
-            activeChapter+" new student chapt");
+        console.log(this.activeChapter + " new student chapt");
         this.topicReportService.getTopicsReportsOnChapter(this.activeChapter).subscribe({
             next: topics => {
-                const topicsReports = topics.map((topic:any) => topic.topic);
-               (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
+                if (topics) {
+                    const topicsReports = topics.map((topic:any) => topic.topic);
+                    (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
+                } else
+                    console.warn('No topics for this chapter');
             },
             error: error => {
               console.error('Помилка при отриманні доступних тем доповіді', error);

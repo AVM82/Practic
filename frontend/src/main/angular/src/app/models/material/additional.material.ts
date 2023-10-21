@@ -5,4 +5,5 @@ export interface AdditionalMaterials {
     number: number;
     name: string;
     refs: ReferenceTitle[];
+    checked: boolean;
 }

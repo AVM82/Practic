@@ -1,5 +1,6 @@
 package com.group.practic.service;
 
+import com.group.practic.dto.AdditionalMaterialsDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.SendMessageDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
@@ -7,7 +8,6 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonApplicationEntity;
 import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.RoleEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.repository.PersonApplicationRepository;
 import com.group.practic.repository.RoleRepository;
@@ -103,29 +103,18 @@ public class StudentOnCourseService {
     }
 
 
-    public Optional<StudentOnCourseEntity> create(long courseId, long studentId) {
-        Optional<CourseEntity> course = courseService.get(courseId);
-        Optional<PersonEntity> user = personService.get(studentId);
-
-        Optional<StudentOnCourseEntity> student = (course.isPresent() && user.isPresent())
-                ? Optional.of(studentOnCourseRepository
-                        .save(new StudentOnCourseEntity(user.get(), course.get())))
-                : Optional.empty();
-        if (student.isPresent()) {
-            PersonEntity updateUser = user.get();
-            PersonApplicationEntity applicant =
-                    personApplicationRepository.findByPersonAndCourse(updateUser, course.get());
-            applicant.setApply(true);
-            Set<RoleEntity> roles = updateUser.getRoles();
-            roles.add(roleRepository.findByName("STUDENT"));
-            roles.add(roleRepository.findByName(course.get().getSlug()));
-            updateUser.setRoles(roles);
-            personService.save(updateUser);
-            personApplicationRepository.save(applicant);
-            this.notify(user.get(), course.get().getSlug());
-        }
-
-        return student;
+    public Optional<StudentOnCourseEntity> create(CourseEntity course, PersonEntity user) {
+        StudentOnCourseEntity student = new StudentOnCourseEntity(user, course);
+        Optional<ChapterEntity> firstChapter = courseService.getFirstChapter(course);
+        student.setActiveChapter(firstChapter.isPresent() ? firstChapter.get() : null);
+        personService.addRolesToPerson(user, PersonService.ROLE_STUDENT);
+        PersonApplicationEntity applicant =
+                personApplicationRepository.findByPersonAndCourse(user, course);
+        applicant.setApply(true);
+        personService.save(user);
+        personApplicationRepository.save(applicant);
+        this.notify(user, course.getSlug());
+        return Optional.ofNullable(studentOnCourseRepository.save(student));
     }
 
 
@@ -146,7 +135,7 @@ public class StudentOnCourseService {
     }
 
 
-    public boolean isStudentofCourse(CourseEntity course) {
+    public boolean isStudentOfCourse(CourseEntity course) {
         return getStudentOfCourse(course) != null;
     }
 
@@ -158,11 +147,13 @@ public class StudentOnCourseService {
 
 
     public Integer getActiveChapterNumber(CourseEntity course) {
-        if (personService.hasAdvancedRole() || personService.amImentor(course)) {
-            return Integer.MAX_VALUE;
+        ChapterEntity chapter = getActiveChapter(course);
+        if (chapter != null) {
+            chapter.getNumber();
         }
-        StudentOnCourseEntity studentOnCourse = getStudentOfCourse(course);
-        return studentOnCourse != null ? studentOnCourse.getActiveChapter().getNumber() : 0;
+        return personService.hasAdvancedRole() || personService.amImentor(course)
+                ? Integer.MAX_VALUE
+                : 0;
     }
 
 
@@ -175,13 +166,19 @@ public class StudentOnCourseService {
     }
 
 
-    public Optional<Boolean> changeStudentAdditionalMaterial(StudentOnCourseEntity student, long id,
-            boolean state) {
-        Optional<AdditionalMaterialsEntity> additionalMaterial = additionalMaterialsService.get(id);
-        if (additionalMaterial.isPresent()) {
-            student.changeAdditionalMaterial(additionalMaterial.get(), state);
-            studentOnCourseRepository.save(student);
-            return Optional.of(true);
+    public Optional<Boolean> changeStudentAdditionalMaterial(String slug, long id, boolean state) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        if (course.isPresent()) {
+            StudentOnCourseEntity student = getStudentOfCourse(course.get());
+            if (student != null) {
+                Optional<AdditionalMaterialsEntity> additionalMaterial =
+                        additionalMaterialsService.get(id);
+                if (additionalMaterial.isPresent()) {
+                    student.changeAdditionalMaterial(additionalMaterial.get(), state);
+                    studentOnCourseRepository.save(student);
+                    return Optional.of(true);
+                }
+            }
         }
         return Optional.empty();
     }
@@ -199,8 +196,26 @@ public class StudentOnCourseService {
     public List<ChapterDto> getChapters(String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
         return course.isEmpty() ? List.of()
-                : Converter.convertChapterEntityList(chapterService.getAll(course.get()),
+                : Converter.convertChapterList(chapterService.getAll(course.get()),
                         getLastVisibleChapterNumber(course.get()));
+    }
+
+
+    public List<AdditionalMaterialsDto> getStudentAdditionalMaterial(String slug) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        if (course.isPresent()) {
+            StudentOnCourseEntity student =
+                    studentOnCourseRepository.findByCourseAndStudentAndInactiveAndBan(course.get(),
+                            personService.getPerson(), false, false);
+            if (student != null) {
+                Set<AdditionalMaterialsEntity> studentsAdditional = student.getAdditionalMaterial();
+                return course.get().getAdditionalMaterials().stream().map(
+                        add -> AdditionalMaterialsDto.map(add, studentsAdditional.contains(add)))
+                        .toList();
+            }
+            return List.of();
+        }
+        return null;
     }
 
 }

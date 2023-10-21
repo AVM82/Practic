@@ -1,6 +1,5 @@
 package com.group.practic.entity;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -63,6 +62,8 @@ public class CourseEntity {
 
     @Column(length = 16384)
     String svg;
+
+    boolean additionalMaterialsExist;
 
 
     public CourseEntity() {}
@@ -162,6 +163,7 @@ public class CourseEntity {
 
     public void setAdditionalMaterials(Set<AdditionalMaterialsEntity> additionalMaterials) {
         this.additionalMaterials = additionalMaterials;
+        this.additionalMaterialsExist = !additionalMaterials.isEmpty();
     }
 
 
@@ -202,6 +204,16 @@ public class CourseEntity {
 
     public void setSvg(String svg) {
         this.svg = svg;
+    }
+
+
+    public boolean isAdditionalMaterialsExist() {
+        return additionalMaterialsExist;
+    }
+
+
+    public void setAdditionalMaterialsExist(boolean additionalMaterialsExist) {
+        this.additionalMaterialsExist = additionalMaterialsExist;
     }
 
 }

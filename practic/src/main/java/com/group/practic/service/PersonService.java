@@ -62,11 +62,27 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public RoleEntity saveRole(String role) {
+    RoleEntity saveRole(String role) {
         RoleEntity roleExists = roleRepository.findByName(role);
         return roleExists != null ? roleExists : roleRepository.save(new RoleEntity(role));
     }
 
+
+    RoleEntity getRole(String role) {
+        return roleRepository.findByName(role);
+    }
+
+    
+    Set<RoleEntity> getRoles(String ... roles) {
+        Set<RoleEntity> roleSet = new HashSet<>();
+        for (String role : roles) {
+            RoleEntity roleEntity = getRole(role);
+            if (roleEntity != null) {
+                roleSet.add(roleEntity);
+            }
+        }
+        return roleSet;
+    }
 
     public List<PersonEntity> get() {
         return personRepository.findAll();
@@ -140,6 +156,17 @@ public class PersonService implements UserDetailsService {
     }
 
 
+    public void addRolesToPerson(PersonEntity person, String ... roles) {
+        Set<RoleEntity> personRoles = person.getRoles();
+        Set<RoleEntity> newRoles = getRoles(roles);
+        personRoles.addAll(newRoles);
+        if (personRoles.size() > 1) {
+            personRoles.remove(getRole(ROLE_GUEST));
+        }
+        person.setRoles(personRoles);
+    }
+
+
     public Optional<PersonEntity> addRoleToUserById(long id, String newRole) {
         PersonEntity foundPerson = personRepository.findById(id).orElse(null);
         if (foundPerson != null) {
@@ -189,7 +216,7 @@ public class PersonService implements UserDetailsService {
 
 
     public PersonEntity updateExistingUser(PersonEntity existingUser,
-                                            Oauth2UserInfo oauth2UserInfo) {
+            Oauth2UserInfo oauth2UserInfo) {
         existingUser.setName(oauth2UserInfo.getName());
         existingUser.setLinkedin(oauth2UserInfo.getId());
         existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());
@@ -220,16 +247,13 @@ public class PersonService implements UserDetailsService {
                     "User with email " + userDetails.getEmail() + " already exist");
         }
         PersonEntity newPerson = new PersonEntity();
-        newPerson.setInactive(false);
         newPerson.setName(userDetails.getName());
         newPerson.setPassword(userDetails.getPassword());
         newPerson.setEmail(userDetails.getEmail());
         newPerson.setLinkedin(userDetails.getProviderUserId());
         newPerson.setProfilePictureUrl(userDetails.getProfilePictureUrl());
-        newPerson.setRoles(Set.of(roleRepository.findByName(ROLE_GUEST)));
-        newPerson.setCourses(new HashSet<>());
-        newPerson = personRepository.saveAndFlush(newPerson);
-        return newPerson;
+        this.addRolesToPerson(newPerson, ROLE_GUEST);
+        return personRepository.saveAndFlush(newPerson);
     }
 
 

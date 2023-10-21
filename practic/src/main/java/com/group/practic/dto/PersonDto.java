@@ -1,76 +1,48 @@
 package com.group.practic.dto;
 
-import java.util.Objects;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.RoleEntity;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import java.util.stream.Collectors;
 import lombok.Getter;
-import lombok.Setter;
 
-@Builder
 @Getter
-@Setter
-@AllArgsConstructor
 public class PersonDto {
 
-    private String name;
+    long id;
 
-    private String discord;
+    String name;
 
-    private String email;
+    String discord;
 
-    private String linkedin;
+    String email;
 
-    private String profilePictureUrl;
+    String linkedin;
 
-    private Set<String> roles;
+    String profilePictureUrl;
 
-    private Set<String> courses;
+    Set<String> roles;
 
-    PersonDto() {
-    }
-
-
-    public PersonDto(String name, String discord) {
-        this.name = name;
-        this.discord = discord;
-    }
+    Set<String> courses;
 
 
-    public String getName() {
-        return name;
-    }
+    PersonDto() {}
 
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public String getDiscord() {
-        return discord;
-    }
-
-
-    public void setDiscord(String discord) {
-        this.discord = discord;
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
-        PersonDto that = (PersonDto) obj;
-        return this == that || (Objects.equals(this.name, that.name)
-                && Objects.equals(this.discord, that.discord));
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, discord);
+    public static PersonDto map(PersonEntity person) {
+        PersonDto personDto = new PersonDto();
+        personDto.id = person.getId();
+        personDto.name = person.getName();
+        personDto.discord = person.getDiscord();
+        personDto.email = person.getEmail();
+        personDto.linkedin = person.getLinkedin();
+        personDto.profilePictureUrl = person.getProfilePictureUrl();
+        personDto.roles = person.getRoles().stream()
+                .map(RoleEntity::getName).collect(Collectors.toSet());
+        personDto.courses = person.getCourses().stream()
+                .map(CourseEntity::getSlug).collect(Collectors.toSet());
+        return personDto;
     }
 
 }

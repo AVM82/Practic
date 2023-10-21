@@ -1,7 +1,12 @@
 package com.group.practic.dto;
 
+import com.group.practic.entity.CourseEntity;
+import lombok.Getter;
+import lombok.Setter;
 
-public final class CourseDto {
+@Getter
+@Setter
+public class CourseDto {
 
     private String slug;
 
@@ -10,45 +15,27 @@ public final class CourseDto {
     private String svg;
 
 
-    public CourseDto() {
-    }
+    public CourseDto() {}
 
 
     public CourseDto(String name, String svg, String slug) {
-        super();
         this.name = name;
         this.svg = svg;
         this.slug = slug;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public String getSvg() {
-        return svg;
-    }
-
-
-    public void setSvg(String svg) {
-        this.svg = svg;
-    }
-
-
-    public String getSlug() {
-        return slug;
     }
 
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+
+    public static CourseDto map(CourseEntity course) {
+        CourseDto dto = new CourseDto();
+        dto.slug = course.getSlug();
+        dto.name = course.getName();
+        dto.svg = course.getSvg();
+        return dto;
     }
 
 

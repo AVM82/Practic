@@ -1,5 +1,6 @@
 package com.group.practic.dto;
 
+import com.group.practic.entity.StudentReportEntity;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -88,6 +89,11 @@ public class StudentReportDto {
     }
 
 
+    public void setPersonId(long personId) {
+        this.personId = personId;
+    }
+
+
     public LocalDate getDate() {
         return date;
     }
@@ -145,6 +151,23 @@ public class StudentReportDto {
 
     public void setLikedPersonsIdList(List<Long> likedPersonsIdList) {
         this.likedPersonsIdList = likedPersonsIdList;
+    }
+
+
+    public static StudentReportDto map(StudentReportEntity report) {
+        StudentReportDto dto = new StudentReportDto();
+        dto.id = report.getId();
+        dto.personName = report.getStudent().getName();
+        dto.personId = report.getStudent().getId();
+        dto.profilePictureUrl = report.getStudent().getProfilePictureUrl();
+        dto.chapterName = report.getChapter().getShortName();
+        dto.date = report.getTimeSlot().getDate();
+        dto.time = report.getTimeSlot().getTime();
+        dto.timeslotId = report.getTimeSlot().getId();
+        dto.state = report.getState().name();
+        dto.title = report.getTitle();
+        dto.likedPersonsIdList = report.getLikedPersonsIdList();
+        return dto;
     }
 
 }

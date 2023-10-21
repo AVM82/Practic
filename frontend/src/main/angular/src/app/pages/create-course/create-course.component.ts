@@ -60,18 +60,14 @@ export class CreateCourseComponent implements OnInit{
     const slug = this.checkoutForm.value.slug?.trim();
     if (slug) {
       this.checkoutForm.value.slug = slug;
-      for(let course of this.courses) {
-        if (slug === course.slug)
-          return this.setRedColor('slug');
-      }
-      return true;
+      return !this.courses.some(course => course.slug === slug);
     }
     return false;
   }
  
   checkName(): boolean {
     const name = this.checkoutForm.value.name?.trim();
-    return name && name.length >= 5 ? true : this.setRedColor('name');
+    return (name && name.length >= 5) || this.setRedColor('name');
   }
 
   onSubmit(): void {
@@ -80,9 +76,17 @@ export class CreateCourseComponent implements OnInit{
         const slug = this.checkSlug();
         const name = this.checkName();
         if (slug && name) {
-          this.coursesService.postCourseInteractive(this.checkoutForm.value.slug,
-                                        this.checkoutForm.value.name, this.checkoutForm.value.svg)
-            .subscribe(response => this.processResponse(response));
+          const svg = this.checkoutForm.value.svg ? this.checkoutForm.value.svg : '';
+          this.coursesService.postCourseInteractive(this.checkoutForm.value.slug!,
+                                        this.checkoutForm.value.name!, svg)
+            .subscribe({
+              next: response => {
+              console.log(' posted new course : ' , response);
+              this.processResponse(response)
+              },
+            error: () =>
+              console.error('new course is not posted')
+          });
         } else
           console.warn('Check fields');
         break;

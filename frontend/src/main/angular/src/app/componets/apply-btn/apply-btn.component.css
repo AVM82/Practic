@@ -12,6 +12,14 @@
     cursor: pointer;
 }
 
+.wait-button {
+    background-color: #858b88;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: wait;
+}
+
 .apply-button:hover {
     background-color: #65BF95;
 }

@@ -2,11 +2,13 @@
 <mat-card class="top-line">
   <mat-card-content class="report-button" (click)="openDialog()" >Додати доповідь</mat-card-content>
 </mat-card>
-<chapter-reports *ngFor="let chapter of reports; let i = index"
+<div class="board">
+  <chapter-reports *ngFor="let chapter of reports; let i = index"
                  [studentReports]="chapter"
-                 [chapterNumber]="i+1"
+                 [chapterNumber]="i + 1"
                  [levels]="levels"
                  [currentUserId]="currentUserId"
                  [timeslots]="timeslots"></chapter-reports>
+</div>              
 
 
