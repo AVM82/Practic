@@ -4,7 +4,11 @@ import com.group.practic.entity.StudentReportEntity;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class StudentReportDto {
 
     private long id;
@@ -36,121 +40,6 @@ public class StudentReportDto {
     public StudentReportDto(String personName, String chapterName) {
         this.personName = personName;
         this.chapterName = chapterName;
-    }
-
-
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public String getPersonName() {
-        return personName;
-    }
-
-
-    public void setPersonName(String personName) {
-        this.personName = personName;
-    }
-
-
-    public long getPersonId() {
-        return personId;
-    }
-
-
-    public void setPersonId(Long personId) {
-        this.personId = personId;
-    }
-
-
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
-    }
-
-
-    public void setProfilePictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
-    }
-
-
-    public String getChapterName() {
-        return chapterName;
-    }
-
-
-    public void setChapterName(String chapterName) {
-        this.chapterName = chapterName;
-    }
-
-
-    public void setPersonId(long personId) {
-        this.personId = personId;
-    }
-
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-
-    public long getTimeslotId() {
-        return timeslotId;
-    }
-
-
-    public void setTimeslotId(long timeslotId) {
-        this.timeslotId = timeslotId;
-    }
-
-
-    public String getState() {
-        return state;
-    }
-
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-
-    public List<Long> getLikedPersonsIdList() {
-        return likedPersonsIdList;
-    }
-
-
-    public void setLikedPersonsIdList(List<Long> likedPersonsIdList) {
-        this.likedPersonsIdList = likedPersonsIdList;
     }
 
 
