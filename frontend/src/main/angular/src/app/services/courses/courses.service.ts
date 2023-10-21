@@ -107,7 +107,7 @@ export class CoursesService {
   }
 
   confirmApplyOnCourse(courseSlug: string, userId: number): Observable<any> {
-    return this.http.post(ApiUrls.Students, {courseSlug, userId});
+    return this.http.post(ApiUrls.Students + '/apply', {courseSlug, userId});
   }
 
   approvePractice(studentId: number, chapterPartId: number): Observable<any> {
