@@ -23,7 +23,7 @@ public class PersonApplyOnCourseDto {
     
     public static PersonApplyOnCourseDto map(PersonApplicationEntity personApplication) {
         PersonApplyOnCourseDto dto = new PersonApplyOnCourseDto();
-        dto.id = personApplication.getId();
+        dto.id = personApplication.getPerson().getId();
         dto.name = personApplication.getPerson().getName();
         dto.profilePictureUrl = personApplication.getPerson().getProfilePictureUrl();
         dto.courseSlug = personApplication.getCourse().getSlug();
