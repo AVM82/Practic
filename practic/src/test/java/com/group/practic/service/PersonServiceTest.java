@@ -37,7 +37,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Slf4j
 class PersonServiceTest {
-/*
+
     @InjectMocks
     private PersonService personService;
 
@@ -346,5 +346,4 @@ class PersonServiceTest {
         assertNotNull(updatedPerson);
         assertEquals("email", updatedPerson.getContacts());
     }
-    */
 }

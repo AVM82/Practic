@@ -33,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 
 @Slf4j
 class CourseServiceTest {
-/*
+
     @InjectMocks
     private CourseService courseService;
 
@@ -307,5 +307,4 @@ class CourseServiceTest {
         assertTrue(mentors.contains(mentor1));
         assertTrue(mentors.contains(mentor2));
     }
-    */
 }

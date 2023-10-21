@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 class FeedbackServiceTest {
-/*
+
     @InjectMocks
     private FeedbackService feedbackService;
 
@@ -84,7 +84,9 @@ class FeedbackServiceTest {
         FeedbackDto feedbackDto = new FeedbackDto();
         feedbackDto.setEmail("");
 
-        assertThrows(NullPointerException.class, () -> feedbackService.addFeedback(feedbackDto));
+        FeedbackEntity result = feedbackService.addFeedback(feedbackDto);
+
+        assertNull(result);
     }
 
     @Test
@@ -95,7 +97,9 @@ class FeedbackServiceTest {
         when(personRepository.findPersonEntityByEmail(feedbackDto.getEmail()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(NullPointerException.class, () -> feedbackService.addFeedback(feedbackDto));
+        FeedbackEntity result = feedbackService.addFeedback(feedbackDto);
+
+        assertNull(result);
     }
 
     @Test
@@ -140,5 +144,4 @@ class FeedbackServiceTest {
         assertNotNull(result);
         assertNull(result.getLikedByPerson());
     }
-    */
 }
