@@ -64,11 +64,13 @@ public class PersonApplicationService {
     }
 
 
-    public Optional<Boolean> amIpresent(String slug, PersonEntity person) {
+    public Optional<Boolean> amIwaiting(String slug, PersonEntity person) {
         Optional<CourseEntity> course = courseRepository.findBySlug(slug);
-        return person == null || course.isEmpty() ? Optional.empty()
-                : Optional.of(personApplicationRepository.findByPersonAndCourse(person,
-                        course.get()) != null);
+        if (person == null || course.isEmpty()) {
+            return Optional.empty();
+        }
+        PersonApplicationEntity personApplication = personApplicationRepository.findByPersonAndCourse(person, course.get());
+        return Optional.of(personApplication != null && !personApplication.isApply());
     }
 
 }

@@ -1,9 +1,9 @@
-<div *ngIf="showEditCapability">
+<div>
     <div *ngIf="!editMode" class="edit-button-container">
-        <button class="edit-button" (click)="changeMode()">Редагувати</button>
+        <button class="edit-button" (click)="changeMode()">Редагування</button>
     </div>
 
     <div *ngIf="editMode" class="edit-button-container">
-        <button class="edit-button" (click)="changeMode()">меню редагування </button>
+        <button class="view-button" (click)="changeMode()">Перегляд</button>
     </div>
 </div>

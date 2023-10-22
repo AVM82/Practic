@@ -19,5 +19,5 @@
         Матеріали
     </div>
 </div>
-<app-edit-btn [showEditCapability]="showEdit"></app-edit-btn>
-<app-apply-btn [showApplyButton]="showApply" [slug]="slug"></app-apply-btn>
+<app-edit-btn *ngIf="showEdit" (editModeChanged)="setEditMode($event)"></app-edit-btn>
+<app-apply-btn *ngIf="showApply" [slug]="slug"></app-apply-btn>

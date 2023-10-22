@@ -1,7 +1,10 @@
-<div class="apply-button-container" *ngIf="showApplyButton">
-    <button id="apply"
-            [disabled]="buttonDisabled"
-            class="buttonDisabled ? wait-button : apply-button"
+<div class="apply-button-container">
+    <button *ngIf="!buttonDisabled"
+            class="apply-button"
             (click)="onApplyClick()"
     >Записатись на курс</button>
+    <button *ngIf="buttonDisabled"
+            class="wait-button"
+            disabled
+    >Очікується підтвердження</button>
 </div>

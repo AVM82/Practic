@@ -104,7 +104,7 @@ public class PersonController {
 
     @GetMapping("/application/{slug}")
     public ResponseEntity<Boolean> isApplied(@PathVariable String slug) {
-        return getResponse(personApplicationService.amIpresent(slug, personService.getPerson()));
+        return getResponse(personApplicationService.amIwaiting(slug, personService.getPerson()));
     }
 
 

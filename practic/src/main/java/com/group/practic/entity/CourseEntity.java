@@ -163,7 +163,7 @@ public class CourseEntity {
 
     public void setAdditionalMaterials(Set<AdditionalMaterialsEntity> additionalMaterials) {
         this.additionalMaterials = additionalMaterials;
-        this.additionalMaterialsExist = !additionalMaterials.isEmpty();
+        this.additionalMaterialsExist = additionalMaterials != null && !additionalMaterials.isEmpty();
     }
 
 

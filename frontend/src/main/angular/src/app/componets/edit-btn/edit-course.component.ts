@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 
 @Component({
     selector: 'app-edit-btn',
@@ -9,12 +9,13 @@ import { Component, Input } from "@angular/core";
     styleUrls: ['./edit-btn.component.css']
   })
 export class EditBtnComponent  {
-    @Input() showEditCapability: boolean =false;
     editMode: boolean = false;
+    @Output() editModeChanged: EventEmitter<boolean> = new EventEmitter();
   
 
     changeMode(): void {
         this.editMode = !this.editMode;
+        this.editModeChanged.emit(this.editMode);
     }
 
 }

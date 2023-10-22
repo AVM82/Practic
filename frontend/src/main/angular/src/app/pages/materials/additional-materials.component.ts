@@ -7,7 +7,6 @@ import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {CoursesService} from 'src/app/services/courses/courses.service';
 import {ActivatedRoute} from '@angular/router';
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
 import { EditBtnComponent } from 'src/app/componets/edit-btn/edit-course.component';
 
 @Component({
@@ -23,7 +22,6 @@ export class AdditionalMaterialsComponent implements OnInit {
     showCheckbox: boolean = false;
 
   constructor(
-    private tokenStorageService:TokenStorageService,
     private courseService: CoursesService,
     private route: ActivatedRoute
   ) {}
@@ -31,12 +29,10 @@ export class AdditionalMaterialsComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug');
-
       if(slug) {
-        this.showCheckbox = this.tokenStorageService.isStudent(slug);
-        console.log(this.showCheckbox);
         this.courseService.getAdditionalMaterials(slug).subscribe(materials => {
-            this.materials = materials;
+          this.showCheckbox = this.courseService.isStudent;
+          this.materials = materials;
             this.slug = slug;
         });
       }

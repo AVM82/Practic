@@ -102,12 +102,12 @@ export class CoursesService {
     return this.http.get<Course[]>(ApiUrls.Courses);
   }
 
-  isAppliedOnCourse(slug: string): Observable<boolean> {
+  amIwaitingForApply(slug: string): Observable<boolean> {
     return this.http.get<boolean>(getApplicationUrl(slug));
   }
 
   confirmApplyOnCourse(courseSlug: string, userId: number): Observable<any> {
-    return this.http.post(ApiUrls.Students + '/apply', {courseSlug, userId});
+    return this.http.post(ApiUrls.Students, {courseSlug, userId});
   }
 
   approvePractice(studentId: number, chapterPartId: number): Observable<any> {

@@ -12,6 +12,10 @@
     border-radius: 4px;
 }
 
+.board {
+    margin-bottom: 20px;
+}
+
 .chapter-part {
     margin-left: 40px;
     margin-right: 40px;    

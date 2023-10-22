@@ -28,6 +28,7 @@ export class CourseDetailsComponent implements OnInit {
   slug: string='';
   practices: Practice[] = [];
   student: boolean = false;
+  editMode: boolean = false;
 
   constructor(
       private route: ActivatedRoute,
@@ -71,6 +72,14 @@ export class CourseDetailsComponent implements OnInit {
         }
       })
     }
+  }
+
+  setEditMode(editMode: boolean) {
+    this.editMode = editMode;
+  }
+
+  editClick(chapter: ShortChapter) {
+    console.log('edit click on chapter #', chapter.number, '(id=', chapter.id, ')');
   }
 
 }

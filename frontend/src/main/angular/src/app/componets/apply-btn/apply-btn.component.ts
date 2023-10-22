@@ -13,7 +13,6 @@ import { CoursesService } from 'src/app/services/courses/courses.service';
   styleUrls: ['./apply-btn.component.css']
 })
 export class ApplyBtnComponent implements OnInit {
-  @Input() showApplyButton: boolean = false;
   @Input() slug: string = '';
   buttonDisabled: boolean = false;
 
@@ -27,13 +26,13 @@ export class ApplyBtnComponent implements OnInit {
 
   ngOnInit() {
     if (!this.courseService.isStudent) {
-      this.courseService.isAppliedOnCourse(this.slug).subscribe(applied => {
-        console.log('Applied : ',applied);
-        this.buttonDisabled = applied; });
+      this.courseService.amIwaitingForApply(this.slug).subscribe(waiting =>
+        this.buttonDisabled = waiting);
     } 
   }
 
   onApplyClick() {
+    if (confirm("Ви дійсно хочете записатися на цей курс?"))
     this.authService.applyOnCourse(this.slug).subscribe({
       next: user => {
         this.tokenStorageService.saveUser(user);

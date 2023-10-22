@@ -16,7 +16,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 10px;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -47,6 +46,30 @@
     margin: 0;
 }
 
+.new-chapter-card {
+    cursor: pointer;
+    position: relative;
+    max-width: 75%;
+    min-height: 100px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    background-color: #c96c6c; 
+}
+
+.add-chapter {
+    padding: 10px;
+    text-align: center;
+}
+
+.new-chapter-card:hover {
+    background-color: #cc1818; /* Зміна тону фону при наведенні */
+    transform: translateY(-3px); /* Зсув компонента при наведенні */
+}
+
 .mat-card-header {
     background-color: #eee;
     padding: 10px;
@@ -67,6 +90,14 @@
 
 .chapter-card.locked {
     opacity: 0.5;
+}
+
+.chapter-card.edit {
+    background-color: #d18f8f;
+}
+
+.chapter-card.edit:hover {
+    background-color: #cc3e3e;
 }
 
 .info-tags {
