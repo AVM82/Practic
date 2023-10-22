@@ -151,16 +151,14 @@ class PersonApplicationServiceTest {
     }
 
     @Test
-    void testAmIpresentWhenPersonApplied() {
+    void testAmIwaitingWhileNotApplied() {
         String courseSlug = "example-course-slug";
         PersonEntity person = new PersonEntity();
-        PersonApplicationEntity personApplicationApplied = new PersonApplicationEntity();
-        personApplicationApplied.setApply(false);
-
+        
         when(courseRepository.findBySlug(courseSlug)).thenReturn(Optional.of(new CourseEntity()));
         when(personApplicationRepository
                 .findByPersonAndCourse(person, new CourseEntity()))
-                .thenReturn(personApplicationApplied);
+                .thenReturn(new PersonApplicationEntity());
 
         Optional<Boolean> result = personApplicationService.amIwaiting(courseSlug, person);
 
