@@ -25,6 +25,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+
 class ChapterPartServiceTest {
 
     @InjectMocks
@@ -215,4 +216,5 @@ class ChapterPartServiceTest {
 
         assertEquals(expectedPartNumber, result);
     }
+
 }
