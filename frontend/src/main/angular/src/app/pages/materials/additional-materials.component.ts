@@ -33,7 +33,7 @@ export class AdditionalMaterialsComponent implements OnInit {
         this.courseService.getAdditionalMaterials(slug).subscribe(materials => {
           this.showCheckbox = this.courseService.isStudent;
           this.materials = materials;
-            this.slug = slug;
+          this.slug = slug;
         });
       }
     })
