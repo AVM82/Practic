@@ -69,7 +69,8 @@ public class PersonApplicationService {
         if (person == null || course.isEmpty()) {
             return Optional.empty();
         }
-        PersonApplicationEntity personApplication = personApplicationRepository.findByPersonAndCourse(person, course.get());
+        PersonApplicationEntity personApplication = 
+                personApplicationRepository.findByPersonAndCourse(person, course.get());
         return Optional.of(personApplication != null && !personApplication.isApply());
     }
 
