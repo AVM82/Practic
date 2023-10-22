@@ -102,7 +102,7 @@ export class CoursesService {
     return this.http.get<Course[]>(ApiUrls.Courses);
   }
 
-  isAppliedOnCourse(slug: string): Observable<boolean> {
+  amIwaitingForApply(slug: string): Observable<boolean> {
     return this.http.get<boolean>(getApplicationUrl(slug));
   }
 

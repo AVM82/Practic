@@ -1,7 +1,5 @@
 .apply-button-container {
-    position: fixed;
-    top: 30%;
-    left: 1%;
+    margin: 2px;
 }
 
 .apply-button {
@@ -14,7 +12,7 @@
 
 .wait-button {
     background-color: #858b88;
-    color: #fff;
+    color: #000000;
     border: none;
     padding: 10px 20px;
     cursor: wait;

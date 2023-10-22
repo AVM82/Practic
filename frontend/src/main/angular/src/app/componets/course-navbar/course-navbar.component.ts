@@ -21,6 +21,7 @@ export class CourseNavbarComponent implements OnInit {
   course: Course | undefined;
   @Output() navchapters: EventEmitter<ShortChapter[]> = new EventEmitter();
   @Output() navCourse: EventEmitter<Course> = new EventEmitter();
+  @Output() editModeChanged: EventEmitter<boolean> = new EventEmitter();
   showEdit: boolean = false;
   showApply: boolean = false;
   chapters: ShortChapter[] = [];
@@ -58,7 +59,11 @@ export class CourseNavbarComponent implements OnInit {
       }
     })
   }
-  
+ 
+  setEditMode(editMode: boolean) {
+    this.editModeChanged.emit(editMode);
+  }
+
 }
 
  

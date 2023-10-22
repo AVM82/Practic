@@ -1,11 +1,16 @@
-<app-course-navbar (navchapters)="getChapters($event)"></app-course-navbar>
+<app-course-navbar (navchapters)="getChapters($event)" (editModeChanged)="setEditMode($event)"></app-course-navbar>
 
 <div class="chapter-card-container">
   <mat-card *ngFor="let chapter of chapters; index as i" class="chapter-card"
-            [class.locked]="!chapter.visible">
+            [class.locked]="!chapter.visible" [class.edit]="editMode">
     <ng-container *ngIf="chapter.visible">
 
-      <div class="chapter-button">
+      <div *ngIf="editMode" class="chapter-button" (click)="editClick(chapter)">
+          <mat-card-header class="course-details">
+            <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
+          </mat-card-header>
+      </div>
+      <div *ngIf="!editMode" class="chapter-button">
         <a class="link" [routerLink]="['/courses', slug, 'chapters', chapter.number]">
           <mat-card-header class="course-details">
             <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
@@ -37,4 +42,15 @@
       </mat-card-content>
     </ng-container>
   </mat-card>
+
+  <mat-card *ngIf="editMode" class="new-chapter-card">
+    <ng-container>
+      <div class="chapter-button">
+          <mat-card-header class="add-chapter">
+            <h3># додати розділ #</h3>
+          </mat-card-header>
+      </div>
+    </ng-container>
+  </mat-card>
+  
 </div>

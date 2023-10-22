@@ -115,8 +115,7 @@ class PersonApplicationServiceTest {
         String courseSlug = "example-course-slug";
         PersonEntity person = null;
 
-        Optional<Boolean> result = personApplicationService
-                .amIpresent(courseSlug, person);
+        Optional<Boolean> result = personApplicationService.amIwaiting(courseSlug, person);
 
         assertTrue(result.isEmpty());
     }
@@ -129,8 +128,7 @@ class PersonApplicationServiceTest {
         when(courseRepository.findBySlug(courseSlug))
                 .thenReturn(Optional.empty());
 
-        Optional<Boolean> result = personApplicationService
-                .amIpresent(courseSlug, person);
+        Optional<Boolean> result = personApplicationService.amIwaiting(courseSlug, person);
 
         assertTrue(result.isEmpty());
     }
@@ -146,8 +144,7 @@ class PersonApplicationServiceTest {
                 .findByPersonAndCourse(person, new CourseEntity()))
                 .thenReturn(null);
 
-        Optional<Boolean> result = personApplicationService
-                .amIpresent(courseSlug, person);
+        Optional<Boolean> result = personApplicationService.amIwaiting(courseSlug, person);
 
         assertTrue(result.isPresent());
         assertFalse(result.get());
@@ -157,15 +154,17 @@ class PersonApplicationServiceTest {
     void testAmIpresentWhenPersonApplied() {
         String courseSlug = "example-course-slug";
         PersonEntity person = new PersonEntity();
+        PersonApplicationEntity personApplicationApplied = new PersonApplicationEntity();
+        personApplicationApplied.setApply(false);
 
         when(courseRepository.findBySlug(courseSlug)).thenReturn(Optional.of(new CourseEntity()));
         when(personApplicationRepository
                 .findByPersonAndCourse(person, new CourseEntity()))
-                .thenReturn(new PersonApplicationEntity());
+                .thenReturn(personApplicationApplied);
 
-        Optional<Boolean> result = personApplicationService
-                .amIpresent(courseSlug, person);
+        Optional<Boolean> result = personApplicationService.amIwaiting(courseSlug, person);
 
         assertTrue(result.isPresent());
+        assertTrue(result.get());
     }
 }

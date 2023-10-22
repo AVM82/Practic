@@ -16,6 +16,7 @@
     margin-left: 40px;
     margin-right: 40px;    
     margin-top: 8px;
+    margin-bottom: 10px;
     min-height: 80px;
     display: flex;
     padding: 10px;
@@ -130,6 +131,10 @@
     display: flex;
     width: 100%;
     margin: 5px;
+}
+
+.praxis {
+    margin-bottom: 10px;
 }
 
 .chapter-part .action-buttons {

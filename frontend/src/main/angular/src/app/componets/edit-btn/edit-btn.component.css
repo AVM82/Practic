@@ -1,7 +1,5 @@
 .edit-button-container {
-    position: fixed;
-    top: 20%;
-    left: 1%;
+    margin: 2px;
 }
 
 .edit-button {
@@ -14,4 +12,16 @@
 
 .edit-button:hover {
     background-color: #657dbf;
+}
+
+.view-button {
+    background-color: #c02929;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.view-button:hover {
+    background-color: #b43c42;
 }
