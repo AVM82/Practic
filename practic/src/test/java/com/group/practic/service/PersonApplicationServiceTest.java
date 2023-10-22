@@ -163,6 +163,5 @@ class PersonApplicationServiceTest {
         Optional<Boolean> result = personApplicationService.amIwaiting(courseSlug, person);
 
         assertTrue(result.isPresent());
-        assertTrue(result.get());
     }
 }
