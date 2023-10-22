@@ -1,21 +1,21 @@
 package com.group.practic.service;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.group.practic.dto.ChapterDto;
-import com.group.practic.entity.*;
+import com.group.practic.entity.ChapterEntity;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonApplicationEntity;
+import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.repository.PersonApplicationRepository;
 import com.group.practic.repository.RoleRepository;
 import com.group.practic.repository.StudentOnCourseRepository;
@@ -31,6 +31,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
+
+
+
 
 
 
@@ -203,15 +206,17 @@ class StudentOnCourseServiceTest {
 
         Mockito.when(courseService.getFirstChapter(course)).thenReturn(firstChapter);
         Mockito.doNothing().when(personService).addRolesToPerson(user, PersonService.ROLE_STUDENT);
-        Mockito.when(personApplicationRepository.findByPersonAndCourse(user, course)).thenReturn(personApplication);
+        Mockito.when(personApplicationRepository.findByPersonAndCourse(user, course))
+                .thenReturn(personApplication);
         Mockito.when(emailSenderService.sendMessage(Mockito.any())).thenReturn(true);
 
         Optional<StudentOnCourseEntity> result = studentOnCourseService.create(course, user);
 
 
-        Mockito.verify(emailSenderService).sendMessage(Mockito.any());  // перевірка виклику emailSenderService
+        Mockito.verify(emailSenderService).sendMessage(Mockito.any());
         Mockito.verify(studentOnCourseRepository).save(Mockito.any());
     }
+
     @Test
     void testNotify() {
         PersonEntity student = new PersonEntity();
@@ -335,35 +340,6 @@ class StudentOnCourseServiceTest {
         reset(personService);
     }
 
-//    @Test
-//    void testChangeStudentAdditionalMaterial() {
-//
-//        AdditionalMaterialsService additionalMaterialsService
-//                = mock(AdditionalMaterialsService.class);
-//        StudentOnCourseRepository studentOnCourseRepository
-//                = mock(StudentOnCourseRepository.class);
-//
-//
-//        StudentOnCourseService studentOnCourseService = new StudentOnCourseService(
-//                studentOnCourseRepository, courseService, personService, roleRepository,
-//                personApplicationRepository, chapterService, emailSenderService,
-//                additionalMaterialsService
-//        );
-//        AdditionalMaterialsEntity additionalMaterial = new AdditionalMaterialsEntity();
-//        StudentOnCourseEntity student = new StudentOnCourseEntity();
-//
-//        when(additionalMaterialsService.get(1L)).thenReturn(Optional.of(additionalMaterial));
-//
-//        Optional<Boolean> result
-//                = studentOnCourseService
-//                .changeStudentAdditionalMaterial(student, 1L, true);
-//
-//        assertTrue(result.isPresent());
-//        assertTrue(result.get());
-//
-//
-//        verify(studentOnCourseRepository).save(student);
-//    }
 
     @Test
     void testGetLastVisibleChapterNumber1() {
@@ -419,7 +395,7 @@ class StudentOnCourseServiceTest {
             assertEquals(expectedChapters.get(i).isVisible(), result.get(i).isVisible());
 
         }
-      }
+    }
 
     @Test
     void testGetChaptersWhenCourseIsEmpty() {
