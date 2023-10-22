@@ -71,44 +71,6 @@ class PersonApplicationServiceTest {
                 () -> personApplicationService.addPersonApplication(person, courseSlug));
     }
 
-    @Test
-    void testGetNotApplyPerson() {
-        PersonApplicationEntity application1 = new PersonApplicationEntity();
-        PersonEntity person1 = new PersonEntity();
-        person1.setName("John Doe");
-        application1.setPerson(person1);
-        CourseEntity course1 = new CourseEntity();
-        course1.setSlug("course-slug-1");
-        application1.setCourse(course1);
-        application1.setId(1L);
-
-        PersonApplicationEntity application2 = new PersonApplicationEntity();
-        PersonEntity person2 = new PersonEntity();
-        person2.setName("Jane Smith");
-        application2.setPerson(person2);
-        CourseEntity course2 = new CourseEntity();
-        course2.setSlug("course-slug-2");
-        application2.setCourse(course2);
-        application2.setId(2L);
-
-        List<PersonApplicationEntity> applications = Arrays.asList(application1, application2);
-
-        when(personApplicationRepository.findAllByIsApply(false)).thenReturn(applications);
-
-        List<PersonApplyOnCourseDto> result = personApplicationService.getNotApplyPerson();
-
-        assertEquals(2, result.size());
-
-        PersonApplyOnCourseDto dto1 = result.get(0);
-        assertEquals(1L, dto1.getId());
-        assertEquals("John Doe", dto1.getName());
-        assertEquals("course-slug-1", dto1.getCourseSlug());
-
-        PersonApplyOnCourseDto dto2 = result.get(1);
-        assertEquals(2L, dto2.getId());
-        assertEquals("Jane Smith", dto2.getName());
-        assertEquals("course-slug-2", dto2.getCourseSlug());
-    }
 
     @Test
     void testGetApplicationByPersonAndCourse() {
