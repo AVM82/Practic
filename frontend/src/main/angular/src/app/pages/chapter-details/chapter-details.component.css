@@ -1,37 +1,91 @@
-.chapter-details-container {
+.chapter-header {
+    min-height: 80px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 20px;
+    background-color: #30BE70;
+    justify-content: space-between;
+    padding: 10px;
+    padding-left: 20px;
+    margin-left: 40px;
+    margin-right: 40px;    
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
 }
 
 .chapter-part {
-    position: relative;
-    max-width: 75%;
-    min-height: 100px;
-    width: 100%;
+    margin-left: 40px;
+    margin-right: 40px;    
+    margin-top: 8px;
+    margin-bottom: 10px;
+    min-height: 80px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     padding: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    border-radius: 3px;
+    border: 1px solid;
+    position: relative;
 }
 
-.chapter-part:last-child {
-    border-bottom: 1px solid #6d5f5f; /* Лінія знизу останнього елемента */
+.chapter-details-container {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    flex-wrap: wrap;
+    flex-direction: column;
+    row-gap: 5px;
+    margin-left: 40px;
+    margin-right: 40px;    
+    margin-top: 8px;
+    margin-bottom: 40px;
 }
 
-.chapter-part a {
-    text-decoration: none;
-    color: #333;
+.accordion-item {
     display: block;
-    transition: background-color 0.3s ease;
+    width: relative;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 3px;
 }
-.chapter-part:hover {
-    background-color: #f8f8f8; /* Зміна тону фону при наведенні */
-    transform: translateY(-3px); /* Зсув компонента при наведенні */
+
+.chapter-details-container-ext {
+    margin-top: 8px;
+    margin-left: 40px;
+    margin-right: 40px;    
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    flex-wrap: wrap;
+    flex-direction: column;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+}
+
+.roll{
+    cursor: pointer;
+}
+
+.subchapter-header {
+    cursor: pointer;
+    position: relative;
+    width: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+/*    transition: background-color 0.3s ease, transform 0.2s ease;*/
+}
+
+.subchapter-header:hover {
+    background-color: #a9e0a9; /* Зміна тону фону при наведенні */
+}
+
+.horizontal-line {
+    height: 2px;
+    width: relative;
+    margin-left: 20;
+    margin-right: 40;
+    margin-top: 0;
+    background-color: #909090;
+    border: 0 none;
 }
 
 .chapter-details {
@@ -62,3 +116,73 @@
     padding: 3px 8px;
     border-radius: 4px;
 }
+
+.accordion-span {
+    color: #c0d0c0;
+}
+
+.column {
+    padding: 2px;
+    flex-direction: column;
+    display: flex;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+    margin: 5px;
+}
+
+.praxis {
+    margin-bottom: 10px;
+}
+
+.chapter-part .action-buttons {
+    position: absolute;
+    top: 0;
+    right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
+    display: flex;
+    align-items: center;
+}
+
+button.done-btn {
+    font-size: 16px;
+    height: calc(1.5em + 10px);
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white;
+    border-width: 0;
+}
+button.done-btn[disabled] {
+    background-color: lightgrey;
+}
+
+button.done-btn:not([disabled]) {
+    background-color: #27AE60;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.custom-chip {
+    height: calc(1.5em + 10px);
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 1px 12px;
+    margin: 2px;
+    background-color: white;
+    border: 1px solid #27AE60;
+    color: #27AE60;
+    font-size: 12px;
+    border-radius: calc(1.5em + 5px);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+

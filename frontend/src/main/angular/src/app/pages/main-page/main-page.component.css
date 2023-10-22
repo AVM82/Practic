@@ -1,0 +1,9 @@
+h1 {
+    justify-content: center;
+}
+
+div {
+    margin-left: 20px;
+    margin-right: 20px;
+    justify-content: left;
+}

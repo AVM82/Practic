@@ -1,0 +1,40 @@
+.chapter-header {
+    min-height: 80px;
+    display: flex;
+    background-color: #30BE70;
+    justify-content: space-between;
+    padding: 10px;
+    padding-left: 20px;
+    margin-left: 40px;
+    margin-right: 40px;    
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.board {
+    margin-bottom: 20px;
+}
+
+.chapter-part {
+    margin-left: 40px;
+    margin-right: 40px;    
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: flex;
+    padding: 10px;
+    border-radius: 3px;
+    border: 1px solid;
+}
+
+.column {
+    padding: 2px;
+    flex-direction: column;
+}
+
+.column-right {
+    padding: 2px;
+    min-width: fit-content;
+    margin-left: auto;
+    align-self: right;
+}

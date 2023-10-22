@@ -1,28 +1,88 @@
 package com.group.practic.service;
 
+import com.group.practic.dto.AuthUserDto;
 import com.group.practic.dto.PersonDto;
+import com.group.practic.dto.SignUpRequestDto;
+import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
+import com.group.practic.exception.ResourceNotFoundException;
+import com.group.practic.exception.UserAlreadyExistAuthenticationException;
 import com.group.practic.repository.PersonRepository;
+import com.group.practic.repository.RoleRepository;
+import com.group.practic.security.user.LinkedinOauth2UserInfo;
+import com.group.practic.security.user.Oauth2UserInfo;
 import com.group.practic.util.Converter;
 import jakarta.persistence.EntityExistsException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-public class PersonService {
+public class PersonService implements UserDetailsService {
 
-    @Autowired
+    public static final String ROLE_ADMIN = "ADMIN";
+
+    public static final String ROLE_COLLABORATOR = "COLLABORATOR";
+
+    public static final String ROLE_MENTOR = "MENTOR";
+
+    public static final String ROLE_STUDENT = "STUDENT";
+
+    public static final String ROLE_GUEST = "GUEST";
+
+    public static final List<String> ROLES =
+            List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_MENTOR, ROLE_STUDENT, ROLE_GUEST);
+
+    public static final List<String> ADVANCED_ROLES =
+            List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_MENTOR);
+
     private PersonRepository personRepository;
 
+    private RoleRepository roleRepository;
+
+    @Autowired
+    public PersonService(PersonRepository personRepository, RoleRepository roleRepository) {
+        this.personRepository = personRepository;
+        this.roleRepository = roleRepository;
+        ROLES.forEach(this::saveRole);
+    }
+
+
+    RoleEntity saveRole(String role) {
+        RoleEntity roleExists = roleRepository.findByName(role);
+        return roleExists != null ? roleExists : roleRepository.save(new RoleEntity(role));
+    }
+
+
+    RoleEntity getRole(String role) {
+        return roleRepository.findByName(role);
+    }
+
+    
+    Set<RoleEntity> getRoles(String ... roles) {
+        Set<RoleEntity> roleSet = new HashSet<>();
+        for (String role : roles) {
+            RoleEntity roleEntity = getRole(role);
+            if (roleEntity != null) {
+                roleSet.add(roleEntity);
+            }
+        }
+        return roleSet;
+    }
 
     public List<PersonEntity> get() {
         return personRepository.findAll();
@@ -60,75 +120,164 @@ public class PersonService {
 
 
     public Optional<PersonEntity> create(PersonDto personDto) {
-        return Optional.ofNullable(personRepository.save(Converter.convert(personDto)));
+        return Optional.of(personRepository.save(Converter.convert(personDto)));
     }
 
-    public PersonEntity getCurrentPerson() {
-        OAuth2User authorization = getOauth2User();
 
-        return personRepository.findByLinkedin(authorization.getAttribute("id")).orElse(null);
+    public PersonEntity getPerson() {
+        return (PersonEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+
+    public Optional<PersonEntity> getCurrentPerson() {
+        return personRepository.findByLinkedin(getOauth2User().getAttribute("id"));
+    }
+
 
     public PersonEntity createUserIfNotExists() {
-        OAuth2User authorization = getOauth2User();
-
-        Map<String, Object> authorizationAttributes = authorization.getAttributes();
-
+        Map<String, Object> authorizationAttributes = getOauth2User().getAttributes();
         String linkedinId = authorizationAttributes.get("id").toString();
-
-        if (personRepository.findByLinkedin(linkedinId).isPresent()) {
-            return null;
-        }
-
-        PersonEntity personEntity = new PersonEntity(
-                authorizationAttributes.get("localizedFirstName")
-                        + " " + authorizationAttributes.get("localizedLastName"),
-                        linkedinId);
-
-        personEntity.addRole(new RoleEntity("USER"));
-
-        return personRepository.save(personEntity);
+        return personRepository.findByLinkedin(linkedinId).isPresent() ? null
+                : personRepository.save(new PersonEntity(
+                        authorizationAttributes.get("localizedFirstName") + " "
+                                + authorizationAttributes.get("localizedLastName"),
+                        linkedinId, Set.of(new RoleEntity(ROLE_GUEST))));
     }
 
-    private static OAuth2User getOauth2User() {
+
+    public OAuth2User getOauth2User() {
         return (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
+
     public Set<RoleEntity> findUserRolesById(long id) {
-        PersonEntity foundPerson = personRepository.findById(id).orElse(null);
-
-        if (foundPerson == null) {
-            return Set.of();
-        }
-
-        return foundPerson.getRoles();
+        Optional<PersonEntity> foundPerson = get(id);
+        return foundPerson.isPresent() ? foundPerson.get().getRoles() : Set.of();
     }
 
-    public PersonEntity addRoleToUserById(long id, String newRole) {
-        PersonEntity foundPerson = personRepository.findById(id).orElse(null);
 
-        if (foundPerson == null) {
-            return null;
+    public void addRolesToPerson(PersonEntity person, String ... roles) {
+        Set<RoleEntity> personRoles = person.getRoles();
+        Set<RoleEntity> newRoles = getRoles(roles);
+        personRoles.addAll(newRoles);
+        if (personRoles.size() > 1) {
+            personRoles.remove(getRole(ROLE_GUEST));
         }
-
-        if (foundPerson.containsRole(newRole)) {
-            throw new EntityExistsException("User with this role already exists " + newRole);
-        }
-
-        foundPerson.addRole(new RoleEntity(newRole));
-
-        return personRepository.save(foundPerson);
+        person.setRoles(personRoles);
     }
+
+
+    public Optional<PersonEntity> addRoleToUserById(long id, String newRole) {
+        PersonEntity foundPerson = personRepository.findById(id).orElse(null);
+        if (foundPerson != null) {
+            if (foundPerson.containsRole(newRole)) {
+                throw new EntityExistsException("User with this role already exists " + newRole);
+            }
+            foundPerson.setRoles(Set.of(new RoleEntity(newRole)));
+            return Optional.of(personRepository.save(foundPerson));
+        }
+        return Optional.empty();
+    }
+
 
     public boolean isCurrentPersonMentor() {
-        return getCurrentPerson().containsRole("MENTOR");
+        Optional<PersonEntity> currentPerson = Optional.ofNullable(getPerson());
+        return currentPerson.isPresent() && currentPerson.get().containsRole(ROLE_MENTOR);
     }
 
-    public PersonEntity addEmailToCurrentUser(String email) {
-        PersonEntity currentPerson = getCurrentPerson();
 
-        currentPerson.setContacts(email);
-
-        return personRepository.save(currentPerson);
+    public Optional<PersonEntity> addEmailToCurrentUser(String email) {
+        Optional<PersonEntity> currentPerson = Optional.ofNullable(getPerson());
+        if (currentPerson.isPresent()) {
+            currentPerson.get().setContacts(email);
+            return Optional.of(personRepository.save(currentPerson.get()));
+        }
+        return Optional.empty();
     }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return personRepository.findPersonEntityByEmail(email).orElse(createUserIfNotExists());
+    }
+
+
+    @Transactional
+    public AuthUserDto processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken,
+            OidcUserInfo userInfo) {
+        Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(attributes);
+        Optional<PersonEntity> user =
+                personRepository.findPersonEntityByEmail(oauth2UserInfo.getEmail());
+        PersonEntity person =
+                user.map(personEntity -> updateExistingUser(personEntity, oauth2UserInfo))
+                        .orElseGet(() -> registerNewUser(toUserRegistrationObject(oauth2UserInfo)));
+        return AuthUserDto.create(person, attributes, idToken, userInfo);
+    }
+
+
+    public PersonEntity updateExistingUser(PersonEntity existingUser,
+            Oauth2UserInfo oauth2UserInfo) {
+        existingUser.setName(oauth2UserInfo.getName());
+        existingUser.setLinkedin(oauth2UserInfo.getId());
+        existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());
+        return personRepository.save(existingUser);
+    }
+
+
+    private SignUpRequestDto toUserRegistrationObject(Oauth2UserInfo oauth2UserInfo) {
+        return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId())
+                .name(oauth2UserInfo.getName()).email(oauth2UserInfo.getEmail())
+                .profilePictureUrl(oauth2UserInfo.getImageUrl()).password("changeit").build();
+    }
+
+
+    @Transactional
+    public UserDetails loadUserById(Long id) {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+    }
+
+
+    @Transactional
+    public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
+        Optional<PersonEntity> personEntity =
+                personRepository.findPersonEntityByEmail(userDetails.getEmail());
+        if (personEntity.isPresent()) {
+            throw new UserAlreadyExistAuthenticationException(
+                    "User with email " + userDetails.getEmail() + " already exist");
+        }
+        PersonEntity newPerson = new PersonEntity();
+        newPerson.setName(userDetails.getName());
+        newPerson.setPassword(userDetails.getPassword());
+        newPerson.setEmail(userDetails.getEmail());
+        newPerson.setLinkedin(userDetails.getProviderUserId());
+        newPerson.setProfilePictureUrl(userDetails.getProfilePictureUrl());
+        this.addRolesToPerson(newPerson, ROLE_GUEST);
+        return personRepository.saveAndFlush(newPerson);
+    }
+
+
+    public PersonEntity save(PersonEntity person) {
+        return personRepository.save(person);
+    }
+
+
+    public boolean hasAnyRole(List<String> roles) {
+        PersonEntity user = getPerson();
+        return user != null && findUserRolesById(user.getId()).stream()
+                .anyMatch(roleEntity -> roles.contains(roleEntity.getName()));
+    }
+
+
+    public boolean hasAdvancedRole() {
+        return hasAnyRole(ADVANCED_ROLES);
+    }
+
+
+    public boolean amImentor(CourseEntity course) {
+        PersonEntity me = getPerson();
+        return me != null
+                && course.getMentors().stream().anyMatch(mentor -> mentor.getId() == me.getId());
+    }
+
 }

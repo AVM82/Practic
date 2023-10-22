@@ -1,0 +1,17 @@
+.green-button {
+    background-color: #27AE60;
+    color: white;
+}
+.custom-icon {
+    width: 100%; 
+    height: 100%;
+    background-size: contain;
+    background-repeat: initial;
+    border-radius: 50%;
+    background-position: center center;
+  }
+
+  .round-image-button {
+    width: 70px;
+    height: 70px;
+}

@@ -1,0 +1,19 @@
+.normal-snackbar {
+    background-color: #4caf50;
+    color: white;
+}
+
+.error-snackbar {
+    background-color: #f44336;
+    color: white;
+}
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex-grow: 1;
+}

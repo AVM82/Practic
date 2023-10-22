@@ -1,0 +1,55 @@
+<div class="container">
+    <div class="centered-content">
+      <p>Відгуки та пропозиції</p>
+    </div>
+    <div class="right-corner">
+ <button class="sort-button" mat-icon-button [matMenuTriggerFor]="sortMenu">
+        <mat-icon>sort</mat-icon>
+      </button>
+      <mat-menu #sortMenu="matMenu">
+        <button mat-menu-item (click)="sortData('RATING_ASCENDING')">Більше лайків</button>
+        <button mat-menu-item (click)="sortData('RATING_DESCENDING')">Меньше лайків</button>
+        <button mat-menu-item (click)="sortData('DATE_ASCENDING')">Нещодавно створені</button>
+        <button mat-menu-item (click)="sortData('DATE_DESCENDING')">Давно створені</button>
+      </mat-menu>
+            <button class="create-feedback-button"(click)="openFeedbackDialog()">Залишити відгук</button>     
+    </div>
+  </div>
+
+<div class="cards-container">
+  <div class="feedback-card" *ngFor="let feedback of feedbacks | slice: (page - 1) * pageSize : page * pageSize; let i = index">
+    <div class="user-info">
+      <p class="username">{{ feedback.student.name || "Немає ім'я" }}</p>
+      <img class="userpic" [src]="feedback.student.profilePictureUrl || 'URL зображення відсутьній'" alt="https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg">
+      <p class="date">Створено: {{getDate(feedback)}}</p>
+    </div>
+    <div class="card-info">
+
+      <div class="delete" [class.visible]="isCreatorOrAdmin(feedback)">
+        <button mat-icon-button class="delete-button" (click)="deleteFeedback(feedback)" >
+          <mat-icon class="delete-icon">clear</mat-icon>
+        </button>
+      </div>
+
+
+ <div class="feedback-message">
+      <p>{{ feedback.feedback || "Коментар відсутній"}}</p>
+    </div>
+    <div class="likes">
+    
+      <button mat-icon-button class="like-button" (click)="changeLike(feedback)">
+        <mat-icon class="like-icon" *ngIf="!isLiked(feedback)">favorite_border</mat-icon>
+        <mat-icon class="like-icon" *ngIf="isLiked(feedback)">favorite</mat-icon>
+      </button>
+
+    <p>{{feedback.likes}}</p>
+
+    </div>
+     </div>
+
+    </div>
+   
+</div>
+
+<mat-paginator [length]="feedbacks.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)"></mat-paginator>
+

@@ -1,0 +1,113 @@
+.base-card{
+  overflow-wrap: break-word;
+  margin-left:10px;
+  width: 210px;
+  height: 180px;
+  background: #D9D9D9;
+  border-radius: 8px;
+  align-items: center;
+  padding: 5px;
+}
+.inner-info-card{
+  width: 200px;
+  height: 85px;
+  background: white;
+  border-radius: 4px;
+  display: flex;
+}
+.student-image{
+  margin-top:5px;
+  margin-left:10px;
+  width: 60px;
+  height: 60px;
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.student-name{
+  margin-top: 3px;
+  margin-left: 1px;
+  color: #333333;
+  font-size: 12px;
+  font-family: serif;
+  font-weight: 500;
+  line-height: 10px;
+  word-wrap: break-word
+}
+.report-date{
+  color: #333333;
+  font-size: 18px;
+  font-family: serif;
+  font-weight: 550;
+  line-height: 20px;
+  word-wrap: break-word;
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+}
+.report-time{
+  color: #333333;
+  font-size: 20px;
+  font-family: serif;
+  font-weight: 500;
+  line-height: 22px;
+  word-wrap: break-word;
+}
+.report-time-border{
+  padding: 2px 7px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 0.50px black solid;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position:absolute;
+  bottom: 15px;
+  right: 30px;
+}
+.report-topic-header{
+  font-size: 10px;
+  margin: 2px;
+}
+.report-topic-text{
+  font-size: 14px;
+  margin: 2px;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+.like-counter-location{
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+.like-counter-number{
+  margin-right:2px;
+  color: #27AE60;
+  font-size: 16px;
+  font-family: serif;
+  text-decoration: underline;
+}
+.change-report-btn{
+  font-size: 10px;
+  color: black;
+  background-color: gold;
+  height: 20px;
+  margin: 5px;
+}
+.cancel-report-btn{
+  font-size: 10px;
+  color: black;
+  background-color: #f44336;
+  height: 20px;
+  margin: 5px;
+}
+
+
+
+
+
+
+

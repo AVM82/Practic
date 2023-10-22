@@ -14,25 +14,45 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-
-@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "discord"}))
+@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}))
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class PersonEntity implements UserDetails {
+
+    private static final long serialVersionUID = 2865461614246570865L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
 
     boolean inactive;
 
     boolean ban;
+
+    LocalDateTime registered = LocalDateTime.now();
+
+    private String email;
 
     @Column
     @NotBlank
@@ -47,138 +67,48 @@ public class PersonEntity implements UserDetails {
 
     private String contacts;
 
+    private String password;
+
+    private String profilePictureUrl;
+
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "persons_roles",
-            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
 
-    public PersonEntity() {
-    }
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "person_application", joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private Set<CourseEntity> courses = new HashSet<>();
+
 
     public PersonEntity(String name, String linkedin) {
         this.name = name;
         this.linkedin = linkedin;
     }
 
-    public PersonEntity(String name, String linkedin, String contacts) {
-        this.name = name;
-        this.linkedin = linkedin;
-        this.contacts = contacts;
-    }
 
-    public PersonEntity(String name, String discord, String linkedin, String contacts,
-                        Set<RoleEntity> roles) {
+    public PersonEntity(String name, String linkedin, Set<RoleEntity> roles) {
         this.name = name;
-        this.discord = discord;
         this.linkedin = linkedin;
-        this.contacts = contacts;
         this.roles = roles;
     }
 
 
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public boolean isInactive() {
-        return inactive;
-    }
-
-
-    public void setInactive(boolean inactive) {
-        this.inactive = inactive;
-    }
-
-
-    public boolean isBan() {
-        return ban;
-    }
-
-
-    public void setBan(boolean ban) {
-        this.ban = ban;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public String getDiscord() {
-        return discord;
-    }
-
-
-    public void setDiscord(String discord) {
-        this.discord = discord;
-    }
-
-
-    public String getLinkedin() {
-        return linkedin;
-    }
-
-
-    public void setLinkedin(String linkedin) {
-        this.linkedin = linkedin;
-    }
-
-
-    public String getContacts() {
-        return contacts;
-    }
-
-
-    public void setContacts(String contacts) {
-        this.contacts = contacts;
-    }
-
-
-    public Set<RoleEntity> getRoles() {
-        return roles;
-    }
-
-
-    public void setRoles(Set<RoleEntity> roles) {
-        this.roles = roles;
-    }
-
-
-    public void addRole(RoleEntity role) {
-        this.roles.add(role);
-    }
-
-
-    public void removeRole(RoleEntity role) {
-        this.roles.remove(role);
-    }
-
-
-    @Override
-    public String toString() {
-        return "Person{" + "id=" + id + ", name='" + name + '\'' + ", linkedin='" + linkedin + '\''
-                + ", roles=" + roles + '}';
-    }
 
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        Collection<SimpleGrantedAuthority> authorities = new HashSet<>();
+        if (roles != null) {
+            authorities = roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
+                    .collect(Collectors.toUnmodifiableSet());
+        }
+        return authorities;
     }
+
 
     @JsonIgnore
     @Override
@@ -186,11 +116,13 @@ public class PersonEntity implements UserDetails {
         return null;
     }
 
+
     @JsonIgnore
     @Override
     public String getUsername() {
-        return getName();
+        return name;
     }
+
 
     @JsonIgnore
     @Override
@@ -198,11 +130,13 @@ public class PersonEntity implements UserDetails {
         return true;
     }
 
+
     @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
+
 
     @JsonIgnore
     @Override
@@ -210,15 +144,16 @@ public class PersonEntity implements UserDetails {
         return true;
     }
 
+
     @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
     }
 
+
     public boolean containsRole(String role) {
-        return roles.stream()
-                .anyMatch(personRole ->
-                        personRole.getName().equals(role));
+        return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
     }
+
 }

@@ -5,15 +5,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
-@Table(name = "student_on_course", uniqueConstraints = {
-        @UniqueConstraint(name = "UniqueStudentOnCourse", columnNames = { "student_id",
-                "course_id" }) })
+@Table(name = "student_on_course",
+        uniqueConstraints = {@UniqueConstraint(name = "UniqueStudentOnCourse",
+                columnNames = {"student_id", "course_id"})})
 public class StudentOnCourseEntity {
 
     @Id
@@ -22,6 +25,9 @@ public class StudentOnCourseEntity {
 
     @ManyToOne
     PersonEntity student;
+
+    @ManyToOne
+    ChapterEntity activeChapter;
 
     @ManyToOne
     CourseEntity course;
@@ -46,9 +52,11 @@ public class StudentOnCourseEntity {
 
     String purpose;
 
+    @OneToMany
+    Set<AdditionalMaterialsEntity> additionalMaterial = new HashSet<>();
 
-    public StudentOnCourseEntity() {
-    }
+
+    public StudentOnCourseEntity() {}
 
 
     public StudentOnCourseEntity(PersonEntity student, CourseEntity course) {
@@ -190,6 +198,47 @@ public class StudentOnCourseEntity {
 
     public LocalDate getRegistered() {
         return registered;
+    }
+
+
+    public ChapterEntity getActiveChapter() {
+        return activeChapter;
+    }
+
+
+    public StudentOnCourseEntity setActiveChapter(ChapterEntity activeChapter) {
+        this.activeChapter = activeChapter;
+        return this;
+    }
+
+
+    public Set<AdditionalMaterialsEntity> getAdditionalMaterial() {
+        return additionalMaterial;
+    }
+
+
+    public void setAdditionalMaterial(Set<AdditionalMaterialsEntity> additionalMaterial) {
+        this.additionalMaterial = additionalMaterial;
+    }
+
+
+    public void changeAdditionalMaterial(AdditionalMaterialsEntity additionalMaterialsEntity,
+            boolean state) {
+        if (state) {
+            addAdditionalMaterial(additionalMaterialsEntity);
+        } else {
+            removeAdditionalMaterial(additionalMaterialsEntity);
+        }
+    }
+
+
+    public void addAdditionalMaterial(AdditionalMaterialsEntity additionalMaterialsEntity) {
+        additionalMaterial.add(additionalMaterialsEntity);
+    }
+
+
+    public void removeAdditionalMaterial(AdditionalMaterialsEntity additionalMaterialsEntity) {
+        additionalMaterial.remove(additionalMaterialsEntity);
     }
 
 }

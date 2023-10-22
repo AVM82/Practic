@@ -79,7 +79,7 @@ public class StateService {
         Optional<StateEntity> stateEntityUpdatable = stateRepository.findById(id);
         Optional<StateEntity> stateEntityTransition = stateRepository.findById(transitionId);
         return stateEntityUpdatable.isPresent() && stateEntityTransition.isPresent()
-                && stateEntityUpdatable.get().addChange(stateEntityTransition.get())
+                && stateEntityUpdatable.get().addChangeTo(stateEntityTransition.get())
                         ? Optional.ofNullable(
                                 stateRepository.saveAndFlush(stateEntityUpdatable.get()))
                         : Optional.empty();

@@ -1,0 +1,140 @@
+.cards-container{
+  align-items: center;
+  justify-content: center;
+  display:grid;
+  text-align: center;
+  margin-right: 180px;
+}
+
+.feedback-card {
+    border: 2px solid #acabab;
+    border-radius: 10px;
+    margin: 10px;
+    width: 1000px; 
+    height: 200;
+    display: flex;
+      margin-left: 10%;
+  }
+
+  .container {
+    display: flex;
+    align-items: center; 
+    position: relative;
+    justify-content: space-between; 
+  }
+
+.centered-content {
+    font-size: 35px;  
+    margin: 0 auto; 
+    user-select: none;
+}
+
+.create-feedback-button {
+  background-color: #27AE60;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 19px;
+  cursor: pointer;
+  border-radius: 10px;
+ position: absolute;
+  top: 35px; 
+  right: 55px;
+}
+
+.sort-button {
+  background-color: #27AE60;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  position: absolute;
+  top: 35px; 
+  right: 255px;
+  height: 42px;
+  width: 42px;
+}
+
+
+
+  .user-info{
+    display: table-column-group;
+    text-align: center;
+    margin: 6px;
+    min-width: 180px;
+
+  }
+ 
+  .username{
+    white-space: nowrap;
+    font-size: 17px;
+    margin: 12px;
+    }
+
+    .date{
+      white-space: nowrap;
+      font-size: 14px;
+      margin: 6px;
+    }
+
+    .card-info{
+      display: table-cell;
+    }
+
+   .feedback-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 15px;
+    margin-right: 40px;
+    border: 2px ;
+    font-size: 18px;
+    height: 80px;
+  }
+
+  h1{
+    text-align: center;
+  }
+
+  img {
+    width: 90px;
+    height: auto;
+    margin: 0;
+  }
+
+  .likes{
+    display: flex;
+    align-items: center;
+    text-align: right; 
+    user-select: none;
+    margin-top: 5px;
+    margin-bottom:0 ;
+    margin-left: 743px;
+  }
+
+  .like-button{
+    background-color: transparent;
+     box-shadow: none;
+    border: none;
+    cursor: pointer;
+    margin-top: 1px;
+  }
+
+.delete{
+  visibility: hidden;
+  margin-top: 9px;
+  margin-left: 764px;
+
+}
+
+.delete.visible {
+  visibility: visible;
+}
+
+.delete-button{
+  background-color: transparent;
+  border: none;
+   box-shadow: none;
+  cursor: pointer;
+}

@@ -1,18 +1,10 @@
 import {SubSubChapter} from "./subsubchapter";
+import {ReferenceTitle} from "../reference/referenceTitle";
 
-
-export class SubChapter {
+export interface SubChapter {
   id: number;
   number: number;
   name: string;
-  refs: string | undefined;
-  subsubchapters : SubSubChapter[];
-
-  constructor(id: number, number: number, name: string, refs: string, subsubchapters : SubSubChapter[]) {
-    this.id = id;
-    this.number = number;
-    this.name = name;
-    this.refs = refs;
-    this.subsubchapters = subsubchapters;
-  }
+  refs?: ReferenceTitle[];
+  subSubChapters : SubSubChapter[];
 }

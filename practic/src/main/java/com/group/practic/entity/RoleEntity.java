@@ -6,12 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import org.springframework.security.core.GrantedAuthority;
 
 
 @Entity
 @Table(name = "role")
-public class RoleEntity implements GrantedAuthority {
+public class RoleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -21,8 +20,7 @@ public class RoleEntity implements GrantedAuthority {
     private String name;
 
 
-    public RoleEntity() {
-    }
+    public RoleEntity() {}
 
 
     public RoleEntity(String name) {
@@ -47,16 +45,6 @@ public class RoleEntity implements GrantedAuthority {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String getAuthority() {
-        return getName();
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" + "name='" + name + '\'' + '}';
     }
 
 }

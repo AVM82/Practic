@@ -1,0 +1,23 @@
+<div class="split-page">
+    <section class="panel">
+        <mat-card (click)="router.navigate(['/courses'])">
+            Курси
+        </mat-card>
+        <mat-card *ngIf="isAdmin">
+            Користувачі
+        </mat-card>
+        <mat-card *ngIf="isMentor" (click)="mentorPanel()">
+            Менторська панель
+        </mat-card>
+        <mat-card *ngIf="isAdmin || isCollaborator || isMentor">
+            Студенти
+        </mat-card>
+        <mat-card *ngIf="isAdmin || isCollaborator">
+            Статистика
+        </mat-card>
+    </section>
+
+    <section class="content" id="component-content">
+        
+    </section>
+</div>

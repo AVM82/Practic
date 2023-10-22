@@ -1,36 +1,56 @@
-<app-course-navbar></app-course-navbar>
+<app-course-navbar (navchapters)="getChapters($event)" (editModeChanged)="setEditMode($event)"></app-course-navbar>
+
 <div class="chapter-card-container">
-    <mat-card *ngFor="let chapter of chapters" class="chapter-card" [class.locked]="!chapter.isVisible">
-        <ng-container *ngIf="chapter.isVisible">
-            <a [routerLink]="['/course', course?.id, 'chapter', chapter.id]">
-                <mat-card-header class="course-details">
-                    <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
-                </mat-card-header>
-            </a>
-            <mat-card-content class="mat-card-content">
-                {{chapter.name}}
-            </mat-card-content>
-            <mat-card-footer>
-                <div class="info-tags">
-                    <div class="info-tag">
-                        Теорія: не розпочато
-                    </div>
-                    <div class="info-tag">
-                        Практика: не розпочато
-                    </div>
-                    <div class="info-tag">
-                        Доповідь: не проведена
-                    </div>
-                </div>
-            </mat-card-footer>
-        </ng-container>
-        <ng-container *ngIf="!chapter.isVisible">
-            <mat-card-header class="course-details">
-                <h3>Розділ {{ chapter?.number }}: {{chapter.name}}</h3>
-            </mat-card-header>
-            <mat-card-content>
-                <mat-icon class="lock-icon">lock</mat-icon>
-            </mat-card-content>
-        </ng-container>
-    </mat-card>
+  <mat-card *ngFor="let chapter of chapters; index as i" class="chapter-card"
+            [class.locked]="!chapter.visible" [class.edit]="editMode">
+    <ng-container *ngIf="chapter.visible">
+
+      <div *ngIf="editMode" class="chapter-button" (click)="editClick(chapter)">
+          <mat-card-header class="course-details">
+            <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
+          </mat-card-header>
+      </div>
+      <div *ngIf="!editMode" class="chapter-button">
+        <a class="link" [routerLink]="['/courses', slug, 'chapters', chapter.number]">
+          <mat-card-header class="course-details">
+            <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
+          </mat-card-header>
+        </a>
+        <report-button [reportsNumber]="reports[chapter.number-1] ? reports[chapter.number-1].length : 0"></report-button>
+      </div>
+
+      <mat-card-footer *ngIf="student">
+        <div class="info-tags">
+          <div class="info-tag">
+            Теорія: не розпочато
+          </div>
+            <div *ngFor="let part of chapter.partsId" class="info-tag">
+                Практика: {{ part | practiceState: practices }}
+            </div>
+          <div class="info-tag">
+            Доповідь: не проведена
+          </div>
+        </div>
+      </mat-card-footer>
+    </ng-container>
+    <ng-container *ngIf="!chapter.visible">
+      <mat-card-header class="course-details">
+        <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-icon class="lock-icon">lock</mat-icon>
+      </mat-card-content>
+    </ng-container>
+  </mat-card>
+
+  <mat-card *ngIf="editMode" class="new-chapter-card">
+    <ng-container>
+      <div class="chapter-button">
+          <mat-card-header class="add-chapter">
+            <h3># додати розділ #</h3>
+          </mat-card-header>
+      </div>
+    </ng-container>
+  </mat-card>
+  
 </div>

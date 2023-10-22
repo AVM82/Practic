@@ -1,0 +1,57 @@
+<section *ngIf="capability">
+  <h2>Створити новий курс</h2>
+
+  <form>
+    <h3>спосіб створення:</h3>
+    <div>
+      <label for="choiceInteractive" class="choice">
+        <input type="radio" id="choiceInteractive" name="choice" value="Interactive" (change)="setMethod('Interactive')" checked/>
+        інтерактивний
+      </label>
+    </div>
+    <div>
+      <label for="choiceFromProperties" class="choice">
+        <input type="radio" id="choiceFromProperties" name="choice" value="FromProperties" (change)="setMethod('FromProperties')"/>
+        з тексту властивостей
+      </label>
+    </div>
+  </form>
+
+
+  <form *ngIf="createMethod == 'Interactive'" [formGroup]="checkoutForm">
+      <div>
+          <label for="slug" class="textinput">
+            slug
+          </label>
+          <input id="slug" type="text" required minlength="5" formControlName="slug" on-focus="setBlackColor('slug')" on-focusout="checkSlug()">
+        </div>
+      
+        <div>
+          <label for="name" class="textinput">
+            повна назва
+          </label>
+          <input id="name" type="text" required minlength="5" formControlName="name" on-focus="setBlackColor('name')" on-focusout="checkName()">
+        </div>
+      
+        <div>
+          <label for="svg" class="textinput">
+            іконка
+          </label>
+          <input  id="svg" type="text" formControlName="svg" oninput="document.getElementById('svg-icon').innerHTML = this.value">
+        </div>
+
+        <div id="svg-icon" class="svg-view"></div>
+  </form>
+
+  <form *ngIf="createMethod == 'FromProperties'">
+    <textarea id="properties" type="text" rows="15" [(ngModel)]="properties" [ngModelOptions]="{standalone: true}"></textarea>
+  </form>
+
+  <div>
+    <button class="button" type="submit" (click)="onSubmit()">Створити</button>
+  </div>
+</section>
+
+<section *ngIf="!capability">
+  <h1>Лише на папірці !!!</h1>
+</section>

@@ -1,0 +1,60 @@
+h2 {
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    text-align: center;
+}
+
+form {
+    align-items: center;
+    margin: 10px;
+    row-gap: 5px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+div {
+    display: flex;
+    width: 100%;
+    max-height: 64px;
+    justify-content: center;
+    margin: 5px;
+}
+
+.choice {
+    justify-content: left;
+}
+
+.textinput {
+    width: 20%;
+    display: flex;
+    justify-content: right;
+    margin-right: 10px;
+}
+
+input {
+    width: 75%;
+    display: flex;
+    margin: auto;
+}
+
+.svg-view {
+    height: 100%;
+    align-items: center;
+}
+
+textarea {
+    width: 90%;
+    height: 200;
+    
+    resize: both;
+    overflow: auto;
+}
+
+button {
+    justify-content: center;
+    margin-top: 10px;
+}

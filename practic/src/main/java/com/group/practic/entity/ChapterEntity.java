@@ -1,9 +1,9 @@
 package com.group.practic.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,8 +12,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -34,14 +35,14 @@ public class ChapterEntity {
     @Column(length = 1024)
     String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapter", fetch = FetchType.EAGER)
     @OrderBy("number")
-    List<SubChapterEntity> subChapters = new ArrayList<>();
+    Set<ChapterPartEntity> parts = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     QuizEntity quiz;
 
-    @Column(unique = true)
+    @JsonIgnore
     String shortName;
 
 
@@ -49,7 +50,8 @@ public class ChapterEntity {
     }
 
 
-    public ChapterEntity(CourseEntity course, int number, String shortName, String name) {
+    public ChapterEntity(long id, CourseEntity course, int number, String shortName, String name) {
+        this.id = id;
         this.course = course;
         this.number = number;
         this.name = name;
@@ -66,12 +68,32 @@ public class ChapterEntity {
     }
 
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, number, shortName);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        ChapterEntity other = (ChapterEntity) obj;
+        return Objects.equals(name, other.name) && number == other.number
+                && Objects.equals(shortName, other.shortName);
+    }
+
+
     public long getId() {
         return id;
     }
 
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -126,24 +148,13 @@ public class ChapterEntity {
     }
 
 
-    public List<SubChapterEntity> getSubChapters() {
-        return subChapters;
+    public Set<ChapterPartEntity> getParts() {
+        return parts;
     }
 
 
-    public void setSubChapters(List<SubChapterEntity> subChapters) {
-        this.subChapters = subChapters;
-    }
-
-
-    public void addSubChapter(SubChapterEntity subChapter) {
-        subChapters.add(subChapter);
-    }
-
-
-    @JsonIgnore
-    public int getSubChapterSucceedingNumber() {
-        return subChapters.isEmpty() ? 1 : subChapters.get(subChapters.size() - 1).number + 1;
+    public void setParts(Set<ChapterPartEntity> parts) {
+        this.parts = parts;
     }
 
 }

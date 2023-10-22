@@ -9,6 +9,7 @@ import com.group.practic.dto.SkillDto;
 import com.group.practic.entity.SkillEntity;
 import com.group.practic.service.SkillService;
 import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +28,12 @@ public class SkillController {
 
     final SkillService skillService;
 
+
+    @Autowired
     public SkillController(SkillService skillService) {
         this.skillService = skillService;
     }
+
 
     @GetMapping
     public ResponseEntity<Collection<SkillEntity>> getAllSkills() {
@@ -42,19 +46,21 @@ public class SkillController {
         return getResponse(skillService.findByName(name));
     }
 
+
     @PostMapping
     public ResponseEntity<SkillEntity> createSkill(@RequestBody SkillDto skillDto) {
         return postResponse(skillService.save(skillDto));
     }
+
 
     @DeleteMapping("/{name}")
     public ResponseEntity<SkillEntity> deleteSkill(@PathVariable String name) {
         return deleteResponse(skillService.delete(name));
     }
 
+
     @PutMapping("/{name}")
-    public ResponseEntity<SkillEntity> addSkillToChapter(
-            @RequestParam long chapterId,
+    public ResponseEntity<SkillEntity> addSkillToChapter(@RequestParam long chapterId,
             @PathVariable String name) {
         return updateResponse(skillService.addSkillToChapter(name, chapterId));
     }

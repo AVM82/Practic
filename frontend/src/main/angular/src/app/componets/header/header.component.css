@@ -1,5 +1,5 @@
 mat-toolbar {
-    background-color: #B1ADAD;
+    background-color: #27AE60;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -20,9 +20,8 @@ mat-toolbar {
 
 .header-container a {
     text-decoration: none;
-    color: #333;
+    color: #FFFFFF;
     font-size: 20px;
-    font-weight: bold;
     display: flex;
     flex-direction: column;
 }
@@ -41,3 +40,10 @@ mat-toolbar {
     font-size: 14px;
     cursor: pointer;
 }
+
+.userpic-container{
+    display: contents;
+    color: #FFFFFF;
+    font-size: 15px;
+}
+

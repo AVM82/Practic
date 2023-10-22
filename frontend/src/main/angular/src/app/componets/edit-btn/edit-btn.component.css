@@ -1,0 +1,27 @@
+.edit-button-container {
+    margin: 2px;
+}
+
+.edit-button {
+    background-color: #277cae;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    background-color: #657dbf;
+}
+
+.view-button {
+    background-color: #c02929;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.view-button:hover {
+    background-color: #b43c42;
+}

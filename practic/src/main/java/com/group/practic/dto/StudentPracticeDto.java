@@ -1,52 +1,41 @@
 package com.group.practic.dto;
 
-import com.group.practic.enumeration.PracticeState;
-import java.util.Date;
+import com.group.practic.entity.StudentPracticeEntity;
+import java.sql.Date;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
+
+@NoArgsConstructor
+@Getter
+@Setter
 public class StudentPracticeDto {
+
     private String personName;
+
+    @NotNull
+    private long chapterPartId;
+
     private String chapterName;
+
     private String state;
 
     private Date updatedAt;
 
-    public StudentPracticeDto() {
+    @NotNull
+    private long studentId;
+
+
+    public static StudentPracticeDto map(StudentPracticeEntity practice) {
+        StudentPracticeDto dto = new StudentPracticeDto();
+        dto.studentId = practice.getStudent().getId();
+        dto.personName = practice.getStudent().getName();
+        dto.chapterPartId = practice.getChapterPart().getId();
+        dto.chapterName = practice.getChapterPart().getPraxisPurpose();
+        dto.state = practice.getState().name();
+        return dto;
     }
 
-    public StudentPracticeDto(String personName, String chapterName) {
-        this.personName = personName;
-        this.chapterName = chapterName;
-    }
-
-    public String getPersonName() {
-        return personName;
-    }
-
-    public void setPersonName(String personName) {
-        this.personName = personName;
-    }
-
-    public String getChapterName() {
-        return chapterName;
-    }
-
-    public void setChapterName(String chapterName) {
-        this.chapterName = chapterName;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(PracticeState state) {
-        this.state = state.name().toLowerCase();
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

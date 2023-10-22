@@ -1,7 +1,11 @@
-.table {
+.mat-elevation-z2.table {
     width: 100%;
 }
 
-.table-content {
+.mat-elevation-z2.table-content {
     width: 100%;
+}
+
+table {
+    width: 98%;
 }

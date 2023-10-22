@@ -1,0 +1,24 @@
+<app-course-navbar ></app-course-navbar>
+
+<div class="chapter-header">
+	<h3>Додаткові матеріали</h3>
+</div>
+<div class="board">
+    <div *ngFor="let item of materials" class="chapter-part">
+        <div class="column">{{item.number}}. </div>
+        <div class="column">{{item.name}}
+            <div *ngIf="item.refs">
+                <div *ngFor="let ref of item.refs">
+                    <a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+                </div>
+            </div>
+        </div>
+        <form *ngIf="showCheckbox" class="column-right">
+            <label>
+                <input type="checkbox" [id]="item.id" [checked]="item.checked" (change)="changeLearned($event)" />
+                вивчено
+            </label>
+        </form>
+    </div>
+</div>
+
