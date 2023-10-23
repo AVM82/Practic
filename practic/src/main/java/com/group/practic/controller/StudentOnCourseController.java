@@ -29,6 +29,7 @@ import com.group.practic.service.StudentOnCourseService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
 import com.group.practic.util.Converter;
+import com.group.practic.util.ResponseUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import java.security.Principal;
@@ -118,7 +119,7 @@ public class StudentOnCourseController {
     }
 
 
-    @PostMapping("/apply")
+    @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR', 'COLLABORATOR')")
     public ResponseEntity<StudentOnCourseEntity> create(@RequestBody @Valid NewStudentDto student) {
         Optional<CourseEntity> courseOptional = courseService.get(student.getCourseSlug());
@@ -213,7 +214,8 @@ public class StudentOnCourseController {
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.createStudentReport(personEntity, studentReportCreationDto);
-        return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
+        return postResponse(Optional
+                .ofNullable(reportEntity.isEmpty() ? null : Converter.convert(reportEntity.get())));
     }
 
 
@@ -221,11 +223,14 @@ public class StudentOnCourseController {
     public ResponseEntity<StudentReportDto> changeLikeCount(@RequestBody int reportId,
             Principal principal) {
         Optional<PersonEntity> personEntity = personService.get(principal.getName());
-        long studentId = personEntity.get().getId();
-        Optional<StudentReportEntity> reportEntity =
-                studentReportService.changeReportLikeList(reportId, studentId);
-
-        return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
+        if (personEntity.isPresent()) {
+            Optional<StudentReportEntity> reportEntity =
+                    studentReportService.changeReportLikeList(reportId, personEntity.get().getId());
+            if (reportEntity.isPresent()) {
+                return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
+            }
+        }
+        return ResponseUtils.notAcceptable();
     }
 
 

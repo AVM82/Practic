@@ -104,17 +104,22 @@ public class StudentOnCourseService {
 
 
     public Optional<StudentOnCourseEntity> create(CourseEntity course, PersonEntity user) {
-        StudentOnCourseEntity student = new StudentOnCourseEntity(user, course);
-        Optional<ChapterEntity> firstChapter = courseService.getFirstChapter(course);
-        student.setActiveChapter(firstChapter.isPresent() ? firstChapter.get() : null);
-        personService.addRolesToPerson(user, PersonService.ROLE_STUDENT);
-        PersonApplicationEntity applicant =
-                personApplicationRepository.findByPersonAndCourse(user, course);
-        applicant.setApply(true);
-        personService.save(user);
-        personApplicationRepository.save(applicant);
-        this.notify(user, course.getSlug());
-        return Optional.ofNullable(studentOnCourseRepository.save(student));
+        StudentOnCourseEntity student = studentOnCourseRepository
+                .findByCourseAndStudentAndInactiveAndBan(course, user, false, false);
+        if (student == null) {
+            student = new StudentOnCourseEntity(user, course);
+            Optional<ChapterEntity> firstChapter = courseService.getFirstChapter(course);
+            student.setActiveChapter(firstChapter.isPresent() ? firstChapter.get() : null);
+            personService.addRolesToPerson(user, PersonService.ROLE_STUDENT);
+            PersonApplicationEntity applicant =
+                    personApplicationRepository.findByPersonAndCourse(user, course);
+            applicant.setApply(true);
+            personService.save(user);
+            personApplicationRepository.save(applicant);
+            this.notify(user, course.getName());
+            return Optional.ofNullable(studentOnCourseRepository.save(student));
+        }
+        return Optional.of(student);
     }
 
 
