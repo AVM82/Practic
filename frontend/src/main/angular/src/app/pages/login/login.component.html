@@ -1,15 +1,4 @@
-<!-- <div class="container login-container">
-    <img class="login-background-image" src="assets/background_image.png" alt="Here must be background image" width="">
-    <div class="login-sub-container">
-        <a href="{{linkedinURL}}">
-            <img class="linkedin-image" src="assets/button_linkedin.ico" alt="Here must be sign in linkedin button">
-        </a>
-        <div>Натискаючи «Авторизуйся через LinkedIn», ви погоджуєтеся з Політикою
-        <br/>
-        Конфіденційності та Умовами використання Practically.Programming.
-        </div>
-    </div>
-</div> -->
+
 <div class="login-page">
 <div class="left-column">
     <img class="login-background-image" src="assets/background_image.png" alt="Here must be background image" width="">
@@ -20,20 +9,11 @@
 <p class="practic">practically.<br>programming.</p>
 <p class="auth-name" *ngIf="!isRegister">Реєструватися</p>
 <p class="login-name" *ngIf="isRegister">Вхід</p>
-<!-- 
-<mat-form-field class="name-mat-field" [class.visible]="isRegister">
-    <input class="field" *ngIf="!isRegister"  matInput [(ngModel)]="name" placeholder="ПIБ" >
-</mat-form-field>
-
-<mat-form-field class="mat-field">
-    <input class="field" matInput [(ngModel)]="email" placeholder="Email" >
-</mat-form-field> -->
 
 <mat-form-field class="mat-field"  *ngIf="!isRegister"  >
     <input class="field" *ngIf="!isRegister" matInput [formControl]="nameControl" placeholder="ПIБ">
     <mat-error   *ngIf="nameControl.hasError('required')">Поле обязательно для заполнения</mat-error>
 </mat-form-field>
-
 
 <mat-form-field class="mat-field" >
     <input class="field" matInput [formControl]="emailControl" placeholder="Email">

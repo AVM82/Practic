@@ -17,9 +17,7 @@ export class EmailPassAuthService {
       email: email,
       password: password
     };
-        console.log(email);
-    console.log(name);
-    console.log("user added");
+
   return this.http.post(ApiUrls.EmailPassAuth,body,{headers:headers})  
   }
 }

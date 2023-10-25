@@ -10,7 +10,6 @@ import { EmailPassAuthService } from 'src/app/services/emailPassAuth/email-pass-
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -116,12 +115,4 @@ export class LoginComponent implements OnInit{
     this.hidePassword = !this.hidePassword;
   }
 
-  signIn():void{
-   const email: string| null= this.emailControl.value!;
-          const password: string| null = this.passwordControl.value!;
-          if (email!=null||password!=null) {
-           console.log(email);
-           console.log(password);
-  }
-}
 }
