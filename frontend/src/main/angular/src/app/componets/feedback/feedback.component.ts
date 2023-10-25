@@ -9,7 +9,6 @@ import { MatTableModule,MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { TokenStorageService } from "../../services/auth/token-storage.service";
 import { User } from 'src/app/models/user/user';
-import { UserRole } from 'src/app/models/user/user.role';
 import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
@@ -48,7 +47,7 @@ export class FeedbackComponent implements OnInit {
 
   updateData():void{
     this.feedbackService.getFeedbacks(this.feedbackSortedState).subscribe(data => {
-      this.feedbacks = data;
+      this.feedbacks = data || [];
       this.dataSource = new MatTableDataSource<any>(this.feedbacks);
     });
   }
