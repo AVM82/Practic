@@ -61,7 +61,8 @@ public class RegisterByEmailDto {
             return false;
         }
         RegisterByEmailDto that = (RegisterByEmailDto) o;
-        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password);
+        return Objects.equals(name, that.name) && Objects.equals(
+                email, that.email) && Objects.equals(password, that.password);
     }
 
     @Override

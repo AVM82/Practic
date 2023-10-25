@@ -89,7 +89,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request ->
                                 request
-                                        .requestMatchers("/api/courses","/api/register")
+                                        .requestMatchers("/api/courses", "/api/register")
                                         .permitAll()
                                         .requestMatchers(
                                                 "/api/**")
