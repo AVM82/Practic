@@ -7,11 +7,8 @@ import com.group.practic.dto.UserInfoDto;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.security.CustomAuthenticationProvider;
-import com.group.practic.security.Oauth2AuthenticationSuccessHandler;
 import com.group.practic.security.jwt.TokenProvider;
 import com.group.practic.service.PersonService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,20 +24,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class AuthController {
 
-    @Autowired
     PersonService personService;
 
-    @Autowired
     TokenProvider tokenProvider;
 
-    @Autowired
     PasswordEncoder passwordEncoder;
-    @Autowired
-    private Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
 
 
+    private final CustomAuthenticationProvider authenticationProvider;
+
     @Autowired
-    private CustomAuthenticationProvider authenticationProvider;
+    public AuthController(PersonService personService,
+                          TokenProvider tokenProvider,
+                          PasswordEncoder passwordEncoder,
+                          CustomAuthenticationProvider authenticationProvider) {
+        this.personService = personService;
+        this.tokenProvider = tokenProvider;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationProvider = authenticationProvider;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUserByEmail(@RequestBody RegisterByEmailDto byEmailDto) {
