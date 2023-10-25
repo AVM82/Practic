@@ -116,12 +116,4 @@ export class LoginComponent implements OnInit{
     this.hidePassword = !this.hidePassword;
   }
 
-  signIn():void{
-   const email: string| null= this.emailControl.value!;
-          const password: string| null = this.passwordControl.value!;
-          if (email!=null||password!=null) {
-           console.log(email);
-           console.log(password);
-  }
-}
 }
