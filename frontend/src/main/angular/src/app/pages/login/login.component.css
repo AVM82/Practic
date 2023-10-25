@@ -118,6 +118,7 @@ cursor: default;
     margin-left: 10px;
     cursor: pointer;
     margin-bottom: 15px;
+    border: none;
 }
 
 .have-account{
