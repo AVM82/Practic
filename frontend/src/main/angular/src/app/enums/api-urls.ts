@@ -18,7 +18,8 @@ export enum ApiUrls {
   Feedbacks = '/api/feedbacks/',
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
-  TopicsReports = '/api/topicsreports'
+  TopicsReports = '/api/topicsreports',
+  EmailPassAuth = 'api/register'
 }
 
 

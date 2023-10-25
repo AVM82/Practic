@@ -51,6 +51,19 @@ public class AuthUserDto implements OAuth2User, OidcUser {
                 .build();
     }
 
+    public static AuthUserDto create(PersonEntity person) {
+        return AuthUserDto.builder()
+                .email(person.getEmail())
+                .password(person.getPassword())
+                .isEnabled(person.isEnabled())
+                .isAccountNotExpired(person.isAccountNonExpired())
+                .isCredentialsNotExpired(person.isCredentialsNonExpired())
+                .isAccountNotLocked(person.isAccountNonLocked())
+                .authorities(person.getAuthorities())
+                .person(person)
+                .build();
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
         return this.attributes;

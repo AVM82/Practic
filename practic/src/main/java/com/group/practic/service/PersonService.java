@@ -280,4 +280,7 @@ public class PersonService implements UserDetailsService {
                 && course.getMentors().stream().anyMatch(mentor -> mentor.getId() == me.getId());
     }
 
+    public PersonEntity loadUserByEmail(String email) {
+        return personRepository.findPersonEntityByEmail(email).orElse(null);
+    }
 }
