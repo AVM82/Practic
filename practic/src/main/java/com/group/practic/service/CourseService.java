@@ -2,11 +2,11 @@ package com.group.practic.service;
 
 import com.group.practic.PropertyLoader;
 import com.group.practic.dto.CourseDto;
+import com.group.practic.dto.MentorDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
-import com.group.practic.entity.PersonEntity;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.util.Converter;
 import com.group.practic.util.PropertyUtil;
@@ -62,6 +62,11 @@ public class CourseService {
     public List<ChapterEntity> getChapters(String slug) {
         Optional<CourseEntity> course = courseRepository.findBySlug(slug);
         return course.isEmpty() ? List.of() : chapterService.getAll(course.get());
+    }
+
+
+    public List<ChapterEntity> getChapters(CourseEntity course) {
+        return chapterService.getAll(course);
     }
 
 
@@ -143,9 +148,9 @@ public class CourseService {
         courseEntity.setAuthors(getAuthorSet(prop));
         courseEntity.setCourseType(prop.getProperty(PropertyUtil.TYPE_KEY, ""));
         courseEntity.setDescription(prop.getProperty(PropertyUtil.DESCRIPTION_KEY, ""));
-        levelService.getLevelsSet(courseEntity, prop);
-        chapterService.getChapters(courseEntity, prop);
-        additionalMaterialsService.getAdditionalMaterials(courseEntity, prop);
+        courseEntity.setLevels(levelService.getLevelsSet(courseEntity, prop));
+        courseEntity.setChapters(chapterService.getChapters(courseEntity, prop));
+        courseEntity.setAdditionalMaterials(additionalMaterialsService.getAdditionalMaterials(courseEntity, prop));
         return save(courseEntity);
     }
 
@@ -161,14 +166,14 @@ public class CourseService {
     }
 
 
-    public Set<PersonEntity> getMentors(String slug) {
-        Optional<CourseEntity> course = get(slug);
-        return course.isPresent() ? course.get().getMentors() : Set.of();
+    public List<MentorDto> getMentors(CourseEntity course) {
+        return course.getMentors().stream().map(MentorDto::map).toList();
     }
 
 
-    public Optional<ChapterEntity> getFirstChapter(CourseEntity course) {
+    public Optional<ChapterEntity> getNextChapterByNumber(CourseEntity course, int number) {
         return course.getChapters().stream()
+                .filter(chapter -> chapter.getNumber() > number)
                 .min((a, b) -> Integer.compare(a.getNumber(), b.getNumber()));
     }
 

@@ -1,3 +1,4 @@
+import { Practice } from "../practice/practice";
 import {ChapterPart} from "./chapterpart";
 
 export interface Chapter {
@@ -5,4 +6,6 @@ export interface Chapter {
   number: number;
   name: string;
   parts: ChapterPart[];
+  state: string;
+  practices: Practice[];
 }

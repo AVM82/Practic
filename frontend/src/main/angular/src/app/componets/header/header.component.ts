@@ -29,6 +29,7 @@ export class HeaderComponent implements OnInit{
       private router: Router
   ) {
   }
+
   ngOnInit(): void {
     const token = this.tokenStorageService.getToken();
     const user: User = this.tokenStorageService.getUser();

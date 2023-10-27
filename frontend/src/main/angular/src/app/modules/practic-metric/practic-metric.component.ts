@@ -19,12 +19,12 @@ export class PracticMetricComponent implements OnInit {
   @Input() shouldShowHeader: boolean = true;
   isRequestInProgress: boolean = false;
 
-  displayedColumns: string[] = ['personName', 'chapterName', 'state', 'updatedAt', 'btnApply'];
+  displayedColumns: string[] = ['personName', 'purpose', 'state', 'updatedAt', 'btnApply'];
   columnNameConverterMap: { [key: string]: string } = {
     'personName': 'ПІБ',
-    'chapterName': 'Розділ',
+    'purpose': 'Практична робота',
     'state': 'Стан',
-    'updatedAt': 'Останнє оновлення',
+    'updatedAt': 'Оновлено',
     'btnApply': 'Прийняти'
   };
 

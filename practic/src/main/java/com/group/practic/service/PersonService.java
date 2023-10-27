@@ -3,9 +3,10 @@ package com.group.practic.service;
 import com.group.practic.dto.AuthUserDto;
 import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.SignUpRequestDto;
-import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
+import com.group.practic.entity.StudentEntity;
 import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.exception.UserAlreadyExistAuthenticationException;
 import com.group.practic.repository.PersonRepository;
@@ -13,7 +14,6 @@ import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
 import com.group.practic.util.Converter;
-import jakarta.persistence.EntityExistsException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,15 +50,36 @@ public class PersonService implements UserDetailsService {
     public static final List<String> ADVANCED_ROLES =
             List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_MENTOR);
 
-    private PersonRepository personRepository;
+    PersonRepository personRepository;
 
-    private RoleRepository roleRepository;
+    RoleRepository roleRepository;
+
+    CourseService courseService;
+
+    ApplicantService applicantService;
+
+    RoleEntity roleGuest;
+
 
     @Autowired
-    public PersonService(PersonRepository personRepository, RoleRepository roleRepository) {
+    public PersonService(PersonRepository personRepository, RoleRepository roleRepository,
+            CourseService courseService, ApplicantService applicantService) {
+        this.courseService = courseService;
+        this.applicantService = applicantService;
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
         ROLES.forEach(this::saveRole);
+        this.roleGuest = getRole(ROLE_GUEST);
+    }
+
+
+    public static PersonEntity me() {
+        return (PersonEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+
+    public Optional<PersonDto> getMeDto() {
+        return Optional.ofNullable(PersonDto.map(me()));
     }
 
 
@@ -68,12 +89,12 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    RoleEntity getRole(String role) {
+    public RoleEntity getRole(String role) {
         return roleRepository.findByName(role);
     }
 
-    
-    Set<RoleEntity> getRoles(String ... roles) {
+
+    Set<RoleEntity> getRoles(String... roles) {
         Set<RoleEntity> roleSet = new HashSet<>();
         for (String role : roles) {
             RoleEntity roleEntity = getRole(role);
@@ -83,6 +104,7 @@ public class PersonService implements UserDetailsService {
         }
         return roleSet;
     }
+
 
     public List<PersonEntity> get() {
         return personRepository.findAll();
@@ -124,11 +146,6 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public PersonEntity getPerson() {
-        return (PersonEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-
     public Optional<PersonEntity> getCurrentPerson() {
         return personRepository.findByLinkedin(getOauth2User().getAttribute("id"));
     }
@@ -141,7 +158,7 @@ public class PersonService implements UserDetailsService {
                 : personRepository.save(new PersonEntity(
                         authorizationAttributes.get("localizedFirstName") + " "
                                 + authorizationAttributes.get("localizedLastName"),
-                        linkedinId, Set.of(new RoleEntity(ROLE_GUEST))));
+                        linkedinId, Set.of(roleGuest)));
     }
 
 
@@ -150,55 +167,35 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public Set<RoleEntity> findUserRolesById(long id) {
-        Optional<PersonEntity> foundPerson = get(id);
-        return foundPerson.isPresent() ? foundPerson.get().getRoles() : Set.of();
-    }
-
-
-    public void addRolesToPerson(PersonEntity person, String ... roles) {
+    public PersonEntity addRolesToPerson(PersonEntity person, Set<RoleEntity> newRoles) {
         Set<RoleEntity> personRoles = person.getRoles();
-        Set<RoleEntity> newRoles = getRoles(roles);
         personRoles.addAll(newRoles);
         if (personRoles.size() > 1) {
-            personRoles.remove(getRole(ROLE_GUEST));
+            personRoles.remove(roleGuest);
         }
         person.setRoles(personRoles);
+        return personRepository.save(person);
     }
 
 
-    public Optional<PersonEntity> addRoleToUserById(long id, String newRole) {
-        PersonEntity foundPerson = personRepository.findById(id).orElse(null);
-        if (foundPerson != null) {
-            if (foundPerson.containsRole(newRole)) {
-                throw new EntityExistsException("User with this role already exists " + newRole);
-            }
-            foundPerson.setRoles(Set.of(new RoleEntity(newRole)));
-            return Optional.of(personRepository.save(foundPerson));
+    public Optional<PersonEntity> setEmailToMe(String email) {
+        PersonEntity me = me();
+        if (me != null) {
+            me.setContacts(email);
+            me = personRepository.save(me);
         }
-        return Optional.empty();
+        return Optional.ofNullable(me);
     }
 
 
-    public boolean isCurrentPersonMentor() {
-        Optional<PersonEntity> currentPerson = Optional.ofNullable(getPerson());
-        return currentPerson.isPresent() && currentPerson.get().containsRole(ROLE_MENTOR);
-    }
-
-
-    public Optional<PersonEntity> addEmailToCurrentUser(String email) {
-        Optional<PersonEntity> currentPerson = Optional.ofNullable(getPerson());
-        if (currentPerson.isPresent()) {
-            currentPerson.get().setContacts(email);
-            return Optional.of(personRepository.save(currentPerson.get()));
-        }
-        return Optional.empty();
+    public Optional<PersonEntity> findByEmail(String email) {
+        return personRepository.findByEmail(email);
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return personRepository.findPersonEntityByEmail(email).orElse(createUserIfNotExists());
+        return personRepository.findByEmail(email).orElse(createUserIfNotExists());
     }
 
 
@@ -206,8 +203,7 @@ public class PersonService implements UserDetailsService {
     public AuthUserDto processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken,
             OidcUserInfo userInfo) {
         Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(attributes);
-        Optional<PersonEntity> user =
-                personRepository.findPersonEntityByEmail(oauth2UserInfo.getEmail());
+        Optional<PersonEntity> user = personRepository.findByEmail(oauth2UserInfo.getEmail());
         PersonEntity person =
                 user.map(personEntity -> updateExistingUser(personEntity, oauth2UserInfo))
                         .orElseGet(() -> registerNewUser(toUserRegistrationObject(oauth2UserInfo)));
@@ -240,8 +236,7 @@ public class PersonService implements UserDetailsService {
 
     @Transactional
     public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
-        Optional<PersonEntity> personEntity =
-                personRepository.findPersonEntityByEmail(userDetails.getEmail());
+        Optional<PersonEntity> personEntity = personRepository.findByEmail(userDetails.getEmail());
         if (personEntity.isPresent()) {
             throw new UserAlreadyExistAuthenticationException(
                     "User with email " + userDetails.getEmail() + " already exist");
@@ -252,19 +247,13 @@ public class PersonService implements UserDetailsService {
         newPerson.setEmail(userDetails.getEmail());
         newPerson.setLinkedin(userDetails.getProviderUserId());
         newPerson.setProfilePictureUrl(userDetails.getProfilePictureUrl());
-        this.addRolesToPerson(newPerson, ROLE_GUEST);
-        return personRepository.saveAndFlush(newPerson);
-    }
-
-
-    public PersonEntity save(PersonEntity person) {
-        return personRepository.save(person);
+        return personRepository.save(addRolesToPerson(newPerson, Set.of(roleGuest)));
     }
 
 
     public boolean hasAnyRole(List<String> roles) {
-        PersonEntity user = getPerson();
-        return user != null && findUserRolesById(user.getId()).stream()
+        PersonEntity me = me();
+        return me != null && me.getRoles().stream()
                 .anyMatch(roleEntity -> roles.contains(roleEntity.getName()));
     }
 
@@ -274,13 +263,18 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public boolean amImentor(CourseEntity course) {
-        PersonEntity me = getPerson();
-        return me != null
-                && course.getMentors().stream().anyMatch(mentor -> mentor.getId() == me.getId());
+    public PersonEntity addStudent(StudentEntity student) {
+        PersonEntity person = student.getPerson();
+        person.getStudents().add(student);
+        return this.addRolesToPerson(person, Set.of(getRole(ROLE_STUDENT)));
     }
 
-    public PersonEntity loadUserByEmail(String email) {
-        return personRepository.findPersonEntityByEmail(email).orElse(null);
+
+    public PersonEntity addMentor(MentorEntity mentor) {
+        PersonEntity person = mentor.getPerson();
+        person.getMentors().add(mentor);
+        return this.addRolesToPerson(person, Set.of(getRole(ROLE_MENTOR)));
     }
+
+
 }

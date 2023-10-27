@@ -7,4 +7,5 @@ export interface ChapterPart {
   praxisPurpose: string;
   praxis: SubChapter[];
   additionals: SubChapter[];
+  state: string;
 }

@@ -5,7 +5,6 @@ import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
-import com.group.practic.repository.PersonRepository;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,15 +15,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class FeedbackService {
 
-    @Autowired
-    FeedbackRepository repository;
+    FeedbackRepository feedbackRepository;
 
-    @Autowired
-    PersonRepository personRepository;
+    PersonService personService;
 
+    
+    @Autowired
+    public FeedbackService(FeedbackRepository feedbackRepository, PersonService personService) {
+        this.feedbackRepository = feedbackRepository;
+        this.personService = personService;
+    }
 
     public List<FeedbackEntity> getAllFeedbacks(FeedbackSortState sortState) {
-        ArrayList<FeedbackEntity> list = new ArrayList<>(repository.findAll());
+        ArrayList<FeedbackEntity> list = new ArrayList<>(feedbackRepository.findAll());
         list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
         return getSortFeedbackList(list, sortState);
     }
@@ -46,22 +49,22 @@ public class FeedbackService {
 
     public FeedbackEntity addFeedback(FeedbackDto feedbackDto) {
         String email = feedbackDto.getEmail();
-        PersonEntity person = personRepository.findPersonEntityByEmail(email).orElse(null);
+        PersonEntity person = personService.findByEmail(email).orElse(null);
         return email.isEmpty() || person == null ? null
-                : repository.save(new FeedbackEntity(person, feedbackDto.getFeedback()));
+                : feedbackRepository.save(new FeedbackEntity(person, feedbackDto.getFeedback()));
     }
 
 
     public FeedbackEntity incrementLikeAndSavePerson(Long idFeedback, Long idPerson) {
-        Optional<FeedbackEntity> feedbackOption = repository.findById(idFeedback);
-        Optional<PersonEntity> personOption = personRepository.findById(idPerson);
+        Optional<FeedbackEntity> feedbackOption = feedbackRepository.findById(idFeedback);
+        Optional<PersonEntity> personOption = personService.get(idPerson);
         if (personOption.isPresent() && feedbackOption.isPresent()) {
             FeedbackEntity feedback = feedbackOption.get();
             PersonEntity person = personOption.get();
             if (!feedback.getLikedByPerson().contains(person)) {
                 feedback.getLikedByPerson().add(person);
-                repository.incrementLikesById(idFeedback);
-                repository.save(feedback);
+                feedbackRepository.incrementLikesById(idFeedback);
+                feedbackRepository.save(feedback);
                 return feedback;
             }
         }
@@ -70,15 +73,15 @@ public class FeedbackService {
 
 
     public FeedbackEntity decrementLikeAndRemovePerson(Long idFeedback, Long idPerson) {
-        Optional<FeedbackEntity> feedbackOption = repository.findById(idFeedback);
-        Optional<PersonEntity> personOption = personRepository.findById(idPerson);
+        Optional<FeedbackEntity> feedbackOption = feedbackRepository.findById(idFeedback);
+        Optional<PersonEntity> personOption = personService.get(idPerson);
         if (feedbackOption.isPresent() && personOption.isPresent()) {
             FeedbackEntity feedbackEntity = feedbackOption.get();
             PersonEntity person = personOption.get();
             if (feedbackEntity.getLikedByPerson().contains(person)) {
                 feedbackEntity.getLikedByPerson().remove(person);
-                repository.decrementLikesById(idFeedback);
-                repository.save(feedbackEntity);
+                feedbackRepository.decrementLikesById(idFeedback);
+                feedbackRepository.save(feedbackEntity);
                 return feedbackEntity;
             }
         }
@@ -87,10 +90,10 @@ public class FeedbackService {
 
 
     public FeedbackEntity deleteFeedback(Long idFeedback) {
-        FeedbackEntity feedback = repository.findById(idFeedback).orElse(null);
+        FeedbackEntity feedback = feedbackRepository.findById(idFeedback).orElse(null);
         if (feedback != null) {
             feedback.setLikedByPerson(null);
-            repository.delete(feedback);
+            feedbackRepository.delete(feedback);
             return feedback;
         }
         return null;

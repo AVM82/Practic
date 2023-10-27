@@ -1,8 +1,7 @@
 package com.group.practic.repository;
 
-import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
-import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import java.util.List;
@@ -17,12 +16,8 @@ public interface StudentPracticeRepository extends JpaRepository<StudentPractice
     List<StudentPracticeEntity> findByState(PracticeState state);
 
     StudentPracticeEntity findByStudentAndChapterPart(
-            PersonEntity student, ChapterPartEntity chapterPart);
+            StudentEntity student, ChapterPartEntity chapterPart);
 
-    Set<StudentPracticeEntity> findByStudentAndChapter(
-            PersonEntity student, ChapterEntity chapter
-    );
-
-    Set<StudentPracticeEntity> findAllByStudent(PersonEntity student);
+    Set<StudentPracticeEntity> findAllByStudent(StudentEntity student);
 
 }

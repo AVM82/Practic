@@ -5,35 +5,43 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "person_application")
+@Table(name = "applicants")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class PersonApplicationEntity {
+public class ApplicantEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    long id;
+
+    @ManyToMany
+    PersonEntity person;
 
     @ManyToOne
-    @JoinColumn(name = "person_id")
-    private PersonEntity person;
-
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private CourseEntity course;
+    CourseEntity course;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean isApply = false;
+    boolean isApplied = false;
+
+    
+    public ApplicantEntity(PersonEntity person, CourseEntity course) {
+        this.person = person;
+        this.course = course;
+    }
+    
+    
+    public ApplicantEntity apply() {
+        this.isApplied = true;
+        return this;
+    }
 
 }

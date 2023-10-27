@@ -1,6 +1,6 @@
-
-import { Course } from "../course/course";
-import { UserRole } from "./user.role";
+import { Applicant } from "./applicant";
+import { Mentor } from "./mentor";
+import { Student } from "./student";
 
 export class User {
 
@@ -16,7 +16,9 @@ export class User {
       readonly profilePictureUrl: string,
       readonly applyCourse: string,
       readonly roles?: string[],
-      readonly courses?: string[]
+      readonly students?: Student[],
+      readonly mentors?: Mentor[],
+      readonly applicants?: Applicant[]
   ) {}
 
   get isAuthenticated(): boolean {
@@ -27,8 +29,44 @@ export class User {
     return roles.some(roleName => this.roles?.some(userRole => userRole === roleName));
   }
 
-  hasApplyOnCourse(...courses: string[]): boolean {
-   return courses.some(courseSlug => this.courses?.some(course => course === courseSlug));
+  hasGuestRole(): boolean {
+    return this.hasAnyRole('GUEST');
+  }
+
+  hasStudentRole(): boolean {
+    return this.hasAnyRole('STUDENT');
+  }
+
+  hasMentorRole(): boolean {
+    return this.hasAnyRole('MENTOR');
+  }
+
+  hasCollaboratorRole() : boolean {
+    return this.hasAnyRole('COLLABORATOR');
+  }
+
+  hasAdminRole(): boolean {
+    return this.hasAnyRole('ADMIN');
+  }
+
+  isStudent(slug:string): boolean {
+    return this.hasStudentRole() && this.students != null && this.students.some(student => student.slug === slug);
+  }
+
+  isMentor(slug: string): boolean {
+    return this.hasMentorRole() && this.mentors != null && this.mentors.some(mentor => mentor.slug === slug);
+  }
+
+  isApplicant(slug: string): boolean {
+    return this.applicants != null && this.applicants.some(applicant => applicant.slug === slug);
+  }
+
+  getCourseActiveChapterNumber(slug: string): number {
+    if (this.students != null)
+      for (let student of this.students)
+        if (student.slug === slug)
+          return student.activeChapterNumber;
+    return 0;
   }
 
   static fromJson(json: any): User {
@@ -44,7 +82,9 @@ export class User {
         json.profilePictureUrl,
         json.applyCourse,
         json.roles,
-        json.courses
+        json.students,
+        json.mentors,
+        json.applicants
     );
   }
 

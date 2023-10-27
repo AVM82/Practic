@@ -1,7 +1,6 @@
 package com.group.practic.entity;
 
 import com.group.practic.enumeration.PracticeState;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,49 +9,69 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Date;
+import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "student_practice")
-@Getter
+@Table(name = "student_practice",
+        uniqueConstraints = {@UniqueConstraint(name = "UniqueStudentPractice",
+                columnNames = {"student_id", "chapter_part_id"})})
 @Setter
+@Getter
 public class StudentPracticeEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private long id;
 
     @ManyToOne
-    ChapterPartEntity chapterPart;
+    private StudentEntity student;
 
     @ManyToOne
-    PersonEntity student;
-
-    @ManyToOne
-    ChapterEntity chapter;
+    private ChapterPartEntity chapterPart;
 
     @Enumerated(EnumType.STRING)
-    PracticeState state = PracticeState.NOT_STARTED;
+    private PracticeState state = PracticeState.NOT_STARTED;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
-    public StudentPracticeEntity(ChapterPartEntity chapter, PersonEntity student,
-                                 PracticeState state) {
-        this.chapterPart = chapter;
+
+    public StudentPracticeEntity(StudentEntity student, ChapterPartEntity chapterPart) {
         this.student = student;
-        this.state = state;
+        this.chapterPart = chapterPart;
     }
 
-    public StudentPracticeEntity() {
+
+    public StudentPracticeEntity() {}
+
+
+
+    public void setId(long id) {
+        this.id = id;
     }
+
+
+    public void setStudent(StudentEntity student) {
+        this.student = student;
+    }
+
+
+    public void setChapterPart(ChapterPartEntity chapterPart) {
+        this.chapterPart = chapterPart;
+    }
+
+
+    public boolean setNewState(PracticeState newState) {
+        if (state.changeAllowed(newState)) {
+            state = newState;
+            updatedAt = LocalDateTime.now();
+            return true;
+        }
+        return false;
+    }
+
 }

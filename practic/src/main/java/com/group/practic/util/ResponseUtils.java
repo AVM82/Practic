@@ -23,7 +23,7 @@ public interface ResponseUtils {
 
     public static <T> ResponseEntity<Collection<T>> getResponse(Collection<T> result) {
         if (result == null) {
-            return notAcceptable();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return result.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(result, HttpStatus.OK);
@@ -70,6 +70,11 @@ public interface ResponseUtils {
 
 
     /* OTHERS */
+
+
+    public static <T> ResponseEntity<T> badRequest() {
+        return ResponseEntity.badRequest().build();
+    }
 
 
     public static <T> ResponseEntity<T> notAcceptable() {
