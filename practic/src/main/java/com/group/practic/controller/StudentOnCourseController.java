@@ -270,7 +270,7 @@ public class StudentOnCourseController {
 
 
     @GetMapping("/additionalMaterials/{slug}")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAnyRole('STUDENT','ADMIN', 'MENTOR', 'COLLABORATOR')")
     public ResponseEntity<Collection<AdditionalMaterialsDto>> getAdditionalMaterials(
             @PathVariable String slug) {
         return getResponse(studentOnCourseService.getStudentAdditionalMaterial(slug));
@@ -278,7 +278,7 @@ public class StudentOnCourseController {
 
 
     @PutMapping("/additionalMaterials/{slug}/{id}")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAnyRole('STUDENT','ADMIN', 'MENTOR', 'COLLABORATOR')")
     public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable String slug,
             @PathVariable long id, @RequestBody boolean state) {
         return getResponse(studentOnCourseService.changeStudentAdditionalMaterial(slug, id, state));
