@@ -9,13 +9,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Table(name = "student_chapter")
+@Table(name = "student_chapters")
 @Getter
 @Setter
 @Entity
@@ -25,21 +27,35 @@ public class StudentChapterEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private java.sql.Timestamp createdAt;
+    @ManyToOne
+    private StudentEntity student;
+
+    @ManyToOne
+    private ChapterEntity chapter;
 
     @Enumerated(EnumType.STRING)
     ChapterState state = ChapterState.NOT_STARTED;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    private java.sql.Timestamp createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private java.sql.Timestamp updatedAt;
 
-    @ManyToOne
-    private PersonEntity student;
+    boolean reportOnce;
 
-    @ManyToOne
-    private ChapterEntity chapter;
+    @OneToMany
+    Set<StudentPracticeEntity> practices;
+
+
+    public StudentChapterEntity() {}
+
+
+    public StudentChapterEntity(StudentEntity student, ChapterEntity chapter) {
+        this.student = student;
+        this.chapter = chapter;
+    }
 
 }

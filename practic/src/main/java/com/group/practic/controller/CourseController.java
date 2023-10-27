@@ -1,24 +1,19 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
-import static com.group.practic.util.ResponseUtils.getResponseAllowed;
-import static com.group.practic.util.ResponseUtils.notAcceptable;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
-import com.group.practic.dto.ChapterDto;
+import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
-import com.group.practic.entity.PersonEntity;
 import com.group.practic.service.CourseService;
-import com.group.practic.service.PersonService;
-import com.group.practic.service.StudentOnCourseService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
+import com.group.practic.util.Converter;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,20 +31,10 @@ public class CourseController {
 
     private CourseService courseService;
 
-    private PersonService personService;
-
-    private StudentOnCourseService studentOnCourseService;
-
-    static final List<String> ACCESS_ROLES = List.of(PersonService.ROLE_ADMIN,
-            PersonService.ROLE_COLLABORATOR, PersonService.ROLE_MENTOR);
-
 
     @Autowired
-    public CourseController(CourseService courseService, PersonService personService,
-            StudentOnCourseService studentOnCourseService) {
+    public CourseController(CourseService courseService) {
         this.courseService = courseService;
-        this.personService = personService;
-        this.studentOnCourseService = studentOnCourseService;
     }
 
 
@@ -60,8 +45,9 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/allchapters")
-    public ResponseEntity<Collection<ChapterDto>> getChapters(@PathVariable String slug) {
-        return getResponse(studentOnCourseService.getChapters(slug));
+    public ResponseEntity<Collection<ShortChapterDto>> getChapters(@PathVariable String slug) {
+        return getResponse(
+                Converter.convertChapterList(courseService.getChapters(slug), Integer.MAX_VALUE));
     }
 
 
@@ -71,17 +57,6 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{slug}/description")
-    public ResponseEntity<String> getDescription(@Min(1) @PathVariable String slug) {
-        return getResponse(courseService.getDescription(slug));
-    }
-
-
-    @GetMapping("/{slug}/additionalExist")
-    public ResponseEntity<Boolean> getAdditionalExist(@PathVariable String slug) {
-        return getResponse(courseService.getAdditionalExist(slug));
-    }
-
 
     @GetMapping("/{slug}/additional")
     public ResponseEntity<Collection<AdditionalMaterialsEntity>> getAdditional(
@@ -90,19 +65,9 @@ public class CourseController {
     }
 
 
-    @GetMapping("/{slug}/activeChapterNumber")
-    public ResponseEntity<Integer> getActiveChapterNumber(@PathVariable String slug) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        if (course.isEmpty()) {
-            return notAcceptable();
-        }
-        return getResponse(studentOnCourseService.getActiveChapterNumber(course.get()));
-    }
-
-
     @PostMapping("/NewCourseFromProperties")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR', 'MENTOR')")
-    public ResponseEntity<CourseEntity> createCourse(@Valid @RequestBody String propertyFile) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<CourseEntity> createCourse(@NotBlank @RequestBody String propertyFile) {
         return postResponse(courseService.create(propertyFile));
     }
 
@@ -122,20 +87,18 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/chapters/{number}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR', 'MENTOR')")
     public ResponseEntity<ChapterEntity> getChapterByNumber(@PathVariable("slug") String slug,
             @PathVariable int number) {
-        if (personService.hasAnyRole(ACCESS_ROLES)) {
-            return getResponseAllowed(courseService.getChapterByNumber(slug, number));
-        }
-        Optional<CourseEntity> course = courseService.get(slug);
-        return course.isEmpty() ? notAcceptable()
-                : getResponseAllowed(studentOnCourseService.getOpenedChapter(course.get(), number));
+        return getResponse(courseService.getChapterByNumber(slug, number));
     }
 
 
     @GetMapping("/{slug}/mentors")
-    public ResponseEntity<Collection<PersonEntity>> getMentors(@PathVariable String slug) {
-        return getResponse(courseService.getMentors(slug));
+    public ResponseEntity<Collection<MentorDto>> getMentors(@PathVariable String slug) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        return course.isEmpty() ? badRequest()
+                : getResponse(courseService.getMentors(course.get()));
     }
 
 }

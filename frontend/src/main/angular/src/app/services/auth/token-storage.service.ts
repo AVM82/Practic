@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Practice} from "../../models/practice/practice";
 import { User } from 'src/app/models/user/user';
+import { environment } from 'src/enviroments/enviroment';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -50,17 +51,10 @@ export class TokenStorageService {
 
   public getMe(): User {
     const token = this.getToken();
-    return token ? this.getUser() : null;
+    const me: User = token ? this.getUser() : null;
+    if (me == null)
+      window.location.href = environment.loginBaseUrl;
+    return me;
   }
 
-  isStudent(slug: string): boolean {
-    const me = this.getMe();
-    return me?.hasAnyRole('STUDENT') && me.hasApplyOnCourse(slug);
-  }
-
-
-  public haveIAnyRole(roles: string[]): boolean {
-    const me = this.getMe();
-    return me?.hasAnyRole(...roles);
-  }
 }

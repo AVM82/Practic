@@ -28,13 +28,12 @@ export class StartPanelComponent {
         this.router = router0;
         this.me = tokenStorageService.getMe();
         if (this.me) {
-            this.isAdmin = this.me.hasAnyRole('ADMIN');
-            this.isCollaborator = this.me.hasAnyRole('COLLABORATOR');
-            this.isMentor = this.me.hasAnyRole('MENTOR');
-            this.isStudent = this.me.hasAnyRole('STUDENT');
-            this.isGuest = this.me.hasAnyRole('GUEST');
-        } else
-            this.router.navigate(['/login']);
+            this.isAdmin = this.me.hasAdminRole();
+            this.isCollaborator = this.me.hasCollaboratorRole();
+            this.isMentor = this.me.hasMentorRole();
+            this.isStudent = this.me.hasStudentRole();
+            this.isGuest = this.me.hasGuestRole();
+        }
     }
 
     mentorPanel() {

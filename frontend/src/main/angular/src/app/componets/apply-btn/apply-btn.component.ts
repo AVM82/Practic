@@ -25,25 +25,23 @@ export class ApplyBtnComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.courseService.isStudent) {
-      this.courseService.amIwaitingForApply(this.slug).subscribe(waiting =>
-        this.buttonDisabled = waiting);
-    } 
+    //поки що треба перезайти щоб оновити
+    this.buttonDisabled = this.courseService.me.isPending(this.slug);
   }
 
   onApplyClick() {
     if (confirm("Ви дійсно хочете записатися на цей курс?"))
-    this.authService.applyOnCourse(this.slug).subscribe({
-      next: user => {
-        this.tokenStorageService.saveUser(user);
-        this.messagesService.showMessage("Заявка прийнята", "normal");
-        document.getElementById('apply')?.setAttribute('disables', 'true');
-        this.buttonDisabled = true;
-      },
-      error: error => {
-        console.error('Помилка при відправці заявки', error);
-        this.messagesService.showMessage("Помилка відправки заявки", "error")
-      }
-    });
+      this.authService.applyOnCourse(this.slug).subscribe({
+        next: user => {
+          this.tokenStorageService.saveUser(user);
+          this.messagesService.showMessage("Заявка прийнята", "normal");
+          document.getElementById('apply')?.setAttribute('disables', 'true');
+          this.buttonDisabled = true;
+        },
+        error: error => {
+          console.error('Помилка при відправці заявки', error);
+          this.messagesService.showMessage("Помилка відправки заявки", "error")
+        }
+      });
   }
 }

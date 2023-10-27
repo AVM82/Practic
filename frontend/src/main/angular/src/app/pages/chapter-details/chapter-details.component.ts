@@ -46,14 +46,15 @@ export class ChapterDetailsComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug')
       const number = Number(params.get('chapterN')) | 0;
-      if (slug && number > 0) 
+      if (slug && number > 0) {
+        if (this.isStudent)
+          this.updatePractices();
         this.coursesService.loadChapter(slug, number).subscribe(chapter => {
           this.chapter = chapter;
           this.showPartNumber = this.chapter.parts.length > 1;
         });
+      }
     });
-    if (this.isStudent)
-      this.updatePractices();
   }
 
   setPractices() {

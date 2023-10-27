@@ -1,25 +1,13 @@
 package com.group.practic.enumeration;
 
-import java.util.Set;
-
 public enum ChapterState {
-    NOT_STARTED(),
+    NOT_STARTED,
 
-    IN_PROCESS(NOT_STARTED),
+    IN_PROCESS,
 
-    PAUSE(IN_PROCESS),
+    PAUSE,
 
-    DONE();
-
-    private final Set<ChapterState> allowed;
-
-    ChapterState(ChapterState ... next) {
-        allowed = Set.of(next);
-    }
-
-    public boolean changeAllowed(ChapterState newState) {
-        return this == newState || allowed.contains(newState);
-    }
+    DONE;
 
 
     public static ChapterState fromString(String value) {
@@ -30,4 +18,5 @@ public enum ChapterState {
         }
         throw new IllegalArgumentException("Unknown ChapterState: " + value);
     }
+
 }

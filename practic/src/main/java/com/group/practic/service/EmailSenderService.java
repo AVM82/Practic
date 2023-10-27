@@ -9,17 +9,21 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class EmailSenderService implements Sender {
 
     Logger logger = LoggerFactory.getLogger(EmailSenderService.class);
 
-    @Autowired
     private JavaMailSender mailSender;
 
     @Value("${MAIL_USERNAME}")
     private String sender;
+
+
+    @Autowired
+    public EmailSenderService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
 
     public boolean sendMessage(SendMessageDto messageDto) {

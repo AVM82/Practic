@@ -6,7 +6,6 @@ import {Router} from "@angular/router";
 import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getActiveChapterNumber, getCourseUrl, getChapterUrl, getApplicationUrl, getStudentsAllAdditionalMaterialsUrl} from "../../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/material/additional.material';
 import {Level} from "../../models/level/level";
-import { User } from 'src/app/models/user/user';
 import { Chapter } from 'src/app/models/chapter/chapter';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AdvancedRoles } from 'src/app/enums/roles.enum';
@@ -25,19 +24,12 @@ export class CoursesService {
   levels!: Observable<Level[]>;
   shortChapters!: Observable<ShortChapter[]>;
   chapters: Chapter[] = [];
-  me: User;
-  id: number = 0;
-  isStudent: boolean = false;
 
   constructor(
     private tokenStorageService: TokenStorageService,
     private http: HttpClient,
     private _router: Router
-  ) {
-    this.me = tokenStorageService.getMe();
-    if (this.me)
-      this.id = this.me.id;
-  }
+  ) {}
 
   setCourse(slug: string): void {
     if (slug !== this.slug) {
@@ -46,15 +38,9 @@ export class CoursesService {
       this.chapters = [];
       this.shortChapters = this.http.get<ShortChapter[]>(getChaptersUrl(slug));
       this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
-      this.isStudent = this.tokenStorageService.isStudent(slug);
       this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
       this.selectedCourse = this.http.get<Course>(getCourseUrl(slug));
     }
-  }
-
-  public isAnyAdvancedRole(slug: string): boolean {
-    this.setCourse(slug);
-    return this.tokenStorageService.haveIAnyRole(AdvancedRoles);
   }
 
   getCourse(slug: string): Observable<Course> {
@@ -107,7 +93,7 @@ export class CoursesService {
   }
 
   confirmApplyOnCourse(courseSlug: string, userId: number): Observable<any> {
-    return this.http.post(ApiUrls.Students + '/apply', {courseSlug, userId});
+    return this.http.post(ApiUrls.Students, {courseSlug, userId});
   }
 
   approvePractice(studentId: number, chapterPartId: number): Observable<any> {
@@ -116,7 +102,7 @@ export class CoursesService {
 
   getAdditionalMaterials(slug: string): Observable<AdditionalMaterials[]> {
     this.setCourse(slug);
-    return this.http.get<AdditionalMaterials[]>(this.isStudent ?  getStudentsAllAdditionalMaterialsUrl(slug) : getMaterialsUrl(slug));
+    return this.http.get<AdditionalMaterials[]>(getMaterialsUrl(slug));
   }
 
   postCourseInteractive(_slug: string,  _name: string, _svg: string): Observable<Course> {
@@ -158,39 +144,5 @@ export class CoursesService {
     };
   }
 
-  getMentors(slug: string): Observable<User[]> {
-    this.setCourse(slug);
-    return this.selectedCourse.pipe(map (course => course.mentors));
-  }
-
-  amIAmongOthers(others: User[]): boolean {
-    return this.id != 0 && others?.some(other => other.id === this.id);
-  }
-
-  isMentor(slug: string): Observable<boolean> {
-    return this.getMentors(slug).pipe(map<User[], boolean>(
-      mentors => {
-        return this.amIAmongOthers(mentors);
-    })); 
-  }
-
-  isNotMentor(slug: string): Observable<boolean> {
-    return this.getMentors(slug).pipe(map<User[], boolean>(
-      mentors => {
-        return !this.amIAmongOthers(mentors);
-    })); 
-  }
-
-  isUninvolved(slug: string): Observable<boolean> {
-    return this.getMentors(slug).pipe(map<User[], boolean>(
-      mentors => {
-        return !this.isStudent && (mentors == null || !mentors.some(mentor => mentor.id === this.me.id));
-    }));
-  }
-
-  getActiveChapterNumber(slug: string): Observable<number> {
-    this.setCourse(slug);
-    return  this.http.get<number>(getActiveChapterNumber(slug));
-  }
-
+  
 }

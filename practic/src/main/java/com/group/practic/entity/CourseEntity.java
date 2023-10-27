@@ -30,7 +30,7 @@ public class CourseEntity {
     Set<String> authors;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    Set<PersonEntity> mentors = new HashSet<>();
+    Set<MentorEntity> mentors = new HashSet<>();
 
     String courseType;
 
@@ -106,22 +106,22 @@ public class CourseEntity {
     }
 
 
-    public Set<PersonEntity> getMentors() {
+    public Set<MentorEntity> getMentors() {
         return mentors;
     }
 
 
-    public void setMentors(Set<PersonEntity> mentors) {
+    public void setMentors(Set<MentorEntity> mentors) {
         this.mentors = mentors;
     }
 
 
-    public boolean setMentor(PersonEntity mentor) {
+    public boolean setMentor(MentorEntity mentor) {
         return mentors.add(mentor);
     }
 
 
-    public boolean removeMentor(PersonEntity mentor) {
+    public boolean removeMentor(MentorEntity mentor) {
         return mentors.remove(mentor);
     }
 

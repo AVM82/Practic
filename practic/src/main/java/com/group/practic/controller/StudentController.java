@@ -1,52 +1,48 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.deleteResponse;
 import static com.group.practic.util.ResponseUtils.getResponse;
+import static com.group.practic.util.ResponseUtils.notAcceptable;
 import static com.group.practic.util.ResponseUtils.postResponse;
 import static com.group.practic.util.ResponseUtils.updateResponse;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
-import com.group.practic.dto.ChapterDto;
-import com.group.practic.dto.NewStudentDto;
+import com.group.practic.dto.MentorPracticeDto;
 import com.group.practic.dto.PracticeDto;
+import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.StudentReportDto;
+import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.StudentChapterEntity;
-import com.group.practic.entity.StudentOnCourseEntity;
+import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
-import com.group.practic.exception.ResourceNotFoundException;
+import com.group.practic.service.AdditionalMaterialsService;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
-import com.group.practic.service.StudentChapterService;
-import com.group.practic.service.StudentOnCourseService;
+import com.group.practic.service.StudentService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
 import com.group.practic.service.TimeSlotService;
 import com.group.practic.util.Converter;
 import com.group.practic.util.ResponseUtils;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,9 +56,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/students")
-public class StudentOnCourseController {
+public class StudentController {
 
-    private final StudentOnCourseService studentOnCourseService;
+    private StudentService studentService;
 
     private final StudentPracticeService studentPracticeService;
 
@@ -74,87 +70,68 @@ public class StudentOnCourseController {
 
     private final CourseService courseService;
 
-    private final StudentChapterService studentChapterService;
+    AdditionalMaterialsService additionalMaterialsService;
 
 
     @Autowired
-    public StudentOnCourseController(StudentOnCourseService studentOnCourseService,
+    public StudentController(StudentService studentService,
             StudentPracticeService studentPracticeService, PersonService personService,
             StudentReportService studentReportService, TimeSlotService timeSlotService,
-            CourseService courseService, StudentChapterService studentChapterService) {
-        this.studentOnCourseService = studentOnCourseService;
+            CourseService courseService, AdditionalMaterialsService additionalMaterialsService) {
+        this.studentService = studentService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
         this.studentReportService = studentReportService;
         this.timeSlotService = timeSlotService;
         this.courseService = courseService;
-        this.studentChapterService = studentChapterService;
+        this.additionalMaterialsService = additionalMaterialsService;
     }
 
 
     @GetMapping
-    public ResponseEntity<Collection<StudentOnCourseEntity>> get(
+    public ResponseEntity<Collection<StudentEntity>> get(
             @RequestParam(required = false) Optional<Long> courseId,
             @RequestParam(required = false) Optional<Long> studentId,
             @RequestParam(required = false) boolean inactive,
             @RequestParam(required = false) boolean ban) {
-        if (!personService.isCurrentPersonMentor()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
         if (courseId.isEmpty()) {
             if (studentId.isEmpty()) {
-                return getResponse(studentOnCourseService.get(inactive, ban));
+                return getResponse(studentService.get(inactive, ban));
             }
-            return getResponse(
-                    studentOnCourseService.getCoursesOfStudent(studentId.get(), inactive, ban));
+            Optional<StudentEntity> student = studentService.get(studentId.get());
+            return student.isEmpty() ? badRequest()
+                    : getResponse(student.get().getPerson().getStudents().stream().filter(
+                            entity -> entity.isBan() == ban && entity.isInactive() == inactive)
+                            .toList());
         }
         if (studentId.isEmpty()) {
-            return getResponse(
-                    studentOnCourseService.getStudentsOfCourse(courseId.get(), inactive, ban));
+            return getResponse(studentService.getStudentsOfCourse(courseId.get(), inactive, ban));
         }
-        return getResponse(List
-                .of(studentOnCourseService.get(courseId.get(), studentId.get(), inactive, ban)));
-    }
-
-
-    @GetMapping("/{id}")
-    public ResponseEntity<StudentOnCourseEntity> get(@Min(1) @PathVariable long id) {
-        return personService.isCurrentPersonMentor()
-                ? ResponseEntity.ok(studentOnCourseService.get(id))
-                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-
-
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR', 'COLLABORATOR')")
-    public ResponseEntity<StudentOnCourseEntity> create(@RequestBody @Valid NewStudentDto student) {
-        Optional<CourseEntity> courseOptional = courseService.get(student.getCourseSlug());
-        Optional<PersonEntity> user = personService.get(student.getUserId());
-        if (courseOptional.isPresent() && user.isPresent()) {
-            return postResponse(studentOnCourseService.create(courseOptional.get(), user.get()));
-        } else {
-            throw new ResourceNotFoundException("На курс <", student.getCourseSlug(),
-                    "> користувач з id=', student.getUserId(), ' не записан");
-        }
+        Optional<StudentEntity> student = studentService.get(studentId.get());
+        Optional<CourseEntity> course = courseService.get(courseId.get());
+        return student.isEmpty() || course.isEmpty() ? badRequest()
+                : getResponse(student.get().getPerson().getStudents().stream()
+                        .filter(entity -> entity.getCourse().equals(course.get())
+                                && entity.isBan() == ban && entity.isInactive() == inactive)
+                        .toList());
     }
 
 
     @GetMapping("/practices/my")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<PracticeDto>> getAllMyPractices() {
-        PersonEntity student = personService.getPerson();
-        return getResponse(studentPracticeService.getAllPracticesByStudent(student).stream()
+        return getResponse(studentPracticeService.getAllPracticesByStudent().stream()
                 .map(Converter::convertToPractice).collect(Collectors.toSet()));
     }
 
 
     @GetMapping("/practices/{practiceState}")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<Collection<StudentPracticeDto>> getPracticeWithStateFilter(
+    public ResponseEntity<Collection<MentorPracticeDto>> getPracticeWithStateFilter(
             @PathVariable String practiceState) {
         PracticeState state = PracticeState.fromString(practiceState);
         List<StudentPracticeEntity> students = studentPracticeService.getAllStudentsByState(state);
-        return getResponse(students.stream().map(Converter::convert).toList());
+        return getResponse(students.stream().map(MentorPracticeDto::map).toList());
     }
 
 
@@ -183,34 +160,30 @@ public class StudentOnCourseController {
     }
 
 
-    @GetMapping("/chapters")
-    public ResponseEntity<Set<ChapterDto>> getOpenChapters() {
-        PersonEntity student = personService.getPerson();
-        return ResponseEntity.ok(studentChapterService.findOpenChapters(student).stream()
-                .map(Converter::convert).collect(Collectors.toSet()));
+    @GetMapping("/chapters/{slug}/{number}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<StudentChapterDto> getChapter(@PathVariable String slug,
+            @PathVariable int number) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        return course.isEmpty() ? notAcceptable()
+                : getResponse(StudentChapterDto
+                        .map(studentService.getOpenedChapter(course.get(), number)));
     }
 
 
-    @PostMapping("/chapters")
-    public ResponseEntity<StudentChapterEntity> createStudentChapter(
-            @RequestBody @Valid StudentChapterDto student) {
-        return ResponseEntity.ok(
-                studentChapterService.addChapter(student.getStudentId(), student.getChapterId()));
+    @GetMapping("/chapters/{slug}")
+    public ResponseEntity<Collection<ShortChapterDto>> getOpenChapters(@PathVariable String slug) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        return course.isEmpty() ? badRequest()
+                : getResponse(studentService.getChapters(course.get()));
     }
 
 
     @PostMapping("/practices")
     public ResponseEntity<StudentPracticeDto> setPracticeState(
             @RequestBody StudentPracticeDto studentPracticeDto) {
-        PersonEntity person = (PersonEntity) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-
-        PracticeState practiceState = PracticeState.fromString(studentPracticeDto.getState());
-
-        StudentPracticeEntity studentPractice =
-                studentPracticeService.getPractice(person, studentPracticeDto.getChapterPartId());
-        studentPractice.setState(practiceState);
-        return ResponseEntity.ok(Converter.convert(studentPracticeService.save(studentPractice)));
+        return postResponse(
+                StudentPracticeDto.map(studentPracticeService.changeState(studentPracticeDto)));
     }
 
 
@@ -278,7 +251,9 @@ public class StudentOnCourseController {
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<AdditionalMaterialsDto>> getAdditionalMaterials(
             @PathVariable String slug) {
-        return getResponse(studentOnCourseService.getStudentAdditionalMaterial(slug));
+        Optional<CourseEntity> course = courseService.get(slug);
+        return course.isEmpty() ? badRequest()
+                : getResponse(studentService.getStudentAdditionalMaterial(course.get()));
     }
 
 
@@ -286,7 +261,17 @@ public class StudentOnCourseController {
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable String slug,
             @PathVariable long id, @RequestBody boolean state) {
-        return getResponse(studentOnCourseService.changeStudentAdditionalMaterial(slug, id, state));
+        Optional<CourseEntity> course = courseService.get(slug);
+        if (course.isPresent()) {
+            Optional<StudentEntity> student = studentService.getStudentOfCourse(course.get());
+            if (student.isPresent()) {
+                Optional<AdditionalMaterialsEntity> additionalMaterial =
+                        additionalMaterialsService.get(id);
+                return updateResponse(additionalMaterial.isEmpty() ? Optional.empty()
+                        : studentService.changeStudentAdditionalMaterial(student.get(), additionalMaterial.get(), state));
+            }
+        }
+        return badRequest();
     }
 
 }

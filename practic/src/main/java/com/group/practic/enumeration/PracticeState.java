@@ -5,27 +5,31 @@ import java.util.Set;
 
 public enum PracticeState {
 
-    NOT_STARTED(),
+    NOT_STARTED(false),
 
-    IN_PROCESS(NOT_STARTED),
+    IN_PROCESS(false, NOT_STARTED),
 
-    PAUSE(IN_PROCESS),
+    PAUSE(true, IN_PROCESS),
 
-    READY_TO_REVIEW(IN_PROCESS),
+    READY_TO_REVIEW(true, IN_PROCESS),
 
-    APPROVED(READY_TO_REVIEW);
+    APPROVED(true, READY_TO_REVIEW);
 
 
     private final Set<PracticeState> allowed;
 
+    private final boolean backward;
 
-    PracticeState(PracticeState... next) {
+
+    PracticeState(boolean backward, PracticeState... next) {
+        this.backward = backward;
         allowed = Set.of(next);
     }
 
 
     public boolean changeAllowed(PracticeState newState) {
-        return this == newState || allowed.contains(newState);
+        return this == newState || newState.allowed.contains(this)
+                || (this.backward && allowed.contains(newState));
     }
 
 

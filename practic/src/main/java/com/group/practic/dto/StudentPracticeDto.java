@@ -1,41 +1,40 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.StudentPracticeEntity;
-import java.sql.Date;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import java.util.Optional;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
-
-@NoArgsConstructor
 @Getter
 @Setter
 public class StudentPracticeDto {
 
-    private String personName;
+    @Min(1)
+    long id;
 
-    @NotNull
-    private long chapterPartId;
+    @Min(1)
+    long chapterPartId;
 
-    private String chapterName;
-
-    private String state;
-
-    private Date updatedAt;
-
-    @NotNull
-    private long studentId;
+    @NotEmpty
+    String state;
 
 
-    public static StudentPracticeDto map(StudentPracticeEntity practice) {
+    public static StudentPracticeDto map(StudentPracticeEntity entity) {
+        if (entity == null) {
+            return null;
+        }
         StudentPracticeDto dto = new StudentPracticeDto();
-        dto.studentId = practice.getStudent().getId();
-        dto.personName = practice.getStudent().getName();
-        dto.chapterPartId = practice.getChapterPart().getId();
-        dto.chapterName = practice.getChapterPart().getPraxisPurpose();
-        dto.state = practice.getState().name();
+        dto.id = entity.getId();
+        dto.chapterPartId = entity.getChapterPart().getId();
+        dto.state = entity.getState().name();
         return dto;
+    }
+
+
+    public static Optional<StudentPracticeDto> map(Optional<StudentPracticeEntity> entity) {
+        return entity.isPresent() ? Optional.ofNullable(map(entity.get())) : Optional.empty();
     }
 
 }

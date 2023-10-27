@@ -43,7 +43,7 @@ export class CourseNavbarComponent implements OnInit {
       if (slug) {
         this.slug = slug;
         this.coursesService.getCourse(slug).subscribe(course => {
-          this.showEdit = this.coursesService.amIAmongOthers(course.mentors);
+          this.showEdit = this.coursesService.isMentor;
           this.showApply = !this.coursesService.isStudent && !this.showEdit;
           if (this.currentChapter == 0)
             this.navCourse.emit(course);

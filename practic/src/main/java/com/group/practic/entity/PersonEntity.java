@@ -8,8 +8,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -30,7 +28,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}))
+@Table(name = "persons", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}))
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,11 +38,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @ToString
 public class PersonEntity implements UserDetails {
 
-    private static final long serialVersionUID = 2865461614246570865L;
+    static final long serialVersionUID = 2865461614246570865L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    long id;
 
     boolean inactive;
 
@@ -52,36 +50,38 @@ public class PersonEntity implements UserDetails {
 
     LocalDateTime registered = LocalDateTime.now();
 
-    private String email;
+    String email;
 
     @Column
     @NotBlank
-    private String name;
+    String name;
 
     @NotBlank
-    private String discord;
+    String discord;
 
     @Column
     @NotBlank
-    private String linkedin;
+    String linkedin;
 
-    private String contacts;
+    String contacts;
 
-    private String password;
+    String password;
 
-    private String profilePictureUrl;
-
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<RoleEntity> roles = new HashSet<>();
+    String profilePictureUrl;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "person_application", joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private Set<CourseEntity> courses = new HashSet<>();
+    Set<RoleEntity> roles = new HashSet<>();
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    Set<StudentEntity> students = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    Set<MentorEntity> mentors = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    Set<ApplicantEntity> applicants = new HashSet<>();
 
 
     public PersonEntity(String name, String linkedin) {
@@ -149,11 +149,6 @@ public class PersonEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-
-    public boolean containsRole(String role) {
-        return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
     }
 
 }

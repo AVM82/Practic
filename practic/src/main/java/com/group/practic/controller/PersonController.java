@@ -1,21 +1,23 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
+import static com.group.practic.util.ResponseUtils.notAcceptable;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
-import com.group.practic.dto.PersonApplyOnCourseDto;
 import com.group.practic.dto.PersonDto;
-import com.group.practic.entity.PersonApplicationEntity;
+import com.group.practic.entity.ApplicantEntity;
+import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
-import com.group.practic.service.PersonApplicationService;
+import com.group.practic.service.ApplicantService;
+import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
-import com.group.practic.util.Converter;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,16 +33,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    private final PersonService personService;
+    private PersonService personService;
 
-    private final PersonApplicationService personApplicationService;
+    private ApplicantService applicantService;
 
+    CourseService courseService;
 
     @Autowired
-    public PersonController(PersonService personService,
-            PersonApplicationService personApplicationService) {
+    public PersonController(PersonService personService, CourseService courseService,
+            ApplicantService applicantService) {
         this.personService = personService;
-        this.personApplicationService = personApplicationService;
+        this.applicantService = applicantService;
+        this.courseService = courseService;
     }
 
 
@@ -61,18 +65,6 @@ public class PersonController {
     }
 
 
-    @GetMapping("/profile")
-    public ResponseEntity<PersonEntity> getProfile() {
-        return getResponse(personService.getCurrentPerson());
-    }
-
-
-    @PostMapping("/profile")
-    public ResponseEntity<PersonEntity> createProfile(@RequestParam String email) {
-        return postResponse(personService.addEmailToCurrentUser(email));
-    }
-
-
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')||hasRole('MENTOR')")
     public ResponseEntity<PersonEntity> createCourse(@RequestBody PersonDto personDto) {
@@ -80,57 +72,43 @@ public class PersonController {
     }
 
 
-    @GetMapping("/{id}/roles")
-    public ResponseEntity<Collection<RoleEntity>> findAllRoles(@PathVariable long id) {
-        return getResponse(personService.findUserRolesById(id));
 
-    }
-
-
-    @PostMapping("/{id}/roles")
+    @PostMapping("/roles/{id}/{newRole}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PersonEntity> addRole(@PathVariable long id,
-            @RequestParam String newRole) {
-        return postResponse(personService.addRoleToUserById(id, newRole));
+    public ResponseEntity<PersonEntity> addRole(@PathVariable long id, @PathVariable String newRole) {
+        Optional<PersonEntity> person = personService.get(id);
+        RoleEntity role = personService.getRole(newRole); 
+        return person.isPresent() && role != null 
+                ? postResponse(Optional.of(personService.addRolesToPerson(person.get(), Set.of(role))))
+                : badRequest();
     }
 
 
     @GetMapping("/me")
     public ResponseEntity<PersonDto> getCurrentUser() {
-        PersonDto dto = Converter.convert(personService.getPerson());
-        return getResponse(dto);
+        return getResponse(personService.getMeDto());
     }
 
 
-    @GetMapping("/application/{slug}")
-    public ResponseEntity<Boolean> isNotApplied(@PathVariable String slug) {
-        return getResponse(personApplicationService.amIwaiting(slug, personService.getPerson()));
+    @GetMapping("/application/{slug}/{id}")
+    public ResponseEntity<Boolean> isApplied(@PathVariable String slug, @PathVariable long id) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        Optional<PersonEntity> person = personService.get(id);
+        if (course.isEmpty() || person.isEmpty()) {
+            return badRequest(); 
+        }
+        Optional<ApplicantEntity> applicant = applicantService.get(person.get(), course.get());
+        return applicant.isPresent() ? getResponse(applicant.get().isApplied()) : notAcceptable();
     }
 
 
     @PostMapping("/application/{slug}")
-    public ResponseEntity<PersonEntity> applyOnCourse(@PathVariable(value = "slug") String slug) {
-        PersonEntity person = personService.getPerson();
-        if (person != null) {
-            PersonApplicationEntity application =
-                    personApplicationService.getApplicationByPersonAndCourse(person, slug);
-            if (application == null) {
-                return ResponseEntity
-                        .ok(personApplicationService.addPersonApplication(person, slug));
-            } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
-
-
-    @GetMapping("/applicants")
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MENTOR')")
-    public ResponseEntity<List<PersonApplyOnCourseDto>> personApplication() {
-        return ResponseEntity.ok(personApplicationService.getNotApplyPerson());
+    @PreAuthorize("hasRole()")
+    public ResponseEntity<ApplicantEntity> applicationForCourse(@PathVariable String slug) {
+        PersonEntity me = PersonService.me();
+        Optional<CourseEntity> course = courseService.get(slug);
+        return me == null || course.isEmpty() ? badRequest() 
+                : postResponse(applicantService.create(me, course.get()));
     }
 
 }
