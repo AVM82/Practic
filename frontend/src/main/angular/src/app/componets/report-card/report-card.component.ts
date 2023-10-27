@@ -102,13 +102,6 @@ export class ReportCardComponent {
                 height: '25%',
                 width: '30%',
                 data: {
-                    studentReport: {
-                        id: this.reportId,
-                        title: this.reportTopic,
-                        date: this.dateValue,
-                        time: this.timeValue,
-                        timeslotId: this.timeslotId
-                    },
                     reportId: this.reportId,
                 },
             });
