@@ -13,7 +13,7 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "level")
+@Table(name = "levels")
 public class LevelEntity {
 
     @Id

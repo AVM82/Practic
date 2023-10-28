@@ -52,8 +52,8 @@ export class TokenStorageService {
   public getMe(): User {
     const token = this.getToken();
     const me: User = token ? this.getUser() : null;
-    if (me == null)
-      window.location.href = environment.loginBaseUrl;
+   // if (me == null)
+    //  window.location.href = environment.loginBaseUrl;
     return me;
   }
 

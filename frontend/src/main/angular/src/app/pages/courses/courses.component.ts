@@ -29,9 +29,9 @@ export class CoursesComponent implements OnInit{
     private router0: Router,
     private svg_registry: SvgIconRegistryService
   ) { 
-    this.createCapability = this.coursesService.me.hasAnyRole('ADMIN', 'COLLABORATOR');
-    this.router = router0;
     this.me = this.tokenStorageService.getMe();
+    this.createCapability = this.me.hasAnyRole('ADMIN', 'COLLABORATOR');
+    this.router = router0;
   }
 
   ngOnInit(): void {

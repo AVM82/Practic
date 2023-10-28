@@ -21,7 +21,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "feedback")
+@Table(name = "feedbacks")
 public class FeedbackEntity {
 
     @Id

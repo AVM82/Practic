@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
-@Table(name = "topic_report")
+@Table(name = "topic_reports")
 public class TopicReportEntity {
 
     @Id

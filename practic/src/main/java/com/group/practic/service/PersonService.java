@@ -14,6 +14,7 @@ import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
 import com.group.practic.util.Converter;
+import jakarta.persistence.EntityExistsException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +117,7 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public Optional<PersonEntity> get(String name) {
+    public List<PersonEntity> get(String name) {
         return personRepository.findAllByName(name);
     }
 
@@ -145,7 +146,35 @@ public class PersonService implements UserDetailsService {
         return Optional.of(personRepository.save(Converter.convert(personDto)));
     }
 
-
+    public PersonEntity getPerson() {
+        return me();
+    }
+    public Set<RoleEntity> findUserRolesById(long id) {
+        Optional<PersonEntity> foundPerson = get(id);
+        return foundPerson.isPresent() ? foundPerson.get().getRoles() : Set.of();
+    }
+    public Optional<PersonEntity> addRoleToUserById(long id, String newRole) {
+        PersonEntity foundPerson = personRepository.findById(id).orElse(null);
+        if (foundPerson != null) {
+            if (foundPerson.getRoles().contains(getRole(newRole))) {
+                throw new EntityExistsException("User with this role already exists " + newRole);
+            }
+            foundPerson.setRoles(Set.of(new RoleEntity(newRole)));
+            return Optional.of(personRepository.save(foundPerson));
+        }
+        return Optional.empty();
+    }
+    public Optional<PersonEntity> addEmailToCurrentUser(String email) {
+        Optional<PersonEntity> currentPerson = Optional.ofNullable(getPerson());
+        if (currentPerson.isPresent()) {
+            currentPerson.get().setContacts(email);
+            return Optional.of(personRepository.save(currentPerson.get()));
+        }
+        return Optional.empty();
+    }
+    public PersonEntity loadUserByEmail(String email) {
+        return personRepository.findByEmail(email).orElse(null);
+    }
     public Optional<PersonEntity> getCurrentPerson() {
         return personRepository.findByLinkedin(getOauth2User().getAttribute("id"));
     }
@@ -173,8 +202,7 @@ public class PersonService implements UserDetailsService {
         if (personRoles.size() > 1) {
             personRoles.remove(roleGuest);
         }
-        person.setRoles(personRoles);
-        return personRepository.save(person);
+        return personRepository.saveAndFlush(person);
     }
 
 
@@ -213,10 +241,14 @@ public class PersonService implements UserDetailsService {
 
     public PersonEntity updateExistingUser(PersonEntity existingUser,
             Oauth2UserInfo oauth2UserInfo) {
-        existingUser.setName(oauth2UserInfo.getName());
-        existingUser.setLinkedin(oauth2UserInfo.getId());
-        existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());
-        return personRepository.save(existingUser);
+        boolean differences = false;
+        if (differences = !oauth2UserInfo.getName().equals(existingUser.getName()))
+            existingUser.setName(oauth2UserInfo.getName());
+        if (differences = differences || !existingUser.getLinkedin().equals(oauth2UserInfo.getId()))
+            existingUser.setLinkedin(oauth2UserInfo.getId());
+        if (differences = differences || !existingUser.getProfilePictureUrl().equals(oauth2UserInfo.getImageUrl()) )
+            existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());
+        return differences ? personRepository.save(existingUser) : existingUser;
     }
 
 
@@ -247,7 +279,7 @@ public class PersonService implements UserDetailsService {
         newPerson.setEmail(userDetails.getEmail());
         newPerson.setLinkedin(userDetails.getProviderUserId());
         newPerson.setProfilePictureUrl(userDetails.getProfilePictureUrl());
-        return personRepository.save(addRolesToPerson(newPerson, Set.of(roleGuest)));
+        return addRolesToPerson(personRepository.save(newPerson), Set.of(roleGuest));
     }
 
 

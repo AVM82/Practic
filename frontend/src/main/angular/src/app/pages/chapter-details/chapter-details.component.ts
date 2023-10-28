@@ -17,6 +17,7 @@ import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
 import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
 import { CoursesService } from 'src/app/services/courses/courses.service';
+import { StudentService } from 'src/app/services/student/student.service';
 
 @Component({
   selector: 'app-chapter-details',
@@ -33,26 +34,31 @@ export class ChapterDetailsComponent implements OnInit {
     isStudent: boolean = false;
 
   constructor(
-      private coursesService: CoursesService,
-      private chaptersService: ChaptersService,
+    private coursesService: CoursesService,
+    private studentService: StudentService,
+    private chaptersService: ChaptersService,
       private route: ActivatedRoute,
       private messagesService: InfoMessagesService,
       private tokenStorageService: TokenStorageService,
-  ) {
-    this.isStudent = this.coursesService.isStudent;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug')
       const number = Number(params.get('chapterN')) | 0;
       if (slug && number > 0) {
-        if (this.isStudent)
-          this.updatePractices();
-        this.coursesService.loadChapter(slug, number).subscribe(chapter => {
-          this.chapter = chapter;
-          this.showPartNumber = this.chapter.parts.length > 1;
-        });
+        if (this.tokenStorageService.getMe().isStudent(slug)) {
+//          this.updatePractices();
+            this.isStudent = true;
+            this.studentService.getStudentChapter(slug, number).subscribe(chapter =>{
+              this.chapter = chapter;
+              this.showPartNumber = this.chapter.parts.length > 1;
+            })
+        } else 
+            this.coursesService.loadChapter(slug, number).subscribe(chapter => {
+              this.chapter = chapter;
+              this.showPartNumber = this.chapter.parts.length > 1;
+            });
       }
     });
   }

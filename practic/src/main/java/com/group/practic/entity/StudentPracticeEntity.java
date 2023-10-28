@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "student_practice",
+@Table(name = "student_practices",
         uniqueConstraints = {@UniqueConstraint(name = "UniqueStudentPractice",
                 columnNames = {"student_id", "chapter_part_id"})})
 @Setter

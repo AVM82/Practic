@@ -53,7 +53,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
 
 
     ngOnInit(): void {
-        this.currentUserId = this.coursesService.id;
+        this.currentUserId = this.tokenStorageService.getMe().id;
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
             console.log(slug)

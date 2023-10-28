@@ -26,7 +26,6 @@ export class CoursesService {
   chapters: Chapter[] = [];
 
   constructor(
-    private tokenStorageService: TokenStorageService,
     private http: HttpClient,
     private _router: Router
   ) {}
@@ -37,7 +36,6 @@ export class CoursesService {
       this.slug = slug;
       this.chapters = [];
       this.shortChapters = this.http.get<ShortChapter[]>(getChaptersUrl(slug));
-      this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
       this.levels = this.http.get<Level[]>(getLevelsUrl(slug));
       this.selectedCourse = this.http.get<Course>(getCourseUrl(slug));
     }

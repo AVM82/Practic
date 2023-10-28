@@ -26,25 +26,23 @@ export class LoginComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    const token: string | null = this.route.snapshot.queryParamMap.get('token');
     const error: string | null = this.route.snapshot.queryParamMap.get('error');
     const logout: string | null = this.route.snapshot.queryParamMap.get('logout');
 
-    console.log(error);
-    console.log(logout);
-    
     if(logout === 'true') {
       this.tokenStorage.signOut();
       window.location.href = '/login';
     }
 
-    const token: string | null = this.route.snapshot.queryParamMap.get('token');
-    console.log(token);
-    if(token) {
+    if (this.tokenStorage.getToken()) {
+      this.isLoggedIn = true;
+      this.currentUser = this.tokenStorage.getUser();
+    }
+    else if(token) {
       this.tokenStorage.saveToken(token);
-
       this.authService.getCurrentUser().subscribe({
         next: value => {
-          console.log(value);
           this.login(value);
         },
         error: err => {
@@ -52,14 +50,8 @@ export class LoginComponent implements OnInit{
           this.isLoginFailed = true;
         }
       })
-    } else 
-
-      if (this.tokenStorage.getToken()) {
-        this.isLoggedIn = true;
-        this.currentUser = this.tokenStorage.getUser();
-      }
-
-    if(error){
+    }
+    else if(error){
       this.errorMessage = error;
       this.redirect();
     }
@@ -67,6 +59,7 @@ export class LoginComponent implements OnInit{
 
 
   login(data: any): void {
+    console.log('login data - ',data);
     this.tokenStorage.saveUser(data);
     this.isLoginFailed = false;
     this.isLoggedIn = true;

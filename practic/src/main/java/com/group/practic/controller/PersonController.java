@@ -66,8 +66,7 @@ public class PersonController {
 
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')||hasRole('MENTOR')")
-    public ResponseEntity<PersonEntity> createCourse(@RequestBody PersonDto personDto) {
+    public ResponseEntity<PersonEntity> createPerson(@RequestBody PersonDto personDto) {
         return postResponse(personService.create(personDto));
     }
 

@@ -13,6 +13,7 @@ import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {ChaptersService} from "../../services/chapters/chapters.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
 import {ShortChapter} from 'src/app/models/course/chapter';
+import { User } from 'src/app/models/user/user';
 
 @Component({
   selector: 'app-course-details',
@@ -29,13 +30,16 @@ export class CourseDetailsComponent implements OnInit {
   practices: Practice[] = [];
   student: boolean = false;
   editMode: boolean = false;
+  me!: User;
 
   constructor(
       private route: ActivatedRoute,
       private reportService: ReportServiceService,
       private chaptersService: ChaptersService,
       private tokenStorageService: TokenStorageService
-  ) {}
+  ) {
+    this.me = this.tokenStorageService.getMe();
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -43,15 +47,16 @@ export class CourseDetailsComponent implements OnInit {
 
       if(slug) {
         this.slug = slug;
-      this.student = this.tokenStorageService.isStudent(slug);
-        if (this.student)
-          this.setPractices();
+        this.student = this.me.isStudent(slug);
         this.reportService.getAllActualReports(slug).subscribe(reports => {
             if (reports) {
               this.reports.push(...reports);
               this.reports = [...this.reports];
             }
         });
+//        if (this.student)
+//          this.setPractices();
+
       }
     })
   }

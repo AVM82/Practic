@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "student_report")
+@Table(name = "student_reports")
 public class StudentReportEntity {
 
     @Id
