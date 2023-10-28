@@ -8,6 +8,7 @@ import {CoursesService} from 'src/app/services/courses/courses.service';
 import {ActivatedRoute} from '@angular/router';
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
 import { EditBtnComponent } from 'src/app/componets/edit-btn/edit-course.component';
+import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
 
 @Component({
   selector: 'app-additional-materials',
@@ -23,6 +24,7 @@ export class AdditionalMaterialsComponent implements OnInit {
 
   constructor(
     private courseService: CoursesService,
+    private tokenService: TokenStorageService,
     private route: ActivatedRoute
   ) {}
 
@@ -31,7 +33,7 @@ export class AdditionalMaterialsComponent implements OnInit {
       const slug = params.get('slug');
       if(slug) {
         this.courseService.getAdditionalMaterials(slug).subscribe(materials => {
-          this.showCheckbox = this.courseService.isStudent;
+          this.showCheckbox = this.tokenService.getMe().isStudent(slug);
           this.materials = materials;
           this.slug = slug;
         });

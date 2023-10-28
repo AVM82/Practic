@@ -20,7 +20,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "sub_chapter")
+@Table(name = "sub_chapters")
 public class SubChapterEntity {
 
     @Id

@@ -8,6 +8,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -34,7 +36,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+//@EqualsAndHashCode
 @ToString
 public class PersonEntity implements UserDetails {
 
@@ -70,17 +72,25 @@ public class PersonEntity implements UserDetails {
     String profilePictureUrl;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//    @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id"))
     Set<RoleEntity> roles = new HashSet<>();
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//    @JoinTable(name = "persons_students", joinColumns = @JoinColumn(name = "person_id"),
+//        inverseJoinColumns = @JoinColumn(name = "student_id"))
     Set<StudentEntity> students = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//    @JoinTable(name = "persons_mentors", joinColumns = @JoinColumn(name = "person_id"),
+//        inverseJoinColumns = @JoinColumn(name = "mentors_id"))
     Set<MentorEntity> mentors = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//    @JoinTable(name = "persons_applicants", joinColumns = @JoinColumn(name = "person_id"),
+//        inverseJoinColumns = @JoinColumn(name = "applicants_id"))
     Set<ApplicantEntity> applicants = new HashSet<>();
 
 

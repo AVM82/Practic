@@ -12,7 +12,7 @@ export enum ApiUrls {
   Chapters = '/api/chapters',
   Me = '/api/persons/me',
   Applicants = '/api/persons/applicants',
-  OpenChapters = '/api/students/chapters',
+  OpenChapters = '/api/students/chapters/',
   PracticeState = '/api/students/practices',
   PracticeApprove = '/api/mentor/practices',
   Feedbacks = '/api/feedbacks/',
@@ -51,9 +51,6 @@ export const timeslotsUrl = (slug: string): string =>
 export const getDescriptionUrl = (slug: string): string =>
     ApiUrls.Course + slug + `/description`;
 
-export const getMentorsUrl = (slug: string): string =>
-    ApiUrls.Course+ slug +`/mentors`;
-
 export const getStudentsAllAdditionalMaterialsUrl = (slug: string): string =>
     ApiUrls.AdditionalMaterials + slug;
 
@@ -68,3 +65,9 @@ export const deleteReportsUrl = (reportId: number): string =>
 
 export const getApplicationUrl = (slug: string): string =>
     `/api/persons/application/` + slug;
+
+export const getOpenedChaptersUrl = (slug: string): string =>
+    ApiUrls.OpenChapters + slug;
+
+export const getStudentChapterUrl = (slug: string, chapterN: number): string =>
+    ApiUrls.OpenChapters + slug + `/` + chapterN;

@@ -18,7 +18,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "sub_sub_chapter")
+@Table(name = "sub_sub_chapters")
 public class SubSubChapterEntity {
 
     @Id

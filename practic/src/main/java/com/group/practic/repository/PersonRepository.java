@@ -14,7 +14,7 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     List<PersonEntity> findAllByNameAndInactiveAndBan(String name, boolean inactive, boolean ban);
 
-    Optional<PersonEntity> findAllByName(String name);
+    List<PersonEntity> findAllByName(String name);
 
     Optional<PersonEntity> findByDiscord(String discord);
 

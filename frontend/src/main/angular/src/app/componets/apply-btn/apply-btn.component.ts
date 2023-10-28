@@ -17,7 +17,6 @@ export class ApplyBtnComponent implements OnInit {
   buttonDisabled: boolean = false;
 
   constructor(
-      private courseService: CoursesService,
       private tokenStorageService: TokenStorageService,
       private authService: AuthService,
       private messagesService: InfoMessagesService
@@ -26,7 +25,7 @@ export class ApplyBtnComponent implements OnInit {
 
   ngOnInit() {
     //поки що треба перезайти щоб оновити
-    this.buttonDisabled = this.courseService.me.isPending(this.slug);
+    this.buttonDisabled = this.tokenStorageService.getMe().isApplicant(this.slug);
   }
 
   onApplyClick() {

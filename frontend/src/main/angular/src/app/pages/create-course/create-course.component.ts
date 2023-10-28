@@ -5,6 +5,8 @@ import { Course } from 'src/app/models/course/course';
 import {AngularSvgIconModule} from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { CreateMethod } from 'src/app/enums/create-method-enum';
+import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
+import { User } from 'src/app/models/user/user';
 
 @Component({
     selector: 'app-create-course',
@@ -19,6 +21,7 @@ export class CreateCourseComponent implements OnInit{
   createMethod: CreateMethod = 'Interactive';
   properties: string = '';
   capability: boolean = false;
+  me: User;
 
   checkoutForm = this.formBuilder.group({
     slug: '',
@@ -28,11 +31,14 @@ export class CreateCourseComponent implements OnInit{
   
   constructor(
     private coursesService: CoursesService,
+    private tokenService: TokenStorageService,
     private formBuilder: FormBuilder
-  ) {}
+  ) {
+    this.me = tokenService.getMe();
+  }
 
   ngOnInit(): void {
-    this.capability = this.coursesService.me.hasAnyRole('ADMIN', 'COLLABORATOR');
+    this.capability = this.me.hasAnyRole('ADMIN', 'COLLABORATOR');
     if (this.capability)
       this.coursesService.getAllCourses().subscribe(courses => {
         this.courses = courses;

@@ -4,16 +4,11 @@ import {AppConstants} from "../../enums/app-constans";
 import {ActivatedRoute} from "@angular/router";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {AuthService} from "../../services/auth/auth.service";
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
-import { EmailPassAuthService } from 'src/app/services/emailPassAuth/email-pass-auth.service';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule,MatFormFieldModule,FormsModule,MatIconModule,ReactiveFormsModule,MatInputModule],
+  imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -21,19 +16,12 @@ export class LoginComponent implements OnInit{
   linkedinURL = AppConstants.LINKEDIN_AUTH_URL;
   isLoggedIn = false;
   isLoginFailed = false;
-  isRegister = true;
   errorMessage = '';
   currentUser: any;
-  hidePassword: boolean = true;
-  passwordControl = new FormControl('');
-  nameControl = new FormControl('', Validators.required);
-  emailControl = new FormControl('', [Validators.required, Validators.email]);
-
   constructor(
       private route: ActivatedRoute,
-      private authService: AuthService,
       private tokenStorage: TokenStorageService,
-      private emailAuth: EmailPassAuthService
+      private authService: AuthService
   ) {
   }
 
@@ -69,7 +57,9 @@ export class LoginComponent implements OnInit{
     }
   }
 
+
   login(data: any): void {
+    console.log('login data - ',data);
     this.tokenStorage.saveUser(data);
     this.isLoginFailed = false;
     this.isLoggedIn = true;
@@ -82,37 +72,4 @@ export class LoginComponent implements OnInit{
     window.history.replaceState({}, document.title, baseUrl);
     window.location.reload();
   }
-
-  saveUser(): void {
-    
-    if (this.emailControl.valid && this.passwordControl.valid) {
-        const name: string| null = this.nameControl.value!;
-        const email: string| null= this.emailControl.value!;
-        const password: string| null = this.passwordControl.value!;
-
-        const username:string = name==null?" ":name;
-
-        if (name!=null||email!=null||password!=null) {
-          this.emailAuth.postData(username, email, password).subscribe(
-            response => {
-              this.tokenStorage.saveToken(response.accessToken);
-                this.login(response.user);
-                this.nameControl.reset();
-                 this.emailControl.reset();
-                 this.passwordControl.reset();
-            },
-            error => {
-                console.error("User not added:", error);
-            }
-        )
-    }
-        ;
-    } else {
-        console.error("Invalid data. Name, email, and password are required.");
-    }
-
-}  togglePasswordVisibility(): void {
-    this.hidePassword = !this.hidePassword;
-  }
-
 }

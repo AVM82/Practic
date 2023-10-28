@@ -18,7 +18,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "additional")
+@Table(name = "additionals")
 public class AdditionalEntity {
 
     @Id

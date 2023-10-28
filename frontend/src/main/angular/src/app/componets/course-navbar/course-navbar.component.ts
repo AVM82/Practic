@@ -8,6 +8,9 @@ import {MatButtonModule} from "@angular/material/button";
 import { ShortChapter } from 'src/app/models/course/chapter';
 import { ApplyBtnComponent } from '../apply-btn/apply-btn.component';
 import { EditBtnComponent } from '../edit-btn/edit-course.component';
+import { User } from 'src/app/models/user/user';
+import { StudentService } from 'src/app/services/student/student.service';
+import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
 
 @Component({
   selector: 'app-course-navbar',
@@ -28,11 +31,16 @@ export class CourseNavbarComponent implements OnInit {
   showAdditionalMaterials: boolean = false;
   slug: string = '';
   currentChapter: number = 0;
+  me: User;
+
 
   constructor(
     private coursesService: CoursesService,
+    private studentService: StudentService,
+    private tokenService: TokenStorageService,
     private route: ActivatedRoute
   ) {
+    this.me = tokenService.getMe();
   }
 
   ngOnInit(): void {
@@ -42,24 +50,30 @@ export class CourseNavbarComponent implements OnInit {
       
       if (slug) {
         this.slug = slug;
+        const student = this.me.isStudent(slug);
+        this.showEdit = this.me.isMentor(slug);
+        this.showApply = !student && !this.showEdit;
         this.coursesService.getCourse(slug).subscribe(course => {
-          this.showEdit = this.coursesService.isMentor;
-          this.showApply = !this.coursesService.isStudent && !this.showEdit;
           if (this.currentChapter == 0)
             this.navCourse.emit(course);
           this.showAdditionalMaterials = course.additionalMaterialsExist;
         });
-        this.coursesService.getChapters(slug).subscribe(chapters => {
-          this.chapters = chapters;
-          if (chapters) {
-            if (this.currentChapter == 0)
-              this.navchapters.emit(chapters);
-          }
-        });
+        if (student)
+          this.studentService.getStudentChapters(slug).subscribe(chapters =>
+            this.setChapters(chapters));
+        else
+          this.coursesService.getChapters(slug).subscribe(chapters =>
+            this.setChapters(chapters));
       }
     })
   }
  
+  setChapters(chapters: ShortChapter[]): void {
+    this.chapters = chapters;
+    if (chapters && this.currentChapter == 0)
+        this.navchapters.emit(chapters);
+  }
+
   setEditMode(editMode: boolean) {
     this.editModeChanged.emit(editMode);
   }
