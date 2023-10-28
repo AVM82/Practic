@@ -190,9 +190,9 @@ public class StudentController {
     @PostMapping("/reports/course/{slug}")
     public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,
             Principal principal, @RequestBody StudentReportCreationDto studentReportCreationDto) {
-        Optional<PersonEntity> personEntity = personService.get(principal.getName());
+        List<PersonEntity> persons = personService.get(principal.getName());
         Optional<StudentReportEntity> reportEntity =
-                studentReportService.createStudentReport(personEntity, studentReportCreationDto);
+                studentReportService.createStudentReport(persons.get(0), studentReportCreationDto);
         return postResponse(Optional
                 .ofNullable(reportEntity.isEmpty() ? null : Converter.convert(reportEntity.get())));
     }
@@ -215,10 +215,10 @@ public class StudentController {
     @PutMapping("/reports/likes/")
     public ResponseEntity<StudentReportDto> changeLikeCount(@RequestBody int reportId,
             Principal principal) {
-        Optional<PersonEntity> personEntity = personService.get(principal.getName());
-        if (personEntity.isPresent()) {
+        List<PersonEntity> personEntity = personService.get(principal.getName());
+        if (!personEntity.isEmpty()) {
             Optional<StudentReportEntity> reportEntity =
-                    studentReportService.changeReportLikeList(reportId, personEntity.get().getId());
+                    studentReportService.changeReportLikeList(reportId, personEntity.get(0).getId());
             if (reportEntity.isPresent()) {
                 return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
             }

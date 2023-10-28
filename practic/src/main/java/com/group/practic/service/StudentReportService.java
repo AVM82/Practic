@@ -57,16 +57,16 @@ public class StudentReportService {
         return result;
     }
 
-    public Optional<StudentReportEntity> createStudentReport(Optional<PersonEntity> student,
+    public Optional<StudentReportEntity> createStudentReport(PersonEntity student,
             StudentReportCreationDto studentReportCreationDto) {
         Optional<ChapterEntity> chapter = chapterService.get(studentReportCreationDto.chapter());
         Optional<TimeSlotEntity> timeslot = timeSlotRepository
                 .findById(studentReportCreationDto.timeslotId());
         timeslot.ifPresent(timeSlot -> timeSlotService
                 .updateTimeSlotAvailability(timeSlot.getId(), false));
-        return (student.isPresent() && chapter.isPresent() && timeslot.isPresent())
+        return (student != null && chapter.isPresent() && timeslot.isPresent())
             ? Optional.ofNullable(studentReportRepository
-            .save(new StudentReportEntity(chapter.get(), student.get(),
+            .save(new StudentReportEntity(chapter.get(), student,
                     timeslot.get(), studentReportCreationDto.title()))) : Optional.empty();
     }
 
