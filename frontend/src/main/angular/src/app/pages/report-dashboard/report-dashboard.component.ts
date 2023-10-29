@@ -14,7 +14,6 @@ import {TimeSlotService} from "../../services/timeSlot/time-slot.service";
 import {Level} from "../../models/level/level";
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatButtonModule} from "@angular/material/button";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
 import { ShortChapter } from 'src/app/models/course/chapter';
 
 
@@ -47,7 +46,6 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         private route: ActivatedRoute,
         private reportService: ReportServiceService,
         private timeSlotService: TimeSlotService,
-        private tokenStorageService: TokenStorageService,
     ) {
     }
 

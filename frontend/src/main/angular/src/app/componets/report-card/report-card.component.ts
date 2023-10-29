@@ -10,6 +10,7 @@ import {ChangingReportDialogComponent} from "../changing-report-dialog/changing-
 import {CancelingReportDialogComponent} from "../canceling-report-dialog/canceling-report-dialog.component";
 import {TimeSlot} from "../../models/timeSlot/time-slot";
 import {ReportDashboardComponent} from "../../pages/report-dashboard/report-dashboard.component";
+import {StudentReport} from "../../models/report/studentReport";
 
 @Component({
     selector: 'report-card',
@@ -28,16 +29,8 @@ import {ReportDashboardComponent} from "../../pages/report-dashboard/report-dash
     styleUrls: ['/report-card.component.css']
 })
 export class ReportCardComponent {
-    @Input() reportId!: number;
-    @Input() reportTopic!: string
-    @Input() studentName!: string
-    @Input() dateValue!: string
-    @Input() timeValue!: string
-    @Input() timeslotId!: number
-    @Input() profilePictureUrl!: string
-    @Input() likedPersonsIdList!: number[];
-    @Input() studentId!: number;
     @Input() currentUserId!: number;
+    @Input() studentReport!: StudentReport;
     @Input() timeslots!: { timeslots: Map<string, TimeSlot[]> };
 
     constructor(
@@ -49,22 +42,22 @@ export class ReportCardComponent {
     }
 
     formatTime(): string {
-        const parts = this.timeValue.split(':');
+        const parts = this.studentReport.time.split(':');
         if (parts.length >= 2) {
             return `${parts[0]}:${parts[1]}`;
         }
-        return this.timeValue;
+        return this.studentReport.time;
     }
 
     pressLikeButton() {
-        this.reportService.updateReportLikeList(this.reportId).subscribe(res => {
-            this.likedPersonsIdList = res.likedPersonsIdList;
+        this.reportService.updateReportLikeList(this.studentReport.id).subscribe(res => {
+            this.studentReport.likedPersonsIdList = res.likedPersonsIdList;
         });
 
     }
 
     isCurrentUserReport() {
-        return this.studentId == this.currentUserId;
+        return this.studentReport.personId == this.currentUserId;
     }
 
     openChangeReportDialog(): void {
@@ -73,17 +66,10 @@ export class ReportCardComponent {
                 height: '60%',
                 width: '50%',
                 data: {
-                    studentReport: {
-                        id: this.reportId,
-                        title: this.reportTopic,
-                        date: this.dateValue,
-                        time: this.timeValue,
-                        timeslotId: this.timeslotId
-                    },
+                    studentReport: this.studentReport,
                     timeslots: this.timeslots,
                 },
             });
-
 
         dialogRef.afterClosed().subscribe(result => {
             console.log("res of changing dialog")
@@ -102,7 +88,7 @@ export class ReportCardComponent {
                 height: '25%',
                 width: '30%',
                 data: {
-                    reportId: this.reportId,
+                    reportId: this.studentReport.id,
                 },
             });
 

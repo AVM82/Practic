@@ -10,13 +10,8 @@
   </div>
   <div style="display: flex;">
     <report-card *ngFor="let report of  showReports()"
-                 [reportId]="report.id"
-                 [reportTopic]="report.title"
-                 [studentName]="report.personName"
-                 [dateValue]="report.date"
-                 [timeValue]="report.time"
-                 [profilePictureUrl]="report.profilePictureUrl"
-                 [likedPersonsIdList]="report.likedPersonsIdList"
+                 [studentReport] = "report"
+                 [currentUserId]="currentUserId"
                  [timeslots]="timeslots"></report-card>
   </div>
   <ng-container *ngIf="isReportsLengthMore()">
@@ -29,5 +24,4 @@
       </button>
     </div>
   </ng-container>
-
 </div>
