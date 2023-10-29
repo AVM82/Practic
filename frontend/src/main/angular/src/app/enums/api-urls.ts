@@ -45,7 +45,7 @@ export const getLevelsUrl = (slug: string): string =>
     `/api/courses/${slug}/levels`;
 
 export const timeslotsUrl = (slug: string): string =>
-    `/api/students/reports/course/${slug}/timeslots`;
+    `/api/reports/course/${slug}/timeslots`;
 
 export const getDescriptionUrl = (slug: string): string =>
     ApiUrls.Course + slug + `/description`;

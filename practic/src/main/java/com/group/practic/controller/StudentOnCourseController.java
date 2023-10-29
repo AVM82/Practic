@@ -19,7 +19,6 @@ import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentOnCourseEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
-import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
 import com.group.practic.exception.ResourceNotFoundException;
@@ -29,7 +28,6 @@ import com.group.practic.service.StudentChapterService;
 import com.group.practic.service.StudentOnCourseService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
-import com.group.practic.service.TimeSlotService;
 import com.group.practic.util.Converter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -37,7 +35,6 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,8 +66,6 @@ public class StudentOnCourseController {
 
     private final StudentReportService studentReportService;
 
-    private final TimeSlotService timeSlotService;
-
     private final CourseService courseService;
 
     private final StudentChapterService studentChapterService;
@@ -79,13 +74,12 @@ public class StudentOnCourseController {
     @Autowired
     public StudentOnCourseController(StudentOnCourseService studentOnCourseService,
             StudentPracticeService studentPracticeService, PersonService personService,
-            StudentReportService studentReportService, TimeSlotService timeSlotService,
-            CourseService courseService, StudentChapterService studentChapterService) {
+            StudentReportService studentReportService, CourseService courseService,
+            StudentChapterService studentChapterService) {
         this.studentOnCourseService = studentOnCourseService;
         this.studentPracticeService = studentPracticeService;
         this.personService = personService;
         this.studentReportService = studentReportService;
-        this.timeSlotService = timeSlotService;
         this.courseService = courseService;
         this.studentChapterService = studentChapterService;
     }
@@ -220,20 +214,6 @@ public class StudentOnCourseController {
         Optional<StudentReportEntity> reportEntity =
                 studentReportService.createStudentReport(personEntity, studentReportCreationDto);
         return postResponse(Optional.ofNullable(Converter.convert(reportEntity.get())));
-    }
-
-
-    @GetMapping("/reports/course/{slug}/timeslots")
-    public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(
-            @PathVariable String slug) {
-        return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
-    }
-
-
-    @PostMapping("/reports/course/{slug}/timeslots")
-    public ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots(
-            @PathVariable String slug) {
-        return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
 
 
