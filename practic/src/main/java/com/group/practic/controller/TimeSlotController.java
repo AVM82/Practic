@@ -1,17 +1,21 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.getResponse;
+import static com.group.practic.util.ResponseUtils.postResponse;
+
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.service.TimeSlotService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import static com.group.practic.util.ResponseUtils.getResponse;
-import static com.group.practic.util.ResponseUtils.postResponse;
 
 @RestController
 @RequestMapping("/api/reports/course")
