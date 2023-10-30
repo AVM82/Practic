@@ -19,7 +19,8 @@ export enum ApiUrls {
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
   TopicsReports = '/api/topicsreports',
-  EmailPassAuth = 'api/register'
+  EmailPassAuth = 'api/register',
+  CalendarEventEmailNotification = '/api/events/sendEvent'
 }
 
 

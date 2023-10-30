@@ -14,8 +14,12 @@ import {TimeSlotService} from "../../services/timeSlot/time-slot.service";
 import {Level} from "../../models/level/level";
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatButtonModule} from "@angular/material/button";
-import { ShortChapter } from 'src/app/models/course/chapter';
+import {ShortChapter} from 'src/app/models/course/chapter';
+import {CalendarEventService} from "../../services/calendarEvent/calendar-event.service";
+import * as _moment from "moment/moment";
+import {default as _rollupMoment} from "moment/moment";
 
+const moment = _rollupMoment || _moment;
 
 @Component({
     selector: 'report-dashboard',
@@ -46,6 +50,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         private route: ActivatedRoute,
         private reportService: ReportServiceService,
         private timeSlotService: TimeSlotService,
+        private calendarEventService: CalendarEventService
     ) {
     }
 
@@ -56,23 +61,23 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
             const slug = params.get('slug');
             console.log(slug)
             console.log(this.reports)
-            if (slug) 
+            if (slug)
                 this.updateData(slug)
         });
     }
 
-    updateData(slug:string):void{
-                this.loadLevels(slug);
-                this.loadReports(slug);
-                this.loadTimeSlots(slug);
-                this.createTimeSlots(slug)
+    updateData(slug: string): void {
+        this.loadLevels(slug);
+        this.loadReports(slug);
+        this.loadTimeSlots(slug);
+        this.createTimeSlots(slug)
     }
 
     getChapters(chapters: ShortChapter[]) {
         this.chapters = chapters;
-      }
-    
-    
+    }
+
+
     loadReports(slug: string): void {
         this.reportService.getAllActualReports(slug).subscribe(reports => {
             this.reports = [];
@@ -116,13 +121,31 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
             this.route.paramMap.subscribe(params => {
                 const slug = params.get('slug');
                 console.log('The dialog was closed');
-                console.log("result of creating dialog")
-                console.log(result);
+                console.log("result of creating report dialog: ", result);
                 if (result.timeslotId && result.title && result.chapter && slug) {
                     this.reportService.createNewReport(result, slug).subscribe();
+                    const startReportDateTime = this.toUnionDate(result.date, result.time);
+                    console.log("start report date and time: ", startReportDateTime)
+                    const endReportDateTime = moment(startReportDateTime).add(30, 'm').toDate();
+                    console.log("end report date and time: ", endReportDateTime)
+                    this.calendarEventService.sendEmailNotification({
+                        "startEvent": startReportDateTime,
+                        "endEvent": endReportDateTime,
+                        "subjectReport": result.title,
+                        "description": "description"
+                    }).subscribe()
                     this.loadReports(slug)
                 }
             });
         });
+    }
+
+    toUnionDate(date: any, time: string): Date {
+        const parsedDateTime = new Date(date);
+        const [hours, minutes] = time.split(':').map(Number);
+        parsedDateTime.setHours(hours);
+        parsedDateTime.setMinutes(minutes);
+        console.log(parsedDateTime)
+        return parsedDateTime;
     }
 }

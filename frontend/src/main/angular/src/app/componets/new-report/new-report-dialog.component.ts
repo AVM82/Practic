@@ -171,6 +171,9 @@ export class NewReportDialogComponent implements OnInit{
         }
         return timeValue;
     }
+    setNewStudentReportTime(selectedTime: string) {
+        this.newStudentReport.time = this.formatTime(selectedTime);
+    }
 
     protected readonly Date = Date;
 }
