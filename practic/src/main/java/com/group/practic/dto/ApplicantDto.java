@@ -1,7 +1,9 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.ApplicantEntity;
+import lombok.Getter;
 
+@Getter
 public class ApplicantDto {
 
     long id;

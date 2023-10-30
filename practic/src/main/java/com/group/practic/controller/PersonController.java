@@ -81,13 +81,13 @@ public class PersonController {
 
 
     @GetMapping("/application/{id}")
-    public ResponseEntity<Boolean> isApplied(@PathVariable String slug, @PathVariable long id) {
+    public ResponseEntity<Boolean> isApplied(@PathVariable long id) {
         return applicantService.get(id).map(applicant -> getResponse(applicant.isApplied()))
                 .orElse(badRequest());
     }
 
 
-    @PostMapping(value = "/application/{slug}", produces = MediaType.APPLICATION_JSON_VALUE )
+    @PostMapping(value = "/application/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApplicantDto> applicationForCourse(@PathVariable String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
         if  (course.isPresent())  
