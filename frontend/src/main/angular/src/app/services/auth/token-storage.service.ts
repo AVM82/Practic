@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import {Practice} from "../../models/practice/practice";
 import { User } from 'src/app/models/user/user';
 import { environment } from 'src/enviroments/enviroment';
+import { Observable } from 'rxjs/internal/Observable';
+import { HttpClient } from '@angular/common/http';
+import { httpOptions } from 'src/app/constants';
+import { ApiUrls } from 'src/app/enums/api-urls';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -11,7 +15,18 @@ const PRACTICE_KEY = 'practice-data';
   providedIn: 'root'
 })
 export class TokenStorageService {
-  
+
+  me: User | undefined;
+
+  constructor(
+    private http: HttpClient
+  ) { }
+
+  getCurrentUser(): Observable<User> {
+    console.log('query current user ');
+    return this.http.get<User>(ApiUrls.Me, httpOptions);
+  }
+
   signOut(): void {
     window.sessionStorage.clear();
   }
@@ -32,7 +47,15 @@ export class TokenStorageService {
 
   public getUser(): any {
     const userJson = window.sessionStorage.getItem(USER_KEY);
-    return userJson ? User.fromJson(JSON.parse(userJson)) : null;
+    this.me = userJson ? User.fromJson(JSON.parse(userJson)) : undefined;
+    return this.me;
+  }
+
+  public refreshUser(): void {
+    this.getCurrentUser().subscribe(user => {
+      this.me = user;
+      this.saveUser(user);
+    })
   }
 
   public savePractice(practice: Practice[]): void {
@@ -50,11 +73,9 @@ export class TokenStorageService {
   }
 
   public getMe(): User {
-    const token = this.getToken();
-    const me: User = token ? this.getUser() : null;
-   // if (me == null)
-    //  window.location.href = environment.loginBaseUrl;
-    return me;
+    if (this.me == undefined)
+      window.location.href = environment.loginBaseUrl;
+    return this.me!;
   }
 
 }

@@ -12,7 +12,6 @@ import { CoursesService } from './app/services/courses/courses.service';
 import {StudentMetricsService} from "./app/services/admin/student-metrics.service";
 import {ApiCacheInterceptor} from "./app/services/api-cache.interceptor";
 import {MatPaginator} from "@angular/material/paginator";
-import {AuthService} from "./app/services/auth/auth.service";
 import {AuthInterceptor} from "./app/services/auth.interceptor";
 import {environment} from "./enviroments/enviroment";
 import {ReportServiceService} from "./app/services/report/report-service.service";
@@ -44,7 +43,6 @@ bootstrapApplication(AppComponent, {
       SvgIconRegistryService,
       CoursesService,
       StudentMetricsService,
-      AuthService,
       ReportServiceService,
       InfoMessagesService,
         provideAnimations(),

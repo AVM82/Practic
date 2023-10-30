@@ -64,6 +64,9 @@ export const deleteReportsUrl = (reportId: number): string =>
 export const getApplicationUrl = (slug: string): string =>
     `/api/persons/application/` + slug;
 
+export const getApplicationCheckUrl = (id: number): string =>
+    `/api/persons/application/` + id;
+
 export const getOpenedChaptersUrl = (slug: string): string =>
     ApiUrls.OpenChapters + slug;
 

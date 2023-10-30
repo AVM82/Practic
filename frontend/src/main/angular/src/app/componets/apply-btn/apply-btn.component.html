@@ -1,10 +1,10 @@
-<div class="apply-button-container">
-    <button *ngIf="!buttonDisabled"
+<div class="apply-button-container" *ngIf="neitherStudentNorMentor">
+    <button *ngIf="!isApplicant"
             class="apply-button"
             (click)="onApplyClick()"
     >Записатись на курс</button>
-    <button *ngIf="buttonDisabled"
+    <button *ngIf="isApplicant"
             class="wait-button"
-            disabled
-    >Очікуйте підтвердження на e-mail</button>
+            (click)="checkApplied()"
+    >Очікуйте підтвердження на e-mail: {{this.me.email}}</button>
 </div>

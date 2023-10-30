@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { ApplyBtnComponent } from "src/app/componets/apply-btn/apply-btn.component";
 import { CourseNavbarComponent } from "src/app/componets/course-navbar/course-navbar.component";
 import { EditBtnComponent } from "src/app/componets/edit-btn/edit-course.component";
 import { Course } from "src/app/models/course/course";
 import { User } from "src/app/models/user/user";
-import { CoursesService } from "src/app/services/courses/courses.service";
+import { TokenStorageService } from "src/app/services/auth/token-storage.service";
 
 const safeReferenceStarts = '<a target="_blank" rel="noopener" href="';
 
@@ -26,8 +26,7 @@ export class MainPageComponent implements OnInit {
     mentor!: HTMLElement ;
 
     constructor(
-        private coursesService: CoursesService,
-        private route: ActivatedRoute  
+        private tokenStorage: TokenStorageService
     ) {}
     
     ngOnInit(): void {

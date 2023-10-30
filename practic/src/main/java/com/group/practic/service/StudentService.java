@@ -66,11 +66,21 @@ public class StudentService {
     }
 
 
-    public StudentEntity get(PersonEntity person, CourseEntity course) {
+    public Optional<StudentEntity> get(PersonEntity person, CourseEntity course) {
         return studentRepository.findByPersonAndCourse(person, course);
     }
 
 
+    public Optional<StudentEntity> get(PersonEntity person, CourseEntity course, boolean inactive, boolean ban) {
+        return studentRepository.findByPersonAndCourseAndInactiveAndBan(person, course, inactive, ban);
+    }
+
+
+    public List<StudentEntity> getCoursesOfPerson(PersonEntity person, boolean inactive, boolean ban) {
+        return studentRepository.findAllByPersonAndInactiveAndBan(person, inactive, ban);
+    }
+    
+    
     public List<StudentEntity> getStudentsOfCourse(long courseId, boolean inactive, boolean ban) {
         Optional<CourseEntity> course = courseService.get(courseId);
         return course.isPresent()
@@ -95,12 +105,11 @@ public class StudentService {
 
     public Optional<StudentEntity> create(ApplicantEntity applicant) {
         CourseEntity course = applicant.getCourse();
-        StudentEntity student = get(applicant.getPerson(), course);
-        if (student == null) {
-            student = studentRepository.save(new StudentEntity(applicant));
-            personService.addStudent(student);
+        if (get(applicant.getPerson(), course).isEmpty()) {
+            StudentEntity student = openNextChapter(studentRepository.save(new StudentEntity(applicant)));
+            personService.checkOut(student);
             applyNotify(student);
-            return Optional.of(openNextChapter(student));
+            return Optional.of(student);
         }
         return Optional.empty();
     }
@@ -135,7 +144,7 @@ public class StudentService {
 
 
     public Optional<StudentEntity> getStudentOfCourse(CourseEntity course) {
-        return studentRepository.findByCourseAndPersonAndInactiveAndBan(course, PersonService.me(),
+        return studentRepository.findByPersonAndCourseAndInactiveAndBan(PersonService.me(), course,
                 false, false);
     }
 

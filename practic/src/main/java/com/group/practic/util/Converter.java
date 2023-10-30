@@ -1,7 +1,6 @@
 package com.group.practic.util;
 
 import com.group.practic.dto.AnswerDto;
-import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.PracticeDto;
@@ -11,7 +10,6 @@ import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.AnswerEntity;
-import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
+
 
 public interface Converter {
 
@@ -66,11 +65,6 @@ public interface Converter {
 
     static StudentReportDto convert(StudentReportEntity studentReportEntity) {
         return StudentReportDto.map(studentReportEntity);
-    }
-
-
-    static ApplicantDto convert(ApplicantEntity applicant) {
-        return ApplicantDto.map(applicant);
     }
 
 

@@ -4,3 +4,8 @@ export interface Applicant {
     slug: string;
     isApplied: boolean;
 }
+
+export interface StateApplicant {
+    applicantId: number;
+    slug: string;
+}

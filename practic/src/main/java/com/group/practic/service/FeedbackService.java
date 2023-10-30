@@ -49,7 +49,7 @@ public class FeedbackService {
 
     public FeedbackEntity addFeedback(FeedbackDto feedbackDto) {
         String email = feedbackDto.getEmail();
-        PersonEntity person = personService.findByEmail(email).orElse(null);
+        PersonEntity person = personService.getByEmail(email).orElse(null);
         return email.isEmpty() || person == null ? null
                 : feedbackRepository.save(new FeedbackEntity(person, feedbackDto.getFeedback()));
     }
