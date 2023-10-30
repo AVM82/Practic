@@ -27,7 +27,7 @@ export class PersonService {
     }
 
     createApplication(slug: string): Observable<Applicant> {
-        return this.http.post<Applicant>(getApplicationUrl(slug), {}, httpOptions);
+        return this.http.post<Applicant>(getApplicationUrl(slug), {});
     }
 
     checkApplicantState(id: number): Observable<boolean> {

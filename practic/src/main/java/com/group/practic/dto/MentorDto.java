@@ -1,7 +1,9 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.MentorEntity;
+import lombok.Getter;
 
+@Getter
 public class MentorDto {
 
     long id;
