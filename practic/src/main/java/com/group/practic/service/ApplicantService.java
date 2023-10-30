@@ -1,6 +1,5 @@
 package com.group.practic.service;
 
-import com.group.practic.dto.ApplicantDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
@@ -38,7 +37,8 @@ public class ApplicantService {
 
 
     public Optional<ApplicantEntity> create(PersonEntity person, CourseEntity course) {
-        return person.getMentors().stream().anyMatch(mentor -> mentor.getCourse().equals(course)) 
+        String slug = course.getSlug();
+        return person.getMentors().stream().anyMatch(mentor -> mentor.getSlug().equals(slug)) 
                 || applicantRepository.findByPersonAndCourse(person, course).isPresent()
                         ? Optional.empty()
                         : Optional.of(applicantRepository.save(new ApplicantEntity(person, course)));
@@ -55,11 +55,5 @@ public class ApplicantService {
         applicantRepository.delete(applicant);
         return !applicantRepository.existsById(id);
     }
-
-
-    public List<ApplicantDto> getNotAppliedApplicants(CourseEntity course) {
-        return get(course, false).stream().map(ApplicantDto::map).toList();
-    }
-
 
 }

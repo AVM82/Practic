@@ -91,29 +91,25 @@ public class StudentController {
     @GetMapping
     public ResponseEntity<Collection<StudentEntity>> get(
             @RequestParam(required = false) Optional<Long> courseId,
-            @RequestParam(required = false) Optional<Long> studentId,
+            @RequestParam(required = false) Optional<Long> personId,
             @RequestParam(required = false) boolean inactive,
             @RequestParam(required = false) boolean ban) {
         if (courseId.isEmpty()) {
-            if (studentId.isEmpty()) {
+            if (personId.isEmpty()) {
                 return getResponse(studentService.get(inactive, ban));
             }
-            Optional<StudentEntity> student = studentService.get(studentId.get());
-            return student.isEmpty() ? badRequest()
-                    : getResponse(student.get().getPerson().getStudents().stream().filter(
-                            entity -> entity.isBan() == ban && entity.isInactive() == inactive)
-                            .toList());
+            Optional<PersonEntity> person = personService.get(personId.get());
+            return person.isEmpty() ? badRequest()
+                    : getResponse(studentService.getCoursesOfPerson(person.get(), inactive, ban));
         }
-        if (studentId.isEmpty()) {
+        if (personId.isEmpty()) {
             return getResponse(studentService.getStudentsOfCourse(courseId.get(), inactive, ban));
         }
-        Optional<StudentEntity> student = studentService.get(studentId.get());
+        Optional<PersonEntity> person = personService.get(personId.get());
         Optional<CourseEntity> course = courseService.get(courseId.get());
-        return student.isEmpty() || course.isEmpty() ? badRequest()
-                : getResponse(student.get().getPerson().getStudents().stream()
-                        .filter(entity -> entity.getCourse().equals(course.get())
-                                && entity.isBan() == ban && entity.isInactive() == inactive)
-                        .toList());
+        return person.isEmpty() || course.isEmpty() ? badRequest()
+                : getResponse(studentService.get(person.get(), course.get(), inactive, ban)
+                        .map(List::of).orElse(List.of()));
     }
 
 
@@ -217,8 +213,8 @@ public class StudentController {
             Principal principal) {
         List<PersonEntity> personEntity = personService.get(principal.getName());
         if (!personEntity.isEmpty()) {
-            Optional<StudentReportEntity> reportEntity =
-                    studentReportService.changeReportLikeList(reportId, personEntity.get(0).getId());
+            Optional<StudentReportEntity> reportEntity = studentReportService
+                    .changeReportLikeList(reportId, personEntity.get(0).getId());
             if (reportEntity.isPresent()) {
                 return updateResponse(Optional.of(Converter.convert(reportEntity.get())));
             }
@@ -268,7 +264,8 @@ public class StudentController {
                 Optional<AdditionalMaterialsEntity> additionalMaterial =
                         additionalMaterialsService.get(id);
                 return updateResponse(additionalMaterial.isEmpty() ? Optional.empty()
-                        : studentService.changeStudentAdditionalMaterial(student.get(), additionalMaterial.get(), state));
+                        : studentService.changeStudentAdditionalMaterial(student.get(),
+                                additionalMaterial.get(), state));
             }
         }
         return badRequest();

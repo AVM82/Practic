@@ -18,6 +18,7 @@ import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
 import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
 import { CoursesService } from 'src/app/services/courses/courses.service';
 import { StudentService } from 'src/app/services/student/student.service';
+import { User } from 'src/app/models/user/user';
 
 @Component({
   selector: 'app-chapter-details',
@@ -32,6 +33,7 @@ export class ChapterDetailsComponent implements OnInit {
     showPartNumber: boolean = false;
     practices: Practice[] = [];
     isStudent: boolean = false;
+    me: User;
 
   constructor(
     private coursesService: CoursesService,
@@ -40,27 +42,30 @@ export class ChapterDetailsComponent implements OnInit {
       private route: ActivatedRoute,
       private messagesService: InfoMessagesService,
       private tokenStorageService: TokenStorageService,
-  ) {}
+  ) {
+    this.me = tokenStorageService.getMe();
+  }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug')
-      const number = Number(params.get('chapterN')) | 0;
-      if (slug && number > 0) {
-        if (this.tokenStorageService.getMe().isStudent(slug)) {
-//          this.updatePractices();
-            this.isStudent = true;
-            this.studentService.getStudentChapter(slug, number).subscribe(chapter =>{
-              this.chapter = chapter;
-              this.showPartNumber = this.chapter.parts.length > 1;
-            })
-        } else 
-            this.coursesService.loadChapter(slug, number).subscribe(chapter => {
-              this.chapter = chapter;
-              this.showPartNumber = this.chapter.parts.length > 1;
-            });
-      }
-    });
+    if (this.me)
+      this.route.paramMap.subscribe(params => {
+        const slug = params.get('slug')
+        const number = Number(params.get('chapterN')) | 0;
+        if (slug && number > 0) {
+          if (this.tokenStorageService.getMe().isStudent(slug)) {
+  //          this.updatePractices();
+              this.isStudent = true;
+              this.studentService.getStudentChapter(slug, number).subscribe(chapter =>{
+                this.chapter = chapter;
+                this.showPartNumber = this.chapter.parts.length > 1;
+              })
+          } else 
+              this.coursesService.loadChapter(slug, number).subscribe(chapter => {
+                this.chapter = chapter;
+                this.showPartNumber = this.chapter.parts.length > 1;
+              });
+        }
+      });
   }
 
   setPractices() {

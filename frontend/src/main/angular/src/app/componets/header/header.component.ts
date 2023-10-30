@@ -5,7 +5,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {NgIf} from "@angular/common";
 import {environment} from "../../../enviroments/enviroment";
-import {Router, RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
 import { User } from 'src/app/models/user/user';
 
@@ -26,14 +26,12 @@ export class HeaderComponent implements OnInit{
 
   constructor(
       private tokenStorageService:TokenStorageService,
-      private router: Router
-  ) {
-  }
+      private route: ActivatedRoute
+      ) { }
 
   ngOnInit(): void {
-    const token = this.tokenStorageService.getToken();
-    const user: User = this.tokenStorageService.getUser();
-    if (token && user) {
+    const user: User = this.tokenStorageService.getToken() ? this.tokenStorageService.getUser() : null;
+    if (user) {
       this.isAdmin = user.hasAdminRole();
       this.isAuthenticated = user.isAuthenticated;
       this.name = user.name;
@@ -47,7 +45,7 @@ export class HeaderComponent implements OnInit{
   }
 
   toAdminPage() {
-    this.router.navigate(['/admin']);
+    window.location.href = '/admin';
   }
 
   onMenuButtonClick(item: string) {

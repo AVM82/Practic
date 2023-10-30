@@ -14,8 +14,8 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
     List<StudentEntity> findAllByInactiveAndBan(boolean inactive, boolean ban);
 
-    Optional<StudentEntity> findByCourseAndPersonAndInactiveAndBan(CourseEntity courseEntity,
-            PersonEntity personEntity, boolean inactive, boolean ban);
+    Optional<StudentEntity> findByPersonAndCourseAndInactiveAndBan(PersonEntity personEntity,
+            CourseEntity courseEntity, boolean inactive, boolean ban);
 
     List<StudentEntity> findAllByPersonAndInactiveAndBan(PersonEntity personEntity,
             boolean inactive, boolean ban);
@@ -27,6 +27,6 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
             findAllByBanFalseAndInactiveFalseAndActiveChapterNumberEquals(
                     int chapterNumber);
 
-    StudentEntity findByPersonAndCourse(PersonEntity person, CourseEntity course);
+    Optional<StudentEntity> findByPersonAndCourse(PersonEntity person, CourseEntity course);
 
 }

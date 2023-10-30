@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class TokenProvider {
+    
     private final AppProperties appProperties;
 
+    
     public TokenProvider(AppProperties appProperties) {
         this.appProperties = appProperties;
     }
@@ -31,22 +33,23 @@ public class TokenProvider {
                 now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getPerson().getId()))
-                .setIssuedAt(new Date())
+                .setSubject(Long.toString(userPrincipal.getId()))
+                .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
     }
 
+    
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(appProperties.getAuth().getTokenSecret())
                 .parseClaimsJws(token)
                 .getBody();
-
         return Long.parseLong(claims.getSubject());
     }
 
+    
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser()
@@ -66,4 +69,5 @@ public class TokenProvider {
         }
         return false;
     }
+    
 }

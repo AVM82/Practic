@@ -1,6 +1,6 @@
-import { Applicant } from "./applicant";
-import { Mentor } from "./mentor";
-import { Student } from "./student";
+import { Applicant, StateApplicant } from "./applicant";
+import { StateMentor } from "./mentor";
+import { StateStudent } from "./student";
 
 export class User {
 
@@ -16,9 +16,9 @@ export class User {
       readonly profilePictureUrl: string,
       readonly applyCourse: string,
       readonly roles?: string[],
-      readonly students?: Student[],
-      readonly mentors?: Mentor[],
-      readonly applicants?: Applicant[]
+      readonly students?: StateStudent[],
+      readonly mentors?: StateMentor[],
+      readonly applicants?: StateApplicant[]
   ) {}
 
   get isAuthenticated(): boolean {
@@ -67,6 +67,14 @@ export class User {
         if (student.slug === slug)
           return student.activeChapterNumber;
     return 0;
+  }
+
+  getApplicant(slug: string): StateApplicant | undefined {
+     return this.applicants?.find(applicant => applicant.slug === slug);
+  }
+
+  getStudent(slug: string): StateStudent | undefined {
+      return this.students?.find(student => student.slug === slug);
   }
 
   static fromJson(json: any): User {

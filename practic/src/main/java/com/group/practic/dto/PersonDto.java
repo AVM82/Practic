@@ -2,7 +2,12 @@ package com.group.practic.dto;
 
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
+import com.group.practic.entity.StateApplicantEntity;
+import com.group.practic.entity.StateMentorEntity;
+import com.group.practic.entity.StateStudentEntity;
+import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 
 @Getter
@@ -20,17 +25,15 @@ public class PersonDto {
 
     String discord;
 
-    String linkedin;
-
     String profilePictureUrl;
 
     List<String> roles;
 
-    List<StudentDto> students;
+    Set<StateStudentEntity> students;
 
-    List<MentorDto> mentors;
+    Set<StateMentorEntity> mentors;
 
-    List<ApplicantDto> applicants;
+    Set<StateApplicantEntity> applicants;
 
 
     PersonDto() {}
@@ -45,12 +48,11 @@ public class PersonDto {
         dto.name = entity.getName();
         dto.discord = entity.getDiscord();
         dto.email = entity.getEmail();
-        dto.linkedin = entity.getLinkedin();
         dto.profilePictureUrl = entity.getProfilePictureUrl();
         dto.roles = entity.getRoles().stream().map(RoleEntity::getName).toList();
-        dto.students = entity.getStudents().stream().map(StudentDto::map).toList();
-        dto.mentors = entity.getMentors().stream().map(MentorDto::map).toList();
-        dto.applicants = entity.getApplicants().stream().map(ApplicantDto::map).toList();
+        dto.students = entity.getStudents();
+        dto.mentors = entity.getMentors();
+        dto.applicants = entity.getApplicants();
         return dto;
     }
 

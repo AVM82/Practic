@@ -1,5 +1,5 @@
-export interface Student {
-    id: number;
+export interface StateStudent {
+    studentId: number;
     inactive: boolean;
     ban: boolean;
     slug: string;
