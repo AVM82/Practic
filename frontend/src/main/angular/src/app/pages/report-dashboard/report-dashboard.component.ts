@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {ActivatedRoute, RouterOutlet} from "@angular/router";
 import {ChapterReportsComponent} from "../../modules/chapter-reports/chapter-reports.component";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
-import {StudentReport} from "../../models/report/studentReport";
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {MatCardModule} from "@angular/material/card";
 import {CoursesService} from "../../services/courses/courses.service";
@@ -14,9 +13,12 @@ import {TimeSlotService} from "../../services/timeSlot/time-slot.service";
 import {Level} from "../../models/level/level";
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatButtonModule} from "@angular/material/button";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
-import { ShortChapter } from 'src/app/models/course/chapter';
+import {ShortChapter} from 'src/app/models/course/chapter';
+import {CalendarEventService} from "../../services/calendarEvent/calendar-event.service";
+import * as _moment from "moment/moment";
+import {default as _rollupMoment} from "moment/moment";
 
+const moment = _rollupMoment || _moment;
 
 @Component({
     selector: 'report-dashboard',
@@ -35,7 +37,6 @@ import { ShortChapter } from 'src/app/models/course/chapter';
     styleUrls: ['./report-dashboard.component.css']
 })
 export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
-    reports: StudentReport[][] = [];
     chapters: ShortChapter[] = [];
     levels: Level[] = []
     timeslots!: Map<string, TimeSlot[]>;
@@ -45,9 +46,9 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         public dialog: MatDialog,
         private coursesService: CoursesService,
         private route: ActivatedRoute,
-        private reportService: ReportServiceService,
+        public reportService: ReportServiceService,
         private timeSlotService: TimeSlotService,
-        private tokenStorageService: TokenStorageService,
+        private calendarEventService: CalendarEventService
     ) {
     }
 
@@ -57,29 +58,25 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
             console.log(slug)
-            console.log(this.reports)
-            if (slug) 
+            if (slug)
                 this.updateData(slug)
         });
     }
 
-    updateData(slug:string):void{
-                this.loadLevels(slug);
-                this.loadReports(slug);
-                this.loadTimeSlots(slug);
-                this.createTimeSlots(slug)
+    updateData(slug: string): void {
+        this.loadLevels(slug);
+        this.loadReports(slug);
+        this.loadTimeSlots(slug);
+        this.createTimeSlots(slug)
     }
 
     getChapters(chapters: ShortChapter[]) {
         this.chapters = chapters;
-      }
-    
-    
+    }
+
+
     loadReports(slug: string): void {
-        this.reportService.getAllActualReports(slug).subscribe(reports => {
-            this.reports = [];
-            this.reports.push(...reports);
-            this.reports = [...this.reports];
+        this.reportService.getAllActualReports(slug).subscribe(() => {
             this.loadTimeSlots(slug);
         });
     }
@@ -118,13 +115,30 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
             this.route.paramMap.subscribe(params => {
                 const slug = params.get('slug');
                 console.log('The dialog was closed');
-                console.log("result of creating dialog")
-                console.log(result);
+                console.log("result of creating report dialog: ", result);
                 if (result.timeslotId && result.title && result.chapter && slug) {
                     this.reportService.createNewReport(result, slug).subscribe();
-                    this.loadReports(slug)
+                    const startReportDateTime = this.toUnionDate(result.date, result.time);
+                    console.log("start report date and time: ", startReportDateTime)
+                    const endReportDateTime = moment(startReportDateTime).add(30, 'm').toDate();
+                    console.log("end report date and time: ", endReportDateTime)
+                      this.calendarEventService.sendEmailNotification({
+                          "startEvent": startReportDateTime,
+                          "endEvent": endReportDateTime,
+                          "subjectReport": result.title,
+                          "description": "description"
+                      }).subscribe()
                 }
             });
         });
+    }
+
+    toUnionDate(date: any, time: string): Date {
+        const parsedDateTime = new Date(date);
+        const [hours, minutes] = time.split(':').map(Number);
+        parsedDateTime.setHours(hours);
+        parsedDateTime.setMinutes(minutes);
+        console.log(parsedDateTime)
+        return parsedDateTime;
     }
 }

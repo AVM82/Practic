@@ -21,7 +21,8 @@
       <mat-select [(ngModel)]="newStudentReport.timeslotId"
                   [formControl]="timeslot">
       <mat-option *ngFor="let timeslot of getTimeslots(newStudentReport.date);"
-                  [value]="timeslot.id">{{formatTime(timeslot.time)}}</mat-option>
+                  [value]="timeslot.id"
+                  (click)="setNewStudentReportTime(timeslot.time)">{{formatTime(timeslot.time)}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

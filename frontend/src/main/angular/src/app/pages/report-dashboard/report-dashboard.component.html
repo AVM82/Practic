@@ -3,7 +3,7 @@
   <mat-card-content class="report-button" (click)="openDialog()" >Додати доповідь</mat-card-content>
 </mat-card>
 <div class="board">
-  <chapter-reports *ngFor="let chapter of reports; let i = index"
+  <chapter-reports *ngFor="let chapter of reportService.reports; let i = index"
                  [studentReports]="chapter"
                  [chapterNumber]="i + 1"
                  [levels]="levels"
