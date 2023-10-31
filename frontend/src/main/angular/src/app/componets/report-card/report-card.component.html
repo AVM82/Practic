@@ -2,12 +2,13 @@
     <mat-card class="base-card">
         <mat-card class="inner-info-card">
             <div class="student-image">
-                <img src="{{studentReport.profilePictureUrl}}" alt="no image" width="60" height="60">
+                <img src="{{studentReport.profilePictureUrl||'assets/default_profile_picture.png'}}" alt="no image"
+                     width="60" height="60">
             </div>
             <div class="student-name">{{studentReport.personName}}</div>
             <div class="report-date">{{studentReport.date | date:"dd MMMM"}}</div>
             <div class="report-time-border">
-                <div class="report-time" >{{formatTime()}}</div>
+                <div class="report-time">{{formatTime()}}</div>
             </div>
         </mat-card>
         <mat-card-title class="report-topic-header">Доповідь на тему:</mat-card-title>

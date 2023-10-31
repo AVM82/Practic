@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {ActivatedRoute, RouterOutlet} from "@angular/router";
 import {ChapterReportsComponent} from "../../modules/chapter-reports/chapter-reports.component";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
-import {StudentReport} from "../../models/report/studentReport";
 import {ReportServiceService} from "../../services/report/report-service.service";
 import {MatCardModule} from "@angular/material/card";
 import {CoursesService} from "../../services/courses/courses.service";
@@ -38,7 +37,6 @@ const moment = _rollupMoment || _moment;
     styleUrls: ['./report-dashboard.component.css']
 })
 export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
-    reports: StudentReport[][] = [];
     chapters: ShortChapter[] = [];
     levels: Level[] = []
     timeslots!: Map<string, TimeSlot[]>;
@@ -48,7 +46,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         public dialog: MatDialog,
         private coursesService: CoursesService,
         private route: ActivatedRoute,
-        private reportService: ReportServiceService,
+        public reportService: ReportServiceService,
         private timeSlotService: TimeSlotService,
         private calendarEventService: CalendarEventService
     ) {
@@ -60,7 +58,6 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
             console.log(slug)
-            console.log(this.reports)
             if (slug)
                 this.updateData(slug)
         });
@@ -79,10 +76,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
 
 
     loadReports(slug: string): void {
-        this.reportService.getAllActualReports(slug).subscribe(reports => {
-            this.reports = [];
-            this.reports.push(...reports);
-            this.reports = [...this.reports];
+        this.reportService.getAllActualReports(slug).subscribe(() => {
             this.loadTimeSlots(slug);
         });
     }
@@ -128,13 +122,12 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
                     console.log("start report date and time: ", startReportDateTime)
                     const endReportDateTime = moment(startReportDateTime).add(30, 'm').toDate();
                     console.log("end report date and time: ", endReportDateTime)
-                    this.calendarEventService.sendEmailNotification({
-                        "startEvent": startReportDateTime,
-                        "endEvent": endReportDateTime,
-                        "subjectReport": result.title,
-                        "description": "description"
-                    }).subscribe()
-                    this.loadReports(slug)
+                      this.calendarEventService.sendEmailNotification({
+                          "startEvent": startReportDateTime,
+                          "endEvent": endReportDateTime,
+                          "subjectReport": result.title,
+                          "description": "description"
+                      }).subscribe()
                 }
             });
         });

@@ -4,6 +4,7 @@ export interface StudentReport {
   personName: string;
   profilePictureUrl: string;
   chapterName: string;
+  chapterId:number;
   date: any;
   time: any;
   timeslotId:number;
