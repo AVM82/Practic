@@ -39,17 +39,17 @@ export class ChapterDetailsComponent implements OnInit {
       private messagesService: InfoMessagesService,
       private tokenStorageService: TokenStorageService,
   ) {
-    this.isStudent = this.coursesService.isStudent;
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug')
       const number = Number(params.get('chapterN')) | 0;
-      if (slug && number > 0) 
+      if (slug && number > 0)
         this.coursesService.loadChapter(slug, number).subscribe(chapter => {
           this.chapter = chapter;
           this.showPartNumber = this.chapter.parts.length > 1;
+          this.isStudent = this.coursesService.isStudent;
         });
     });
     if (this.isStudent)
