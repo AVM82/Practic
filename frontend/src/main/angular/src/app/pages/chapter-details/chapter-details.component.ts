@@ -49,8 +49,8 @@ export class ChapterDetailsComponent implements OnInit {
         this.coursesService.loadChapter(slug, number).subscribe(chapter => {
           this.chapter = chapter;
           this.showPartNumber = this.chapter.parts.length > 1;
-          this.isStudent = this.coursesService.isStudent;
         });
+      this.isStudent = this.coursesService.isStudent;
     });
     if (this.isStudent)
       this.updatePractices();
