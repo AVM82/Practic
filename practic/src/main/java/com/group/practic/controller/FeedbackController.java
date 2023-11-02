@@ -39,7 +39,6 @@ public class FeedbackController {
 
 
     @PostMapping("/")
-    @PreAuthorize("!hasRole('GUEST')")
     public ResponseEntity<FeedbackEntity> addFeedback(@Valid @RequestBody FeedbackDto feedbackDto) {
         FeedbackEntity entity = service.addFeedback(feedbackDto);
         return ResponseEntity.ok(entity);
