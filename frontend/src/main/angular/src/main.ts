@@ -8,13 +8,13 @@ import {withInterceptorsFromDi, provideHttpClient, HTTP_INTERCEPTORS} from '@ang
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { CoursesService } from './app/services/courses/courses.service';
-import {StudentMetricsService} from "./app/services/admin/student-metrics.service";
+import { CoursesService } from './app/services/courses.service';
+import {StudentMetricsService} from "./app/services/student-metrics.service";
 import {ApiCacheInterceptor} from "./app/services/api-cache.interceptor";
 import {MatPaginator} from "@angular/material/paginator";
 import {AuthInterceptor} from "./app/services/auth.interceptor";
 import {environment} from "./enviroments/enviroment";
-import {ReportServiceService} from "./app/services/report/report-service.service";
+import {ReportServiceService} from "./app/services/report-service.service";
 import { AngularSvgIconModule, SvgIconRegistryService } from 'angular-svg-icon';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";

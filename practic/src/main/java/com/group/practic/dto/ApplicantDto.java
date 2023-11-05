@@ -12,7 +12,11 @@ public class ApplicantDto {
 
     String slug;
 
+    String createdAt;
+    
     boolean isApplied;
+    
+    StudentDto student;
 
 
     public static ApplicantDto map(ApplicantEntity entity) {
@@ -20,7 +24,9 @@ public class ApplicantDto {
         dto.id = entity.getId();
         dto.name = entity.getPerson().getName();
         dto.slug = entity.getCourse().getSlug();
+        dto.createdAt = entity.getCreatedAt().toString();
         dto.isApplied = entity.isApplied();
+        dto.student = StudentDto.map(entity.getStudent());
         return dto;
     }
 

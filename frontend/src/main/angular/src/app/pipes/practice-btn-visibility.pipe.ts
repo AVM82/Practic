@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Practice} from "../models/practice/practice";
+import {Practice} from "../models/practice";
 
 @Pipe({
   name: 'practiceBtnVisibility',

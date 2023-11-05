@@ -19,6 +19,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -75,22 +76,22 @@ public class PersonEntity implements UserDetails {
 
     String profilePictureUrl;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     // @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
     // inverseJoinColumns = @JoinColumn(name = "role_id"))
     Set<RoleEntity> roles = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     // @JoinTable(name = "persons_students", joinColumns = @JoinColumn(name = "person_id"),
     // inverseJoinColumns = @JoinColumn(name = "student_id"))
     Set<StateStudentEntity> students;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     // @JoinTable(name = "persons_mentors", joinColumns = @JoinColumn(name = "person_id"),
     // inverseJoinColumns = @JoinColumn(name = "mentors_id"))
     Set<StateMentorEntity> mentors;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     // @JoinTable(name = "persons_applicants", joinColumns = @JoinColumn(name = "person_id"),
     // inverseJoinColumns = @JoinColumn(name = "applicants_id"))
     Set<StateApplicantEntity> applicants;
@@ -172,4 +173,9 @@ public class PersonEntity implements UserDetails {
         return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
     }
 
+    
+    public Optional<StateMentorEntity> getState(MentorEntity mentor) {
+        return mentors.stream().filter(state -> state.mentorId == mentor.id).findAny();
+    }
+    
 }

@@ -2,12 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatButtonModule} from "@angular/material/button";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
+import {TokenStorageService} from "../../services/token-storage.service";
 import {NgIf} from "@angular/common";
 import {environment} from "../../../enviroments/enviroment";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
-import { User } from 'src/app/models/user/user';
+import { User } from 'src/app/models/user';
 
 @Component({
     selector: 'app-header',
@@ -23,6 +23,7 @@ export class HeaderComponent implements OnInit{
   isAuthenticated: boolean = false;
   name: string = "User";
   profilePictureUrl = "";
+  me!: User;
 
   constructor(
       private tokenStorageService:TokenStorageService,
@@ -30,12 +31,13 @@ export class HeaderComponent implements OnInit{
       ) { }
 
   ngOnInit(): void {
-    const user: User = this.tokenStorageService.getToken() ? this.tokenStorageService.getUser() : null;
+    const user = this.tokenStorageService.getUser();
     if (user) {
       this.isAdmin = user.hasAdminRole();
       this.isAuthenticated = user.isAuthenticated;
       this.name = user.name;
-      this.profilePictureUrl = user.profilePictureUrl
+      this.profilePictureUrl = user.profilePictureUrl;
+      this.me = user;
     }
   }
 
@@ -49,6 +51,9 @@ export class HeaderComponent implements OnInit{
   }
 
   onMenuButtonClick(item: string) {
+    if(item === 'person') {
+      this.tokenStorageService.refreshMe();
+    }
     if(item === 'logout') {
       this.logout();
     }

@@ -15,7 +15,6 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.QuestionEntity;
 import com.group.practic.entity.QuizEntity;
-import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
 import java.util.ArrayList;
@@ -104,19 +103,6 @@ public interface Converter {
     }
 
 
-    static List<ShortChapterDto> convertChapterList(List<StudentChapterEntity> studentChapters, 
-            List<ChapterEntity> chapterList, int lastNumber) {
-        List<ShortChapterDto> result = new ArrayList<>();
-        result.addAll(studentChapters.stream()
-                .map(ShortChapterDto::map)
-                .toList());
-        result.addAll(chapterList.stream()
-                .filter(chapter -> chapter.getNumber() > lastNumber)
-                .map(chapter -> ShortChapterDto.map(chapter, true)).toList());
-        return result;
-    }
-
-    
     static AnswerDto toDto(AnswerEntity entity) {
         return new AnswerDto(entity.getId(), entity.getAnswer(), false);
     }

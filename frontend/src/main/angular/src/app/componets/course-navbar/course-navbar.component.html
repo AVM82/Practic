@@ -3,11 +3,11 @@
         [routerLink]="['/courses', slug, 'main']">
         Головна
     </div>
-    <div *ngIf="chapters.length > 0" class="progress active"
+    <div *ngIf="showChapters" class="progress active"
         [routerLink]="['/courses', slug]">
         Розділи
     </div>
-    <div *ngFor="let chapter of chapters;"
+    <div *ngFor="let chapter of shortChapters"
          class="progress"
          [class.active]="chapter.number == currentChapter"
          [class.icon]="!chapter.visible"
@@ -19,5 +19,5 @@
         Матеріали
     </div>
 </div>
-<app-edit-btn *ngIf="showEdit" (editModeChanged)="setEditMode($event)"></app-edit-btn>
-<app-apply-btn *ngIf="showApply" [slug]="slug"></app-apply-btn>
+<app-edit-btn *ngIf="checkShowEdit()" (editModeChanged)="setEditMode($event)"></app-edit-btn>
+<app-apply-btn *ngIf="checkShowApply()" [slug]="slug"></app-apply-btn>

@@ -3,8 +3,8 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
-
-import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.CourseDto;
+import com.group.practic.dto.NewCourseDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
@@ -39,8 +39,8 @@ public class CourseController {
 
 
     @GetMapping
-    public ResponseEntity<Collection<CourseEntity>> get() {
-        return getResponse(courseService.get());
+    public ResponseEntity<Collection<CourseDto>> get() {
+        return getResponse(courseService.get().stream().map(CourseDto::map).toList());
     }
 
 
@@ -57,7 +57,6 @@ public class CourseController {
     }
 
 
-
     @GetMapping("/{slug}/additional")
     public ResponseEntity<Collection<AdditionalMaterialsEntity>> getAdditional(
             @PathVariable String slug) {
@@ -67,16 +66,15 @@ public class CourseController {
 
     @PostMapping("/NewCourseFromProperties")
     @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
-    public ResponseEntity<CourseEntity> createCourse(@NotBlank @RequestBody String propertyFile) {
-        return postResponse(courseService.create(propertyFile));
+    public ResponseEntity<CourseDto> createCourse(@NotBlank @RequestBody String propertyFile) {
+        return postResponse(courseService.create(propertyFile).map(CourseDto::map));
     }
 
 
     @PostMapping("/NewCourse")
     @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
-    public ResponseEntity<CourseEntity> createCourse(
-            @NotBlank @RequestBody CourseEntity courseEntity) {
-        return postResponse(courseService.save(courseEntity));
+    public ResponseEntity<CourseDto> createCourse(@NotBlank @RequestBody NewCourseDto dto) {
+        return postResponse(courseService.create(dto).map(CourseDto::map));
     }
 
 
@@ -91,14 +89,6 @@ public class CourseController {
     public ResponseEntity<ChapterEntity> getChapterByNumber(@PathVariable("slug") String slug,
             @PathVariable int number) {
         return getResponse(courseService.getChapterByNumber(slug, number));
-    }
-
-
-    @GetMapping("/{slug}/mentors")
-    public ResponseEntity<Collection<MentorDto>> getMentors(@PathVariable String slug) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        return course.isEmpty() ? badRequest()
-                : getResponse(courseService.getMentors(course.get()));
     }
 
 }

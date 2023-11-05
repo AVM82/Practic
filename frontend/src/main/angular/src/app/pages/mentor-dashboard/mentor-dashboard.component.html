@@ -1,1 +1,13 @@
-<router-outlet></router-outlet>
+<!----
+     <router-outlet></router-outlet> 
+---->
+
+<div *ngFor="let course of courses">
+    <h3>{{course.name}}</h3>
+    <div *ngFor="let applicant of getApplicants(course.slug).applicants">
+        {{applicant.name}} - {{applicant.createdAt}}
+        <button id="applicant.id" (click)="apply($event)">
+            Прийняти
+        </button>
+    </div>
+</div>

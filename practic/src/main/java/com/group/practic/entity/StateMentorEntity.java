@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,7 +51,7 @@ public class StateMentorEntity
 
 
     public static boolean shouldBeDeleted(MentorEntity entity) {
-        return entity.getCourse().slug == null;
+        return entity.inactive;
     }
 
 }

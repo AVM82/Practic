@@ -3,10 +3,10 @@
         <mat-card (click)="router.navigate(['/courses'])">
             Курси
         </mat-card>
-        <mat-card *ngIf="isAdmin">
+        <mat-card *ngIf="isAdmin" (click)="this.router.navigate(['/users'])">
             Користувачі
         </mat-card>
-        <mat-card *ngIf="isMentor" (click)="mentorPanel()">
+        <mat-card *ngIf="isMentor" (click)="this.router.navigate(['/mentor'])">
             Менторська панель
         </mat-card>
         <mat-card *ngIf="isAdmin || isCollaborator || isMentor">

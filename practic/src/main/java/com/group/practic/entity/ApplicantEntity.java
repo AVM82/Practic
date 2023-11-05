@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,10 +28,15 @@ public class ApplicantEntity {
 
     @ManyToOne
     CourseEntity course;
-
+    
     @Column(columnDefinition = "boolean default false")
     boolean isApplied = false;
 
+    LocalDateTime createdAt = LocalDateTime.now();
+
+    @ManyToOne
+    StudentEntity student;
+    
     
     public ApplicantEntity(PersonEntity person, CourseEntity course) {
         this.person = person;
@@ -38,8 +44,9 @@ public class ApplicantEntity {
     }
     
     
-    public ApplicantEntity apply() {
+    public ApplicantEntity apply(StudentEntity student) {
         this.isApplied = true;
+        this.student = student;
         return this;
     }
 

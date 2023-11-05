@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {StudentMetricsService} from "../../services/admin/student-metrics.service";
+import {StudentMetricsService} from "../../services/student-metrics.service";
 import {TableWidgetComponent} from "../../componets/table-widget/table-widget.component";
 import { RouterLink} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
-import {CoursesService} from "../../services/courses/courses.service";
+import {CoursesService} from "../../services/courses.service";
 import {InfoMessagesService} from "../../services/info-messages.service";
 
 @Component({

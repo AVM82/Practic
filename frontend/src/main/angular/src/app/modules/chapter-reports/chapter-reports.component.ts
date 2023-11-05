@@ -3,10 +3,10 @@ import {CommonModule} from '@angular/common';
 import {RouterLink} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
-import {StudentReport} from "../../models/report/studentReport";
+import {StudentReport} from "../../models/studentReport";
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {Level} from "../../models/level/level";
+import {Level} from "../../models/level";
 
 @Component({
   selector: 'chapter-reports',

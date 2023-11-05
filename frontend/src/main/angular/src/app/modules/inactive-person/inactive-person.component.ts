@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {TableWidgetComponent} from "../../componets/table-widget/table-widget.component";
-import {StudentMetricsService} from "../../services/admin/student-metrics.service";
-import {CoursesService} from "../../services/courses/courses.service";
+import {StudentMetricsService} from "../../services/student-metrics.service";
+import {CoursesService} from "../../services/courses.service";
 import {InfoMessagesService} from "../../services/info-messages.service";
 
 @Component({
@@ -40,6 +40,7 @@ export class InactivePersonComponent implements OnInit{
   handleAction(event: any) {
     const element = event.element;
     this.isRequestInProgress = true;
+    /*
     this.coursesService.confirmApplyOnCourse(element.courseSlug, element.id).subscribe({
       next: () => {
         this.isRequestInProgress = false;
@@ -50,6 +51,7 @@ export class InactivePersonComponent implements OnInit{
         this.isRequestInProgress = false;
       }
     });
+    */
   }
 
   updateData() {
@@ -70,7 +72,8 @@ export class InactivePersonComponent implements OnInit{
   }
 
   getFirstChapterId(courseSlug: string, studentId: number) {
-    this.coursesService.getChapters(courseSlug).subscribe({
+    this.coursesService.getChapters(courseSlug);
+/*    .subscribe({
       next: value => {
         const firstChapter = value.find(chapter => chapter.number === 1);
 
@@ -84,7 +87,9 @@ export class InactivePersonComponent implements OnInit{
         console.error('Помилка при отриманні глав:', error);
       }
     });
+*/
   }
 
 
 }
+

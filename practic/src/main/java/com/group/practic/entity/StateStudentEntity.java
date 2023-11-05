@@ -38,14 +38,14 @@ public class StateStudentEntity
         this.inactive = entity.inactive;
         this.ban = entity.ban;
         this.slug = entity.getCourse().getSlug();
-        this.activeChapterNumber = entity.activeChapterNumber;
+        this.activeChapterNumber = entity.getActiveChapterNumber();
     }
 
 
     public StateStudentEntity refresh(StudentEntity entity) {
         this.inactive = entity.inactive;
         this.ban = entity.ban;
-        this.activeChapterNumber = entity.activeChapterNumber;
+        this.activeChapterNumber = entity.getActiveChapter().getChapter().getNumber();
         return this;
     }
 

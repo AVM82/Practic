@@ -3,9 +3,10 @@ import { RouterLink } from "@angular/router";
 import { ApplyBtnComponent } from "src/app/componets/apply-btn/apply-btn.component";
 import { CourseNavbarComponent } from "src/app/componets/course-navbar/course-navbar.component";
 import { EditBtnComponent } from "src/app/componets/edit-btn/edit-course.component";
-import { Course } from "src/app/models/course/course";
-import { User } from "src/app/models/user/user";
-import { TokenStorageService } from "src/app/services/auth/token-storage.service";
+import { Course } from "src/app/models/course";
+import { Mentor } from "src/app/models/mentor";
+import { User } from "src/app/models/user";
+import { TokenStorageService } from "src/app/services/token-storage.service";
 
 const safeReferenceStarts = '<a target="_blank" rel="noopener" href="';
 
@@ -46,11 +47,11 @@ export class MainPageComponent implements OnInit {
         return list.join(', ');
     }
 
-    makeMentor(mentor: User): string {
-        return safeReferenceStarts + mentor.profilePictureUrl + '">' + mentor.name + '</a>';
+    makeMentor(mentor: Mentor): string {
+        return safeReferenceStarts + mentor.linkedInUrl + '">' + mentor.name + '</a>';
     }
 
-    makeMentorsList(mentors: User[]): string {
+    makeMentorsList(mentors: Mentor[]): string {
         let list: string[] = [];
         mentors.forEach(mentor => list.push(this.makeMentor(mentor)));
         return list.join(', ');
@@ -63,7 +64,7 @@ export class MainPageComponent implements OnInit {
             this.authors.innerHTML = 'Автор' + this.plurals(course.authors!) + ' : ' + this.makeAuthorsList(course.authors!);
         this.mentorPresent = course.mentors != null && course.mentors.length > 0;
         if (this.mentorPresent)
-            this.mentor.innerHTML = 'Ментор' + this.plurals(course.mentors!) + ' : ' +this.makeMentorsList(course.mentors!);
+            this.mentor.innerHTML = 'Ментор' + this.plurals(course.mentors!) + ' : ' + this.makeMentorsList(course.mentors!);
         this.pagePresent = course.description != null;
         if (this.pagePresent)
             this.page.innerHTML = course.description!;

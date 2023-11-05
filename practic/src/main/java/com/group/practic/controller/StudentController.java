@@ -3,7 +3,6 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.deleteResponse;
 import static com.group.practic.util.ResponseUtils.getResponse;
-import static com.group.practic.util.ResponseUtils.notAcceptable;
 import static com.group.practic.util.ResponseUtils.postResponse;
 import static com.group.practic.util.ResponseUtils.updateResponse;
 
@@ -15,7 +14,6 @@ import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.StudentReportDto;
-import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentEntity;
@@ -156,22 +154,23 @@ public class StudentController {
     }
 
 
-    @GetMapping("/chapters/{slug}/{number}")
+    @GetMapping("/chapters/{studentId}/{number}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<StudentChapterDto> getChapter(@PathVariable String slug,
+    public ResponseEntity<StudentChapterDto> getChapter(@PathVariable long studentId,
             @PathVariable int number) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        return course.isEmpty() ? notAcceptable()
-                : getResponse(StudentChapterDto
-                        .map(studentService.getOpenedChapter(course.get(), number)));
+        return studentService.get(studentId)
+                .map(student -> getResponse(StudentChapterDto
+                        .map(studentService.getOpenedChapter(student, number))))
+                .orElse(badRequest());
     }
 
 
-    @GetMapping("/chapters/{slug}")
-    public ResponseEntity<Collection<ShortChapterDto>> getOpenChapters(@PathVariable String slug) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        return course.isEmpty() ? badRequest()
-                : getResponse(studentService.getChapters(course.get()));
+    @GetMapping("/chapters/{studentId}")
+    public ResponseEntity<Collection<ShortChapterDto>> getOpenChapters(
+            @PathVariable long studentId) {
+        return studentService.get(studentId)
+                .map(student -> getResponse(studentService.getChapters(student)))
+                .orElse(badRequest());
     }
 
 
@@ -243,32 +242,25 @@ public class StudentController {
     }
 
 
-    @GetMapping("/additionalMaterials/{slug}")
+    @GetMapping("/additionalMaterials/{studentId}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<AdditionalMaterialsDto>> getAdditionalMaterials(
-            @PathVariable String slug) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        return course.isEmpty() ? badRequest()
-                : getResponse(studentService.getStudentAdditionalMaterial(course.get()));
+            @PathVariable long studentId) {
+        return studentService.get(studentId)
+                .map(student -> getResponse(studentService.getAdditionalMaterials(student)))
+                .orElse(null);
     }
 
 
-    @PutMapping("/additionalMaterials/{slug}/{id}")
+    @PutMapping("/additionalMaterials/{studentId}/{id}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable String slug,
+    public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable long studentId,
             @PathVariable long id, @RequestBody boolean state) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        if (course.isPresent()) {
-            Optional<StudentEntity> student = studentService.getStudentOfCourse(course.get());
-            if (student.isPresent()) {
-                Optional<AdditionalMaterialsEntity> additionalMaterial =
-                        additionalMaterialsService.get(id);
-                return updateResponse(additionalMaterial.isEmpty() ? Optional.empty()
-                        : studentService.changeStudentAdditionalMaterial(student.get(),
-                                additionalMaterial.get(), state));
-            }
-        }
-        return badRequest();
+        return studentService.get(studentId)
+                .map(student -> updateResponse(additionalMaterialsService.get(id)
+                        .map(add -> studentService.changeAdditionalMaterial(student, add, state))
+                        .orElse(Optional.of(false))))
+                .orElse(badRequest()) ;
     }
 
 }

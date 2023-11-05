@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule  } from '@angular/forms';
-import { CoursesService } from '../../services/courses/courses.service';
-import { Course } from 'src/app/models/course/course';
 import {AngularSvgIconModule} from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { CreateMethod } from 'src/app/enums/create-method-enum';
-import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
-import { User } from 'src/app/models/user/user';
+import { Course } from 'src/app/models/course';
+import { User } from 'src/app/models/user';
+import { CoursesService } from 'src/app/services/courses.service';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { Roles } from 'src/app/enums/app-constans';
 
 @Component({
     selector: 'app-create-course',
@@ -38,7 +39,7 @@ export class CreateCourseComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.capability = this.me.hasAnyRole('ADMIN', 'COLLABORATOR');
+    this.capability = this.me.hasAnyRole(Roles.ADMIN, Roles.COLLABORATOR);
     if (this.capability)
       this.coursesService.getAllCourses().subscribe(courses => {
         this.courses = courses;

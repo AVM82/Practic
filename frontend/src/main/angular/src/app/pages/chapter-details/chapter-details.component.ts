@@ -1,24 +1,24 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
-import {Chapter} from "../../models/chapter/chapter";
-import {ChaptersService} from "../../services/chapters/chapters.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {ChapterPart} from "../../models/chapter/chapterpart";
 import {InfoMessagesService} from "../../services/info-messages.service";
 import {EditBtnComponent} from 'src/app/componets/edit-btn/edit-course.component';
 import {MatChipsModule} from "@angular/material/chips";
-import {Practice} from "../../models/practice/practice";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
 import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
-import { CoursesService } from 'src/app/services/courses/courses.service';
-import { StudentService } from 'src/app/services/student/student.service';
-import { User } from 'src/app/models/user/user';
+import { Chapter } from 'src/app/models/chapter';
+import { Practice } from 'src/app/models/practice';
+import { User } from 'src/app/models/user';
+import { CoursesService } from 'src/app/services/courses.service';
+import { StudentService } from 'src/app/services/student.service';
+import { ChaptersService } from 'src/app/services/chapters.service';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { ChapterPart } from 'src/app/models/chapterpart';
 
 @Component({
   selector: 'app-chapter-details',
@@ -29,11 +29,10 @@ import { User } from 'src/app/models/user/user';
   styleUrls: ['./chapter-details.component.css']
 })
 export class ChapterDetailsComponent implements OnInit {
-    chapter?: Chapter ;
-    showPartNumber: boolean = false;
-    practices: Practice[] = [];
-    isStudent: boolean = false;
-    me: User;
+  practices: Practice[] = [];
+  isStudent: boolean = false;
+  chapter?: Chapter;
+  me!: User;
 
   constructor(
     private coursesService: CoursesService,
@@ -43,29 +42,26 @@ export class ChapterDetailsComponent implements OnInit {
       private messagesService: InfoMessagesService,
       private tokenStorageService: TokenStorageService,
   ) {
-    this.me = tokenStorageService.getMe();
+    this.me = this.tokenStorageService.getMe();
   }
 
   ngOnInit(): void {
-    if (this.me)
-      this.route.paramMap.subscribe(params => {
-        const slug = params.get('slug')
-        const number = Number(params.get('chapterN')) | 0;
-        if (slug && number > 0) {
-          if (this.tokenStorageService.getMe().isStudent(slug)) {
+    const url = this.route.snapshot.url.map(urlSegment => urlSegment.path);
+    const slug = url[1];
+    const number = url.length >= 4 ? +url[3] : 0;
+    if (slug && number > 0) {
+        if (this.me.isStudent(slug)) {
   //          this.updatePractices();
               this.isStudent = true;
-              this.studentService.getStudentChapter(slug, number).subscribe(chapter =>{
-                this.chapter = chapter;
-                this.showPartNumber = this.chapter.parts.length > 1;
-              })
-          } else 
-              this.coursesService.loadChapter(slug, number).subscribe(chapter => {
-                this.chapter = chapter;
-                this.showPartNumber = this.chapter.parts.length > 1;
-              });
-        }
-      });
+          }
+        this.coursesService.getChapter(slug, number).subscribe(chapter =>
+            this.chapter = chapter);
+    } else
+      history.back();
+  }
+
+  showPartNumber() {
+    return this.chapter && this.chapter.parts.length > 1;
   }
 
   setPractices() {

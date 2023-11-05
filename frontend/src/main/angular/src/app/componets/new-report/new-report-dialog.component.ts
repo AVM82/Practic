@@ -6,14 +6,14 @@ import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angula
 import {MatButtonModule} from "@angular/material/button";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatSelectModule} from "@angular/material/select";
-import {NewStudentReport} from "../../models/newStudentReport/newStudentReport";
+import {NewStudentReport} from "../../models/newStudentReport";
 import {DatePipe, NgForOf} from "@angular/common";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
 import * as _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 import 'moment/locale/uk';
-import {CoursesService} from "../../services/courses/courses.service";
+import {CoursesService} from "../../services/courses.service";
 import { BehaviorSubject } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { CommonModule } from '@angular/common';

@@ -13,7 +13,7 @@
                 </div>
             </div>
         </div>
-        <form *ngIf="showCheckbox" class="column-right">
+        <form *ngIf="showCheckbox()" class="column-right">
             <label>
                 <input type="checkbox" [id]="item.id" [checked]="item.checked" (change)="changeLearned($event)" />
                 вивчено
