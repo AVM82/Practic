@@ -18,6 +18,7 @@ import {registerLocaleData} from "@angular/common";
 import { FeedbackComponent } from './componets/feedback/feedback.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { StartPanelComponent } from './pages/start-panel/start-panel.component';
+import { UsersComponent } from './pages/users/users.component';
 
 registerLocaleData(localeUk, 'uk');
 
@@ -27,9 +28,10 @@ const routes: Routes = [
   {path: 'logout', component: LoginComponent},
   {path: 'feedback',component: FeedbackComponent},
 
+  {path: 'users', component: UsersComponent},
   {path: 'mentor', component: MentorDashboardComponent,
     children: [
-      {path: '', component: DashboardComponent},
+      {path: 'dashboard', component: DashboardComponent},
       {path: 'students/practices', component: PracticMetricComponent}
     ]
   },
@@ -45,7 +47,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes),MatDatepickerModule, MatNativeDateModule, NativeDateModule],
+  imports: [RouterModule.forRoot(routes), MatDatepickerModule, MatNativeDateModule, NativeDateModule],
   exports: [RouterModule],
   providers: [
     { provide: LOCALE_ID, useValue: 'uk' }

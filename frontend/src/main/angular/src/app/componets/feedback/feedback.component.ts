@@ -1,15 +1,14 @@
 import { Component,OnInit,ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { FeedbackService } from 'src/app/services/feedback/feedbacks.service';
+import { FeedbackService } from 'src/app/services/feedbacks.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FeedbackDialogComponent } from 'src/app/componets/feedback-dialog/feedback-dialog.component'
 import { MatPaginatorModule,MatPaginator } from '@angular/material/paginator';
 import { MatTableModule,MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { TokenStorageService } from "../../services/auth/token-storage.service";
-import { User } from 'src/app/models/user/user';
-import { UserRole } from 'src/app/models/user/user.role';
+import { TokenStorageService } from "../../services/token-storage.service";
+import { User } from 'src/app/models/user';
 import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
@@ -25,25 +24,24 @@ export class FeedbackComponent implements OnInit {
   page = 1;
   pageSize = 5;
   dataSource = new MatTableDataSource<any>(this.feedbacks);
-  id:number=0
+  me!: User;
   feedbackLiked: boolean = false;
   loading: boolean = false;
   loadingIncremend: boolean = false;
   loadingDecremend: boolean = false;
   feedbackSortedState : string = "DATE_DESCENDING";
-  roles : string[] = [];
-  constructor(private feedbackService: FeedbackService, 
-    private dialog: MatDialog,private tokenStorageService:TokenStorageService) { }
+  
+  constructor(
+    private feedbackService: FeedbackService, 
+    private dialog: MatDialog,
+    private tokenStorageService:TokenStorageService
+  ) {
+    this.me = this.tokenStorageService.getMe();
+   }
   
 
   ngOnInit(): void {
     this.updateData();
-    const token = this.tokenStorageService.getToken();
-      if (token) {
-        const user: User = this.tokenStorageService.getUser();
-        this.id = user.id;
-        this.roles = user.roles ? user.roles : [];
-      }
   }
 
   updateData():void{
@@ -101,7 +99,7 @@ export class FeedbackComponent implements OnInit {
     if (!this.loadingIncremend) {
       this.loadingIncremend = true;
       const id = feedback.id;
-      this.feedbackService.incrementLikes(id, this.id).subscribe(
+      this.feedbackService.incrementLikes(id, this.me.id).subscribe(
         (response) => {
           console.log("Likes increment:", response);
           this.updateData();
@@ -120,7 +118,7 @@ export class FeedbackComponent implements OnInit {
     if (!this.loadingDecremend) {
       this.loadingDecremend = true; 
       const id =  feedback.id;
-      this.feedbackService.decrementLikes(id, this.id).subscribe(response=>{
+      this.feedbackService.decrementLikes(id, this.me.id).subscribe(response=>{
         console.log("Likes increment:",response);
         this.updateData();
       },error=>{console.error("likes not increment:",error);
@@ -141,7 +139,7 @@ export class FeedbackComponent implements OnInit {
 
   isLiked(feedback: any):boolean{
     const likedPersons: any[] = feedback.likedByPerson;
-    const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.id);
+    const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.me.id);
     if (userLikedIndex !== -1) {
             return true;
     } else {
@@ -170,8 +168,6 @@ export class FeedbackComponent implements OnInit {
   }
 
   isCreatorOrAdmin(feedback:any):boolean{
-    const studentId =feedback.student.id;
-    const hasUserRole = this.roles.some(role => role === "ADMIN");
-    return(studentId==this.id||hasUserRole) ;  
+    return feedback.student.id == this.me.id || this.me.hasAdminRole();
   }
 }

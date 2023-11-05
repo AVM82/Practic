@@ -2,13 +2,17 @@ package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
-
+import com.group.practic.dto.ApplicantDto;
+import com.group.practic.dto.ApplicantsForCourseDto;
+import com.group.practic.dto.MentorComplexDto;
 import com.group.practic.dto.MentorPracticeDto;
 import com.group.practic.dto.SendMessageDto;
+import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
@@ -40,7 +44,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/mentor")
+@RequestMapping("/api/mentors")
 public class MentorController {
 
     CourseService courseService;
@@ -49,31 +53,63 @@ public class MentorController {
 
     MentorService mentorService;
 
+    PersonService personService;
+
     StudentPracticeService studentPracticeService;
 
 
     @Autowired
     public MentorController(MentorService mentorService, CourseService courseService,
-            ApplicantService applicantService, StudentPracticeService studentPracticeService) {
+            ApplicantService applicantService, StudentPracticeService studentPracticeService,
+            PersonService personService) {
         this.courseService = courseService;
         this.applicantService = applicantService;
         this.mentorService = mentorService;
         this.studentPracticeService = studentPracticeService;
+        this.personService = personService;
+    }
+
+
+    @PostMapping("/add/{slug}/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<MentorComplexDto> addMentor(@PathVariable String slug,
+            @Min(1) @PathVariable long id) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        Optional<PersonEntity> person = personService.get(id);
+        return course.isEmpty() || person.isEmpty() ? badRequest()
+                : getResponse(Optional.of(mentorService.addMentor(person.get(), course.get())));
+    }
+
+
+    @PostMapping("/remove/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<Boolean> removeMentor(@Min(1) @PathVariable long id) {
+        Optional<MentorEntity> mentor = mentorService.get(id);
+        return mentor.isEmpty() ? badRequest()
+                : getResponse(Optional.of(mentorService.removeMentor(mentor.get())));
+    }
+
+
+    @GetMapping("/applicants")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Collection<ApplicantsForCourseDto>> getMyApplicants() {
+        return getResponse(mentorService.getMyApplicants());
     }
 
 
     @GetMapping("/applicants/{slug}")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<Collection<ApplicantEntity>> getApplicants(@PathVariable String slug) {
+    public ResponseEntity<Collection<ApplicantDto>> getMyApplicantsForCourse(
+            @PathVariable String slug) {
         Optional<CourseEntity> course = courseService.get(slug);
         return course.isEmpty() ? badRequest()
-                : getResponse(applicantService.get(course.get(), false));
+                : getResponse(mentorService.getApplicantsForCourse(course.get()));
     }
 
 
     @PostMapping("/applicants/admit/{id}")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<Boolean> adminStudent(@Min(1) @PathVariable long id) {
+    public ResponseEntity<StudentDto> adminStudent(@Min(1) @PathVariable long id) {
         Optional<ApplicantEntity> applicant = applicantService.get(id);
         return applicant.isEmpty() ? badRequest()
                 : getResponse(mentorService.adminStudent(applicant.get()));

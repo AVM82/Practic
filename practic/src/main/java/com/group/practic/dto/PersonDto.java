@@ -5,7 +5,6 @@ import com.group.practic.entity.RoleEntity;
 import com.group.practic.entity.StateApplicantEntity;
 import com.group.practic.entity.StateMentorEntity;
 import com.group.practic.entity.StateStudentEntity;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import lombok.Getter;
@@ -54,6 +53,11 @@ public class PersonDto {
         dto.mentors = entity.getMentors();
         dto.applicants = entity.getApplicants();
         return dto;
+    }
+
+
+    public static List<PersonDto> map(List<PersonEntity> entities) {
+        return entities.stream().map(PersonDto::map).toList();
     }
 
 }

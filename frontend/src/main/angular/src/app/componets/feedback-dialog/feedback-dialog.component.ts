@@ -4,10 +4,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { FeedbackService } from 'src/app/services/feedback/feedbacks.service';
-import {TokenStorageService} from "../../services/auth/token-storage.service";
+import { FeedbackService } from 'src/app/services/feedbacks.service';
+import {TokenStorageService} from "../../services/token-storage.service";
 import { MatInputModule } from '@angular/material/input';
-import { User } from 'src/app/models/user/user';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-feedback-dialog',

@@ -1,24 +1,30 @@
 export enum ApiUrls {
+  Me = '/api/persons/me',
+  Persons = '/api/persons',
+  Application = '/api/persons/application/',
+  
+  Feedbacks = '/api/feedbacks/',
+
   Courses = '/api/courses',
   Course = '/api/courses/',
   NewCourse = '/api/courses/NewCourse',
   NewCourseFromProperties = '/api/courses/NewCourseFromProperties',
+  Chapters = '/api/chapters',
+
   Students = '/api/students',
+  StudentChapters = '/api/students/chapters/',
+  StudentAdditionalMaterials = '/api/students/additionalMaterials/',
   Practices = '/api/students/practices/',
   PracticeStates = '/api/students/practices/states',
   Reports = '/api/students/reports/course/',
   ReportStates = '/api/students/reports/states',
-  AdditionalMaterials = '/api/students/additionalMaterials/',
-  Chapters = '/api/chapters',
-  Me = '/api/persons/me',
-  Applicants = '/api/persons/applicants',
-  OpenChapters = '/api/students/chapters/',
-  PracticeState = '/api/students/practices',
-  PracticeApprove = '/api/mentor/practices',
-  Feedbacks = '/api/feedbacks/',
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
-  TopicsReports = '/api/topicsreports'
+  TopicsReports = '/api/topicsreports',
+
+  Mentors = '/api/mentors/',
+  Applicants = '/api/mentors/applicants',
+  PracticeApprove = '/api/mentors/practices'
 }
 
 
@@ -46,29 +52,35 @@ export const getLevelsUrl = (slug: string): string =>
 export const timeslotsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}/timeslots`;
 
-export const getDescriptionUrl = (slug: string): string =>
-    ApiUrls.Course + slug + `/description`;
+export const getStudentsAllAdditionalMaterialsUrl = (studentId: number): string =>
+    ApiUrls.Students + `/` + studentId;
 
-export const getStudentsAllAdditionalMaterialsUrl = (slug: string): string =>
-    ApiUrls.AdditionalMaterials + slug;
-
-export const getStudentAdditionalMaterialUrl = (slug: string, id: number): string =>
-    ApiUrls.AdditionalMaterials + slug + `/` + id;
-
-export const getActiveChapterNumber = (slug: string): string =>
-    ApiUrls.Course+ slug +`/activeChapterNumber`;
+export const getStudentAdditionalMaterialUrl = (studentId: number, addId: number): string =>
+    getStudentsAllAdditionalMaterialsUrl(studentId) + `/` + addId;
 
 export const deleteReportsUrl = (reportId: number): string =>
     `/api/students/reports/course/${reportId}`;
 
 export const getApplicationUrl = (slug: string): string =>
-    `/api/persons/application/` + slug;
+    ApiUrls.Application + slug;
 
 export const getApplicationCheckUrl = (id: number): string =>
-    `/api/persons/application/` + id;
+    ApiUrls.Application + id;
 
-export const getOpenedChaptersUrl = (slug: string): string =>
-    ApiUrls.OpenChapters + slug;
+export const getStudentChaptersUrl = (studentId: number): string =>
+    ApiUrls.StudentChapters + studentId;
 
-export const getStudentChapterUrl = (slug: string, chapterN: number): string =>
-    ApiUrls.OpenChapters + slug + `/` + chapterN;
+export const getStudentChapterUrl = (studentId: number, chapterN: number): string =>
+    ApiUrls.StudentChapters + studentId + `/` + chapterN;
+
+export const addRoleUrl = (id: number, role: string): string =>
+    ApiUrls.Persons + `/` + id + `/add/` + role;
+
+export const removeRoleUrl = (id: number, role: string): string =>
+    ApiUrls.Persons + `/` + id + `/remove/` + role;
+
+export const addMentorUrl = (slug: string, id: number): string =>
+    ApiUrls.Mentors + `add/`+ slug + `/` + id;
+
+export const removeMentorUrl = (id: number): string =>
+    ApiUrls.Mentors + `remove/` + id;

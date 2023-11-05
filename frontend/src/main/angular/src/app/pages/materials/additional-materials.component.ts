@@ -3,12 +3,11 @@ import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
-import {AdditionalMaterials} from 'src/app/models/material/additional.material';
-import {CoursesService} from 'src/app/services/courses/courses.service';
+import {CoursesService} from 'src/app/services/courses.service';
 import {ActivatedRoute} from '@angular/router';
 import {ApplyBtnComponent} from "../../componets/apply-btn/apply-btn.component";
 import { EditBtnComponent } from 'src/app/componets/edit-btn/edit-course.component';
-import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
+import { AdditionalMaterials } from 'src/app/models/additional.material';
 
 @Component({
   selector: 'app-additional-materials',
@@ -18,36 +17,26 @@ import { TokenStorageService } from 'src/app/services/auth/token-storage.service
   styleUrls: ['./additional-materials.component.css']
 })
 export class AdditionalMaterialsComponent implements OnInit {
-    materials?: AdditionalMaterials[];
-    slug: string = '';
-    showCheckbox: boolean = false;
+  materials: AdditionalMaterials[] = [];
 
   constructor(
     private courseService: CoursesService,
-    private tokenService: TokenStorageService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug');
-      if(slug) {
-        this.courseService.getAdditionalMaterials(slug).subscribe(materials => {
-          this.showCheckbox = this.tokenService.getMe().isStudent(slug);
-          this.materials = materials;
-          this.slug = slug;
-        });
-      }
-    })
+    const slug = this.route.snapshot.url.map(urlSegment => urlSegment.path)[1];
+    if(slug)
+        this.courseService.getAdditionalMaterials(slug).subscribe(materials =>
+            this.materials = materials);
   }
 
   changeLearned(event: any) {
-    console.log("checkbox id:%d checked:", event.target.id, event.target.checked);
-    this.courseService.putAdditionalChange(this.slug, event.target.id, event.target.checked).subscribe(success => {
-      console.warn(' additional material is ', success ? '' : 'not', ' changed');
-      if (!success)
-        event.target.checked = !event.target.checked;
-    });
+    this.courseService.putAdditionalChange(event);
   }
     
+  showCheckbox() {
+    return this.courseService.stateStudent;
+  }
+
 }

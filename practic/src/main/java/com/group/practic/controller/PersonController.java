@@ -6,10 +6,8 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.PersonDto;
-import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
-import com.group.practic.entity.StateStudentEntity;
 import com.group.practic.service.ApplicantService;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
@@ -17,7 +15,6 @@ import jakarta.validation.constraints.Min;
 import java.util.Collection;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,39 +35,58 @@ public class PersonController {
 
     CourseService courseService;
 
+    
     @Autowired
     public PersonController(PersonService personService, CourseService courseService,
             ApplicantService applicantService) {
         this.personService = personService;
         this.courseService = courseService;
+        this.applicantService = applicantService;
     }
 
 
-    @GetMapping("/")
-    public ResponseEntity<Collection<PersonEntity>> get(@RequestParam(required = false) String name,
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<Collection<PersonDto>> get(@RequestParam(required = false) String name,
             @RequestParam(required = false) boolean inactive,
             @RequestParam(required = false) boolean ban) {
         if (name == null) {
-            return getResponse(personService.get(inactive, ban));
+            return getResponse(PersonDto.map(personService.get(inactive, ban)));
         }
-        return getResponse(personService.get(name, inactive, ban));
+        return getResponse(PersonDto.map(personService.get(name, inactive, ban)));
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<PersonEntity> get(@Min(1) @PathVariable long id) {
-        return getResponse(personService.get(id));
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<PersonDto> get(@Min(1) @PathVariable long id) {
+        return getResponse(personService.get(id).map(PersonDto::map));
     }
 
 
-    @PostMapping("/roles/{id}/{newRole}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PersonEntity> addRole(@PathVariable long id,
+    @PostMapping("/{id}/add/{newRole}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<PersonDto> addRole(@PathVariable long id,
             @PathVariable String newRole) {
-        Optional<PersonEntity> person = personService.get(id);
         RoleEntity role = personService.getRole(newRole);
-        return person.isEmpty() || role == null ? badRequest()
-                : postResponse(Optional.of(personService.addRole(person.get(), role)));
+        return role == null ? badRequest()
+                : personService.get(id)
+                        .map(person -> postResponse(Optional.of(
+                                PersonDto.map(personService.addRole(person, role)))))
+                        .orElse(badRequest());
+    }
+
+
+    @PostMapping("/{id}/remove/{newRole}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<PersonDto> removeRole(@PathVariable long id,
+            @PathVariable String newRole) {
+        RoleEntity role = personService.getRole(newRole);
+        return role == null ? badRequest()
+                : personService.get(id)
+                        .map(person -> postResponse(Optional.of(
+                                PersonDto.map(personService.removeRole(person, role)))))
+                        .orElse(badRequest());
     }
 
 
@@ -81,24 +97,17 @@ public class PersonController {
 
 
     @GetMapping("/application/{id}")
-    public ResponseEntity<Boolean> isApplied(@PathVariable long id) {
-        return applicantService.get(id).map(applicant -> getResponse(applicant.isApplied()))
-                .orElse(badRequest());
+    public ResponseEntity<ApplicantDto> isApplied(@PathVariable long id) {
+        return applicantService.get(id).map(applicant -> getResponse(ApplicantDto.map(applicant)))
+                .orElse(getResponse(new ApplicantDto()));
     }
 
 
-    @PostMapping(value = "/application/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/application/{slug}")
     public ResponseEntity<ApplicantDto> applicationForCourse(@PathVariable String slug) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        if  (course.isPresent())  
-            return  postResponse(personService.createApplication(course.get()));
-        return badRequest();
-    }
-
-    
-    @GetMapping("/students/{slug}")
-    public ResponseEntity<StateStudentEntity> getStateStudent(@PathVariable String slug) {
-        return getResponse(personService.getStateStudent(slug));
+        return courseService.get(slug)
+                .map(course -> postResponse(personService.createApplication(course)))
+                .orElse(badRequest());
     }
     
 }

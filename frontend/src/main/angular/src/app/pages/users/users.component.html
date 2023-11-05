@@ -1,0 +1,99 @@
+<h1>HOT CHANGES</h1>
+<table>
+    <tr class="headers">
+        <td *ngIf="!surnameFirst" [matMenuTriggerFor]="sortMenu">Ім'я та призвіще</td>
+        <td *ngIf="surnameFirst" [matMenuTriggerFor]="sortMenu">Призвіще та ім'я</td>
+        <td>заявки</td>
+        <td>студент</td>
+        <td>ментор</td>
+        <td>ролі</td>
+    </tr>
+    <tr *ngFor="let user of users" class="user-row">
+        <td [matMenuTriggerFor]="sortMenu">{{user.name}}</td>
+        <td>
+            <div *ngFor="let applicantSlug of user.getApplicantSlugs()">
+                {{applicantSlug}}
+            </div>    
+        </td>
+        <td>
+            <div *ngFor="let studentSlug of user.getStudentSlugs()">
+                {{studentSlug}}
+            </div>    
+        </td>
+        <td [matMenuTriggerFor]="mentorMenu" [matMenuTriggerData]="{u: user}">
+            <div *ngFor="let mentorSlug of user.getMentorSlugs()">
+                {{mentorSlug}}
+            </div>    
+        </td>
+        <td [matMenuTriggerFor]="roleMenu" [matMenuTriggerData]="{u: user}">
+            <div *ngFor="let role of user.roles">
+                {{role}}
+            </div>
+        </td>
+    </tr>
+</table>
+
+<mat-menu #sortMenu xPosition="after" class="menus">
+    <div class="menu-header"><b>Сортувати</b></div>
+    <br>
+    <div mat-menu-item class="menuitem" (click)="sortByName(false)">на ім'я за зростанням</div>
+    <div mat-menu-item class="menuitem" (click)="sortByName(true)">на ім'я за спаданням</div>
+    <br>
+    <div mat-menu-item class="menuitem" (click)="sortBySurname(false)">на прізвище за зростанням</div>
+    <div mat-menu-item class="menuitem" (click)="sortBySurname(true)">на прізвище за спаданням</div>
+</mat-menu>            
+
+<mat-menu #mentorMenu xPosition="before" class="menus">
+    <ng-template matMenuContent let-user="u">
+        <div class="menu-header"><b>Курси</b></div>
+        <br>
+        <div *ngIf="courses.length > user.mentors.length" mat-menu-item  class="menuitem" [matMenuTriggerFor]="courseMenu" [matMenuTriggerData]="{add: true, u: user}">
+            + додати ментором на курс
+        </div>
+        <div *ngIf="user.mentors.length > 0" mat-menu-item class="menuitem" [matMenuTriggerFor]="courseMenu" [matMenuTriggerData]="{add: false, u: user}">
+            - прибрати ментора на курсі
+        </div>
+    </ng-template>
+</mat-menu>
+
+<mat-menu #courseMenu xPosition="before" yPosition="below" class="menus">
+    <ng-template matMenuContent parentMenu="mentorMenu" let-user="u" let-add="add">
+        <div *ngIf="add" class="course-add">
+            <div *ngFor="let course of courses">
+                <div mat-menu-item *ngIf="!user.isMentor(course.slug)" class="menuitem" (click)="mentorService.addMentor(course, user)">
+                    <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
+                    {{course.name}}
+                </div>
+<!---   Розкоментувати на  PROD
+                <div mat-menu-item *ngIf="!user.isMentor(course.slug) && !user.isApplicant(course.slug) && !user.isStudent(course.slug)"
+                     class="menuitem" (click)="mentorService.addMentor(course, user)">
+                     <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
+                     {{course.name}}
+                </div>
+--->
+            </div>
+        </div>
+        <div *ngIf="!add" class="course-remove">
+            <div *ngFor="let course of courses">
+                <div mat-menu-item *ngIf="user.isMentor(course.slug)" class="menuitem" (click)="mentorService.removeMentor(course, user)">
+                    <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
+                    {{course.name}}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</mat-menu>
+
+<mat-menu #roleMenu xPosition="before" class="menus">
+    <ng-template matMenuContent let-user="u">
+        <div class="menu-header"><b>Ролі</b></div>
+        <br>
+        <div *ngFor="let role of roles">
+            <div *ngIf="(role !== ADMIN && role !== COLLABORATOR) || me.hasAdminRole()">
+                <div mat-menu-item *ngIf="!user.hasAnyRole(role)" class="menuitem" (click)="personService.addRole(user, role)">+ додати {{role}}</div>
+                <div mat-menu-item *ngIf="user.hasAnyRole(role)" class="menuitem" (click)="personService.removeRole(user, role)">- прибрати {{role}}</div>
+            </div>    
+        </div>
+    </ng-template>
+</mat-menu>            
+

@@ -1,13 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {CoursesService} from "../../services/courses/courses.service";
+import {CoursesService} from "../../services/courses.service";
 import {MatCardModule} from '@angular/material/card';
 import {NgForOf, NgIf} from '@angular/common';
 import {RouterLink} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
-import {AngularSvgIconModule, SvgIconRegistryService} from 'angular-svg-icon';
-import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
-import { CourseProp } from 'src/app/models/course/course.prop';
-import { User } from 'src/app/models/user/user';
+import {AngularSvgIconModule} from 'angular-svg-icon';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { CourseProp } from 'src/app/models/course.prop';
+import { User } from 'src/app/models/user';
+import { ROLE_ADMIN, ROLE_COLLABORATOR } from 'src/app/enums/app-constans';
 
 
 @Component({
@@ -22,45 +23,48 @@ export class CoursesComponent implements OnInit{
   createCapability: boolean = false;
   studentCourse = 'green';
   mentorCourse = 'blue';
-  otherCourse = 'grey';
+  otherCourse = 'smokey';
   applicantCourse = 'purple';
   me!: User;
 
   constructor(
     private tokenStorageService: TokenStorageService,
-    private coursesService: CoursesService, 
-    private svg_registry: SvgIconRegistryService
+    private coursesService: CoursesService
   ) { 
     this.me = this.tokenStorageService.getMe();
-    this.createCapability = this.me.hasAnyRole('ADMIN', 'COLLABORATOR');
+    this.createCapability = this.me.hasAnyRole(ROLE_ADMIN, ROLE_COLLABORATOR);
   }
 
   ngOnInit(): void {
-    if (this.me != null )
       this.coursesService.getAllCourses().subscribe(courses => {
-        if (courses)
           courses.forEach(course => {
-            this.svg_registry.addSvg(course.slug, course.svg);
-              let route;
-              let color;
-              if (this.me.isStudent(course.slug)) {
-                color = this.studentCourse;
-                let number = this.me.getCourseActiveChapterNumber(course.slug);
-                route = course.slug + (number != 0 ? '/chapters/' + number : '');
-              }
-              if (this.me.isMentor(course.slug)) {
-                color = this.mentorCourse;
-                route = course.slug;
-              } else {
-                route = course.slug + '/main';
-                color = this.me.isApplicant(course.slug) ? this.applicantCourse : this.otherCourse;
-              }
-              this.coursesProp.push(new CourseProp (
-                    course.name,
-                    course.slug,
-                    route,
-                    color
-              ))
+                  let route;
+                  let color;
+                  if (this.me.isStudent(course.slug)) {
+                      color = this.studentCourse;
+                      let number = this.me.getCourseActiveChapterNumber(course.slug);
+                      route = course.slug + (number != 0 ? '/chapters/' + number : '');
+                  }
+                  if (this.me.isMentor(course.slug)) {
+                      color = this.mentorCourse;
+                      route = course.slug;
+                  } else {
+                      route = course.slug + '/main';
+                      color = this.me.isApplicant(course.slug) ? this.applicantCourse : this.otherCourse;
+                  }
+                  this.coursesProp.push(new CourseProp (
+                      course.name,
+                      course.slug,
+                      route,
+                      color
+                  ))
+              })
+          this.coursesProp.sort(function(a, b) {
+              let x = a.color[0];
+              let y = b.color[0];
+              if (x < y)
+                return -1;
+              return x === y ? 0 : 1;
           })
       });
   }

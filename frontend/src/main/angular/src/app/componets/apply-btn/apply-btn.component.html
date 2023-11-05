@@ -1,4 +1,4 @@
-<div class="apply-button-container" *ngIf="neitherStudentNorMentor">
+<div class="apply-button-container" *ngIf="checkIsNotStudent()">
     <button *ngIf="!isApplicant"
             class="apply-button"
             (click)="onApplyClick()"

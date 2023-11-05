@@ -40,7 +40,7 @@ public class StudentEntity {
     CourseEntity course;
 
     int activeChapterNumber;
-
+    
     @ManyToOne
     StudentChapterEntity activeChapter;
 
@@ -117,7 +117,10 @@ public class StudentEntity {
     public void addChapter(StudentChapterEntity chapter) {
         this.chapters.add(chapter);
         this.activeChapter = chapter;
-        this.activeChapterNumber = chapter.getChapter().getNumber();
     }
 
+
+    public boolean isFinished() {
+        return this.finish != null;
+    }
 }

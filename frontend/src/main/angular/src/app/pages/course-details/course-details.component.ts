@@ -6,14 +6,15 @@ import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
-import {ReportServiceService} from "../../services/report/report-service.service";
-import {StudentReport} from "../../models/report/studentReport";
-import {Practice} from "../../models/practice/practice";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {ChaptersService} from "../../services/chapters/chapters.service";
+import {ReportServiceService} from "../../services/report-service.service";
+import {StudentReport} from "../../models/studentReport";
+import {Practice} from "../../models/practice";
+import {TokenStorageService} from "../../services/token-storage.service";
+import {ChaptersService} from "../../services/chapters.service";
 import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
-import {ShortChapter} from 'src/app/models/course/chapter';
-import { User } from 'src/app/models/user/user';
+import {ShortChapter} from 'src/app/models/chapter';
+import { User } from 'src/app/models/user';
+import { CoursesService } from 'src/app/services/courses.service';
 
 @Component({
   selector: 'app-course-details',
@@ -35,6 +36,7 @@ export class CourseDetailsComponent implements OnInit {
   constructor(
       private route: ActivatedRoute,
       private reportService: ReportServiceService,
+      private coursesService: CoursesService,
       private chaptersService: ChaptersService,
       private tokenStorageService: TokenStorageService
   ) {

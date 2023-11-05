@@ -14,8 +14,8 @@ import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
-import com.group.practic.util.Converter;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -104,11 +104,9 @@ public class StudentService {
 
 
     public Optional<StudentEntity> create(ApplicantEntity applicant) {
-        CourseEntity course = applicant.getCourse();
-        if (get(applicant.getPerson(), course).isEmpty()) {
+        if (get(applicant.getPerson(), applicant.getCourse()).isEmpty()) {
             StudentEntity student = openNextChapter(studentRepository.save(new StudentEntity(applicant)));
             personService.checkOut(student);
-            applyNotify(student);
             return Optional.of(student);
         }
         return Optional.empty();
@@ -134,57 +132,44 @@ public class StudentService {
     }
 
 
-    private void applyNotify(StudentEntity student) {
-        SendMessageDto messageDto = new SendMessageDto();
-        messageDto.setAddress(student.getPerson().getEmail());
-        messageDto.setHeader("Заявку на навчання прийнято!");
-        messageDto.setMessage("Вітаємо на курсі \"" + student.getCourse().getName() + "\"");
-        this.emailSenderService.sendMessage(messageDto);
-    }
-
-
     public Optional<StudentEntity> getStudentOfCourse(CourseEntity course) {
         return studentRepository.findByPersonAndCourseAndInactiveAndBan(PersonService.me(), course,
                 false, false);
     }
 
 
-    public List<ShortChapterDto> getChapters(CourseEntity course) {
-        Optional<StudentEntity> student = getStudentOfCourse(course);
-        if (student.isPresent()) {
-            Set<ChapterEntity> chapters = course.getChapters();
-            Set<StudentChapterEntity> studentChapters = student.get().getChapters();
-            return Converter.convertChapterList(nonNullList(studentChapters), nonNullList(chapters),
-                    student.get().getActiveChapterNumber());
-        }
-        return List.of();
+    public List<ShortChapterDto> getChapters(StudentEntity student) {
+        int visibleMaxNumber = student.getActiveChapterNumber();
+        List<ShortChapterDto> result = new ArrayList<>();
+        result.addAll(nonNullList(student.getChapters()).stream()
+                .map(ShortChapterDto::map)
+                .toList());
+        if (visibleMaxNumber > 0)
+            result.addAll(nonNullList(student.getCourse().getChapters()).stream()
+                    .filter(chapter -> chapter.getNumber() > visibleMaxNumber)
+                    .map(chapter -> ShortChapterDto.map(chapter, true)).toList());
+        return result;
     }
 
 
-    public Optional<StudentChapterEntity> getOpenedChapter(CourseEntity course, int number) {
-        Optional<StudentEntity> student = getStudentOfCourse(course);
-        return student.isEmpty() ? Optional.empty()
-                : student.get().getChapters().stream()
+    public Optional<StudentChapterEntity> getOpenedChapter(StudentEntity student, int number) {
+        return student.getChapters().stream()
                         .filter(chapter -> chapter.getChapter().getNumber() == number).findAny();
     }
 
 
-    public Optional<Boolean> changeStudentAdditionalMaterial(StudentEntity student,
+    public Optional<Boolean> changeAdditionalMaterial(StudentEntity student,
             AdditionalMaterialsEntity additionalMaterial, boolean state) {
-        studentRepository.save(student.changeAdditionalMaterial(additionalMaterial, state));
-        return Optional.of(true);
+        return Optional.of(studentRepository.save(
+                student.changeAdditionalMaterial(additionalMaterial, state)) != null);
     }
 
 
-    public List<AdditionalMaterialsDto> getStudentAdditionalMaterial(CourseEntity course) {
-        Optional<StudentEntity> student = getStudentOfCourse(course);
-        if (student.isPresent()) {
-            Set<AdditionalMaterialsEntity> studentsAdd = student.get().getAdditionalMaterial();
-            return course.getAdditionalMaterials().stream()
-                    .map(add -> AdditionalMaterialsDto.map(add, studentsAdd.contains(add)))
-                    .toList();
-        }
-        return List.of();
+    public List<AdditionalMaterialsDto> getAdditionalMaterials(StudentEntity student) {
+        Set<AdditionalMaterialsEntity> studentAdd = student.getAdditionalMaterial();
+        return student.getCourse().getAdditionalMaterials().stream()
+                .map(add -> AdditionalMaterialsDto.map(add, studentAdd.contains(add)))
+                .toList();
     }
 
 }

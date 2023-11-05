@@ -13,9 +13,10 @@ import {MY_FORMATS} from "../new-report/new-report-dialog.component";
 import * as _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import 'moment/locale/uk';
-import {CoursesService} from "../../services/courses/courses.service";
+import {CoursesService} from "../../services/courses.service";
 import {TopicReportService} from "../../services/topic-report.service";
 import {BehaviorSubject, Observable} from "rxjs";
+import { StudentService } from 'src/app/services/student.service';
 
 const moment = _rollupMoment || _moment;
 
@@ -55,6 +56,7 @@ export class ChangingReportDialogComponent {
         public dialogRef: MatDialogRef<ChangingReportDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
         private coursesService: CoursesService,
+        private studentservice: StudentService,
         private topicReportService: TopicReportService
     ) {
         const currentYear = new Date().getFullYear();

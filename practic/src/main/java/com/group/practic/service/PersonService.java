@@ -58,7 +58,7 @@ public class PersonService implements UserDetailsService {
             List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE, ROLE_MENTOR, ROLE_STUDENT, ROLE_GUEST);
 
     public static final List<String> ADVANCED_ROLES =
-            List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE, ROLE_MENTOR);
+            List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE);
 
     PersonRepository personRepository;
 
@@ -379,8 +379,8 @@ public class PersonService implements UserDetailsService {
         PersonEntity person = mentor.getPerson();
         Set<StateMentorEntity> states = person.getMentors();
         if (StateMentorEntity.shouldBeDeleted(mentor)) {
-            states = removeMatchState(mentor, states);
-            return states.isEmpty() ? removeRole(person, roleMentor) : personRepository.save(person);
+            person.setMentors(removeMatchState(mentor, states));
+            return personRepository.save(person.getMentors().isEmpty() ? removeRole(person, roleMentor) : person);
         }
         Optional<StateMentorEntity> stateMentor = updateMatchState(mentor, states);
         if (stateMentor.isEmpty()) {

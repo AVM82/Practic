@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {AppConstants} from "../../enums/app-constans";
 import {ActivatedRoute} from "@angular/router";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
+import {TokenStorageService} from "../../services/token-storage.service";
 
 @Component({
   selector: 'app-login',
@@ -13,10 +13,10 @@ import {TokenStorageService} from "../../services/auth/token-storage.service";
 })
 export class LoginComponent implements OnInit{
   linkedinURL = AppConstants.LINKEDIN_AUTH_URL;
-  isLoggedIn = false;
-  isLoginFailed = false;
-  errorMessage = '';
-  currentUser: any;
+//  isLoggedIn = false;
+//  isLoginFailed = false;
+//  errorMessage = '';
+//  currentUser: any;
 
   constructor(
       private route: ActivatedRoute,
@@ -34,8 +34,8 @@ export class LoginComponent implements OnInit{
     }
 
     if (this.tokenStorage.getToken()) {
-      this.isLoggedIn = true;
-      this.currentUser = this.tokenStorage.getUser();
+//      this.isLoggedIn = true;
+//      this.currentUser = this.tokenStorage.getUser();
       this.redirect();
     }
     else if(token) {
@@ -45,13 +45,13 @@ export class LoginComponent implements OnInit{
           this.login(value);
         },
         error: err => {
-          this.errorMessage = err;
-          this.isLoginFailed = true;
+ //         this.errorMessage = err;
+ //         this.isLoginFailed = true;
         }
       })
     }
     else if(error){
-      this.errorMessage = error;
+//      this.errorMessage = error;
       this.redirect();
     }
   }
@@ -59,9 +59,10 @@ export class LoginComponent implements OnInit{
 
   login(data: any): void {
     this.tokenStorage.saveUser(data);
-    this.isLoginFailed = false;
-    this.isLoggedIn = true;
-    this.currentUser = this.tokenStorage.getUser();
+  //  this.isLoginFailed = false;
+  //  this.isLoggedIn = true;
+  //  this.currentUser = this.tokenStorage.getUser();
+    this.tokenStorage.me = data;
     this.redirect();
   }
 

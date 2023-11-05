@@ -19,6 +19,8 @@ public class MentorEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
+    boolean inactive;
+    
     @ManyToOne
     PersonEntity person;
 
@@ -31,10 +33,9 @@ public class MentorEntity {
     public MentorEntity() {}
 
 
-    public MentorEntity(PersonEntity person, CourseEntity course, String linkedInUrl) {
+    public MentorEntity(PersonEntity person, CourseEntity course) {
         this.person = person;
         this.course = course;
-        this.linkedInUrl = linkedInUrl;
     }
 
 }

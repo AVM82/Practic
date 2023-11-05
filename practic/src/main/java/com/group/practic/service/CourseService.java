@@ -3,10 +3,12 @@ package com.group.practic.service;
 import com.group.practic.PropertyLoader;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.NewCourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
+import com.group.practic.entity.MentorEntity;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.util.Converter;
 import com.group.practic.util.PropertyUtil;
@@ -83,19 +85,6 @@ public class CourseService {
     }
 
 
-    public Optional<String> getDescription(String slug) {
-        Optional<CourseEntity> course = get(slug);
-        return course.isEmpty() ? Optional.empty()
-                : Optional.ofNullable(course.get().getDescription());
-    }
-
-
-    public Boolean getAdditionalExist(String slug) {
-        Optional<CourseEntity> course = get(slug);
-        return !course.isEmpty() && !course.get().getAdditionalMaterials().isEmpty();
-    }
-
-
     public Set<AdditionalMaterialsEntity> getAdditional(String slug) {
         Optional<CourseEntity> course = get(slug);
         return course.isEmpty() ? null : course.get().getAdditionalMaterials();
@@ -106,9 +95,17 @@ public class CourseService {
         return Optional.ofNullable(courseRepository.save(course));
     }
 
-
-    public Optional<CourseEntity> create(CourseDto courseDto) {
-        return Optional.ofNullable(courseRepository.save(Converter.convert(courseDto)));
+    
+    public Optional<CourseEntity> create(NewCourseDto dto) {
+        Optional<CourseEntity> exists = get(dto.getSlug());
+        if (exists.isEmpty()) {
+            CourseEntity course = new CourseEntity();
+            course.setName(dto.getName());
+            course.setSlug(dto.getSlug());
+            course.setSvg(dto.getSvg());
+            return Optional.ofNullable(courseRepository.save(course));
+        }
+        return Optional.empty();
     }
 
 
@@ -177,4 +174,19 @@ public class CourseService {
                 .min((a, b) -> Integer.compare(a.getNumber(), b.getNumber()));
     }
 
+    
+    public void addMentor(MentorEntity mentor) {
+        CourseEntity course = mentor.getCourse();
+        course.getMentors().add(mentor);
+        courseRepository.save(course);
+    }
+
+
+    public void removeMentor(MentorEntity mentor) {
+        CourseEntity course = mentor.getCourse();
+        course.getMentors().remove(mentor);
+        courseRepository.save(course);
+    }
+
 }
+
