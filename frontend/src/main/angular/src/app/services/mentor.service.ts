@@ -19,7 +19,7 @@ export class MentorService {
         private http: HttpClient
     ) {}
 
-    getAllApplicants(): Observable<CourseApplicants[]> {
+    getMyApplicants(): Observable<CourseApplicants[]> {
         return this.http.get<CourseApplicants[]>(ApiUrls.Applicants);
     }
 
@@ -27,12 +27,16 @@ export class MentorService {
         return this.http.get<CourseApplicants>(ApiUrls.Applicants + `/` + slug);
     }
 
-    admitApplicant(id: number): Observable<StateStudent> {
-        return this.http.post<StateStudent>(ApiUrls.Applicants + `/admit/` + id, {});
+    admit(applicant: Applicant): void {
+        this.http.post<StateStudent>(ApiUrls.Applicants + `/admit/` + applicant.id, {}).subscribe(student => {
+            applicant.isApplied = true;
+            applicant.student = student;
+            this.tokenStorageService.me!.removePossibleApplicant(applicant);
+        });
     }
 
-    rejectApplicant(id: number): Observable<boolean> {
-        return this.http.post<boolean>(ApiUrls.Applicants + `/reject/` + id, {});
+    reject(applicant: Applicant): Observable<boolean> {
+        return this.http.post<boolean>(ApiUrls.Applicants + `/reject/` + applicant.id, {});
     }
     
     addMentor(course: Course, user: User): void {
@@ -49,13 +53,10 @@ export class MentorService {
 
     removeMentor(course: Course, user: User): void {
         const mentorId = user.getMentor(course.slug)!.mentorId;
-        console.log('remove mentor id = ', mentorId);
-
         this.http.post<boolean>(removeMentorUrl(mentorId), {}).subscribe(success => {
             if (success) {
-                course.mentors.slice(course.mentors.findIndex(mentor => mentor.id == mentorId) , 1);
+                course.mentors = course.mentors.filter(mentor => mentor.id != mentorId);
                 user.removeMentorById(mentorId);
-                console.log('user:',user);
                 if (user.id == this.tokenStorageService.me!.id) {
                     this.tokenStorageService.me!.removeMentorById(mentorId);
                     this.tokenStorageService.saveUser(this.tokenStorageService.me!);

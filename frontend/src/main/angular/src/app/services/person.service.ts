@@ -42,14 +42,10 @@ export class PersonService {
 
     checkApplicant(id: number): void {
         this.http.get<Applicant>(getApplicationCheckUrl(id)).subscribe(applicant => {
-            if (applicant.id == 0) 
-                this.tokenStorageService.refreshMe();
-            else
-                if (applicant.isApplied) {
-                    this.me.removeApplicantById(id);
-                    this.me.students!.push(applicant.student);
-                    this.tokenStorageService.saveUser(this.me);
-                }
+            if (applicant.isApplied || applicant.isRejected) {
+                this.tokenStorageService.me?.removePossibleApplicant(applicant);
+                this.tokenStorageService.saveMe();
+            }
         });
     }
 
@@ -65,7 +61,7 @@ export class PersonService {
         this.http.post<User>(removeRoleUrl(user.id, role), {}).subscribe(updated => {
             user.update(updated);
             if (updated.id === this.me.id)
-            this.tokenStorageService.updateMe(user);
+                this.tokenStorageService.updateMe(user);
         })
     }
 

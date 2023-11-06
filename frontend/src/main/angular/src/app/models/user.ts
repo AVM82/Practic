@@ -1,5 +1,5 @@
-import { ROLE_GUEST, ROLE_MENTOR, Roles } from "../enums/app-constans";
-import { StateApplicant } from "./applicant";
+import { ROLE_GUEST, ROLE_MENTOR, ROLE_STUDENT, Roles } from "../enums/app-constans";
+import { Applicant, StateApplicant } from "./applicant";
 import { StateMentor } from "./mentor";
 import { StateStudent } from "./student";
 
@@ -138,6 +138,10 @@ export class User {
     return this.getApplicant(slug) != undefined;
   }
 
+  hasApplicantId(id: number): boolean {
+    return this.applicants.some(applicant => applicant.applicantId == id);
+  }
+
 
   getStudentSlugs(): string[] {
     return this.students.map(student => student.slug);
@@ -160,37 +164,54 @@ export class User {
     this.applicants = this.applicants.filter(applicant => applicant.slug !== slug);
   }
 
-  removeApplicantById(id: number): void {
-    this.applicants = this.applicants.filter(applicant => applicant.applicantId != id);
+  removePossibleApplicant(applicant: Applicant): void {
+    if (this.applicants.some(myApplicant => myApplicant.applicantId == applicant.id)) {
+      this.applicants = this.applicants.filter(myApplicant => myApplicant.applicantId != applicant.id);
+      if (applicant.isApplied) {
+        this.students.push(applicant.student);
+        this.checkRoles();
+      }
+    }
   }
 
-
-  addMentor(mentor: StateMentor): void {
-    this.mentors.push(mentor);
-    if (this.mentors.length == 1)
-      this.addRole(ROLE_MENTOR);
-  }
-
-  removeMentorById(mentorId: number): void {
-    console.log(this.mentors);
-    this.mentors = this.mentors.filter(mentor => mentor.mentorId != mentorId);
-    console.log(this.mentors);
+  checkRoles(): void {
     if (this.mentors.length == 0)
       this.removeRole(ROLE_MENTOR);
-  }
-
-
-  addRole(newRole: string): void {
-    if (!this.roles.some(role => role === newRole))
-      this.roles.push(newRole);
+    if (this.mentors.length > 0 && !this.hasMentorRole())
+      this.addRole(ROLE_MENTOR);
+    if (this.students.length == 0)
+      this.removeRole(ROLE_STUDENT);
+    if (this.students.length > 0 && !this.hasStudentRole())
+      this.addRole(ROLE_STUDENT);
+    if (this.roles.length == 0)
+      this.addRole(ROLE_GUEST);
     if (this.roles.length > 1)
       this.removeRole(ROLE_GUEST);
   }
 
+  addMentor(mentor: StateMentor): void {
+    this.mentors.push(mentor);
+    this.checkRoles()
+  }
+
+  removeMentorById(mentorId: number): void {
+    this.mentors = this.mentors.filter(mentor => mentor.mentorId != mentorId);
+    this.checkRoles()
+  }
+
+
+  addRole(newRole: string): void {
+    if (!this.roles.some(role => role === newRole)) {
+      this.roles.push(newRole);
+      this.checkRoles()
+    }
+  }
+
   removeRole(oldRole: string): void {
-    this.roles = this.roles.filter(role => role !== oldRole);
-    if (this.roles.length == 0)
-      this.addRole(ROLE_GUEST);
+    if (this.roles.some(role => role === oldRole)) {
+      this.roles = this.roles.filter(role => role !== oldRole);
+      this.checkRoles()
+    }
   }
 
 
