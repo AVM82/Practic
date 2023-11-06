@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {Router, RouterOutlet} from "@angular/router";
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { MentorService } from 'src/app/services/mentor.service';
-import { CourseApplicants } from 'src/app/models/applicant';
+import { Applicant, CourseApplicants } from 'src/app/models/applicant';
 import { MatTableDataSource } from '@angular/material/table';
 import { CoursesService } from 'src/app/services/courses.service';
 import { Course } from 'src/app/models/course';
@@ -19,17 +19,19 @@ import { User } from 'src/app/models/user';
 export class MentorDashboardComponent implements OnInit {
   me!: User;
   courses: Course[] = [];
-  courseApplicants?: CourseApplicants[];
+  applicants?: CourseApplicants[];
+  mentorService: MentorService;
 
   constructor(
     private tokenStorage: TokenStorageService,
     private courseService:  CoursesService,
-    private mentorService: MentorService,
+    private mentorService0: MentorService,
     private router: Router
   ) {
     this.me = tokenStorage.getMe();
     if (!this.me.hasAdvancedRole())
       router.navigate(['']);
+    this.mentorService = mentorService0;
   }
 
   ngOnInit(): void {
@@ -39,24 +41,25 @@ export class MentorDashboardComponent implements OnInit {
         console.log(course);
         this.courses.push(course!); 
       });
-      this.mentorService.getAllApplicants().subscribe(applicants => this.courseApplicants = applicants);
+      this.mentorService.getMyApplicants().subscribe(applicants => this.applicants = applicants);
     })
   }
 
   getApplicants(slug: string): CourseApplicants {
-    const courseApplicants = this.courseApplicants?.find(course => course.slug === slug);
+    const courseApplicants = this.applicants?.find(course => course.slug === slug);
     return courseApplicants ? courseApplicants : {slug: slug, applicants: []};
   }
 
-  apply(event: any) {
-    event.target.disable = true;
-    this.mentorService.admitApplicant(event.target.id).subscribe({
-      next: stateStudent => {
-          event.target.innerHTML = stateStudent.registered;
-      },
-      error: error =>{
-        event.target.innerHTML = 'відхилено'
-      }
-    })
+  operable(applicant: Applicant): boolean {
+    return !applicant.isApplied && !applicant.isRejected;
   }
+
+  getState(applicant: Applicant): string {
+    if (applicant.isApplied)
+      return 'прийнятий';
+    if (applicant.isRejected)
+      return 'відхилений';
+    return 'очікує';
+  }
+
 }

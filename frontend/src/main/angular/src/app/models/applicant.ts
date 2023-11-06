@@ -6,6 +6,7 @@ export interface Applicant {
     slug: string;
     createdAt: string;
     isApplied: boolean;
+    isRejected: boolean;
     student: StateStudent;
 }
 

@@ -1,0 +1,23 @@
+h2 {
+    width: 100%;
+    text-align: center;
+}
+
+table {
+    border: 1px;
+    margin: 2px;
+    border-color: rgb(2, 75, 51);
+    width: 100%;
+    cursor: context-menu;
+}
+
+.headers {
+    background-color: rgb(247, 247, 207);
+    text-align: center;
+    gap: 2px;
+}
+
+.applicant-row {
+    gap: 5px;
+    background-color: rgb(173, 173, 164);
+}

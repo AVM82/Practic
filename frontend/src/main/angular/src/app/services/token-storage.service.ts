@@ -78,6 +78,10 @@ export class TokenStorageService {
     return this.me!;
   }
 
+  public saveMe(): void {
+    this.saveUser(this.me!);
+  }
+
   public updateMe(user: User): void {
     this.saveUser(this.me!.update(user));
   }
