@@ -1,5 +1,6 @@
 package com.group.practic.dto;
 
+
 public class EmailDto {
 
     private String recipient;

@@ -42,7 +42,7 @@ public class StateStudentEntity
     }
 
 
-    public StateStudentEntity refresh(StudentEntity entity) {
+    public StateStudentEntity update(StudentEntity entity) {
         this.inactive = entity.inactive;
         this.ban = entity.ban;
         this.activeChapterNumber = entity.getActiveChapter().getChapter().getNumber();
@@ -56,7 +56,7 @@ public class StateStudentEntity
 
 
     public static boolean shouldBeDeleted(StudentEntity entity) {
-        return entity.getCourse().slug == null;
+        return entity.getId() == 0;
     }
 
 }

@@ -16,6 +16,8 @@ public class ApplicantDto {
     
     boolean isApplied;
     
+    boolean isRejected;
+    
     StudentDto student;
 
 
@@ -26,6 +28,7 @@ public class ApplicantDto {
         dto.slug = entity.getCourse().getSlug();
         dto.createdAt = entity.getCreatedAt().toString();
         dto.isApplied = entity.isApplied();
+        dto.isRejected = entity.isRejected();
         dto.student = StudentDto.map(entity.getStudent());
         return dto;
     }

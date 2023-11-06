@@ -171,7 +171,7 @@ public class CourseService {
     public Optional<ChapterEntity> getNextChapterByNumber(CourseEntity course, int number) {
         return course.getChapters().stream()
                 .filter(chapter -> chapter.getNumber() > number)
-                .min((a, b) -> Integer.compare(a.getNumber(), b.getNumber()));
+                .min((a, b) -> a.getNumber() - b.getNumber());
     }
 
     

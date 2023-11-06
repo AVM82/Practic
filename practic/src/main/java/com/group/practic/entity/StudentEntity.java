@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -41,7 +42,7 @@ public class StudentEntity {
 
     int activeChapterNumber;
     
-    @ManyToOne
+    @OneToOne
     StudentChapterEntity activeChapter;
 
     LocalDate registered = LocalDate.now();
@@ -65,7 +66,7 @@ public class StudentEntity {
 
     @ManyToMany
     @OrderBy("number")
-    Set<StudentChapterEntity> chapters;
+    Set<StudentChapterEntity> chapters = new HashSet<>();
 
 
     public StudentEntity() {}

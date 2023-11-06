@@ -4,6 +4,6 @@ public interface PersonStateEntityChangeable<R, T> {
     
     boolean match(R entity);
     
-    T refresh(R entity);
+    T update(R entity);
 
 }

@@ -118,10 +118,10 @@ public class MentorController {
 
     @PostMapping("/applicants/reject/{id}")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<Boolean> rejectApplicant(@Min(1) @PathVariable long id) {
+    public ResponseEntity<ApplicantEntity> rejectApplicant(@Min(1) @PathVariable long id) {
         Optional<ApplicantEntity> applicant = applicantService.get(id);
         return applicant.isEmpty() ? badRequest()
-                : getResponse(mentorService.rejectApplicant(applicant.get()));
+                : getResponse(Optional.of(mentorService.rejectApplicant(applicant.get())));
     }
 
 

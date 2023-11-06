@@ -352,8 +352,7 @@ public class PersonService implements UserDetailsService {
     
     private <R, T extends PersonStateEntityChangeable<R, T>> 
         Optional<T> updateMatchState(R entity, Set<T> states) {
-        
-        return states.stream().filter(state -> state.match(entity)).findAny().map(state -> state.refresh(entity));
+        return states.stream().filter(state -> state.match(entity)).findAny().map(state -> state.update(entity));
     }
     
     
@@ -361,7 +360,7 @@ public class PersonService implements UserDetailsService {
         PersonEntity person = student.getPerson();
         Set<StateStudentEntity> states = person.getStudents();
         if (StateStudentEntity.shouldBeDeleted(student)) {
-            states = removeMatchState(student, states);
+            person.setStudents(removeMatchState(student, states));
             return states.isEmpty() ? removeRole(person, roleStudent) : personRepository.save(person);
         }
         Optional<StateStudentEntity> stateStudent = updateMatchState(student, states);

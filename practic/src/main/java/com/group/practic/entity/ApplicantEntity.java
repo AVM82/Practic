@@ -2,6 +2,7 @@ package com.group.practic.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,15 +27,18 @@ public class ApplicantEntity {
     @ManyToOne
     PersonEntity person;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     CourseEntity course;
     
     @Column(columnDefinition = "boolean default false")
     boolean isApplied = false;
+    
+    @Column(columnDefinition = "boolean default false")
+    boolean isRejected;
 
     LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     StudentEntity student;
     
     

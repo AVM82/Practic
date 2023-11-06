@@ -35,7 +35,7 @@ public class StateApplicantEntity
 
 
     @Override
-    public StateApplicantEntity refresh(ApplicantEntity entity) {
+    public StateApplicantEntity update(ApplicantEntity entity) {
         return this;
     }
 
@@ -47,7 +47,7 @@ public class StateApplicantEntity
 
 
     public static boolean shouldBeDeleted(ApplicantEntity entity) {
-        return entity.isApplied() || entity.getCourse().slug == null;
+        return entity.isRejected || entity.isApplied;
     }
 
 }

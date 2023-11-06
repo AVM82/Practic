@@ -34,10 +34,10 @@ public class EmailSenderService implements Sender {
             mailMessage.setText(messageDto.getMessage());
             mailMessage.setSubject(messageDto.getHeader());
             mailSender.send(mailMessage);
-            logger.info("Your email is sent to {}", messageDto.getAddress());
+            logger.info("Email is sent to {}", messageDto.getAddress());
             return true;
         } catch (Exception e) {
-            logger.error("Your email is not sent to {}", messageDto.getAddress(), e);
+            logger.error("Email is not sent to {}", messageDto.getAddress(), e);
         }
         return false;
     }

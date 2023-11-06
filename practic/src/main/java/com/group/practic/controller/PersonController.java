@@ -6,7 +6,6 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.PersonDto;
-import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.ApplicantService;
 import com.group.practic.service.CourseService;

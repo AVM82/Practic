@@ -79,8 +79,8 @@ public class CourseController {
 
 
     @GetMapping("/{slug}")
-    public ResponseEntity<CourseEntity> getBySlug(@PathVariable String slug) {
-        return getResponse(courseService.get(slug));
+    public ResponseEntity<CourseDto> getBySlug(@PathVariable String slug) {
+        return getResponse(courseService.get(slug).map(CourseDto::map));
     }
 
 

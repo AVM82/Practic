@@ -2,7 +2,9 @@ package com.group.practic.dto;
 
 import com.group.practic.entity.StudentEntity;
 import java.util.Optional;
+import lombok.Getter;
 
+@Getter
 public class StudentDto {
 
     long id;

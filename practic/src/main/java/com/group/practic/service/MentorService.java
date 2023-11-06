@@ -112,7 +112,7 @@ public class MentorService {
 
     public List<ApplicantDto> getApplicantsForCourse(CourseEntity course) {
         List<ApplicantDto> applicants = new ArrayList<>();
-        applicantService.get(course, false)
+        applicantService.get(course, false, false)
                 .forEach(applicant -> applicants.add(ApplicantDto.map(applicant)));
         return applicants;
     }
@@ -133,8 +133,9 @@ public class MentorService {
     }
 
 
-    public boolean rejectApplicant(ApplicantEntity applicant) {
-        return applicantService.reject(applicant);
+    public ApplicantEntity rejectApplicant(ApplicantEntity applicant) {
+        personService.checkOut(applicantService.reject(applicant));
+        return applicant;
     }
 
 }
