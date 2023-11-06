@@ -37,7 +37,7 @@ public class StateMentorEntity
 
 
     @Override
-    public StateMentorEntity refresh(MentorEntity entity) {
+    public StateMentorEntity update(MentorEntity entity) {
         this.slug = entity.getCourse().slug;
         this.linkedInUrl = entity.linkedInUrl;
         return this;

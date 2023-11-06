@@ -15,6 +15,7 @@ public interface ApplicantRepository extends JpaRepository<ApplicantEntity, Long
 
     Optional<ApplicantEntity> findByPersonAndCourse(PersonEntity person, CourseEntity course);
 
-    List<ApplicantEntity> findAllByCourseAndIsApplied(CourseEntity course, boolean isApplied);
+    List<ApplicantEntity> findAllByCourseAndIsAppliedAndIsRejected(CourseEntity course,
+            boolean isApplied, boolean isRejected);
 
 }

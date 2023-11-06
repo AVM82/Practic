@@ -31,8 +31,8 @@ public class ApplicantService {
     }
 
 
-    public List<ApplicantEntity> get(CourseEntity course, boolean isApplied) {
-        return applicantRepository.findAllByCourseAndIsApplied(course, isApplied);
+    public List<ApplicantEntity> get(CourseEntity course, boolean isApplied, boolean isRejected) {
+        return applicantRepository.findAllByCourseAndIsAppliedAndIsRejected(course, isApplied, isRejected);
     }
 
 
@@ -62,16 +62,15 @@ public class ApplicantService {
     }
 
 
-    public boolean reject(ApplicantEntity applicant) {
-        long id = applicant.getId();
+    public ApplicantEntity reject(ApplicantEntity applicant) {
         SendMessageDto messageDto = new SendMessageDto();
         messageDto.setAddress(applicant.getPerson().getEmail());
         messageDto.setHeader("Заявку на навчання відхилено!");
         messageDto.setMessage(
                 "Відмова навчання на курсі \"" + applicant.getCourse().getName() + "\"");
-        applicantRepository.delete(applicant);
+        applicant.setRejected(true);;
         this.emailSenderService.sendMessage(messageDto);
-        return !applicantRepository.existsById(id);
+        return applicant;
     }
 
 }
