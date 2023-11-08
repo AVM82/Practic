@@ -4,7 +4,6 @@ import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
 import com.group.practic.dto.MentorComplexDto;
 import com.group.practic.dto.MentorDto;
-import com.group.practic.dto.SendMessageDto;
 import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;

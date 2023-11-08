@@ -5,7 +5,6 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.Map;
 import lombok.Builder;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders  } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {ApiUrls} from "../enums/api-urls";
 import { httpOptions } from '../enums/app-constans';
@@ -19,7 +19,6 @@ export class FeedbackService {
   }
 
   postData(email:string, feedback:string):  Observable<any>{
-    const headers = new HttpHeaders({'Content-Type':'application/json'});
     const body = {
       email: email,
       feedback: feedback

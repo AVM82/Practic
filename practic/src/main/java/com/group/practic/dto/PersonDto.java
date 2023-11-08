@@ -29,11 +29,11 @@ public class PersonDto {
 
     List<String> roles;
 
-    List<StateStudentEntity> students;
+    Set<StateStudentEntity> students;
 
-    List<StateMentorEntity> mentors;
+    Set<StateMentorEntity> mentors;
 
-    List<StateApplicantEntity> applicants;
+    Set<StateApplicantEntity> applicants;
 
 
     PersonDto() {}
@@ -51,9 +51,9 @@ public class PersonDto {
         dto.email = entity.getEmail();
         dto.profilePictureUrl = entity.getProfilePictureUrl();
         dto.roles = entity.getRoles().stream().map(RoleEntity::getName).toList();
-        dto.students = entity.getStudentStates().stream().toList();
-        dto.mentors = entity.getMentorStates().stream().toList();
-        dto.applicants = entity.getApplicantStates().stream().toList();
+        dto.students = entity.getStudentStates();
+        dto.mentors = entity.getMentorStates();
+        dto.applicants = entity.getApplicantStates();
         return dto;
     }
 

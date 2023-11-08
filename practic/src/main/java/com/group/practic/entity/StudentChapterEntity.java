@@ -28,9 +28,6 @@ public class StudentChapterEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
-    @ManyToOne
-    StudentEntity student;
-    
     int number;
     
     @ManyToOne
@@ -48,10 +45,10 @@ public class StudentChapterEntity {
     private java.sql.Timestamp updatedAt;
 
     boolean reportOnce;
-/*
-    @OneToMany(mappedBy = "studentChapter")
+
+    @OneToMany
     Set<StudentPracticeEntity> practices = new HashSet<>();
-*/
+
 
     public StudentChapterEntity() {}
 

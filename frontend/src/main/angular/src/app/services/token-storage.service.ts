@@ -49,10 +49,7 @@ export class TokenStorageService {
 
   public refreshMe(): void {
     this.getCurrentUser().subscribe(user => {
-      if (this.me)
-        this.me!.update(user);
-      else
-        this.me = User.empty().update(user);
+      this.me = this.me ? this.me.update(user) : User.empty().update(user);
       this.saveUser(user);
     })
   }
