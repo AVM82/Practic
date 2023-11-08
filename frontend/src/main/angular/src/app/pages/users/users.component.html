@@ -1,14 +1,16 @@
 <h1>HOT CHANGES</h1>
 <table>
+    <caption>Користувачі</caption>
     <tr class="headers">
-        <td *ngIf="!surnameFirst" [matMenuTriggerFor]="sortMenu">Ім'я та призвіще</td>
-        <td *ngIf="surnameFirst" [matMenuTriggerFor]="sortMenu">Призвіще та ім'я</td>
-        <td>заявки</td>
-        <td>студент</td>
-        <td>ментор</td>
-        <td>ролі</td>
+        <th *ngIf="!surnameFirst" [matMenuTriggerFor]="sortMenu">Ім'я та призвіще</th>
+        <th *ngIf="surnameFirst" [matMenuTriggerFor]="sortMenu">Призвіще та ім'я</th>
+        <th>заявки</th>
+        <th>студент</th>
+        <th>ментор</th>
+        <th>ролі</th>
     </tr>
-    <tr *ngFor="let user of users" class="user-row">
+    <tr *ngFor="let user of users" class="user-row" 
+            [class.inactive]="user.inactive" [class.ban]="user.ban" [class.inactive-ban]="user.inactive && user.ban">
         <td [matMenuTriggerFor]="sortMenu">{{user.name}}</td>
         <td>
             <div *ngFor="let applicantSlug of user.getApplicantSlugs()">

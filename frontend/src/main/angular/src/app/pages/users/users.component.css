@@ -19,6 +19,18 @@ table {
     background-color: rgb(226, 226, 223);
 }
 
+.ban {
+    background-color: rgb(207, 113, 113);
+}
+
+.inactive {
+    background-color: steelblue;
+}
+
+.inactive-ban {
+    background-color: darkviolet;
+}
+
 .column {
     flex-direction: column;
     display: flex;

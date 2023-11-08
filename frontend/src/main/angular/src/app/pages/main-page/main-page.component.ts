@@ -5,8 +5,6 @@ import { CourseNavbarComponent } from "src/app/componets/course-navbar/course-na
 import { EditBtnComponent } from "src/app/componets/edit-btn/edit-course.component";
 import { Course } from "src/app/models/course";
 import { Mentor } from "src/app/models/mentor";
-import { User } from "src/app/models/user";
-import { TokenStorageService } from "src/app/services/token-storage.service";
 
 const safeReferenceStarts = '<a target="_blank" rel="noopener" href="';
 
@@ -27,7 +25,6 @@ export class MainPageComponent implements OnInit {
     mentor!: HTMLElement ;
 
     constructor(
-        private tokenStorage: TokenStorageService
     ) {}
     
     ngOnInit(): void {

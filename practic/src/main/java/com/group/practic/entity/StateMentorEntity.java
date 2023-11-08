@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StateMentorEntity
-        implements PersonStateEntityChangeable<MentorEntity, StateMentorEntity> {
+        implements PersonStateEntityChangeable<MentorEntity, StateMentorEntity>, Serializable {
+
+    private static final long serialVersionUID = 4321492534131916842L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

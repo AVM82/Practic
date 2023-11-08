@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User } from 'src/app/models/user';
 import { PersonService } from 'src/app/services/person.service';
-import { StateApplicant } from 'src/app/models/applicant';
 
 const allowedUpdatePeriodMs = 5000;
 

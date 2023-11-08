@@ -9,10 +9,7 @@ import { ShortChapter } from 'src/app/models/chapter';
 import { ApplyBtnComponent } from '../apply-btn/apply-btn.component';
 import { EditBtnComponent } from '../edit-btn/edit-course.component';
 import { User } from 'src/app/models/user';
-import { StudentService } from 'src/app/services/student.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
-import { Observable } from 'rxjs/internal/Observable';
-import { map } from 'rxjs/internal/operators/map';
 
 @Component({
   selector: 'app-course-navbar',

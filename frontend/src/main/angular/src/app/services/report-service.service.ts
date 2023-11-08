@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {catchError, Observable, of} from "rxjs";
 import {ApiUrls, deleteReportsUrl, getReportsUrl} from "../enums/api-urls";
 import {StudentReport} from "../models/studentReport";

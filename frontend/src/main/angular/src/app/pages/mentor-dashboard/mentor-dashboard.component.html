@@ -1,17 +1,13 @@
-<!----
-     <router-outlet></router-outlet> 
----->
-
 
 <div *ngFor="let courseApp of courseApplicants">
-    <h2>{{courseApp.courseName}}</h2>
+    <caption><h2>{{courseApp.courseName}}</h2></caption>
     <table>
         <tr class="headers">
-            <td>заявник</td>
-            <td>час</td>
-            <td>прийняти</td>
-            <td>стан</td>
-            <td>відхилити</td>
+            <th>заявник</th>
+            <th>час</th>
+            <th>прийняти</th>
+            <th>стан</th>
+            <th>відхилити</th>
         </tr>
         <tr *ngFor="let applicant of courseApp.applicants" class="applicant-row">
             <td>{{applicant.name}}</td>

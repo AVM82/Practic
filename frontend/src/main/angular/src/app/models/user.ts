@@ -81,7 +81,7 @@ export class User {
   }
 
   hasAnyRole(...roles: string[]): boolean {
-    return roles.some(roleName => this.roles.some(userRole => userRole === roleName));
+    return roles.some(roleName => this.roles?.some(userRole => userRole === roleName));
   }
 
   hasGuestRole(): boolean {
@@ -109,29 +109,29 @@ export class User {
   }
 
   hasAdvancedRole(): boolean {
-    return this.roles != undefined && this.roles.some(role => Roles.ADVANCED.some(advancedRole => advancedRole === role));
+    return this.roles?.some(role => Roles.ADVANCED.some(advancedRole => advancedRole === role));
   }
 
 
   getApplicant(slug: string): StateApplicant | undefined {
-    return this.applicants.find(applicant => applicant.slug === slug);
+    return this.applicants?.find(applicant => applicant.slug === slug);
   }
 
   getStudent(slug: string): StateStudent | undefined {
-    return this.students.find(student => student.slug === slug);
+    return this.students?.find(student => student.slug === slug);
   }
 
   getMentor(slug: string): StateMentor | undefined {
-    return this.mentors.find(mentor => mentor.slug === slug);
+    return this.mentors?.find(mentor => mentor.slug === slug);
   }
 
 
  isStudent(slug:string): boolean {
-    return this.hasStudentRole() && this.getStudent(slug) != undefined;
+    return this.hasStudentRole() && (this.getStudent(slug) != undefined);
   }
 
   isMentor(slug: string): boolean {
-    return this.hasMentorRole() && this.getMentor(slug) != undefined;
+    return this.hasMentorRole() && (this.getMentor(slug) != undefined);
   }
 
   isApplicant(slug: string): boolean {
@@ -139,7 +139,7 @@ export class User {
   }
 
   hasApplicantId(id: number): boolean {
-    return this.applicants.some(applicant => applicant.applicantId == id);
+    return this.applicants?.some(applicant => applicant.applicantId == id);
   }
 
 
