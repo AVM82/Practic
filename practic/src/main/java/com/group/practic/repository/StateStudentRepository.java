@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface StateStudentRepository  extends JpaRepository<StateStudentEntity, Long> {
 
     StateStudentEntity findByStudentId(long studentId);
+
+    StateStudentEntity findBySlug(String slug);
     
 }

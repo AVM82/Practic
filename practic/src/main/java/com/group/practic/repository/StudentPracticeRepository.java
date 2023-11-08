@@ -15,9 +15,5 @@ public interface StudentPracticeRepository extends JpaRepository<StudentPractice
 
     List<StudentPracticeEntity> findByState(PracticeState state);
 
-    StudentPracticeEntity findByStudentAndChapterPart(
-            StudentEntity student, ChapterPartEntity chapterPart);
-
-    Set<StudentPracticeEntity> findAllByStudent(StudentEntity student);
 
 }

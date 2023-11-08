@@ -42,14 +42,16 @@ public class StateStudentEntity
     }
 
 
+    @Override
     public StateStudentEntity update(StudentEntity entity) {
         this.inactive = entity.inactive;
         this.ban = entity.ban;
-        this.activeChapterNumber = entity.getActiveChapter().getChapter().getNumber();
+        this.activeChapterNumber = entity.getActiveChapterNumber();
         return this;
     }
 
 
+    @Override
     public boolean match(StudentEntity entity) {
         return this.studentId == entity.id;
     }

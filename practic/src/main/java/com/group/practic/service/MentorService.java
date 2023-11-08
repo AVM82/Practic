@@ -68,24 +68,16 @@ public class MentorService {
         mentor = mentorRepository.save(mentor);
         courseService.addMentor(mentor);
         personService.checkOut(mentor);
-        mentorAddNotify(mentor);
+        this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Новий ментор.", 
+                "Вітаємо Вас як ментора курсу \"" + mentor.getCourse().getName() + "\". ");
         return mentor;
-    }
-
-
-    private void mentorAddNotify(MentorEntity mentor) {
-        SendMessageDto messageDto = new SendMessageDto();
-        messageDto.setAddress(mentor.getPerson().getEmail());
-        messageDto.setHeader("Новий ментор.");
-        messageDto.setMessage(
-                "Вітаємо Вас, як ментора, на курсі \"" + mentor.getCourse().getName() + "\". ");
-        this.emailSenderService.sendMessage(messageDto);
     }
 
 
     public MentorComplexDto addMentor(PersonEntity person, CourseEntity course) {
         MentorEntity mentor = create(person, course);
-        Optional<StateMentorEntity> stateMentor = person.getState(mentor);
+        Optional<StateMentorEntity> stateMentor = person.getMentorStates().stream()
+                .filter(state -> state.getMentorId() == mentor.getId()).findAny();
         return stateMentor.isEmpty() ? null
                 : new MentorComplexDto(MentorDto.map(mentor), stateMentor.get());
     }
@@ -95,18 +87,9 @@ public class MentorService {
         courseService.removeMentor(mentor);
         mentor.setInactive(true);
         personService.checkOut(mentor);
-        mentorRemoveNotify(mentor);
+        this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Не ментор.", 
+                "Вітаємо Вас. Ви вже не ментор курса \"" + mentor.getCourse().getName() + "\". ");
         return true;
-    }
-
-
-    private void mentorRemoveNotify(MentorEntity mentor) {
-        SendMessageDto messageDto = new SendMessageDto();
-        messageDto.setAddress(mentor.getPerson().getEmail());
-        messageDto.setHeader("Не ментор.");
-        messageDto.setMessage("Вітаємо Вас. Ви вже не ментор на курсі \""
-                + mentor.getCourse().getName() + "\". ");
-        this.emailSenderService.sendMessage(messageDto);
     }
 
 
@@ -121,7 +104,7 @@ public class MentorService {
     public List<ApplicantsForCourseDto> getMyApplicants() {
         List<ApplicantsForCourseDto> myApplicants = new ArrayList<>();
         get(PersonService.me()).forEach(
-                mentor -> myApplicants.add(new ApplicantsForCourseDto(mentor.getCourse().getSlug(),
+                mentor -> myApplicants.add(new ApplicantsForCourseDto(mentor.getCourse().getName(),
                         getApplicantsForCourse(mentor.getCourse()))));
         return myApplicants;
     }

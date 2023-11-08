@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface StateApplicantRepository  extends JpaRepository<StateApplicantEntity, Long> {
 
     StateApplicantEntity findByApplicantId(long applicantId);
+
+    StateApplicantEntity findBySlug(String slug);
     
 }

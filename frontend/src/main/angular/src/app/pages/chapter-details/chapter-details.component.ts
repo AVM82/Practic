@@ -64,23 +64,24 @@ export class ChapterDetailsComponent implements OnInit {
     return this.chapter && this.chapter.parts.length > 1;
   }
 
+  
   setPractices() {
-    const practices = this.tokenStorageService.getPractice();
+ /*   const practices = this.tokenStorageService.getPractice();
     if(practices){
       this.practices = practices;
     } else {
       this.updatePractices();
     }
-  }
+  */  }
 
   updatePractices() {
-    this.chaptersService.getMyPractices().subscribe({
+/*    this.chaptersService.getMyPractices().subscribe({
       next: value => {
         this.practices = value;
         this.tokenStorageService.updatePractice(value);
       }
     })
-  }
+  */ }
 
   playAction(chapterPart: ChapterPart) {
     this.chaptersService.setPracticeState('IN_PROCESS', chapterPart.id).subscribe({
@@ -122,4 +123,5 @@ export class ChapterDetailsComponent implements OnInit {
     console.error("Не можливо оновити статус практичної: " + error);
     this.messagesService.showMessage("Помилка при зміні стану практичної. Див. консоль", "error");
   }
+
 }

@@ -18,8 +18,7 @@ import { User } from 'src/app/models/user';
 })
 export class MentorDashboardComponent implements OnInit {
   me!: User;
-  courses: Course[] = [];
-  applicants?: CourseApplicants[];
+  courseApplicants: CourseApplicants[] = [];
   mentorService: MentorService;
 
   constructor(
@@ -35,31 +34,16 @@ export class MentorDashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.me.mentors.forEach(mentor => {
-      console.log(mentor);
-      this.courseService.getCourse(mentor.slug).subscribe(course => {
-        console.log(course);
-        this.courses.push(course!); 
-      });
-      this.mentorService.getMyApplicants().subscribe(applicants => this.applicants = applicants);
-    })
+    this.mentorService.getMyApplicants().subscribe(courseApplicants => {
+      courseApplicants.forEach(course =>
+        this.courseApplicants.push(new CourseApplicants(course.courseName, this.newApplicants(course.applicants))))
+      })
   }
 
-  getApplicants(slug: string): CourseApplicants {
-    const courseApplicants = this.applicants?.find(course => course.slug === slug);
-    return courseApplicants ? courseApplicants : {slug: slug, applicants: []};
-  }
-
-  operable(applicant: Applicant): boolean {
-    return !applicant.isApplied && !applicant.isRejected;
-  }
-
-  getState(applicant: Applicant): string {
-    if (applicant.isApplied)
-      return 'прийнятий';
-    if (applicant.isRejected)
-      return 'відхилений';
-    return 'очікує';
+  private newApplicants(arr: Applicant[]): Applicant[] {
+    let result: Applicant[] = [];
+    arr.forEach(element => result.push(new Applicant(element)));
+    return result;
   }
 
 }

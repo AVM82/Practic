@@ -1,6 +1,5 @@
 package com.group.practic.service;
 
-import com.group.practic.dto.SendMessageDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
@@ -43,7 +42,7 @@ public class ApplicantService {
 
     public Optional<ApplicantEntity> create(PersonEntity person, CourseEntity course) {
         String slug = course.getSlug();
-        return person.getMentors().stream().anyMatch(mentor -> mentor.getSlug().equals(slug)) 
+        return person.getMentorStates().stream().anyMatch(mentor -> mentor.getSlug().equals(slug)) 
                 || applicantRepository.findByPersonAndCourse(person, course).isPresent()
                         ? Optional.empty()
                         : Optional.of(applicantRepository.save(new ApplicantEntity(person, course)));
@@ -52,25 +51,19 @@ public class ApplicantService {
 
     public ApplicantEntity apply(ApplicantEntity applicant) {
         applicant.setApplied(true);
-        applicant = applicantRepository.save(applicant);
-        SendMessageDto messageDto = new SendMessageDto();
-        messageDto.setAddress(applicant.getPerson().getEmail());
-        messageDto.setHeader("Заявку на навчання прийнято!");
-        messageDto.setMessage("Вітаємо на курсі \"" + applicant.getCourse().getName() + "\"");
-        this.emailSenderService.sendMessage(messageDto);
-        return applicant;
+        this.emailSenderService.sendEmail(applicant.getPerson().getEmail(),
+                "Заявку на навчання прийнято!", 
+                "Вітаємо на курсі \"" + applicant.getCourse().getName() + "\"");
+        return applicantRepository.save(applicant);
     }
 
 
     public ApplicantEntity reject(ApplicantEntity applicant) {
-        SendMessageDto messageDto = new SendMessageDto();
-        messageDto.setAddress(applicant.getPerson().getEmail());
-        messageDto.setHeader("Заявку на навчання відхилено!");
-        messageDto.setMessage(
+        applicant.setRejected(true);
+        this.emailSenderService.sendEmail(applicant.getPerson().getEmail(),
+                "Заявку на навчання відхилено!",
                 "Відмова навчання на курсі \"" + applicant.getCourse().getName() + "\"");
-        applicant.setRejected(true);;
-        this.emailSenderService.sendMessage(messageDto);
-        return applicant;
+        return applicantRepository.save(applicant);
     }
 
 }

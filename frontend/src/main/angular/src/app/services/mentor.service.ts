@@ -29,14 +29,23 @@ export class MentorService {
 
     admit(applicant: Applicant): void {
         this.http.post<StateStudent>(ApiUrls.Applicants + `/admit/` + applicant.id, {}).subscribe(student => {
-            applicant.isApplied = true;
+            applicant.applied = true;
             applicant.student = student;
-            this.tokenStorageService.me!.removePossibleApplicant(applicant);
+            if (this.tokenStorageService.me!.maybeNewStudent(applicant))
+                this.tokenStorageService.saveMe();
         });
     }
 
-    reject(applicant: Applicant): Observable<boolean> {
-        return this.http.post<boolean>(ApiUrls.Applicants + `/reject/` + applicant.id, {});
+    reject(applicant: Applicant): void {
+        console.log(applicant);
+        this.http.post<Applicant>(ApiUrls.Applicants + `/reject/` + applicant.id, {}).subscribe(rejectedApplicant => {
+            applicant.update(rejectedApplicant);
+            console.log(applicant);
+            if (this.tokenStorageService.me!.maybeNotApplicant(rejectedApplicant)) {
+                console.log(' reject me');
+                this.tokenStorageService.saveMe();
+            }
+        });
     }
     
     addMentor(course: Course, user: User): void {
@@ -45,8 +54,7 @@ export class MentorService {
             user.addMentor(complex.stateMentor);
             if (user.id == this.tokenStorageService.me!.id) {
                 this.tokenStorageService.me!.addMentor(complex.stateMentor);
-                this.tokenStorageService.saveUser(this.tokenStorageService.me!);
-                console.log('me: added mentor')
+                this.tokenStorageService.saveMe();
             }
         });
     }
@@ -59,9 +67,7 @@ export class MentorService {
                 user.removeMentorById(mentorId);
                 if (user.id == this.tokenStorageService.me!.id) {
                     this.tokenStorageService.me!.removeMentorById(mentorId);
-                    this.tokenStorageService.saveUser(this.tokenStorageService.me!);
-                    console.log('me: removed mentor')
-                    console.log('me:', this.tokenStorageService.me!)
+                    this.tokenStorageService.saveMe();
                 }
             }
         });

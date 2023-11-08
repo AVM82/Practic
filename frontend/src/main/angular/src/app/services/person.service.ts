@@ -42,10 +42,9 @@ export class PersonService {
 
     checkApplicant(id: number): void {
         this.http.get<Applicant>(getApplicationCheckUrl(id)).subscribe(applicant => {
-            if (applicant.isApplied || applicant.isRejected) {
-                this.tokenStorageService.me?.removePossibleApplicant(applicant);
+            if (this.tokenStorageService.me!.maybeNewStudent(applicant)
+                || this.tokenStorageService.me!.maybeNotApplicant(applicant))
                 this.tokenStorageService.saveMe();
-            }
         });
     }
 

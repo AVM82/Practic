@@ -6,13 +6,13 @@ import lombok.Getter;
 @Getter
 public class ApplicantsForCourseDto {
 
-    String slug;
+    String courseName;
 
     List<ApplicantDto> applicants;
 
 
-    public ApplicantsForCourseDto(String slug, List<ApplicantDto> applicants) {
-        this.slug = slug;
+    public ApplicantsForCourseDto(String courseName, List<ApplicantDto> applicants) {
+        this.courseName = courseName;
         this.applicants = applicants;
     }
 

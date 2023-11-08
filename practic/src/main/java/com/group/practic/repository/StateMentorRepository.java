@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface StateMentorRepository  extends JpaRepository<StateMentorEntity, Long> {
 
     StateMentorEntity findByMentorId(long mentorId);
+
+    StateMentorEntity findBySlug(String slug);
     
 }

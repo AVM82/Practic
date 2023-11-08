@@ -34,12 +34,12 @@ public class StudentChapterDto {
     public static StudentChapterDto map(StudentChapterEntity entity) {
         StudentChapterDto dto = new StudentChapterDto();
         dto.id = entity.getId();
-        dto.number = entity.getChapter().getNumber();
+        dto.number = entity.getNumber();
         dto.parts = entity.getChapter().getParts();
         dto.quiz = entity.getChapter().getQuiz();
         dto.state = entity.getState().name();
         dto.reportOnce = entity.isReportOnce();
-        dto.practices = entity.getPractices().stream().map(StudentPracticeDto::map).toList();
+       // dto.practices = entity.getPractices().stream().map(StudentPracticeDto::map).toList();
         return dto;
     }
 

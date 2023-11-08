@@ -68,7 +68,7 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   setPractices() {
-    const practices = this.tokenStorageService.getPractice();
+/*    const practices = this.tokenStorageService.getPractice();
     if(practices){
       this.practices = practices;
     } else {
@@ -79,7 +79,7 @@ export class CourseDetailsComponent implements OnInit {
         }
       })
     }
-  }
+  */  }
 
   setEditMode(editMode: boolean) {
     this.editMode = editMode;

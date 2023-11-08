@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class ApplicantEntity {
     @ManyToOne
     PersonEntity person;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     CourseEntity course;
     
     @Column(columnDefinition = "boolean default false")
@@ -38,7 +39,7 @@ public class ApplicantEntity {
 
     LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     StudentEntity student;
     
     

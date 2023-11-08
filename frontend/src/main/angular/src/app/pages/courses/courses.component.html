@@ -1,10 +1,10 @@
 <div class="course-container">
-    <mat-card *ngFor="let course of coursesProp" class="course-card" 
-        [class.studentCourse]="course.color === this.studentCourse"
-        [class.mentorCourse]="course.color === this.mentorCourse"
-        [class.applicantCourse]="course.color === this.applicantCourse"
-        [class.otherCourse]="course.color === this.otherCourse">
-        <a [routerLink]="course.route" (click)="onSelect(course.slug)">
+    <mat-card *ngFor="let course of courses" class="course-card" 
+        [class.studentCourse]="me.isStudent(course.slug)"
+        [class.mentorCourse]="me.isMentor(course.slug)"
+        [class.applicantCourse]="me.isApplicant(course.slug)"
+        [class.otherCourse]="!me.isStudent(course.slug) && !me.isMentor(course.slug) && !me.isApplicant(course.slug)">
+        <a [routerLink]="getRoute(course.slug)" (click)="onSelect(course.slug)">
             <mat-card-content class="course-details">
                 <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
                 <h3 class="course-name">{{ course.name }}</h3>

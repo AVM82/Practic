@@ -9,15 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "student_practices",
-        uniqueConstraints = {@UniqueConstraint(name = "UniqueStudentPractice",
-                columnNames = {"student_id", "chapter_part_id"})})
+@Table(name = "practices")
 @Setter
 @Getter
 public class StudentPracticeEntity {
@@ -25,10 +22,10 @@ public class StudentPracticeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
-
+/*
     @ManyToOne
-    private StudentEntity student;
-
+    StudentChapterEntity studentChapter;
+*/    
     @ManyToOne
     private ChapterPartEntity chapterPart;
 
@@ -40,29 +37,12 @@ public class StudentPracticeEntity {
     private LocalDateTime updatedAt;
 
 
-    public StudentPracticeEntity(StudentEntity student, ChapterPartEntity chapterPart) {
-        this.student = student;
+    public StudentPracticeEntity(ChapterPartEntity chapterPart) {
         this.chapterPart = chapterPart;
     }
 
 
     public StudentPracticeEntity() {}
-
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public void setStudent(StudentEntity student) {
-        this.student = student;
-    }
-
-
-    public void setChapterPart(ChapterPartEntity chapterPart) {
-        this.chapterPart = chapterPart;
-    }
 
 
     public boolean setNewState(PracticeState newState) {

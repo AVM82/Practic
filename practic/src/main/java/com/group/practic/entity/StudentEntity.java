@@ -42,9 +42,6 @@ public class StudentEntity {
 
     int activeChapterNumber;
     
-    @OneToOne
-    StudentChapterEntity activeChapter;
-
     LocalDate registered = LocalDate.now();
 
     LocalDate start;
@@ -64,9 +61,9 @@ public class StudentEntity {
     @OneToMany
     Set<AdditionalMaterialsEntity> additionalMaterial = new HashSet<>();
 
-    @ManyToMany
+    @OneToMany(mappedBy = "student")
     @OrderBy("number")
-    Set<StudentChapterEntity> chapters = new HashSet<>();
+    Set<StudentChapterEntity> studentChapters = new HashSet<>();
 
 
     public StudentEntity() {}
@@ -116,8 +113,8 @@ public class StudentEntity {
 
 
     public void addChapter(StudentChapterEntity chapter) {
-        this.chapters.add(chapter);
-        this.activeChapter = chapter;
+        this.studentChapters.add(chapter);
+        this.activeChapterNumber = chapter.number;
     }
 
 

@@ -29,7 +29,7 @@ public class CourseEntity {
 
     Set<String> authors;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<MentorEntity> mentors = new HashSet<>();
 
     String courseType;
