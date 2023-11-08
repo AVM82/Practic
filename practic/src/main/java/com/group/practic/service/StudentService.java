@@ -3,7 +3,6 @@ package com.group.practic.service;
 import static com.group.practic.util.Converter.nonNullList;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
-import com.group.practic.dto.SendMessageDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ApplicantEntity;
@@ -95,15 +94,13 @@ public class StudentService {
         if (chapter.isEmpty()) {
             finish(student);
         } else {
-            student.addChapter(studentChapterRepository.save(
-                    new StudentChapterEntity(chapter.get())));
-            nextChapterNotify(student);
+            StudentChapterEntity studentChapter = studentChapterRepository.save(
+                    new StudentChapterEntity(chapter.get()));
+            student.addChapter(studentChapter);
             this.emailSenderService.sendEmail(student.getPerson().getEmail(),
                     "Новий розділ відкрито.",
-                    "Розділ №" + student.getActiveChapterNumber() + " " + 
-                            student.getStudentChapters().stream()
-                            .filter(c -> c.getNumber() == student.getActiveChapterNumber())
-                            .findAny().get().getChapter().getShortName());
+                    "Розділ №" + studentChapter.getNumber() + " " + 
+                            studentChapter.getChapter().getShortName());
         }
         return studentRepository.save(student);
     }
@@ -126,16 +123,6 @@ public class StudentService {
         student.setFinish(LocalDate.now());
         // student.setWeeks(student.getFinish() - student.getStart());
         // finishNotify(student);
-    }
-
-
-    private void nextChapterNotify(StudentEntity student) {
-        SendMessageDto messageDto = new SendMessageDto();
-        messageDto.setAddress(student.getPerson().getEmail());
-        messageDto.setHeader("Новий розділ відкрито.");
-        messageDto.setMessage("Розділ №" + student.getActiveChapterNumber() + " "
-                + student.getStudentChapters().stream().filter(c -> c.getNumber() == student.getActiveChapterNumber()).findAny().get().getChapter().getShortName());
-        this.emailSenderService.sendMessage(messageDto);
     }
 
 

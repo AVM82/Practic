@@ -3,7 +3,7 @@ import {Course} from "../models/course";
 import {HttpClient} from "@angular/common/http";
 import {Observable, map, of} from "rxjs";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getCourseUrl, getChapterUrl, getApplicationUrl, getStudentChapterUrl, getStudentChaptersUrl, getStudentsAllAdditionalMaterialsUrl} from "../enums/api-urls";
+import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getChapterUrl, getStudentChapterUrl, getStudentChaptersUrl, getStudentsAllAdditionalMaterialsUrl} from "../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/additional.material';
 import {Level} from "../models/level";
 import { ShortChapter, Chapter } from 'src/app/models/chapter';
@@ -78,12 +78,16 @@ export class CoursesService {
     this.setCourse(slug);
     return this.shortChapters 
             ? of(this.shortChapters)
-            : this.http.get<ShortChapter[]>(this.stateStudent
-                    ? getStudentChaptersUrl(this.stateStudent.id)
-                    : getChaptersUrl(slug)).pipe(map(chapters => {
+            : this.http.get<ShortChapter[]>(this.selectChapterEndpoint(slug)).pipe(map(chapters => {
                         this.shortChapters = chapters;
                         return chapters;
                       }));
+  }
+
+  selectChapterEndpoint(slug: string): string {
+    return this.stateStudent
+      ? getStudentChaptersUrl(this.stateStudent.id)
+      : getChaptersUrl(slug); 
   }
 
   getChapter(slug: string, number: number): Observable<Chapter> {
@@ -117,13 +121,17 @@ export class CoursesService {
   getAdditionalMaterials(slug: string): Observable<AdditionalMaterials[]> {
     this.setCourse(slug);
     return this.materials ? of(this.materials)
-        : this.http.get<AdditionalMaterials[]>(this.stateStudent
-                      ? getStudentsAllAdditionalMaterialsUrl(this.stateStudent.id)
-                      : getMaterialsUrl(slug))
+        : this.http.get<AdditionalMaterials[]>(this.selectAdditionalMaterialsEndpoint(slug))
             .pipe(map(materials => {
                 this.materials = materials;
                 return materials;
               }));
+  }
+
+  selectAdditionalMaterialsEndpoint(slug: string): string {
+    return this.stateStudent
+      ? getStudentsAllAdditionalMaterialsUrl(this.stateStudent.id)
+      : getMaterialsUrl(slug);
   }
 
   putAdditionalChange(event: any): void {

@@ -1,7 +1,6 @@
 package com.group.practic.service;
 
 import com.group.practic.PropertyLoader;
-import com.group.practic.dto.CourseDto;
 import com.group.practic.dto.MentorDto;
 import com.group.practic.dto.NewCourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
@@ -10,7 +9,6 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.repository.CourseRepository;
-import com.group.practic.util.Converter;
 import com.group.practic.util.PropertyUtil;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class CourseService {

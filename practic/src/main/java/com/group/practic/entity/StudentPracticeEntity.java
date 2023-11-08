@@ -22,10 +22,7 @@ public class StudentPracticeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
-/*
-    @ManyToOne
-    StudentChapterEntity studentChapter;
-*/    
+    
     @ManyToOne
     private ChapterPartEntity chapterPart;
 

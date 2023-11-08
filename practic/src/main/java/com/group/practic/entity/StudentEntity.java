@@ -4,10 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -61,7 +59,7 @@ public class StudentEntity {
     @OneToMany
     Set<AdditionalMaterialsEntity> additionalMaterial = new HashSet<>();
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany
     @OrderBy("number")
     Set<StudentChapterEntity> studentChapters = new HashSet<>();
 
