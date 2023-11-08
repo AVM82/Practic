@@ -10,6 +10,7 @@ import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.ApplicantService;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
 import java.util.Optional;

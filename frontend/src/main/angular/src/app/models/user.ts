@@ -160,19 +160,30 @@ export class User {
     this.applicants.push(applicant);
   }
 
+  addStudent(student: StateStudent): void {
+    this.students.push(student);
+    this.checkRoles();
+  }
+
+  addMentor(mentor: StateMentor): void {
+    this.mentors.push(mentor);
+    this.checkRoles()
+  }
+
+
   removeApplicant(slug: string): void {
     this.applicants = this.applicants.filter(applicant => applicant.slug !== slug);
   }
 
-  removePossibleApplicant(applicant: Applicant): void {
-    if (this.applicants.some(myApplicant => myApplicant.applicantId == applicant.id)) {
-      this.applicants = this.applicants.filter(myApplicant => myApplicant.applicantId != applicant.id);
-      if (applicant.isApplied) {
-        this.students.push(applicant.student);
-        this.checkRoles();
-      }
-    }
+  removeApplicantById(id: number): void {
+      this.applicants = this.applicants.filter(myApplicant => myApplicant.applicantId != id);
   }
+
+  removeMentorById(mentorId: number): void {
+    this.mentors = this.mentors.filter(mentor => mentor.mentorId != mentorId);
+    this.checkRoles()
+  }
+
 
   checkRoles(): void {
     if (this.mentors.length == 0)
@@ -189,17 +200,6 @@ export class User {
       this.removeRole(ROLE_GUEST);
   }
 
-  addMentor(mentor: StateMentor): void {
-    this.mentors.push(mentor);
-    this.checkRoles()
-  }
-
-  removeMentorById(mentorId: number): void {
-    this.mentors = this.mentors.filter(mentor => mentor.mentorId != mentorId);
-    this.checkRoles()
-  }
-
-
   addRole(newRole: string): void {
     if (!this.roles.some(role => role === newRole)) {
       this.roles.push(newRole);
@@ -212,6 +212,24 @@ export class User {
       this.roles = this.roles.filter(role => role !== oldRole);
       this.checkRoles()
     }
+  }
+
+
+  maybeNewStudent(applicant: Applicant): boolean {
+    if (applicant.applied && this.hasApplicantId(applicant.id)) {
+      this.removeApplicantById(applicant.id);
+      this.addStudent(applicant.student!)
+      return true;
+    }
+    return false; 
+  }
+
+  maybeNotApplicant(applicant: Applicant): boolean {
+    if (applicant.rejected && this.hasApplicantId(applicant.id)) {
+      this.removeApplicantById(applicant.id);
+      return true;
+    }
+    return false; 
   }
 
 

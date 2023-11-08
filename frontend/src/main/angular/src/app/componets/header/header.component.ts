@@ -23,8 +23,7 @@ export class HeaderComponent implements OnInit{
   isAuthenticated: boolean = false;
   name: string = "User";
   profilePictureUrl = "";
-  me!: User;
-
+  
   constructor(
       private tokenStorageService:TokenStorageService,
       private route: ActivatedRoute
@@ -37,7 +36,6 @@ export class HeaderComponent implements OnInit{
       this.isAuthenticated = user.isAuthenticated;
       this.name = user.name;
       this.profilePictureUrl = user.profilePictureUrl;
-      this.me = user;
     }
   }
 

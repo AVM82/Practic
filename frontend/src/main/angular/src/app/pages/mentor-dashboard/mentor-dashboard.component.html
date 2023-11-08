@@ -3,8 +3,8 @@
 ---->
 
 
-<div *ngFor="let course of courses">
-    <h2>{{course.name}}</h2>
+<div *ngFor="let courseApp of courseApplicants">
+    <h2>{{courseApp.courseName}}</h2>
     <table>
         <tr class="headers">
             <td>заявник</td>
@@ -13,20 +13,23 @@
             <td>стан</td>
             <td>відхилити</td>
         </tr>
-        <tr *ngFor="let applicant of getApplicants(course.slug).applicants" class="applicant-row">
+        <tr *ngFor="let applicant of courseApp.applicants" class="applicant-row">
             <td>{{applicant.name}}</td>
             <td>{{applicant.createdAt}}</td>
             <td>
-                <button *ngIf="operable(applicant)" (click)="mentorService.admit(applicant)">
+                <button *ngIf="!applicant.student && !applicant.applied && !applicant.rejected" (click)="mentorService.admit(applicant)">
                     Прийняти
                 </button>
             </td>
-            <td>{{getState(applicant)}}</td>
+            <td *ngIf="applicant.applied">прийнятий</td>
+            <td *ngIf="applicant.rejected">відхилений</td>
+            <td *ngIf="!applicant.applied && !applicant.rejected">очікує</td>
             <td>
-                <button *ngIf="operable(applicant)" (click)="mentorService.reject(applicant)">
+                <button *ngIf="!applicant.student && !applicant.applied && !applicant.rejected" (click)="mentorService.reject(applicant)">
                     Відхилити
                 </button>
             </td>
         </tr>
     </table>
+    <br>
 </div>

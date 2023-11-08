@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {AppConstants} from "../../enums/app-constans";
+import {AppConstants, TOKEN_KEY} from "../../enums/app-constans";
 import {ActivatedRoute} from "@angular/router";
 import {TokenStorageService} from "../../services/token-storage.service";
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,8 @@ export class LoginComponent implements OnInit{
     if (this.tokenStorage.getToken()) {
 //      this.isLoggedIn = true;
 //      this.currentUser = this.tokenStorage.getUser();
+      if (!this.tokenStorage.getUser())
+        window.sessionStorage.removeItem(TOKEN_KEY);
       this.redirect();
     }
     else if(token) {

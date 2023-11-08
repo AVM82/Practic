@@ -37,22 +37,22 @@ public class StudentPracticeService {
 
     public Set<StudentPracticeEntity> getAllPracticesByChapter(StudentEntity student,
             ChapterEntity chapter) {
-        return chapter.getParts().stream()
+        return Set.of();/* chapter.getParts().stream()
                 .map(chapterPart -> studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet());*/
     }
 
 
     public StudentPracticeEntity addPractice(StudentEntity student,
             ChapterPartEntity chapterPart) {
-        StudentPracticeEntity practice = new StudentPracticeEntity(student, chapterPart);
+        StudentPracticeEntity practice = new StudentPracticeEntity(chapterPart);
         return studentPracticeRepository.save(practice);
     }
 
 
     public StudentPracticeEntity getPractice(StudentEntity student, long chapterPartId) {
         ChapterPartEntity chapterPart = chapterPartService.getChapterPartById(chapterPartId);
-        return studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart);
+        return null;/* studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart);*/
     }
 
 

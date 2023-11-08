@@ -4,12 +4,9 @@ import { Observable } from 'rxjs/internal/Observable';
 import { HttpClient } from '@angular/common/http';
 import { ApiUrls } from 'src/app/enums/api-urls';
 import { User } from '../models/user';
-import { httpOptions } from '../enums/app-constans';
+import { TOKEN_KEY, USER_KEY, httpOptions } from '../enums/app-constans';
 import { Practice } from '../models/practice';
 
-const TOKEN_KEY = 'auth-token';
-const USER_KEY = 'auth-user';
-const PRACTICE_KEY = 'practice-data';
 
 @Injectable({
   providedIn: 'root'
@@ -53,25 +50,14 @@ export class TokenStorageService {
 
   public refreshMe(): void {
     this.getCurrentUser().subscribe(user => {
-      this.me!.update(user);
+      if (this.me)
+        this.me!.update(user);
+      else
+        this.me = User.empty().update(user);
       this.saveUser(user);
     })
   }
   
-  public savePractice(practice: Practice[]): void {
-    window.sessionStorage.removeItem(PRACTICE_KEY);
-    window.sessionStorage.setItem(PRACTICE_KEY, JSON.stringify(practice));
-  }
-
-  public getPractice(): Practice[] | null {
-    const practiceJson = sessionStorage.getItem(PRACTICE_KEY);
-    return practiceJson ? JSON.parse(practiceJson) : null;
-  }
-
-  public updatePractice(practice: Practice[]): void {
-    this.savePractice(practice);
-  }
-
   public getMe(): User {
     if (this.me == undefined)
       window.location.href = environment.loginBaseUrl;

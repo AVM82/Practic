@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,10 +29,12 @@ public class StudentChapterEntity {
     long id;
 
     @ManyToOne
-    private StudentEntity student;
-
+    StudentEntity student;
+    
+    int number;
+    
     @ManyToOne
-    private ChapterEntity chapter;
+    ChapterEntity chapter;
 
     @Enumerated(EnumType.STRING)
     ChapterState state = ChapterState.NOT_STARTED;
@@ -45,17 +48,17 @@ public class StudentChapterEntity {
     private java.sql.Timestamp updatedAt;
 
     boolean reportOnce;
-
-    @OneToMany
-    Set<StudentPracticeEntity> practices;
-
+/*
+    @OneToMany(mappedBy = "studentChapter")
+    Set<StudentPracticeEntity> practices = new HashSet<>();
+*/
 
     public StudentChapterEntity() {}
 
 
-    public StudentChapterEntity(StudentEntity student, ChapterEntity chapter) {
-        this.student = student;
+    public StudentChapterEntity(ChapterEntity chapter) {
         this.chapter = chapter;
+        this.number = chapter.number;
     }
 
 }

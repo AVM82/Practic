@@ -30,8 +30,8 @@ public class MentorPracticeDto {
 
     public static MentorPracticeDto map(StudentPracticeEntity practice) {
         MentorPracticeDto dto = new MentorPracticeDto();
-        dto.studentId = practice.getStudent().getId();
-        dto.personName = practice.getStudent().getPerson().getName();
+//        dto.studentId = practice.getStudent().getId();
+//        dto.personName = practice.getStudent().getPerson().getName();
         dto.chapterPartId = practice.getChapterPart().getId();
         dto.purpose = practice.getChapterPart().getPraxisPurpose();
         dto.state = practice.getState().name();

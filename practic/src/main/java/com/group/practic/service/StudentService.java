@@ -95,9 +95,15 @@ public class StudentService {
         if (chapter.isEmpty()) {
             finish(student);
         } else {
-            student.addChapter(studentChapterRepository
-                    .save(new StudentChapterEntity(student, chapter.get())));
+            student.addChapter(studentChapterRepository.save(
+                    new StudentChapterEntity(chapter.get())));
             nextChapterNotify(student);
+            this.emailSenderService.sendEmail(student.getPerson().getEmail(),
+                    "Новий розділ відкрито.",
+                    "Розділ №" + student.getActiveChapterNumber() + " " + 
+                            student.getStudentChapters().stream()
+                            .filter(c -> c.getNumber() == student.getActiveChapterNumber())
+                            .findAny().get().getChapter().getShortName());
         }
         return studentRepository.save(student);
     }
@@ -105,7 +111,8 @@ public class StudentService {
 
     public Optional<StudentEntity> create(ApplicantEntity applicant) {
         if (get(applicant.getPerson(), applicant.getCourse()).isEmpty()) {
-            StudentEntity student = openNextChapter(studentRepository.save(new StudentEntity(applicant)));
+            StudentEntity student = openNextChapter(
+                    studentRepository.save(new StudentEntity(applicant)));
             personService.checkOut(student);
             return Optional.of(student);
         }
@@ -115,7 +122,7 @@ public class StudentService {
 
     void finish(StudentEntity student) {
         student.setInactive(true);
-        student.setActiveChapter(null);
+ //       student.setActiveChapterNumber(null);
         student.setFinish(LocalDate.now());
         // student.setWeeks(student.getFinish() - student.getStart());
         // finishNotify(student);
@@ -127,7 +134,7 @@ public class StudentService {
         messageDto.setAddress(student.getPerson().getEmail());
         messageDto.setHeader("Новий розділ відкрито.");
         messageDto.setMessage("Розділ №" + student.getActiveChapterNumber() + " "
-                + student.getActiveChapter().getChapter().getShortName());
+                + student.getStudentChapters().stream().filter(c -> c.getNumber() == student.getActiveChapterNumber()).findAny().get().getChapter().getShortName());
         this.emailSenderService.sendMessage(messageDto);
     }
 
@@ -141,7 +148,7 @@ public class StudentService {
     public List<ShortChapterDto> getChapters(StudentEntity student) {
         int visibleMaxNumber = student.getActiveChapterNumber();
         List<ShortChapterDto> result = new ArrayList<>();
-        result.addAll(nonNullList(student.getChapters()).stream()
+        result.addAll(nonNullList(student.getStudentChapters()).stream()
                 .map(ShortChapterDto::map)
                 .toList());
         if (visibleMaxNumber > 0)
@@ -153,7 +160,7 @@ public class StudentService {
 
 
     public Optional<StudentChapterEntity> getOpenedChapter(StudentEntity student, int number) {
-        return student.getChapters().stream()
+        return student.getStudentChapters().stream()
                         .filter(chapter -> chapter.getChapter().getNumber() == number).findAny();
     }
 

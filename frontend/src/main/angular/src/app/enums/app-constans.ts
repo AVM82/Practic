@@ -1,6 +1,9 @@
 import { HttpHeaders } from "@angular/common/http";
 import {environment} from "../../enviroments/enviroment";
 
+export const TOKEN_KEY = 'auth-token';
+export const USER_KEY = 'auth-user';
+
 export class AppConstants {
   private static API_BASE_URL = environment.apiBaseUrl;
   private static OAUTH2_URL = AppConstants.API_BASE_URL + "oauth2/authorization/";

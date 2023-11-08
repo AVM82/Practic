@@ -9,6 +9,7 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { CourseProp } from 'src/app/models/course.prop';
 import { User } from 'src/app/models/user';
 import { ROLE_ADMIN, ROLE_COLLABORATOR } from 'src/app/enums/app-constans';
+import { Course } from 'src/app/models/course';
 
 
 @Component({
@@ -19,12 +20,8 @@ import { ROLE_ADMIN, ROLE_COLLABORATOR } from 'src/app/enums/app-constans';
     imports: [NgForOf, NgIf, MatCardModule, RouterLink, MatIconModule, AngularSvgIconModule]
 })
 export class CoursesComponent implements OnInit{
-  coursesProp: CourseProp[] = [];
+  courses: Course[] = [];
   createCapability: boolean = false;
-  studentCourse = 'green';
-  mentorCourse = 'blue';
-  otherCourse = 'smokey';
-  applicantCourse = 'purple';
   me!: User;
 
   constructor(
@@ -36,41 +33,19 @@ export class CoursesComponent implements OnInit{
   }
 
   ngOnInit(): void {
-      this.coursesService.getAllCourses().subscribe(courses => {
-          courses.forEach(course => {
-                  let route;
-                  let color;
-                  if (this.me.isStudent(course.slug)) {
-                      color = this.studentCourse;
-                      let number = this.me.getCourseActiveChapterNumber(course.slug);
-                      route = course.slug + (number != 0 ? '/chapters/' + number : '');
-                  }
-                  if (this.me.isMentor(course.slug)) {
-                      color = this.mentorCourse;
-                      route = course.slug;
-                  } else {
-                      route = course.slug + '/main';
-                      color = this.me.isApplicant(course.slug) ? this.applicantCourse : this.otherCourse;
-                  }
-                  this.coursesProp.push(new CourseProp (
-                      course.name,
-                      course.slug,
-                      route,
-                      color
-                  ))
-              })
-          this.coursesProp.sort(function(a, b) {
-              let x = a.color[0];
-              let y = b.color[0];
-              if (x < y)
-                return -1;
-              return x === y ? 0 : 1;
-          })
-      });
+      this.coursesService.getAllCourses().subscribe(courses => this.courses = courses);
   }
 
   onSelect(slug: string): void {
     this.coursesService.setCourse(slug);
+  }
+
+  getRoute(slug: string): string {
+    if (this.me.isStudent(slug)) {
+      let number = this.me.getCourseActiveChapterNumber(slug);
+      return slug + (number != 0 ? '/chapters/' + number : '');
+    }
+    return this.me.isMentor(slug) ? slug : slug + '/main';
   }
 
 }
