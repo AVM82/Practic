@@ -4,8 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +17,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StateApplicantEntity
-        implements PersonStateEntityChangeable<ApplicantEntity, StateApplicantEntity> {
+        implements PersonStateEntityChangeable<ApplicantEntity, StateApplicantEntity>,
+                Serializable {
+
+    private static final long serialVersionUID = -6823774274250234435L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

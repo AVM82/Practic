@@ -19,7 +19,7 @@ export class Applicant {
         this.student = a.student;
     }
 
-    update(newApplicant: Applicant): Applicant {
+    update(newApplicant: Applicant): this {
         this.id = newApplicant.id;
         this.name = newApplicant.name;
         this.slug = newApplicant.slug;

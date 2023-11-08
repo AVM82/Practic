@@ -9,9 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -19,7 +16,6 @@ import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -79,22 +75,22 @@ public class PersonEntity implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     //@JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
     // inverseJoinColumns = @JoinColumn(name = "role_id"))
-    Set<RoleEntity> roles = new HashSet<>();
+    private Set<RoleEntity> roles = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     // @JoinTable(name = "persons_students", joinColumns = @JoinColumn(name = "person_id"),
     // inverseJoinColumns = @JoinColumn(name = "student_id"))
-    Set<StateStudentEntity> studentStates = new HashSet<>();
+    private Set<StateStudentEntity> studentStates = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     // @JoinTable(name = "persons_mentors", joinColumns = @JoinColumn(name = "person_id"),
     // inverseJoinColumns = @JoinColumn(name = "mentors_id"))
-    Set<StateMentorEntity> mentorStates = new HashSet<>();
+    private Set<StateMentorEntity> mentorStates = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     // @JoinTable(name = "persons_applicants", joinColumns = @JoinColumn(name = "person_id"),
     // inverseJoinColumns = @JoinColumn(name = "applicants_id"))
-    Set<StateApplicantEntity> applicantStates = new HashSet<>();
+    private Set<StateApplicantEntity> applicantStates = new HashSet<>();
 
 
     public PersonEntity(String name, String linkedin, RoleEntity guestRole) {

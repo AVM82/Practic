@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {Router, RouterOutlet} from "@angular/router";
+import {Router} from "@angular/router";
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { MentorService } from 'src/app/services/mentor.service';
 import { Applicant, CourseApplicants } from 'src/app/models/applicant';
-import { MatTableDataSource } from '@angular/material/table';
-import { CoursesService } from 'src/app/services/courses.service';
-import { Course } from 'src/app/models/course';
 import { User } from 'src/app/models/user';
 
 @Component({
@@ -23,7 +20,6 @@ export class MentorDashboardComponent implements OnInit {
 
   constructor(
     private tokenStorage: TokenStorageService,
-    private courseService:  CoursesService,
     private mentorService0: MentorService,
     private router: Router
   ) {

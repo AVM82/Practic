@@ -6,7 +6,6 @@ import {RouterLink} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {AngularSvgIconModule} from 'angular-svg-icon';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
-import { CourseProp } from 'src/app/models/course.prop';
 import { User } from 'src/app/models/user';
 import { ROLE_ADMIN, ROLE_COLLABORATOR } from 'src/app/enums/app-constans';
 import { Course } from 'src/app/models/course';

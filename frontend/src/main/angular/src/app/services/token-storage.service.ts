@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { ApiUrls } from 'src/app/enums/api-urls';
 import { User } from '../models/user';
 import { TOKEN_KEY, USER_KEY, httpOptions } from '../enums/app-constans';
-import { Practice } from '../models/practice';
 
 
 @Injectable({

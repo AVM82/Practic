@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import {AppConstants, TOKEN_KEY} from "../../enums/app-constans";
 import {ActivatedRoute} from "@angular/router";
 import {TokenStorageService} from "../../services/token-storage.service";
-import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-login',

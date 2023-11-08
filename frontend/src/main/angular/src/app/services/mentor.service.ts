@@ -5,7 +5,7 @@ import { HttpClient } from "@angular/common/http";
 import { TokenStorageService } from "./token-storage.service";
 import { ApiUrls, addMentorUrl, removeMentorUrl } from "../enums/api-urls";
 import { StateStudent } from "../models/student";
-import { Mentor, MentorComplex, StateMentor } from "../models/mentor";
+import { MentorComplex } from "../models/mentor";
 import { User } from "../models/user";
 import { Course } from "../models/course";
 

@@ -5,9 +5,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {TokenStorageService} from "../../services/token-storage.service";
 import {NgIf} from "@angular/common";
 import {environment} from "../../../enviroments/enviroment";
-import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
-import { User } from 'src/app/models/user';
 
 @Component({
     selector: 'app-header',
