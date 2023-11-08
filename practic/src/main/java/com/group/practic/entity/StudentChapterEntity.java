@@ -45,10 +45,10 @@ public class StudentChapterEntity {
     private java.sql.Timestamp updatedAt;
 
     boolean reportOnce;
-
+/*
     @OneToMany
     Set<StudentPracticeEntity> practices = new HashSet<>();
-
+*/
 
     public StudentChapterEntity() {}
 

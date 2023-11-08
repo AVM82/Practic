@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StudentChapterRepository extends JpaRepository<StudentChapterEntity, Long> {
 
-    Set<StudentChapterEntity> findByStudent(StudentEntity student);
 
 }
