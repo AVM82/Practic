@@ -299,13 +299,13 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public boolean hasAnyRole(List<String> roles) {
+    public static boolean hasAnyRole(List<String> roles) {
         return me().getRoles().stream()
                 .anyMatch(roleEntity -> roles.contains(roleEntity.getName()));
     }
 
 
-    public boolean hasAdvancedRole() {
+    public static boolean hasAdvancedRole() {
         return hasAnyRole(ADVANCED_ROLES);
     }
 

@@ -80,13 +80,14 @@ export class CoursesService {
     this.setCourse(slug);
     return this.shortChapters 
             ? of(this.shortChapters)
-            : this.http.get<ShortChapter[]>(this.selectChapterEndpoint(slug)).pipe(map(chapters => {
-                        this.shortChapters = chapters;
+            : this.http.get<ShortChapter[]>(this.selectChaptersEndpoint(slug)).pipe(map(chapters => {
+                        if (chapters)
+                          this.shortChapters = chapters;
                         return chapters;
                       }));
   }
 
-  selectChapterEndpoint(slug: string): string {
+  selectChaptersEndpoint(slug: string): string {
     return this.stateStudent
       ? getStudentChaptersUrl(this.stateStudent.id)
       : getChaptersUrl(slug); 
