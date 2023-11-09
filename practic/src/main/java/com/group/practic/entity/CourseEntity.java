@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -44,16 +45,19 @@ public class CourseEntity implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "courses_add_mats", joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "add_mat_id"))
+    @OrderBy("number")
     private Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "courses_levels", joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "level_id"))
+    @OrderBy("number")
     private Set<LevelEntity> levels = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "courses_chapters", joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "chapter_id"))
+    @OrderBy("number")
     private Set<ChapterEntity> chapters = new HashSet<>();
 
     @Column(unique = true)

@@ -1,5 +1,6 @@
 package com.group.practic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,6 +29,7 @@ public class AdditionalMaterialsEntity implements Serializable {
     long id;
 
     @ManyToOne
+    @JsonIgnore
     CourseEntity course;
 
     int number;

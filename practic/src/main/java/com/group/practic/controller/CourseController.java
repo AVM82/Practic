@@ -11,6 +11,7 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
 import com.group.practic.service.CourseService;
+import com.group.practic.service.PersonService;
 import com.group.practic.util.Converter;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
@@ -47,7 +48,7 @@ public class CourseController {
     @GetMapping("/{slug}/allchapters")
     public ResponseEntity<Collection<ShortChapterDto>> getChapters(@PathVariable String slug) {
         return getResponse(
-                Converter.convertChapterList(courseService.getChapters(slug), Integer.MAX_VALUE));
+                Converter.convertChapterList(courseService.getChapters(slug), PersonService.hasAdvancedRole() ? Integer.MAX_VALUE : 0));
     }
 
 
