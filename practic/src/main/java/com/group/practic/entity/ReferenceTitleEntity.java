@@ -5,12 +5,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.util.Objects;
 
 
 @Entity
 @Table(name = "reference_title")
-public class ReferenceTitleEntity {
+public class ReferenceTitleEntity implements Serializable {
+
+    private static final long serialVersionUID = 6370431962834166445L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

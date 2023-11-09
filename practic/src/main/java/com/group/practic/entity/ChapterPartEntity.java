@@ -6,11 +6,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -18,7 +21,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "chapter_parts")
-public class ChapterPartEntity {
+public class ChapterPartEntity implements Serializable {
+
+    private static final long serialVersionUID = 2228357501851519506L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -30,24 +35,30 @@ public class ChapterPartEntity {
 
     int number;
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "chapter_parts_sub_chapters",
+            joinColumns = @JoinColumn(name = "chapter_part_id"),
+            inverseJoinColumns = @JoinColumn(name = "sub_chapter_id"))
     @OrderBy("number")
-    Set<SubChapterEntity> subChapters = new HashSet<>();
+    private Set<SubChapterEntity> subChapters = new HashSet<>();
 
     @NotBlank
     String praxisPurpose;
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "chapter_parts_praxises", joinColumns = @JoinColumn(name = "chapter_part_id"),
+            inverseJoinColumns = @JoinColumn(name = "praxis_id"))
     @OrderBy("number")
-    Set<PraxisEntity> praxis = new HashSet<>();
+    private Set<PraxisEntity> praxis = new HashSet<>();
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "chapter_parts_adds", joinColumns = @JoinColumn(name = "chapter_part_id"),
+            inverseJoinColumns = @JoinColumn(name = "add_id"))
     @OrderBy("number")
-    Set<AdditionalEntity> additionals = new HashSet<>();
+    private Set<AdditionalEntity> additionals = new HashSet<>();
 
 
-    public ChapterPartEntity() {
-    }
+    public ChapterPartEntity() {}
 
 
     public ChapterPartEntity(ChapterEntity chapter, int number, @NotBlank String praxisPurpose) {

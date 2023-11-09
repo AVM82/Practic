@@ -5,20 +5,11 @@ import com.group.practic.dto.AuthUserDto;
 import com.group.practic.dto.SignUpRequestDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
-import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.PersonStateEntityChangeable;
 import com.group.practic.entity.RoleEntity;
-import com.group.practic.entity.StateApplicantEntity;
-import com.group.practic.entity.StateMentorEntity;
-import com.group.practic.entity.StateStudentEntity;
-import com.group.practic.entity.StudentEntity;
 import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.repository.PersonRepository;
 import com.group.practic.repository.RoleRepository;
-import com.group.practic.repository.StateApplicantRepository;
-import com.group.practic.repository.StateMentorRepository;
-import com.group.practic.repository.StateStudentRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
 import java.util.HashSet;
@@ -26,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,12 +54,6 @@ public class PersonService implements UserDetailsService {
 
     RoleRepository roleRepository;
     
-    StateStudentRepository stateStudentRepository;
-    
-    StateMentorRepository stateMentorRepository;
-    
-    StateApplicantRepository stateApplicantRepository;
-
     CourseService courseService;
 
     ApplicantService applicantService;
@@ -89,16 +73,11 @@ public class PersonService implements UserDetailsService {
 
     @Autowired
     public PersonService(PersonRepository personRepository, RoleRepository roleRepository,
-            StateStudentRepository stateStudentRepository, ApplicantService applicantService,
-            StateMentorRepository stateMentorRepository, CourseService courseService,
-            StateApplicantRepository stateApplicantRepository) {
+            ApplicantService applicantService, CourseService courseService) {
         this.courseService = courseService;
         this.applicantService = applicantService;
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
-        this.stateApplicantRepository = stateApplicantRepository;
-        this.stateStudentRepository = stateStudentRepository;
-        this.stateMentorRepository = stateMentorRepository;
         ROLES.forEach(this::saveRole);
         this.roleGuest = getRole(ROLE_GUEST);
         this.roleStudent = getRole(ROLE_STUDENT);
@@ -205,7 +184,7 @@ public class PersonService implements UserDetailsService {
         Set<RoleEntity> personRoles = person.getRoles();
         personRoles.add(role);
         excludeGuestRole(personRoles);
-        return personRepository.save(person);
+        return personRepository.saveAndFlush(person);
     }
 
 
@@ -334,13 +313,13 @@ public class PersonService implements UserDetailsService {
     public Optional<ApplicantDto> createApplication(CourseEntity course) {
         Optional<ApplicantEntity> applicant = applicantService.create(me(), course);
         if (applicant.isPresent()) {
-            checkOut(applicant.get());
+//            checkOut(applicant.get());
             return Optional.of(ApplicantDto.map(applicant.get()));
         }
         return Optional.empty();
     }
 
-
+/*
     private <R, T extends PersonStateEntityChangeable<R, T>> Set<T> removeMatchState(R entity,
             Set<T> states) {
         return states.stream().filter(state -> !state.match(entity)).collect(Collectors.toSet());
@@ -425,5 +404,5 @@ public class PersonService implements UserDetailsService {
         }
         return personRepository.save(person);
     }
-
+*/
 }

@@ -2,14 +2,12 @@ package com.group.practic.service;
 
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
-import com.group.practic.dto.MentorComplexDto;
 import com.group.practic.dto.MentorDto;
 import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.StateMentorEntity;
 import com.group.practic.repository.MentorRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,26 +64,25 @@ public class MentorService {
         }
         mentor = mentorRepository.save(mentor);
         courseService.addMentor(mentor);
-        personService.checkOut(mentor);
+//        personService.checkOut(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Новий ментор.", 
                 "Вітаємо Вас як ментора курсу \"" + mentor.getCourse().getName() + "\". ");
         return mentor;
     }
 
 
-    public MentorComplexDto addMentor(PersonEntity person, CourseEntity course) {
+    public MentorDto addMentor(PersonEntity person, CourseEntity course) {
         MentorEntity mentor = create(person, course);
-        Optional<StateMentorEntity> stateMentor = person.getMentorStates().stream()
-                .filter(state -> state.getMentorId() == mentor.getId()).findAny();
-        return stateMentor.isEmpty() ? null
-                : new MentorComplexDto(MentorDto.map(mentor), stateMentor.get());
+//        Optional<StateMentorEntity> stateMentor = person.getMentorStates().stream()
+//                .filter(state -> state.getMentorId() == mentor.getId()).findAny();
+        return MentorDto.map(mentor);
     }
 
 
     public boolean removeMentor(MentorEntity mentor) {
         courseService.removeMentor(mentor);
         mentor.setInactive(true);
-        personService.checkOut(mentor);
+//        personService.checkOut(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Не ментор.", 
                 "Вітаємо Вас. Ви вже не ментор курса \"" + mentor.getCourse().getName() + "\". ");
         return true;
@@ -116,8 +113,7 @@ public class MentorService {
 
 
     public ApplicantEntity rejectApplicant(ApplicantEntity applicant) {
-        personService.checkOut(applicantService.reject(applicant));
-        return applicant;
+        return applicantService.reject(applicant);
     }
 
 }

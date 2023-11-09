@@ -11,7 +11,7 @@ import {StudentReport} from "../../models/studentReport";
 import {Practice} from "../../models/practice";
 import {TokenStorageService} from "../../services/token-storage.service";
 import {ChaptersService} from "../../services/chapters.service";
-import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
+import {StatePipe} from "../../pipes/practice-state.pipe";
 import {ShortChapter} from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
 import { CoursesService } from 'src/app/services/courses.service';
@@ -20,17 +20,17 @@ import { CoursesService } from 'src/app/services/courses.service';
   selector: 'app-course-details',
   standalone: true,
   imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink,
-     MatIconModule, MatButtonModule, ReportButtonComponent, PracticeStatePipe],
+     MatIconModule, MatButtonModule, ReportButtonComponent, StatePipe],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
 export class CourseDetailsComponent implements OnInit {
-  chapters: ShortChapter[] = [];
+  shortChapters: ShortChapter[] = [];
   reports: StudentReport[][]=[];
   slug: string='';
   practices: Practice[] = [];
-  student: boolean = false;
   editMode: boolean = false;
+  isStudent: boolean = false;
   me!: User;
 
   constructor(
@@ -49,7 +49,7 @@ export class CourseDetailsComponent implements OnInit {
 
       if(slug) {
         this.slug = slug;
-        this.student = this.me.isStudent(slug);
+        this.isStudent = this.me.isStudent(slug);
         this.reportService.getAllActualReports(slug).subscribe(reports => {
             if (reports) {
               this.reports.push(...reports);
@@ -64,7 +64,7 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   getChapters(chapters: ShortChapter[]) {
-    this.chapters = chapters;
+    this.shortChapters = chapters;
   }
 
   setPractices() {

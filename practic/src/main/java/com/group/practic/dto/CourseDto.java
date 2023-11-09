@@ -4,10 +4,9 @@ import com.group.practic.entity.CourseEntity;
 import java.util.List;
 import java.util.Set;
 import lombok.Getter;
-import lombok.Setter;
+
 
 @Getter
-@Setter
 public class CourseDto {
 
     long id;
@@ -16,7 +15,7 @@ public class CourseDto {
 
     Set<String> authors;
 
-    List<MentorDto> mentors;
+    List<CourseMentorDto> mentors;
 
     String courseType;
 
@@ -36,7 +35,7 @@ public class CourseDto {
         dto.id = entity.getId();
         dto.inactive = entity.getInactive();
         dto.authors = entity.getAuthors();
-        dto.mentors = entity.getMentors().stream().map(MentorDto::map).toList();
+        dto.mentors = entity.getMentors().stream().map(CourseMentorDto::map).toList();
         dto.courseType = entity.getCourseType();
         dto.name = entity.getName();
         dto.description = entity.getDescription();

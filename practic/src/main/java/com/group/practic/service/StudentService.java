@@ -110,7 +110,7 @@ public class StudentService {
         if (get(applicant.getPerson(), applicant.getCourse()).isEmpty()) {
             StudentEntity student = openNextChapter(
                     studentRepository.save(new StudentEntity(applicant)));
-            personService.checkOut(student);
+//            personService.checkOut(student);
             return Optional.of(student);
         }
         return Optional.empty();

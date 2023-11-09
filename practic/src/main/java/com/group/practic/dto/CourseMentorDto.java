@@ -3,9 +3,8 @@ package com.group.practic.dto;
 import com.group.practic.entity.MentorEntity;
 import lombok.Getter;
 
-
 @Getter
-public class MentorDto {
+public class CourseMentorDto {
 
     long id;
 
@@ -13,21 +12,19 @@ public class MentorDto {
 
     String name;
 
-    String slug;
-
     String linkedInUrl;
 
 
-    public static MentorDto map(MentorEntity entity) {
-        MentorDto dto = new MentorDto();
+    public static CourseMentorDto map(MentorEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        CourseMentorDto dto = new CourseMentorDto();
         dto.id = entity.getId();
         dto.inactive = entity.isInactive();
         dto.name = entity.getPerson().getName();
-        dto.slug = entity.getCourse().getSlug();
         dto.linkedInUrl = entity.getLinkedInUrl();
         return dto;
     }
-
-
 
 }

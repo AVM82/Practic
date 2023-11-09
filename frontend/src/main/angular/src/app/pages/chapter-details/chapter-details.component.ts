@@ -9,7 +9,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {InfoMessagesService} from "../../services/info-messages.service";
 import {EditBtnComponent} from 'src/app/componets/edit-btn/edit-course.component';
 import {MatChipsModule} from "@angular/material/chips";
-import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
+import {StatePipe} from "../../pipes/practice-state.pipe";
 import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
 import { Chapter } from 'src/app/models/chapter';
 import { Practice } from 'src/app/models/practice';
@@ -24,7 +24,7 @@ import { ChapterPart } from 'src/app/models/chapterpart';
   selector: 'app-chapter-details',
   standalone: true,
   imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, EditBtnComponent,
-    CdkAccordionModule, MatTooltipModule, MatChipsModule, PracticeStatePipe, PracticeButtonsVisibilityPipe],
+    CdkAccordionModule, MatTooltipModule, MatChipsModule, StatePipe, PracticeButtonsVisibilityPipe],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
@@ -64,6 +64,9 @@ export class ChapterDetailsComponent implements OnInit {
     return this.chapter && this.chapter.parts.length > 1;
   }
 
+  getPracticeState(chapterPartId: number): string | undefined {
+    return this.chapter!.practices?.find(practice => practice.chapterPartId === chapterPartId)?.state;
+  }
   
   setPractices() {
  /*   const practices = this.tokenStorageService.getPractice();

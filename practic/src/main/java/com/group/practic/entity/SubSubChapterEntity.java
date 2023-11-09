@@ -8,10 +8,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -19,7 +23,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "sub_sub_chapters")
-public class SubSubChapterEntity {
+public class SubSubChapterEntity implements Serializable {
+
+    private static final long serialVersionUID = 67849951914297249L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -35,12 +41,14 @@ public class SubSubChapterEntity {
     @Column(length = 1024)
     String name;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade =  CascadeType.MERGE)
-    Set<ReferenceTitleEntity> refs = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "sub_sub_chapters_refs",
+            joinColumns = @JoinColumn(name = "sub_sub_chapter_id"),
+            inverseJoinColumns = @JoinColumn(name = "ref_id"))
+    private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
 
-    public SubSubChapterEntity() {
-    }
+    public SubSubChapterEntity() {}
 
 
     public SubSubChapterEntity(long id, SubChapterEntity subChapter, int number, String name,

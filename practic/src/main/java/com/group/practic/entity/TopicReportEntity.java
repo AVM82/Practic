@@ -22,7 +22,6 @@ public class TopicReportEntity {
     private ChapterEntity chapter;
 
     @NotBlank
-    @Min(value = 10)
     String topic;
 
 

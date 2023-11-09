@@ -7,11 +7,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -19,7 +22,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "chapters")
-public class ChapterEntity {
+public class ChapterEntity implements Serializable {
+
+    private static final long serialVersionUID = 5562887404515392104L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -35,9 +40,11 @@ public class ChapterEntity {
     @Column(length = 1024)
     String name;
 
-    @OneToMany(mappedBy = "chapter", fetch = FetchType.EAGER)
+    @OneToMany
+    @JoinTable(name = "chapters_chapter_parts", joinColumns = @JoinColumn(name = "chapter_id"),
+            inverseJoinColumns = @JoinColumn(name = "chapter_part_id"))
     @OrderBy("number")
-    Set<ChapterPartEntity> parts = new HashSet<>();
+    private Set<ChapterPartEntity> parts = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     QuizEntity quiz;
@@ -46,8 +53,7 @@ public class ChapterEntity {
     String shortName;
 
 
-    public ChapterEntity() {
-    }
+    public ChapterEntity() {}
 
 
     public ChapterEntity(long id, CourseEntity course, int number, String shortName, String name) {

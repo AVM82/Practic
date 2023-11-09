@@ -3,7 +3,6 @@ import { StateStudent } from "./student";
 export class Applicant {
     id: number;
     name: string;
-    slug: string;
     createdAt: string;
     applied: boolean;
     rejected: boolean;
@@ -12,7 +11,6 @@ export class Applicant {
     constructor(a: Applicant){
         this.id = a.id;
         this.name = a.name;
-        this.slug = a.slug;
         this.createdAt = a.createdAt;
         this.applied = a.applied;
         this.rejected = a.rejected;
@@ -22,7 +20,6 @@ export class Applicant {
     update(newApplicant: Applicant): this {
         this.id = newApplicant.id;
         this.name = newApplicant.name;
-        this.slug = newApplicant.slug;
         this.createdAt = newApplicant.createdAt;
         this.applied = newApplicant.applied;
         this.rejected = newApplicant.rejected;

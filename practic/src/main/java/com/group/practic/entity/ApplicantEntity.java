@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ApplicantEntity {
+public class ApplicantEntity implements Serializable {
+
+    private static final long serialVersionUID = 4403583886805701903L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,7 @@ public class ApplicantEntity {
     @ManyToOne
     PersonEntity person;
 
-    @ManyToOne
+    @OneToOne
     CourseEntity course;
     
     @Column(columnDefinition = "boolean default false")

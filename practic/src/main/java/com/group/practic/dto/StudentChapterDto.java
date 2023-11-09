@@ -26,7 +26,7 @@ public class StudentChapterDto {
 
     String state;
 
-    boolean reportOnce;
+    int reportCount;
 
     List<StudentPracticeDto> practices;
 
@@ -38,15 +38,14 @@ public class StudentChapterDto {
         dto.parts = entity.getChapter().getParts();
         dto.quiz = entity.getChapter().getQuiz();
         dto.state = entity.getState().name();
-        dto.reportOnce = entity.isReportOnce();
+        dto.reportCount = entity.getReportCount();
        // dto.practices = entity.getPractices().stream().map(StudentPracticeDto::map).toList();
         return dto;
     }
 
 
     public static Optional<StudentChapterDto> map(Optional<StudentChapterEntity> entity) {
-        return entity.isPresent() ? Optional.of(StudentChapterDto.map(entity.get()))
-                : Optional.empty();
+        return entity.map(StudentChapterDto::map);
     }
 
 }

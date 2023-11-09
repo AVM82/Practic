@@ -1,5 +1,6 @@
 export interface Mentor {
     id: number;
+    inactive: boolean;
     name: string;
     slug: string;
     linkedInUrl: string;
@@ -7,12 +8,8 @@ export interface Mentor {
 
 export interface StateMentor {
     mentorId: number;
+    inactive: boolean;
     slug: string;
-    linkedInUrl: string;
 }
 
-export interface MentorComplex {
-    mentorDto: Mentor;
-    stateMentor: StateMentor;
-}
 

@@ -1,17 +1,30 @@
 package com.group.practic.dto;
 
-import jakarta.validation.constraints.Min;
+import com.group.practic.entity.StudentChapterEntity;
+import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
+
 
 @Getter
-@Setter
-public class ShortStudentChapterDto {
+public class ShortStudentChapterDto extends ShortChapterDto {
 
-    @Min(1)
-    long studentId;
+    int reportCount;
+          
+    String state;
+     
+    List<PracticeDto> practices;
+        
 
-    @Min(1)
-    long chapterId;
+    public static ShortStudentChapterDto map(StudentChapterEntity entity) {
+        ShortStudentChapterDto dto = new ShortStudentChapterDto();
+        dto.id = entity.getId();
+        dto.number = entity.getNumber();
+        dto.hidden = false;
+        dto.shortName = entity.getChapter().getShortName();
+        dto.reportCount = entity.getReportCount();
+        dto.state = entity.getState().name();
+//        dto.practices = entity.gpractices;
+        return dto;
+    }
 
 }

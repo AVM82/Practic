@@ -41,11 +41,8 @@ public class ApplicantService {
 
 
     public Optional<ApplicantEntity> create(PersonEntity person, CourseEntity course) {
-        String slug = course.getSlug();
-        return person.getMentorStates().stream().anyMatch(mentor -> mentor.getSlug().equals(slug)) 
-                || applicantRepository.findByPersonAndCourse(person, course).isPresent()
-                        ? Optional.empty()
-                        : Optional.of(applicantRepository.save(new ApplicantEntity(person, course)));
+        return Optional.of(get(person, course)
+                .orElse(applicantRepository.save(new ApplicantEntity(person, course))));
     }
 
 
