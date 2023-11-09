@@ -20,7 +20,7 @@ const requestTextResponse: Object = {
   providedIn: 'root'
 })
 export class CoursesService {
-  courses?: Course[];
+  courses?: Course[] ;
   slug: string = '';
   selectedCourse?: Course;
   levels?: Level[];
@@ -40,8 +40,10 @@ export class CoursesService {
 
   getAllCourses(): Observable<Course[]> {
     return this.courses ? of(this.courses) : this.http.get<Course[]>(ApiUrls.Courses).pipe(map(courses => {
-      this.courses = courses;
-      courses.forEach(course => this.svg_registry.addSvg(course.slug, course.svg));
+      if (courses) {
+        this.courses = courses;
+        courses.forEach(course => this.svg_registry.addSvg(course.slug, course.svg));
+      }
       return courses;
     }));
   }
