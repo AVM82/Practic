@@ -9,6 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -59,7 +61,6 @@ public class PersonEntity implements UserDetails {
     @NotBlank
     String name;
 
-    @NotBlank
     String discord;
 
     @Column
@@ -72,25 +73,25 @@ public class PersonEntity implements UserDetails {
 
     String profilePictureUrl;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    //@JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
-    // inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    // @JoinTable(name = "persons_students", joinColumns = @JoinColumn(name = "person_id"),
-    // inverseJoinColumns = @JoinColumn(name = "student_id"))
-    private Set<StateStudentEntity> studentStates = new HashSet<>();
+    @OneToMany( cascade = CascadeType.MERGE)
+    @JoinTable(name = "persons_students", joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    private Set<StudentEntity> students = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    // @JoinTable(name = "persons_mentors", joinColumns = @JoinColumn(name = "person_id"),
-    // inverseJoinColumns = @JoinColumn(name = "mentors_id"))
-    private Set<StateMentorEntity> mentorStates = new HashSet<>();
+    @OneToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "persons_mentors", joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "mentor_id"))
+    private Set<MentorEntity> mentors = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    // @JoinTable(name = "persons_applicants", joinColumns = @JoinColumn(name = "person_id"),
-    // inverseJoinColumns = @JoinColumn(name = "applicants_id"))
-    private Set<StateApplicantEntity> applicantStates = new HashSet<>();
+    @OneToMany( cascade = CascadeType.MERGE)
+    @JoinTable(name = "persons_applicants", joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "applicant_id"))
+    private Set<ApplicantEntity> applicants = new HashSet<>();
 
 
     public PersonEntity(String name, String linkedin, RoleEntity guestRole) {
@@ -163,10 +164,4 @@ public class PersonEntity implements UserDetails {
         return true;
     }
 
-
-    public boolean containsRole(String role) {
-        return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
-    }
-
-    
 }

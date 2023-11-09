@@ -29,7 +29,7 @@ export class PersonService {
         if (confirm("Ви дійсно хочете записатися на цей курс?"))
             this.http.post<Applicant>(getApplicationUrl(slug), {}).subscribe({
                 next: applicant => {
-                    this.me.addAplicant({applicantId: applicant.id, slug: applicant.slug});
+                    this.me.addAplicant({applicantId: applicant.id, slug: slug});
                     this.tokenStorageService.saveUser(this.me);
                     this.messagesService.showMessage("Заявка прийнята", "normal");
                 },

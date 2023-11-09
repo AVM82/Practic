@@ -1,30 +1,33 @@
 package com.group.practic.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Entity
 @Table(name = "additional_materials")
-public class AdditionalMaterialsEntity {
+public class AdditionalMaterialsEntity implements Serializable {
+
+    private static final long serialVersionUID = -7620809512419827291L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
     @ManyToOne
-    @JsonIgnore
     CourseEntity course;
 
     int number;
@@ -33,11 +36,12 @@ public class AdditionalMaterialsEntity {
     String name;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    Set<ReferenceTitleEntity> refs = new HashSet<>();
+    @JoinTable(name = "add_mats_refs", joinColumns = @JoinColumn(name = "add_mat_id"),
+            inverseJoinColumns = @JoinColumn(name = "ref_id"))
+    private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
 
-    public AdditionalMaterialsEntity() {
-    }
+    public AdditionalMaterialsEntity() {}
 
 
     public AdditionalMaterialsEntity(long id, CourseEntity course, int number,

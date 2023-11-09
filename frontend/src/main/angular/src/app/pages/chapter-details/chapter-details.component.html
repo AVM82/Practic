@@ -78,14 +78,14 @@
                         matTooltip="Відкласти роботу над практичною"
                         matTooltipPosition="below"
                         aria-label="Pause"
-                        *ngIf="isStudent && (chapterPart.id | practiceBtnVisibility: practices).pauseVisible"
+                        *ngIf="(chapterPart.id | practiceBtnVisibility: practices).pauseVisible"
                 >
                     <mat-icon>pause_circle_outline</mat-icon>
                 </button>
             </div>
 			{{ chapter?.number }}. Практична робота {{showPartNumber() ? '№'+ (indexPart + 1): ''}}<br />
 			Мета: {{chapterPart.praxisPurpose}}
-            <div *ngIf="isStudent" class="custom-chip">{{chapterPart.id | practiceState: practices}}</div>
+            <div *ngIf="isStudent" class="custom-chip">{{getPracticeState(chapterPart.id) | StatePipe}}</div>
 		</div>
 		<div *ngIf="chapterPart.praxis?.length" class="chapter-details-container-ext">
 			<div *ngFor="let praxis of chapterPart.praxis" class="row">

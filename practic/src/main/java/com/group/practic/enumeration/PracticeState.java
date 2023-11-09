@@ -21,9 +21,9 @@ public enum PracticeState {
     private final boolean backward;
 
 
-    PracticeState(boolean backward, PracticeState... next) {
+    PracticeState(boolean backward, PracticeState... allowFrom) {
         this.backward = backward;
-        allowed = Set.of(next);
+        allowed = Set.of(allowFrom);
     }
 
 

@@ -8,12 +8,15 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -21,7 +24,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "sub_chapters")
-public class SubChapterEntity {
+public class SubChapterEntity implements Serializable {
+
+    private static final long serialVersionUID = 1700674118330571946L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -38,15 +43,19 @@ public class SubChapterEntity {
     String name;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    Set<ReferenceTitleEntity> refs = new HashSet<>();
+    @JoinTable(name = "sub_chapters_refs", joinColumns = @JoinColumn(name = "sub_chapter_id"),
+            inverseJoinColumns = @JoinColumn(name = "ref_id"))
+    private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
-    @OneToMany(mappedBy = "subChapter", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "sub_chapters_sub_sub_chapter",
+            joinColumns = @JoinColumn(name = "sub_chapter_id"),
+            inverseJoinColumns = @JoinColumn(name = "sub_sub_chapter_id"))
     @OrderBy("number")
-    Set<SubSubChapterEntity> subSubChapters = new HashSet<>();
+    private Set<SubSubChapterEntity> subSubChapters = new HashSet<>();
 
 
-    public SubChapterEntity() {
-    }
+    public SubChapterEntity() {}
 
 
     public SubChapterEntity(ChapterPartEntity chapterPart, int number, String name) {

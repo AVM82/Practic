@@ -2,13 +2,10 @@ package com.group.practic.dto;
 
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
-import com.group.practic.entity.StateApplicantEntity;
-import com.group.practic.entity.StateMentorEntity;
-import com.group.practic.entity.StateStudentEntity;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 import lombok.Getter;
+
 
 @Getter
 public class PersonDto {
@@ -29,14 +26,11 @@ public class PersonDto {
 
     List<String> roles;
 
-    Set<StateStudentEntity> students;
+    List<PersonStudentDto> students;
 
-    Set<StateMentorEntity> mentors;
+    List<PersonMentorDto> mentors;
 
-    Set<StateApplicantEntity> applicants;
-
-
-    PersonDto() {}
+    List<PersonApplicantDto> applicants;
 
 
     @Transactional
@@ -51,9 +45,9 @@ public class PersonDto {
         dto.email = entity.getEmail();
         dto.profilePictureUrl = entity.getProfilePictureUrl();
         dto.roles = entity.getRoles().stream().map(RoleEntity::getName).toList();
-        dto.students = entity.getStudentStates();
-        dto.mentors = entity.getMentorStates();
-        dto.applicants = entity.getApplicantStates();
+        dto.students = entity.getStudents().stream().map(PersonStudentDto::map).toList();
+        dto.mentors = entity.getMentors().stream().map(PersonMentorDto::map).toList();
+        dto.applicants = entity.getApplicants().stream().map(PersonApplicantDto::map).toList();
         return dto;
     }
 

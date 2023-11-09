@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,14 +14,16 @@ import lombok.Setter;
 @Table(name = "mentors")
 @Getter
 @Setter
-public class MentorEntity {
+public class MentorEntity implements Serializable {
+
+    private static final long serialVersionUID = 4279595070733190147L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
     boolean inactive;
-    
+
     @ManyToOne
     PersonEntity person;
 

@@ -44,7 +44,7 @@ public class StudentChapterEntity {
     @Column(name = "updated_at", nullable = false)
     private java.sql.Timestamp updatedAt;
 
-    boolean reportOnce;
+    int reportCount;
 /*
     @OneToMany
     Set<StudentPracticeEntity> practices = new HashSet<>();
@@ -58,4 +58,13 @@ public class StudentChapterEntity {
         this.number = chapter.number;
     }
 
+    
+    public boolean setNewChapterState(ChapterState newState) {
+        boolean result = state.changeAllowed(newState);
+        if (result) {
+            state = newState;
+        }
+        return result;
+    }
+    
 }

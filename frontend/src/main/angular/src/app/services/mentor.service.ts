@@ -5,9 +5,9 @@ import { HttpClient } from "@angular/common/http";
 import { TokenStorageService } from "./token-storage.service";
 import { ApiUrls, addMentorUrl, removeMentorUrl } from "../enums/api-urls";
 import { StateStudent } from "../models/student";
-import { MentorComplex } from "../models/mentor";
 import { User } from "../models/user";
 import { Course } from "../models/course";
+import { Mentor, StateMentor } from "../models/mentor";
 
 @Injectable({
     providedIn: 'root'
@@ -49,11 +49,12 @@ export class MentorService {
     }
     
     addMentor(course: Course, user: User): void {
-        this.http.post<MentorComplex>(addMentorUrl(course.slug, user.id), {}).subscribe(complex => {
-            course.mentors.push(complex.mentorDto);
-            user.addMentor(complex.stateMentor);
+        this.http.post<Mentor>(addMentorUrl(course.slug, user.id), {}).subscribe(mentor => {
+            course.mentors.push(mentor);
+            let state: StateMentor = {mentorId: mentor.id, inactive: mentor.inactive, slug: mentor.slug};
+            user.addMentor(state);
             if (user.id == this.tokenStorageService.me!.id) {
-                this.tokenStorageService.me!.addMentor(complex.stateMentor);
+                this.tokenStorageService.me!.addMentor(state);
                 this.tokenStorageService.saveMe();
             }
         });

@@ -1,25 +1,25 @@
 package com.group.practic.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Entity
 @Table(name = "courses")
-public class CourseEntity {
+public class CourseEntity implements Serializable {
+
+    private static final long serialVersionUID = -1132517329070397053L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -27,37 +27,36 @@ public class CourseEntity {
 
     boolean inactive;
 
-    Set<String> authors;
+    private Set<String> authors;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    Set<MentorEntity> mentors = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "courses_mentors", joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "mentor_id"))
+    private Set<MentorEntity> mentors = new HashSet<>();
 
     String courseType;
 
-    @Min(5)
     String name;
 
-    @NotBlank
     @Column(length = 8192)
     String description;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    @JsonIgnore
-    @OrderBy("number")
-    Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "courses_add_mats", joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "add_mat_id"))
+    private Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    @JsonIgnore
-    @OrderBy("number")
-    Set<LevelEntity> levels = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "courses_levels", joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "level_id"))
+    private Set<LevelEntity> levels = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    @JsonIgnore
-    @OrderBy("number")
-    Set<ChapterEntity> chapters = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "courses_chapters", joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "chapter_id"))
+    private Set<ChapterEntity> chapters = new HashSet<>();
 
     @Column(unique = true)
-    @Min(5)
     String slug;
 
     @Column(length = 16384)

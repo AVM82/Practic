@@ -4,7 +4,7 @@ import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
-import com.group.practic.dto.MentorComplexDto;
+import com.group.practic.dto.MentorDto;
 import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
@@ -57,7 +57,7 @@ public class MentorController {
 
     @PostMapping("/add/{slug}/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
-    public ResponseEntity<MentorComplexDto> addMentor(@PathVariable String slug,
+    public ResponseEntity<MentorDto> addMentor(@PathVariable String slug,
             @Min(1) @PathVariable long id) {
         Optional<CourseEntity> course = courseService.get(slug);
         Optional<PersonEntity> person = personService.get(id);

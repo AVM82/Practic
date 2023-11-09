@@ -1,9 +1,9 @@
 <app-course-navbar (navchapters)="getChapters($event)" (editModeChanged)="setEditMode($event)"></app-course-navbar>
 
 <div class="chapter-card-container">
-  <mat-card *ngFor="let chapter of chapters; index as i" class="chapter-card"
-            [class.locked]="!chapter.visible" [class.edit]="editMode">
-    <ng-container *ngIf="chapter.visible">
+  <mat-card *ngFor="let chapter of shortChapters; index as i" class="chapter-card"
+            [class.locked]="chapter.hidden" [class.edit]="editMode">
+    <ng-container *ngIf="!chapter.hidden">
 
       <div *ngIf="editMode" class="chapter-button" (click)="editClick(chapter)">
           <mat-card-header class="course-details">
@@ -16,16 +16,16 @@
             <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
           </mat-card-header>
         </a>
-        <report-button [reportsNumber]="reports[chapter.number-1] ? reports[chapter.number-1].length : 0"></report-button>
+        <report-button [reportsNumber]="chapter.reportCount"></report-button>
       </div>
 
-      <mat-card-footer *ngIf="student">
+      <mat-card-footer *ngIf="isStudent">
         <div class="info-tags">
           <div class="info-tag">
-            Теорія: не розпочато
+            Теорія: {{chapter.state | StatePipe}}
           </div>
-            <div *ngFor="let part of chapter.partsId" class="info-tag">
-                Практика: {{ part | practiceState: practices }}
+            <div *ngFor="let practice of chapter.practices" class="info-tag">
+                Практика: {{ practice.state | StatePipe }}
             </div>
           <div class="info-tag">
             Доповідь: не проведена
@@ -33,7 +33,7 @@
         </div>
       </mat-card-footer>
     </ng-container>
-    <ng-container *ngIf="!chapter.visible">
+    <ng-container *ngIf="chapter.hidden">
       <mat-card-header class="course-details">
         <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
       </mat-card-header>

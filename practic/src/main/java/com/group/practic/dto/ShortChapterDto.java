@@ -3,11 +3,9 @@ package com.group.practic.dto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.context.annotation.Bean;
 
 @Getter
-@Setter
 public class ShortChapterDto {
 
     long id;

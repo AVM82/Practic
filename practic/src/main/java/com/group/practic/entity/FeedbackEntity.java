@@ -32,7 +32,6 @@ public class FeedbackEntity {
     private PersonEntity student;
 
     @NotBlank
-    @Min(5)
     @Column(length = 320)
     private String feedback;
 

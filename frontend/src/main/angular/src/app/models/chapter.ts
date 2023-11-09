@@ -1,19 +1,20 @@
 import { Practice } from "./practice";
 import {ChapterPart} from "./chapterpart";
 
-export interface Chapter {
+interface BaseChapter {
   id: number;
   number: number;
-  name: string;
-  parts: ChapterPart[];
+  reportCount: number;
   state: string;
   practices: Practice[];
 }
 
-export interface ShortChapter {
-  id: number;
-  number: number;
+export interface Chapter extends BaseChapter {
+  name: string;
+  parts: ChapterPart[];
+}
+
+export interface ShortChapter extends BaseChapter {
   shortName: string;
-  visible: boolean;
-  partsId: number[];
+  hidden: boolean;
 }

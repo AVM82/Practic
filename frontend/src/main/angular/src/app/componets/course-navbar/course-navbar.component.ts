@@ -43,11 +43,11 @@ export class CourseNavbarComponent implements OnInit {
   ngOnInit(): void {
       this.url = this.route.snapshot.url.map(urlSegment => urlSegment.path);
       this.slug = this.url[1];
-      this.coursesService.getChapters(this.slug).subscribe(chapters =>{
-        this.showChapters = chapters.length > 0;
-        this.shortChapters = chapters;
+      this.coursesService.getChapters(this.slug).subscribe(shortChapters =>{
+        this.showChapters = shortChapters.length > 0;
+        this.shortChapters = shortChapters;
         if (this.url.length == 2)
-          this.navchapters.emit(chapters);
+          this.navchapters.emit(shortChapters);
       });
       if (this.url.length >= 4)
           this.currentChapter = Number(this.url[3]) ;

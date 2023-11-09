@@ -6,9 +6,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +24,9 @@ import lombok.Setter;
                 columnNames = {"person_id", "course_id"})})
 @Getter
 @Setter
-public class StudentEntity {
+public class StudentEntity implements Serializable {
+
+    private static final long serialVersionUID = -7778946871629233665L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -39,6 +43,9 @@ public class StudentEntity {
     CourseEntity course;
 
     int activeChapterNumber;
+    
+    @OneToOne
+    StudentChapterEntity activeChapter;
     
     LocalDate registered = LocalDate.now();
 
