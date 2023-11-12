@@ -29,6 +29,7 @@ public class StudentChapterDto {
         StudentChapterDto dto = new StudentChapterDto();
         dto.id = entity.getId();
         dto.number = entity.getNumber();
+        dto.name = entity.getChapter().getName();
         dto.parts = entity.getChapter().getParts();
         dto.state = entity.getState().name();
         dto.reportCount = entity.getReportCount();
