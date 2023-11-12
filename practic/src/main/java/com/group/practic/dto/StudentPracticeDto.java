@@ -27,7 +27,7 @@ public class StudentPracticeDto {
         }
         StudentPracticeDto dto = new StudentPracticeDto();
         dto.id = entity.getId();
-        dto.chapterPartId = entity.getChapterPart().getId();
+        dto.chapterPartId = entity.getChapterPartId();
         dto.state = entity.getState().name();
         return dto;
     }

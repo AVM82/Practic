@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
 import { ApplyBtnComponent } from "src/app/componets/apply-btn/apply-btn.component";
 import { CourseNavbarComponent } from "src/app/componets/course-navbar/course-navbar.component";
 import { EditBtnComponent } from "src/app/componets/edit-btn/edit-course.component";
@@ -11,7 +10,7 @@ const safeReferenceStarts = '<a target="_blank" rel="noopener" href="';
 @Component({
     selector: 'app-main-page',
     standalone: true,
-    imports: [ CourseNavbarComponent, RouterLink, ApplyBtnComponent, EditBtnComponent],
+    imports: [ CourseNavbarComponent, ApplyBtnComponent, EditBtnComponent],
     templateUrl: './main-page.component.html',
     styleUrls: ['./main-page.component.css']
   })

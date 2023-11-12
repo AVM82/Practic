@@ -46,10 +46,11 @@ import { TokenStorageService } from "src/app/services/token-storage.service";
     }
     
     ngOnInit(): void {
-        this.personService.getAllUsers().subscribe(users => 
-            users.forEach(user => this.users.push(User.new(user))));
-        this.courseService.getAllCourses().subscribe(courses =>
-            this.courses = courses);
+        this.personService.getAllUsers().subscribe(users => {
+            users.forEach(user => this.users.push(User.new(user)))});
+        this.courseService.getAllCourses().subscribe(courses => {
+            this.courses = courses
+        });
     }
   
     private swapNameSurname() : void {

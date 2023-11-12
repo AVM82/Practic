@@ -18,6 +18,7 @@ import { AdditionalMaterials } from 'src/app/models/additional.material';
 })
 export class AdditionalMaterialsComponent implements OnInit {
   materials: AdditionalMaterials[] = [];
+  isStudent: boolean = false;
 
   constructor(
     private courseService: CoursesService,
@@ -27,16 +28,14 @@ export class AdditionalMaterialsComponent implements OnInit {
   ngOnInit(): void {
     const slug = this.route.snapshot.url.map(urlSegment => urlSegment.path)[1];
     if(slug)
-        this.courseService.getAdditionalMaterials(slug).subscribe(materials =>
-            this.materials = materials);
+        this.courseService.getAdditionalMaterials(slug).subscribe(materials => {
+            this.materials = materials;
+            this.isStudent = this.courseService.stateStudent != undefined;
+        })
   }
 
   changeLearned(event: any) {
     this.courseService.putAdditionalChange(event);
   }
     
-  showCheckbox() {
-    return this.courseService.stateStudent;
-  }
-
 }

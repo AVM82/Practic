@@ -12,7 +12,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -43,7 +42,7 @@ public class FeedbackEntity {
     @JoinTable(name = "feedback_likes",
             joinColumns = @JoinColumn(name = "feedback_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"))
-    Set<PersonEntity> likedByPerson = new HashSet<>();
+    private Set<PersonEntity> likedByPerson = new HashSet<>();
 
 
     public FeedbackEntity() {}

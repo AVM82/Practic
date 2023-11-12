@@ -24,6 +24,8 @@ public class PersonDto {
 
     String profilePictureUrl;
 
+    String personPageUrl;
+
     List<String> roles;
 
     List<PersonStudentDto> students;
@@ -44,10 +46,13 @@ public class PersonDto {
         dto.discord = entity.getDiscord();
         dto.email = entity.getEmail();
         dto.profilePictureUrl = entity.getProfilePictureUrl();
+        dto.personPageUrl = entity.getPersonPageUrl();
         dto.roles = entity.getRoles().stream().map(RoleEntity::getName).toList();
         dto.students = entity.getStudents().stream().map(PersonStudentDto::map).toList();
         dto.mentors = entity.getMentors().stream().map(PersonMentorDto::map).toList();
-        dto.applicants = entity.getApplicants().stream().map(PersonApplicantDto::map).toList();
+        dto.applicants = entity.getApplicants().stream()
+                .filter(applicant -> !applicant.isApplied() && !applicant.isRejected() )
+                .map(PersonApplicantDto::map).toList();
         return dto;
     }
 

@@ -13,7 +13,9 @@ import com.group.practic.repository.PraxisRepository;
 import com.group.practic.repository.SubChapterRepository;
 import com.group.practic.repository.SubSubChapterRepository;
 import com.group.practic.util.PropertyUtil;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -103,18 +105,8 @@ public class ChapterPartService {
     }
 
 
-    boolean partNumberExists(int number, Set<ChapterPartEntity> parts) {
-        for (ChapterPartEntity part : parts) {
-            if (part.getNumber() == number) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    Set<ChapterPartEntity> getChapterPartSet(ChapterEntity chapter, PropertyLoader prop) {
-        Set<ChapterPartEntity> result = new HashSet<>();
+    List<ChapterPartEntity> getChapterPartSet(ChapterEntity chapter, PropertyLoader prop) {
+        List<ChapterPartEntity> result = new ArrayList<>();
         String keyStarts = PropertyUtil.createKeyStarts(chapter.getNumber(), "");
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
@@ -130,7 +122,7 @@ public class ChapterPartService {
             if (key.startsWith(keyStarts) && PropertyUtil.countDots(key) == 2 && key.endsWith(".")
                     && PropertyUtil.getChapterNumber(2, key) != 0) {
                 int n = getChapterPartNumber(key);
-                if (!partNumberExists(n, result)) {
+                if (result.stream().allMatch(part -> part.getNumber() != n)) {
                     result.add(getChapterPart(chapter, n, prop,
                             key.substring(0, key.indexOf(PropertyUtil.DOT) + 1)));
                     break;
@@ -161,9 +153,9 @@ public class ChapterPartService {
     }
 
 
-    Set<SubChapterEntity> getSubChapterSet(ChapterPartEntity chapterPart, PropertyLoader prop,
+    List<SubChapterEntity> getSubChapterSet(ChapterPartEntity chapterPart, PropertyLoader prop,
             String keyStarts) {
-        Set<SubChapterEntity> result = new HashSet<>();
+        List<SubChapterEntity> result = new ArrayList<>();
         int n;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
@@ -182,9 +174,9 @@ public class ChapterPartService {
     }
 
 
-    Set<SubSubChapterEntity> getSubSubChapterSet(SubChapterEntity subChapter, PropertyLoader prop,
+    List<SubSubChapterEntity> getSubSubChapterSet(SubChapterEntity subChapter, PropertyLoader prop,
             String keyStarts) {
-        Set<SubSubChapterEntity> result = new HashSet<>();
+        List<SubSubChapterEntity> result = new ArrayList<>();
         int n;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
@@ -203,9 +195,9 @@ public class ChapterPartService {
     }
 
 
-    Set<PraxisEntity> getPraxisSet(ChapterPartEntity chapterPart, PropertyLoader prop,
+    List<PraxisEntity> getPraxisSet(ChapterPartEntity chapterPart, PropertyLoader prop,
             String keyStarts) {
-        Set<PraxisEntity> result = new HashSet<>();
+        List<PraxisEntity> result = new ArrayList<>();
         int n;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();

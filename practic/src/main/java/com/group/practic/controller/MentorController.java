@@ -4,9 +4,10 @@ import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentDto;
-import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
@@ -95,22 +96,38 @@ public class MentorController {
     @PostMapping("/applicants/admit/{id}")
     @PreAuthorize("hasRole('MENTOR')")
     public ResponseEntity<StudentDto> adminStudent(@Min(1) @PathVariable long id) {
-        Optional<ApplicantEntity> applicant = applicantService.get(id);
-        return applicant.isEmpty() ? badRequest()
-                : getResponse(mentorService.adminStudent(applicant.get()));
+        return getResponse(
+                applicantService.get(id).map(applicant -> mentorService.adminStudent(applicant)));
     }
 
 
     @PostMapping("/applicants/reject/{id}")
     @PreAuthorize("hasRole('MENTOR')")
     public ResponseEntity<ApplicantDto> rejectApplicant(@Min(1) @PathVariable long id) {
-        Optional<ApplicantEntity> applicant = applicantService.get(id);
-        return applicant.isEmpty() ? badRequest()
-                : getResponse(Optional.of(mentorService.rejectApplicant(applicant.get()))
-                        .map(ApplicantDto::map));
+        return getResponse(applicantService.get(id)
+                .map(applicant -> ApplicantDto.map(mentorService.rejectApplicant(applicant))));
     }
 
 
+    @GetMapping("/chapters/{slug}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Collection<ShortChapterDto>> getChapters(@PathVariable String slug) {
+        return getResponse(courseService.get(slug).filter(mentorService::isMyCourse)
+                .map(mentorService::getChapters));
+    }
+
+
+    
+    @GetMapping("/chapters/{slug}/{number}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<ChapterDto> getChapter(@PathVariable String slug,
+            @Min(1) @PathVariable int number) {
+        return getResponse(courseService.get(slug).filter(mentorService::isMyCourse)
+                .map(course -> mentorService.getChapter(course, number).orElseGet(null)));
+    }
+    
+    
+    
     /*
      * @PostMapping("/practices")
      * 

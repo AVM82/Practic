@@ -1,12 +1,9 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.ChapterPartEntity;
-import com.group.practic.entity.QuizEntity;
 import com.group.practic.entity.StudentChapterEntity;
-import jakarta.persistence.OrderBy;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import lombok.Getter;
 
 
@@ -19,10 +16,7 @@ public class StudentChapterDto {
 
     String name;
 
-    @OrderBy("number")
-    Set<ChapterPartEntity> parts;
-
-    QuizEntity quiz;
+    List<ChapterPartEntity> parts;
 
     String state;
 
@@ -36,10 +30,9 @@ public class StudentChapterDto {
         dto.id = entity.getId();
         dto.number = entity.getNumber();
         dto.parts = entity.getChapter().getParts();
-        dto.quiz = entity.getChapter().getQuiz();
         dto.state = entity.getState().name();
         dto.reportCount = entity.getReportCount();
-       // dto.practices = entity.getPractices().stream().map(StudentPracticeDto::map).toList();
+        dto.practices = entity.getPractices().stream().map(StudentPracticeDto::map).toList();
         return dto;
     }
 

@@ -15,7 +15,7 @@ public class MentorDto {
 
     String slug;
 
-    String linkedInUrl;
+    String personPageUrl;
 
 
     public static MentorDto map(MentorEntity entity) {
@@ -24,7 +24,7 @@ public class MentorDto {
         dto.inactive = entity.isInactive();
         dto.name = entity.getPerson().getName();
         dto.slug = entity.getCourse().getSlug();
-        dto.linkedInUrl = entity.getLinkedInUrl();
+        dto.personPageUrl = entity.getPersonPageUrl();
         return dto;
     }
 

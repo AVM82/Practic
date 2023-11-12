@@ -11,6 +11,7 @@ import { StateStudent } from '../models/student';
 import { TokenStorageService } from './token-storage.service';
 import { StateMentor } from '../models/mentor';
 import { SvgIconRegistryService } from 'angular-svg-icon';
+import { User } from '../models/user';
 
 const requestTextResponse: Object = {
   responseType: 'text'
@@ -20,23 +21,25 @@ const requestTextResponse: Object = {
   providedIn: 'root'
 })
 export class CoursesService {
+  me!: User;
   courses?: Course[] ;
   slug: string = '';
   selectedCourse?: Course;
   levels?: Level[];
   shortChapters?: ShortChapter[];
-  chapters?: Chapter[];
+  lastChapterNumber: number = 0;
+  chapters: Chapter[] = [];
   materials?: AdditionalMaterials[];
-  currentChapter?: Chapter;
   stateStudent?: StateStudent;
-  stateMentor?: StateMentor;
 
   constructor(
     private tokenStorageService: TokenStorageService,
     private http: HttpClient,
     private _router: Router,
     private svg_registry: SvgIconRegistryService
-  ) {}
+  ) {
+    this.me = tokenStorageService.getMe();
+  }
 
   getAllCourses(): Observable<Course[]> {
     return this.courses ? of(this.courses) : this.http.get<Course[]>(ApiUrls.Courses).pipe(map(courses => {
@@ -48,18 +51,25 @@ export class CoursesService {
     }));
   }
 
+  clearCourse(slug: string): void {
+    if (this.slug === slug) {
+      this.chapters = [];
+      this.shortChapters = undefined;
+      this.materials = undefined;
+      this.stateStudent = this.tokenStorageService.me!.getStudent(slug);
+    }
+  }
+
   setCourse(slug: string): void {
     if (slug !== this.slug) {
-      console.log(this.slug, ' -> ', slug);
       this.slug = slug;
       this.chapters = [];
       this.shortChapters = undefined;
-      this.currentChapter = undefined;
       this.materials = undefined;
       this.stateStudent = this.tokenStorageService.me!.getStudent(slug);
-      this.stateMentor = this.tokenStorageService.me!.getMentor(slug);
       this.levels = undefined;
       this.selectedCourse = undefined;
+      this.lastChapterNumber = 0;
     }
   }
 
@@ -81,36 +91,38 @@ export class CoursesService {
     return this.shortChapters 
             ? of(this.shortChapters)
             : this.http.get<ShortChapter[]>(this.selectChaptersEndpoint(slug)).pipe(map(chapters => {
-                        if (chapters)
+                        if (chapters) {
                           this.shortChapters = chapters;
+                          this.lastChapterNumber = chapters[chapters.length -1].number;
+                        }
                         return chapters;
                       }));
   }
 
   selectChaptersEndpoint(slug: string): string {
-    return this.stateStudent
-      ? getStudentChaptersUrl(this.stateStudent.id)
-      : getChaptersUrl(slug); 
+    if (this.stateStudent)
+      return getStudentChaptersUrl(this.stateStudent.id);
+    return this.me.isMentor(slug) ? ApiUrls.Mentors + `chapters/` + slug : getChaptersUrl(slug); 
   }
 
   getChapter(slug: string, number: number): Observable<Chapter> {
     this.setCourse(slug);
-    if (this.chapters)
-      for(let loadedChapter of this.chapters)
-        if (loadedChapter.number === number) {
-          this.currentChapter = loadedChapter;
-          return of(this.currentChapter);
-        }
-    return this.http.get<Chapter>(this.stateStudent 
-                  ? getStudentChapterUrl(this.stateStudent.id, number) 
-                  : getChapterUrl(slug, number))
+    for(let loadedChapter of this.chapters)
+      if (loadedChapter.number === number)
+        return of(loadedChapter);
+    return this.http.get<Chapter>(this.selectChapterEndpoint(slug, number))
         .pipe(map(loadedChapter => {
-            this.currentChapter = loadedChapter;
-            this.chapters = [];
             this.chapters.push(loadedChapter);
             return loadedChapter;
           })
         );
+  }
+
+  selectChapterEndpoint(slug: string, number: number): string {
+    if (this.stateStudent)
+      return getStudentChapterUrl(this.stateStudent.id, number);
+    return this.me.isMentor(slug) ? ApiUrls.Mentors + `chapters/` + slug + `/` + number
+      : getChapterUrl(slug, number); 
   }
 
   getLevels(slug:string): Observable<Level[]>{

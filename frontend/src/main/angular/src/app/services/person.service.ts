@@ -6,6 +6,7 @@ import { ApiUrls, addRoleUrl, getApplicationCheckUrl, getApplicationUrl, removeR
 import { Applicant } from "src/app/models/applicant";
 import { InfoMessagesService } from "./info-messages.service";
 import { Observable } from "rxjs/internal/Observable";
+import { CoursesService } from "./courses.service";
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,7 @@ export class PersonService {
     constructor(
         private http: HttpClient,
         private tokenStorageService: TokenStorageService,
+        private coursesService: CoursesService,
         private messagesService: InfoMessagesService
     ) {
         this.me = this.tokenStorageService.me!;
@@ -51,16 +53,20 @@ export class PersonService {
     addRole(user: User, role: string): void {
         this.http.post<User>(addRoleUrl(user.id, role), {}).subscribe(updated => {
             user.update(updated);
-            if (updated.id === this.me.id) 
+            if (updated.id === this.me.id) {
                 this.tokenStorageService.updateMe(user);
+                this.coursesService.clearCourse(this.coursesService.slug);
+            }
         })
     }
 
     removeRole(user: User, role: string): void {
         this.http.post<User>(removeRoleUrl(user.id, role), {}).subscribe(updated => {
             user.update(updated);
-            if (updated.id === this.me.id)
+            if (updated.id === this.me.id) {
                 this.tokenStorageService.updateMe(user);
+                this.coursesService.clearCourse(this.coursesService.slug);
+            }
         })
     }
 

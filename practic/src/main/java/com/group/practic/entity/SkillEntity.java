@@ -24,8 +24,7 @@ public class SkillEntity {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "sub_chapters_skills",
             joinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "sub_chapter_id", referencedColumnName = "id"))

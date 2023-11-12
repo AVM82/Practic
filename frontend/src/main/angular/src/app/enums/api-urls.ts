@@ -53,7 +53,7 @@ export const timeslotsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}/timeslots`;
 
 export const getStudentsAllAdditionalMaterialsUrl = (studentId: number): string =>
-    ApiUrls.Students + `/` + studentId;
+    ApiUrls.StudentAdditionalMaterials + studentId;
 
 export const getStudentAdditionalMaterialUrl = (studentId: number, addId: number): string =>
     getStudentsAllAdditionalMaterialsUrl(studentId) + `/` + addId;

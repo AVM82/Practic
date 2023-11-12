@@ -12,7 +12,7 @@ public class CourseMentorDto {
 
     String name;
 
-    String linkedInUrl;
+    String personPageUrl;
 
 
     public static CourseMentorDto map(MentorEntity entity) {
@@ -23,7 +23,7 @@ public class CourseMentorDto {
         dto.id = entity.getId();
         dto.inactive = entity.isInactive();
         dto.name = entity.getPerson().getName();
-        dto.linkedInUrl = entity.getLinkedInUrl();
+        dto.personPageUrl = entity.getPersonPageUrl();
         return dto;
     }
 

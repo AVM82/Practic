@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Course} from "../../models/course";
 import {MatIconModule} from "@angular/material/icon";
@@ -23,12 +23,11 @@ export class CourseNavbarComponent implements OnInit {
   @Output() navchapters: EventEmitter<ShortChapter[]> = new EventEmitter();
   @Output() navCourse: EventEmitter<Course> = new EventEmitter();
   @Output() editModeChanged: EventEmitter<boolean> = new EventEmitter();
+  @Input() currentChapter: number = 0;
   showAdditionalMaterials: boolean = false;
   showChapters: boolean = false;
   shortChapters: ShortChapter[] = [];
-  url!: string[];
   slug: string = '';
-  currentChapter: number = 0;
   me: User;
 
 
@@ -40,36 +39,30 @@ export class CourseNavbarComponent implements OnInit {
     this.me = tokenService.getMe();
   }
 
-  ngOnInit(): void {
-      this.url = this.route.snapshot.url.map(urlSegment => urlSegment.path);
-      this.slug = this.url[1];
-      this.coursesService.getChapters(this.slug).subscribe(shortChapters =>{
-        this.showChapters = shortChapters.length > 0;
-        this.shortChapters = shortChapters;
-        if (this.url.length == 2)
-          this.navchapters.emit(shortChapters);
-      });
-      if (this.url.length >= 4)
-          this.currentChapter = Number(this.url[3]) ;
-      this.coursesService.getCourse(this.slug).subscribe(course => {
-        if (course) {
-          if (this.url.length == 3 && this.url[2] === 'main')
-              this.navCourse.emit(course);
-          this.showAdditionalMaterials = course.additionalMaterialsExist;
-        }
-      });
+  ngOnInit(): void {   
+    this.route.paramMap.subscribe(params => {
+      const slug = params.get('slug')
+      if (slug) {
+        this.slug = slug;
+        this.coursesService.getChapters(this.slug).subscribe(shortChapters =>{
+          if (shortChapters) {
+            this.showChapters = shortChapters.length > 0;
+            this.shortChapters = shortChapters;
+            this.navchapters.emit(shortChapters);
+          }
+        });
+        this.coursesService.getCourse(this.slug).subscribe(course => {
+          if (course) {
+            this.navCourse.emit(course);
+            this.showAdditionalMaterials = course.additionalMaterialsExist;
+          }
+        });
+     }
+    }) 
   }
  
   setEditMode(editMode: boolean) {
     this.editModeChanged.emit(editMode);
-  }
-
-  checkShowEdit(): boolean {
-    return this.me.isMentor(this.slug)
-  }
-
-  checkShowApply(): boolean {
-    return  !this.me.isStudent(this.slug) && !this.checkShowEdit();
   }
 
 }

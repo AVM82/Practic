@@ -30,7 +30,7 @@ public class MentorEntity implements Serializable {
     @ManyToOne
     CourseEntity course;
 
-    String linkedInUrl;
+    String personPageUrl;
 
 
     public MentorEntity() {}

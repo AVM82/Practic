@@ -3,20 +3,22 @@ package com.group.practic.service;
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.AuthUserDto;
 import com.group.practic.dto.SignUpRequestDto;
-import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
+import com.group.practic.entity.StudentEntity;
 import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.repository.PersonRepository;
 import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -105,14 +107,10 @@ public class PersonService implements UserDetailsService {
 
 
     Set<RoleEntity> getRoles(String... roles) {
-        Set<RoleEntity> roleSet = new HashSet<>();
-        for (String role : roles) {
-            RoleEntity roleEntity = getRole(role);
-            if (roleEntity != null) {
-                roleSet.add(roleEntity);
-            }
-        }
-        return roleSet;
+        return List.of(roles).stream()
+                .map(this::getRole)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
 
@@ -184,7 +182,7 @@ public class PersonService implements UserDetailsService {
         Set<RoleEntity> personRoles = person.getRoles();
         personRoles.add(role);
         excludeGuestRole(personRoles);
-        return personRepository.saveAndFlush(person);
+        return personRepository.save(person);
     }
 
 
@@ -289,13 +287,13 @@ public class PersonService implements UserDetailsService {
 
     @Transactional
     public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
-        PersonEntity person = personRepository.save(new PersonEntity(
+        return personRepository.save(new PersonEntity(
                 userDetails.getName(),
                 userDetails.getPassword(), 
                 userDetails.getEmail(), 
                 userDetails.getProviderUserId(),
-                userDetails.getProfilePictureUrl()));
-        return addRole(person, roleGuest);
+                userDetails.getProfilePictureUrl(),
+                roleGuest));
     }
 
 
@@ -311,98 +309,39 @@ public class PersonService implements UserDetailsService {
 
 
     public Optional<ApplicantDto> createApplication(CourseEntity course) {
-        Optional<ApplicantEntity> applicant = applicantService.create(me(), course);
-        if (applicant.isPresent()) {
-//            checkOut(applicant.get());
-            return Optional.of(ApplicantDto.map(applicant.get()));
-        }
-        return Optional.empty();
-    }
-
-/*
-    private <R, T extends PersonStateEntityChangeable<R, T>> Set<T> removeMatchState(R entity,
-            Set<T> states) {
-        return states.stream().filter(state -> !state.match(entity)).collect(Collectors.toSet());
+        return applicantService.create(me(), course).map(ApplicantDto::map);
     }
 
 
-    private <R, T extends PersonStateEntityChangeable<R, T>> Optional<T> updateMatchState(R entity,
-            Set<T> states) {
-        return states.stream().filter(state -> state.match(entity)).findAny()
-                .map(state -> state.update(entity));
-    }
-
-
-    private StateStudentEntity getState(StudentEntity student) {
-        StateStudentEntity state = stateStudentRepository.findBySlug(student.getCourse().getSlug());
-        return state == null ? stateStudentRepository.save(new StateStudentEntity(student)) : state;
-    }
-
-
-    private StateMentorEntity getState(MentorEntity mentor) {
-        StateMentorEntity state = stateMentorRepository.findBySlug(mentor.getCourse().getSlug());
-        return state == null ? stateMentorRepository.save(new StateMentorEntity(mentor)) : state;
-    }
-
-
-    private StateApplicantEntity getState(ApplicantEntity applicant) {
-        StateApplicantEntity state = stateApplicantRepository.findBySlug(applicant.getCourse().getSlug());
-        return state == null ? stateApplicantRepository.save(new StateApplicantEntity(applicant))
-                : state;
-    }
-
-
-    public PersonEntity checkOut(StudentEntity student) {
-        PersonEntity person = student.getPerson();
-        Set<StateStudentEntity> states = person.getStudentStates();
-        if (StateStudentEntity.shouldBeDeleted(student)) {
-            person.setStudentStates(removeMatchState(student, states));
-            return states.isEmpty() ? removeRole(person, roleStudent)
-                    : personRepository.save(person);
-        }
-        Optional<StateStudentEntity> stateStudent = updateMatchState(student, states);
-        if (stateStudent.isEmpty()) {
-            states.add(getState(student));
-            if (states.size() == 1) {
-                return addRole(person, roleStudent);
-            }
-        } else {
-            this.stateStudentRepository.save(stateStudent.get());
-        }
-        return personRepository.save(person);
-    }
-
-
-    public PersonEntity checkOut(MentorEntity mentor) {
+    public PersonEntity addMentor(MentorEntity mentor) {
         PersonEntity person = mentor.getPerson();
-        Set<StateMentorEntity> states = person.getMentorStates();
-        if (StateMentorEntity.shouldBeDeleted(mentor)) {
-            person.setMentorStates(removeMatchState(mentor, states));
-            return personRepository
-                    .save(person.getMentorStates().isEmpty() ? removeRole(person, roleMentor) : person);
-        }
-        Optional<StateMentorEntity> stateMentor = updateMatchState(mentor, states);
-        if (stateMentor.isEmpty()) {
-            states.add(getState(mentor));
-            if (states.size() == 1) {
-                return addRole(person, roleMentor);
-            }
-        } else {
-            this.stateMentorRepository.save(stateMentor.get());
-        }
-        return personRepository.save(person);
+        person.getMentors().add(mentor);
+        return person.getMentors().size() == 1 ? addRole(person, roleMentor)
+                : personRepository.save(person);
     }
 
 
-    public PersonEntity checkOut(ApplicantEntity applicant) {
-        PersonEntity person = applicant.getPerson();
-        Set<StateApplicantEntity> states = person.getApplicantStates();
-        if (StateApplicantEntity.shouldBeDeleted(applicant)) {
-            person.setApplicantStates(removeMatchState(applicant, states));
-        } else {
-            states.add(getState(applicant));
-        }
-        return personRepository.save(person);
+    public PersonEntity removeMentor(MentorEntity mentor) {
+        PersonEntity person = mentor.getPerson();
+        person.getMentors().remove(mentor);
+        return person.getMentors().isEmpty() ? removeRole(person, roleMentor)
+                : personRepository.save(person);
     }
-*/
+
+
+    public PersonEntity addStudent(StudentEntity student) {
+        PersonEntity person = student.getPerson();
+        person.getStudents().add(student);
+        return person.getStudents().size() == 1 ? addRole(person, roleStudent)
+                : personRepository.save(person);
+    }
+
+
+    public PersonEntity removeStudent(StudentEntity student) {
+        PersonEntity person = student.getPerson();
+        person.getStudents().remove(student);
+        return person.getStudents().isEmpty() ? removeRole(person, roleStudent)
+                : personRepository.save(person);
+    }
+
 }

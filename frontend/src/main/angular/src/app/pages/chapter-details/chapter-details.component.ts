@@ -11,7 +11,7 @@ import {EditBtnComponent} from 'src/app/componets/edit-btn/edit-course.component
 import {MatChipsModule} from "@angular/material/chips";
 import {StatePipe} from "../../pipes/practice-state.pipe";
 import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
-import { Chapter } from 'src/app/models/chapter';
+import { Chapter, ShortChapter } from 'src/app/models/chapter';
 import { Practice } from 'src/app/models/practice';
 import { User } from 'src/app/models/user';
 import { CoursesService } from 'src/app/services/courses.service';
@@ -23,15 +23,20 @@ import { ChapterPart } from 'src/app/models/chapterpart';
 @Component({
   selector: 'app-chapter-details',
   standalone: true,
-  imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink, MatIconModule, EditBtnComponent,
+  imports: [CommonModule, CourseNavbarComponent,  RouterLink, MatCardModule, MatIconModule, EditBtnComponent,
     CdkAccordionModule, MatTooltipModule, MatChipsModule, StatePipe, PracticeButtonsVisibilityPipe],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
 export class ChapterDetailsComponent implements OnInit {
+
   practices: Practice[] = [];
   isStudent: boolean = false;
+  shortChapters: ShortChapter[] = [];
   chapter?: Chapter;
+  showPartNumber: boolean = false;
+  number: number = 0;
+  max: number = 0;
   me!: User;
 
   constructor(
@@ -46,23 +51,19 @@ export class ChapterDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const url = this.route.snapshot.url.map(urlSegment => urlSegment.path);
-    const slug = url[1];
-    const number = url.length >= 4 ? +url[3] : 0;
-    if (slug && number > 0) {
-        if (this.me.isStudent(slug)) {
-  //          this.updatePractices();
-              this.isStudent = true;
-          }
-        this.coursesService.getChapter(slug, number).subscribe(chapter =>
-            this.chapter = chapter);
-    } else
-      history.back();
+    this.route.paramMap.subscribe(params => {
+      const slug = params.get('slug')
+      const number = Number(params.get('chapterN')) | 0;
+      if (slug && number > 0)
+        this.coursesService.getChapter(slug, number).subscribe(chapter => {
+          this.chapter = chapter;
+          this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
+          this.isStudent = this.coursesService.stateStudent != undefined;
+          this.number = number;
+        });
+    });
   }
 
-  showPartNumber() {
-    return this.chapter && this.chapter.parts.length > 1;
-  }
 
   getPracticeState(chapterPartId: number): string | undefined {
     return this.chapter!.practices?.find(practice => practice.chapterPartId === chapterPartId)?.state;

@@ -4,6 +4,7 @@ import static com.group.practic.util.Converter.nonNullList;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
 import com.group.practic.dto.ShortChapterDto;
+import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.ChapterEntity;
@@ -13,11 +14,12 @@ import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
+import jakarta.transaction.Transactional;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +29,13 @@ public class StudentService {
 
     StudentRepository studentRepository;
 
-    CourseService courseService;
-
     StudentChapterRepository studentChapterRepository;
 
     PersonService personService;
+
+    CourseService courseService;
+
+    StudentReportService reportService;
 
     EmailSenderService emailSenderService;
 
@@ -40,13 +44,13 @@ public class StudentService {
     public StudentService(StudentRepository studentRepository, CourseService courseService,
             PersonService personService, ChapterService chapterService,
             StudentChapterRepository studentChapterRepository,
-            EmailSenderService emailSenderService) {
-        super();
+            EmailSenderService emailSenderService, StudentReportService reportService) {
         this.studentRepository = studentRepository;
         this.courseService = courseService;
         this.studentChapterRepository = studentChapterRepository;
         this.personService = personService;
         this.emailSenderService = emailSenderService;
+        this.reportService = reportService;
     }
 
 
@@ -70,16 +74,19 @@ public class StudentService {
     }
 
 
-    public Optional<StudentEntity> get(PersonEntity person, CourseEntity course, boolean inactive, boolean ban) {
-        return studentRepository.findByPersonAndCourseAndInactiveAndBan(person, course, inactive, ban);
+    public Optional<StudentEntity> get(PersonEntity person, CourseEntity course, boolean inactive,
+            boolean ban) {
+        return studentRepository.findByPersonAndCourseAndInactiveAndBan(person, course, inactive,
+                ban);
     }
 
 
-    public List<StudentEntity> getCoursesOfPerson(PersonEntity person, boolean inactive, boolean ban) {
+    public List<StudentEntity> getCoursesOfPerson(PersonEntity person, boolean inactive,
+            boolean ban) {
         return studentRepository.findAllByPersonAndInactiveAndBan(person, inactive, ban);
     }
-    
-    
+
+
     public List<StudentEntity> getStudentsOfCourse(long courseId, boolean inactive, boolean ban) {
         Optional<CourseEntity> course = courseService.get(courseId);
         return course.isPresent()
@@ -88,41 +95,49 @@ public class StudentService {
     }
 
 
+    @Transactional
+    public StudentEntity create(PersonEntity person, CourseEntity course) {
+        if (get(person, course).isEmpty()) {
+            StudentEntity student = studentRepository.save(new StudentEntity(person, course));
+            personService.addStudent(student);
+            return openNextChapter(student);
+        }
+        return null;
+    }
+
+
+    public StudentEntity create(ApplicantEntity applicant) {
+        return create(applicant.getPerson(), applicant.getCourse());
+    }
+
+
     public StudentEntity openNextChapter(StudentEntity student) {
         Optional<ChapterEntity> chapter = courseService.getNextChapterByNumber(student.getCourse(),
                 student.getActiveChapterNumber());
-        if (chapter.isEmpty()) {
-            finish(student);
-        } else {
-            StudentChapterEntity studentChapter = studentChapterRepository.save(
-                    new StudentChapterEntity(chapter.get()));
-            student.addChapter(studentChapter);
-            this.emailSenderService.sendEmail(student.getPerson().getEmail(),
-                    "Новий розділ відкрито.",
-                    "Розділ №" + studentChapter.getNumber() + " " + 
-                            studentChapter.getChapter().getShortName());
-        }
-        return studentRepository.save(student);
+        return studentRepository
+                .save(chapter.isPresent() ? nextChapter(student, chapter.get()) : finish(student));
     }
 
 
-    public Optional<StudentEntity> create(ApplicantEntity applicant) {
-        if (get(applicant.getPerson(), applicant.getCourse()).isEmpty()) {
-            StudentEntity student = openNextChapter(
-                    studentRepository.save(new StudentEntity(applicant)));
-//            personService.checkOut(student);
-            return Optional.of(student);
-        }
-        return Optional.empty();
+    protected StudentEntity nextChapter(StudentEntity student, ChapterEntity chapter) {
+        StudentChapterEntity studentChapter =
+                studentChapterRepository.save(new StudentChapterEntity(student, chapter));
+        student.addChapter(studentChapter);
+        this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Новий розділ відкрито.",
+                "Розділ №" + studentChapter.getNumber() + " "
+                        + studentChapter.getChapter().getShortName());
+        return student;
     }
 
 
-    void finish(StudentEntity student) {
+    protected StudentEntity finish(StudentEntity student) {
         student.setInactive(true);
- //       student.setActiveChapterNumber(null);
         student.setFinish(LocalDate.now());
-        // student.setWeeks(student.getFinish() - student.getStart());
-        // finishNotify(student);
+        student.setWeeks(
+                ((int) Duration.between(student.getFinish(), student.getStart()).toDays()) / 7);
+        this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Курс завершено",
+                "Вітаємо ви закінчили навчання на курсі \"" + student.getCourse().getName() + "\"");
+        return student;
     }
 
 
@@ -135,9 +150,11 @@ public class StudentService {
     public List<ShortChapterDto> getChapters(StudentEntity student) {
         int visibleMaxNumber = student.getActiveChapterNumber();
         List<ShortChapterDto> result = new ArrayList<>();
-        result.addAll(nonNullList(student.getStudentChapters()).stream()
-                .map(ShortChapterDto::map)
-                .toList());
+        result.addAll(
+                nonNullList(student.getStudentChapters()).stream()
+                        .map(chapter -> ShortChapterDto.map(chapter,
+                                reportService.getActualReportCount(chapter.getChapter())))
+                        .toList());
         if (visibleMaxNumber > 0)
             result.addAll(nonNullList(student.getCourse().getChapters()).stream()
                     .filter(chapter -> chapter.getNumber() > visibleMaxNumber)
@@ -146,24 +163,24 @@ public class StudentService {
     }
 
 
-    public Optional<StudentChapterEntity> getOpenedChapter(StudentEntity student, int number) {
+    public Optional<StudentChapterDto> getOpenedChapter(StudentEntity student, int number) {
         return student.getStudentChapters().stream()
-                        .filter(chapter -> chapter.getChapter().getNumber() == number).findAny();
+                .filter(chapter -> chapter.getChapter().getNumber() == number).findAny()
+                .map(StudentChapterDto::map);
     }
 
 
     public Optional<Boolean> changeAdditionalMaterial(StudentEntity student,
             AdditionalMaterialsEntity additionalMaterial, boolean state) {
-        return Optional.of(studentRepository.save(
-                student.changeAdditionalMaterial(additionalMaterial, state)) != null);
+        return Optional.of(studentRepository
+                .save(student.changeAdditionalMaterial(additionalMaterial, state)) != null);
     }
 
 
     public List<AdditionalMaterialsDto> getAdditionalMaterials(StudentEntity student) {
-        Set<AdditionalMaterialsEntity> studentAdd = student.getAdditionalMaterial();
+        List<AdditionalMaterialsEntity> studentAdd = student.getAdditionalMaterials();
         return student.getCourse().getAdditionalMaterials().stream()
-                .map(add -> AdditionalMaterialsDto.map(add, studentAdd.contains(add)))
-                .toList();
+                .map(add -> AdditionalMaterialsDto.map(add, studentAdd.contains(add))).toList();
     }
 
 }

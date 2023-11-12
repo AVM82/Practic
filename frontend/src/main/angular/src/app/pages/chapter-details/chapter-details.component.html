@@ -1,4 +1,4 @@
-<app-course-navbar></app-course-navbar>
+<app-course-navbar [currentChapter]="number"></app-course-navbar>
 
 <div class="chapter-header">
 	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
@@ -20,7 +20,7 @@
 
 <div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">
 	<div class="chapter-part">
-		{{ chapter?.number }}. Теоретичний блок {{showPartNumber() ? '№'+ (indexPart + 1): ''}}
+		{{ chapter?.number }}. Теоретичний блок {{showPartNumber ? '№'+ chapterPart.number : ''}}
 	</div>
 
 	<cdk-accordion class="chapter-details-container" [multi]="true">
@@ -83,7 +83,7 @@
                     <mat-icon>pause_circle_outline</mat-icon>
                 </button>
             </div>
-			{{ chapter?.number }}. Практична робота {{showPartNumber() ? '№'+ (indexPart + 1): ''}}<br />
+			{{ chapter?.number }}. Практична робота {{showPartNumber ? '№'+ (indexPart + 1): ''}}<br />
 			Мета: {{chapterPart.praxisPurpose}}
             <div *ngIf="isStudent" class="custom-chip">{{getPracticeState(chapterPart.id) | StatePipe}}</div>
 		</div>
@@ -103,7 +103,7 @@
 
 	<div *ngIf="chapterPart.additionals?.length">
 		<div class="chapter-part">
-			{{ chapter?.number }}. Додатково {{showPartNumber() ? '№'+ (indexPart + 1) : ''}}
+			{{ chapter?.number }}. Додатково {{showPartNumber ? '№'+ (indexPart + 1) : ''}}
 		</div>
 		<div *ngIf="chapterPart.additionals?.length" class="chapter-details-container-ext">
 			<div *ngFor="let add of chapterPart.additionals" class="row">

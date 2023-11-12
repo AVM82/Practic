@@ -8,7 +8,6 @@ import static com.group.practic.util.ResponseUtils.updateResponse;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
 import com.group.practic.dto.MentorPracticeDto;
-import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
@@ -37,7 +36,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -107,17 +105,37 @@ public class StudentController {
         Optional<CourseEntity> course = courseService.get(courseId.get());
         return person.isEmpty() || course.isEmpty() ? badRequest()
                 : getResponse(studentService.get(person.get(), course.get(), inactive, ban)
-                        .map(List::of).orElse(List.of()));
+                        .map(List::of).orElseGet(List::of));
     }
 
 
+    @GetMapping("/chapters/{studentId}/{number}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<StudentChapterDto> getChapter(@PathVariable long studentId,
+            @PathVariable int number) {
+        return studentService.get(studentId)
+                .map(student -> getResponse(studentService.getOpenedChapter(student, number)))
+                .orElse(badRequest());
+    }
+
+
+    @GetMapping("/chapters/{studentId}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Collection<ShortChapterDto>> getOpenChapters(
+            @PathVariable long studentId) {
+        return studentService.get(studentId)
+                .map(student -> getResponse(studentService.getChapters(student)))
+                .orElse(badRequest());
+    }
+
+/*
     @GetMapping("/practices/my")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<PracticeDto>> getAllMyPractices() {
         return getResponse(studentPracticeService.getAllPracticesByStudent().stream()
                 .map(Converter::convertToPractice).collect(Collectors.toSet()));
     }
-
+*/
 
     @GetMapping("/practices/{practiceState}")
     @PreAuthorize("hasRole('MENTOR')")
@@ -137,6 +155,14 @@ public class StudentController {
     }
 
 
+    @PostMapping("/practices")
+    public ResponseEntity<StudentPracticeDto> setPracticeState(
+            @RequestBody StudentPracticeDto studentPracticeDto) {
+        return postResponse(
+                StudentPracticeDto.map(studentPracticeService.changeState(studentPracticeDto)));
+    }
+
+
     @GetMapping("/reports/states")
     public ResponseEntity<Collection<String>> getReportStates() {
         List<String> reportStates = Arrays.stream(ReportState.values())
@@ -151,34 +177,6 @@ public class StudentController {
         return getResponse(Converter
                 .convertListOfLists(studentReportService.getAllStudentsActualReports(slug)));
 
-    }
-
-
-    @GetMapping("/chapters/{studentId}/{number}")
-    @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<StudentChapterDto> getChapter(@PathVariable long studentId,
-            @PathVariable int number) {
-        return studentService.get(studentId)
-                .map(student -> getResponse(StudentChapterDto
-                        .map(studentService.getOpenedChapter(student, number))))
-                .orElse(badRequest());
-    }
-
-
-    @GetMapping("/chapters/{studentId}")
-    public ResponseEntity<Collection<ShortChapterDto>> getOpenChapters(
-            @PathVariable long studentId) {
-        return studentService.get(studentId)
-                .map(student -> getResponse(studentService.getChapters(student)))
-                .orElse(badRequest());
-    }
-
-
-    @PostMapping("/practices")
-    public ResponseEntity<StudentPracticeDto> setPracticeState(
-            @RequestBody StudentPracticeDto studentPracticeDto) {
-        return postResponse(
-                StudentPracticeDto.map(studentPracticeService.changeState(studentPracticeDto)));
     }
 
 
@@ -248,7 +246,7 @@ public class StudentController {
             @PathVariable long studentId) {
         return studentService.get(studentId)
                 .map(student -> getResponse(studentService.getAdditionalMaterials(student)))
-                .orElse(null);
+                .orElse(badRequest());
     }
 
 
@@ -260,7 +258,7 @@ public class StudentController {
                 .map(student -> updateResponse(additionalMaterialsService.get(id)
                         .map(add -> studentService.changeAdditionalMaterial(student, add, state))
                         .orElse(Optional.of(false))))
-                .orElse(badRequest()) ;
+                .orElse(badRequest());
     }
 
 }

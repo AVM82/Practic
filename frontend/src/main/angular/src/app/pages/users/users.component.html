@@ -45,7 +45,7 @@
     <div mat-menu-item class="menuitem" (click)="sortBySurname(true)">на прізвище за спаданням</div>
 </mat-menu>            
 
-<mat-menu #mentorMenu xPosition="before" class="menus">
+<mat-menu #mentorMenu yPosition="below" class="menus">
     <ng-template matMenuContent let-user="u">
         <div class="menu-header"><b>Курси</b></div>
         <br>
@@ -58,7 +58,7 @@
     </ng-template>
 </mat-menu>
 
-<mat-menu #courseMenu xPosition="before" yPosition="below" class="menus">
+<mat-menu #courseMenu yPosition="below" class="menus">
     <ng-template matMenuContent parentMenu="mentorMenu" let-user="u" let-add="add">
         <div *ngIf="add" class="course-add">
             <div *ngFor="let course of courses">

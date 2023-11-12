@@ -8,6 +8,7 @@ import { StateStudent } from "../models/student";
 import { User } from "../models/user";
 import { Course } from "../models/course";
 import { Mentor, StateMentor } from "../models/mentor";
+import { CoursesService } from "./courses.service";
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,7 @@ export class MentorService {
   
     constructor(
         private tokenStorageService: TokenStorageService,
+        private coursesService: CoursesService,
         private http: HttpClient
     ) {}
 
@@ -31,8 +33,10 @@ export class MentorService {
         this.http.post<StateStudent>(ApiUrls.Applicants + `/admit/` + applicant.id, {}).subscribe(student => {
             applicant.applied = true;
             applicant.student = student;
-            if (this.tokenStorageService.me!.maybeNewStudent(applicant))
+            if (this.tokenStorageService.me!.maybeNewStudent(applicant)) {
                 this.tokenStorageService.saveMe();
+                this.coursesService.clearCourse(applicant.student.slug);
+            }
         });
     }
 
@@ -41,10 +45,8 @@ export class MentorService {
         this.http.post<Applicant>(ApiUrls.Applicants + `/reject/` + applicant.id, {}).subscribe(rejectedApplicant => {
             applicant.update(rejectedApplicant);
             console.log(applicant);
-            if (this.tokenStorageService.me!.maybeNotApplicant(rejectedApplicant)) {
-                console.log(' reject me');
+            if (this.tokenStorageService.me!.maybeNotApplicant(rejectedApplicant))
                 this.tokenStorageService.saveMe();
-            }
         });
     }
     
@@ -55,6 +57,7 @@ export class MentorService {
             user.addMentor(state);
             if (user.id == this.tokenStorageService.me!.id) {
                 this.tokenStorageService.me!.addMentor(state);
+                this.coursesService.clearCourse(course.slug);
                 this.tokenStorageService.saveMe();
             }
         });
@@ -68,6 +71,7 @@ export class MentorService {
                 user.removeMentorById(mentorId);
                 if (user.id == this.tokenStorageService.me!.id) {
                     this.tokenStorageService.me!.removeMentorById(mentorId);
+                    this.coursesService.clearCourse(course.slug);
                     this.tokenStorageService.saveMe();
                 }
             }

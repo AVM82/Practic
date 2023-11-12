@@ -1,21 +1,17 @@
 package com.group.practic.controller;
 
-import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.dto.NewCourseDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
-import com.group.practic.entity.ChapterEntity;
-import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
-import com.group.practic.util.Converter;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/api/courses")
@@ -47,8 +44,8 @@ public class CourseController {
 
     @GetMapping("/{slug}/allchapters")
     public ResponseEntity<Collection<ShortChapterDto>> getChapters(@PathVariable String slug) {
-        return getResponse(
-                Converter.convertChapterList(courseService.getChapters(slug), PersonService.hasAdvancedRole() ? Integer.MAX_VALUE : 0));
+        return getResponse(courseService.get(slug).map(
+                course -> courseService.getChapters(course, !PersonService.hasAdvancedRole())));
     }
 
 
@@ -86,10 +83,12 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/chapters/{number}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR', 'MENTOR')")
-    public ResponseEntity<ChapterEntity> getChapterByNumber(@PathVariable("slug") String slug,
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR', 'COMRADE')")
+    public ResponseEntity<ChapterDto> getChapterByNumber(@PathVariable("slug") String slug,
             @PathVariable int number) {
-        return getResponse(courseService.getChapterByNumber(slug, number));
+        return getResponse(courseService.get(slug)
+                .map(course -> courseService.getChapterByNumber(course, number).map(ChapterDto::map)
+                        .orElse(null)));
     }
 
 }
