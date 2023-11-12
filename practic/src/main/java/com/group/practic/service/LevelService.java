@@ -50,8 +50,8 @@ public class LevelService {
     }
 
 
-    public Set<LevelEntity> getLevelsSet(CourseEntity course, PropertyLoader prop) {
-        Set<LevelEntity> result = new HashSet<>();
+    public List<LevelEntity> getLevelsSet(CourseEntity course, PropertyLoader prop) {
+        List<LevelEntity> result = new ArrayList<>();
         Map<Integer, List<Integer>> levelMap = getLevelMap(prop);
         for (Entry<Integer, List<Integer>> entry : levelMap.entrySet()) {
             LevelEntity level = new LevelEntity(0, course, entry.getKey(), entry.getValue());

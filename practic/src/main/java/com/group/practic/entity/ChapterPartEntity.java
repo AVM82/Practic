@@ -3,20 +3,19 @@ package com.group.practic.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 
 @Entity
@@ -35,27 +34,20 @@ public class ChapterPartEntity implements Serializable {
 
     int number;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "chapter_parts_sub_chapters",
-            joinColumns = @JoinColumn(name = "chapter_part_id"),
-            inverseJoinColumns = @JoinColumn(name = "sub_chapter_id"))
+    @OneToMany(mappedBy="chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("number")
-    private Set<SubChapterEntity> subChapters = new HashSet<>();
+    private List<SubChapterEntity> subChapters = new ArrayList<>();
 
     @NotBlank
     String praxisPurpose;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "chapter_parts_praxises", joinColumns = @JoinColumn(name = "chapter_part_id"),
-            inverseJoinColumns = @JoinColumn(name = "praxis_id"))
+    @OneToMany(mappedBy="chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("number")
-    private Set<PraxisEntity> praxis = new HashSet<>();
+    private List<PraxisEntity> praxis = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "chapter_parts_adds", joinColumns = @JoinColumn(name = "chapter_part_id"),
-            inverseJoinColumns = @JoinColumn(name = "add_id"))
+    @OneToMany(mappedBy="chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("number")
-    private Set<AdditionalEntity> additionals = new HashSet<>();
+    private List<AdditionalEntity> additionals = new ArrayList<>();
 
 
     public ChapterPartEntity() {}
@@ -69,8 +61,8 @@ public class ChapterPartEntity implements Serializable {
 
 
     public ChapterPartEntity(long id, ChapterEntity chapter, int number,
-            Set<SubChapterEntity> subChapters, @NotBlank String praxisPurpose,
-            Set<PraxisEntity> praxis, Set<AdditionalEntity> additionals) {
+            List<SubChapterEntity> subChapters, @NotBlank String praxisPurpose,
+            List<PraxisEntity> praxis, List<AdditionalEntity> additionals) {
         super();
         this.id = id;
         this.chapter = chapter;
@@ -129,12 +121,12 @@ public class ChapterPartEntity implements Serializable {
     }
 
 
-    public Set<SubChapterEntity> getSubChapters() {
+    public List<SubChapterEntity> getSubChapters() {
         return subChapters;
     }
 
 
-    public void setSubChapters(Set<SubChapterEntity> subChapters) {
+    public void setSubChapters(List<SubChapterEntity> subChapters) {
         this.subChapters = subChapters;
     }
 
@@ -149,22 +141,22 @@ public class ChapterPartEntity implements Serializable {
     }
 
 
-    public Set<PraxisEntity> getPraxis() {
+    public List<PraxisEntity> getPraxis() {
         return praxis;
     }
 
 
-    public void setPraxis(Set<PraxisEntity> praxis) {
+    public void setPraxis(List<PraxisEntity> praxis) {
         this.praxis = praxis;
     }
 
 
-    public Set<AdditionalEntity> getAdditionals() {
+    public List<AdditionalEntity> getAdditionals() {
         return additionals;
     }
 
 
-    public void setAdditionals(Set<AdditionalEntity> additionals) {
+    public void setAdditionals(List<AdditionalEntity> additionals) {
         this.additionals = additionals;
     }
 

@@ -5,6 +5,7 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.repository.ChapterRepository;
 import com.group.practic.util.PropertyUtil;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -99,8 +100,8 @@ public class ChapterService {
     }
 
 
-    public Set<ChapterEntity> getChapters(CourseEntity course, PropertyLoader prop) {
-        Set<ChapterEntity> result = new HashSet<>();
+    public List<ChapterEntity> getChapters(CourseEntity course, PropertyLoader prop) {
+        List<ChapterEntity> result = new ArrayList<>();
         int n;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();

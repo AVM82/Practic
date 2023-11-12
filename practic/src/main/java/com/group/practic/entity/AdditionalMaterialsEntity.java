@@ -7,8 +7,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -38,8 +36,8 @@ public class AdditionalMaterialsEntity implements Serializable {
     String name;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinTable(name = "add_mats_refs", joinColumns = @JoinColumn(name = "add_mat_id"),
-            inverseJoinColumns = @JoinColumn(name = "ref_id"))
+    //@JoinTable(name = "add_mats_refs", joinColumns = @JoinColumn(name = "add_mat_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "ref_id"))
     private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
 

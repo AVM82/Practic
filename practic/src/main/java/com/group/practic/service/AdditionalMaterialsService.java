@@ -5,10 +5,10 @@ import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.repository.AdditionalMaterialsRepository;
 import com.group.practic.util.PropertyUtil;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +46,7 @@ public class AdditionalMaterialsService {
     }
 
 
-    Set<AdditionalMaterialsEntity> getAdditionalMaterials(CourseEntity course,
+    List<AdditionalMaterialsEntity> getAdditionalMaterials(CourseEntity course,
             PropertyLoader prop) {
         int n = 0;
         int max = 0;
@@ -61,9 +61,9 @@ public class AdditionalMaterialsService {
             }
         }
         if (n != max) { 
-            return Set.of();
+            return List.of();
         }
-        Set<AdditionalMaterialsEntity> result = new HashSet<>(max);
+        List<AdditionalMaterialsEntity> result = new ArrayList<>(max);
         for (int i = 1; i <= max; i++) {
             String item = prop.getProperty(PropertyUtil.ADDITIONAL_PART + i);
             if (item == null) {

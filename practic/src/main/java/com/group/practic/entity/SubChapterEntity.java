@@ -8,8 +8,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -17,7 +15,9 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -43,16 +43,11 @@ public class SubChapterEntity implements Serializable {
     String name;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinTable(name = "sub_chapters_refs", joinColumns = @JoinColumn(name = "sub_chapter_id"),
-            inverseJoinColumns = @JoinColumn(name = "ref_id"))
     private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "sub_chapters_sub_sub_chapter",
-            joinColumns = @JoinColumn(name = "sub_chapter_id"),
-            inverseJoinColumns = @JoinColumn(name = "sub_sub_chapter_id"))
+    @OneToMany(mappedBy="subChapter", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("number")
-    private Set<SubSubChapterEntity> subSubChapters = new HashSet<>();
+    private List<SubSubChapterEntity> subSubChapters = new ArrayList<>();
 
 
     public SubChapterEntity() {}
@@ -142,12 +137,12 @@ public class SubChapterEntity implements Serializable {
     }
 
 
-    public Set<SubSubChapterEntity> getSubSubChapters() {
+    public List<SubSubChapterEntity> getSubSubChapters() {
         return subSubChapters;
     }
 
 
-    public void setSubSubChapters(Set<SubSubChapterEntity> subSubChapters) {
+    public void setSubSubChapters(List<SubSubChapterEntity> subSubChapters) {
         this.subSubChapters = subSubChapters;
     }
 

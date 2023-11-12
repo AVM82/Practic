@@ -4,5 +4,4 @@ export interface StateStudent {
     ban: boolean;
     slug: string;
     activeChapterNumber: number;
-    state: string;
 }

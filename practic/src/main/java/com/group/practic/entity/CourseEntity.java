@@ -12,7 +12,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -42,23 +44,23 @@ public class CourseEntity implements Serializable {
     @Column(length = 8192)
     String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "courses_add_mats", joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "add_mat_id"))
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    // @JoinTable(name = "courses_add_mats", joinColumns = @JoinColumn(name = "course_id"),
+    // inverseJoinColumns = @JoinColumn(name = "add_mat_id"))
     @OrderBy("number")
-    private Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
+    private List<AdditionalMaterialsEntity> additionalMaterials = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "courses_levels", joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "level_id"))
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    // @JoinTable(name = "courses_levels", joinColumns = @JoinColumn(name = "course_id"),
+    // inverseJoinColumns = @JoinColumn(name = "level_id"))
     @OrderBy("number")
-    private Set<LevelEntity> levels = new HashSet<>();
+    private List<LevelEntity> levels = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "courses_chapters", joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "chapter_id"))
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    // @JoinTable(name = "courses_chapters", joinColumns = @JoinColumn(name = "course_id"),
+    // inverseJoinColumns = @JoinColumn(name = "chapter_id"))
     @OrderBy("number")
-    private Set<ChapterEntity> chapters = new HashSet<>();
+    private List<ChapterEntity> chapters = new ArrayList<>();
 
     @Column(unique = true)
     String slug;
@@ -159,34 +161,34 @@ public class CourseEntity implements Serializable {
     }
 
 
-    public Set<AdditionalMaterialsEntity> getAdditionalMaterials() {
+    public List<AdditionalMaterialsEntity> getAdditionalMaterials() {
         return additionalMaterials;
     }
 
 
-    public void setAdditionalMaterials(Set<AdditionalMaterialsEntity> additionalMaterials) {
+    public void setAdditionalMaterials(List<AdditionalMaterialsEntity> additionalMaterials) {
         this.additionalMaterials = additionalMaterials;
         this.additionalMaterialsExist =
                 additionalMaterials != null && !additionalMaterials.isEmpty();
     }
 
 
-    public Set<LevelEntity> getLevels() {
+    public List<LevelEntity> getLevels() {
         return levels;
     }
 
 
-    public void setLevels(Set<LevelEntity> levels) {
+    public void setLevels(List<LevelEntity> levels) {
         this.levels = levels;
     }
 
 
-    public Set<ChapterEntity> getChapters() {
+    public List<ChapterEntity> getChapters() {
         return chapters;
     }
 
 
-    public void setChapters(Set<ChapterEntity> chapters) {
+    public void setChapters(List<ChapterEntity> chapters) {
         this.chapters = chapters;
     }
 

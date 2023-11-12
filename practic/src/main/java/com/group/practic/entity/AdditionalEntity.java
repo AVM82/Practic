@@ -8,10 +8,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -40,9 +38,7 @@ public class AdditionalEntity implements Serializable {
     @Column(length = 1024)
     String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinTable(name = "additionals_refs", joinColumns = @JoinColumn(name = "additional_id"),
-            inverseJoinColumns = @JoinColumn(name = "ref_id"))
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
 

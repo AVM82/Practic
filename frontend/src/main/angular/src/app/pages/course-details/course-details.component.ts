@@ -15,6 +15,7 @@ import {StatePipe} from "../../pipes/practice-state.pipe";
 import {ShortChapter} from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
 import { CoursesService } from 'src/app/services/courses.service';
+import { StateStudent } from 'src/app/models/student';
 
 @Component({
   selector: 'app-course-details',
@@ -31,6 +32,8 @@ export class CourseDetailsComponent implements OnInit {
   practices: Practice[] = [];
   editMode: boolean = false;
   isStudent: boolean = false;
+  isInvolved: boolean = false;
+  stateStudent?: StateStudent;
   me!: User;
 
   constructor(
@@ -49,16 +52,19 @@ export class CourseDetailsComponent implements OnInit {
 
       if(slug) {
         this.slug = slug;
-        this.isStudent = this.me.isStudent(slug);
+        this.stateStudent = this.me.getStudent(slug);
+        this.isStudent = this.stateStudent != undefined;
+        this.isInvolved = this.isStudent || this.me.isMentor(slug);
+/*        
         this.reportService.getAllActualReports(slug).subscribe(reports => {
             if (reports) {
               this.reports.push(...reports);
               this.reports = [...this.reports];
             }
         });
-//        if (this.student)
-//          this.setPractices();
-
+        if (this.student)
+          this.setPractices();
+*/
       }
     })
   }

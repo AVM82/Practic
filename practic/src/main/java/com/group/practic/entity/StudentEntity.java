@@ -1,19 +1,21 @@
 package com.group.practic.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,10 +45,7 @@ public class StudentEntity implements Serializable {
     CourseEntity course;
 
     int activeChapterNumber;
-    
-    @OneToOne
-    StudentChapterEntity activeChapter;
-    
+
     LocalDate registered = LocalDate.now();
 
     LocalDate start;
@@ -63,12 +62,17 @@ public class StudentEntity implements Serializable {
 
     String purpose;
 
-    @OneToMany
-    Set<AdditionalMaterialsEntity> additionalMaterial = new HashSet<>();
-
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "students_student_add_mats", joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "add_mat_id"))
     @OrderBy("number")
-    Set<StudentChapterEntity> studentChapters = new HashSet<>();
+    private List<AdditionalMaterialsEntity> additionalMaterials = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.MERGE)
+    //@JoinTable(name = "students_student_chapters", joinColumns = @JoinColumn(name = "student_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "student_chapter_id"))
+    @OrderBy("number")
+    private List<StudentChapterEntity> studentChapters = new ArrayList<>();
 
 
     public StudentEntity() {}
@@ -108,12 +112,12 @@ public class StudentEntity implements Serializable {
 
 
     public void addAdditionalMaterial(AdditionalMaterialsEntity additionalMaterialsEntity) {
-        additionalMaterial.add(additionalMaterialsEntity);
+        additionalMaterials.add(additionalMaterialsEntity);
     }
 
 
     public void removeAdditionalMaterial(AdditionalMaterialsEntity additionalMaterialsEntity) {
-        additionalMaterial.remove(additionalMaterialsEntity);
+        additionalMaterials.remove(additionalMaterialsEntity);
     }
 
 
@@ -126,4 +130,5 @@ public class StudentEntity implements Serializable {
     public boolean isFinished() {
         return this.finish != null;
     }
+
 }

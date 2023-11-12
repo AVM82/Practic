@@ -1,23 +1,22 @@
 package com.group.practic.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 
 @Entity
@@ -40,13 +39,11 @@ public class ChapterEntity implements Serializable {
     @Column(length = 1024)
     String name;
 
-    @OneToMany
-    @JoinTable(name = "chapters_chapter_parts", joinColumns = @JoinColumn(name = "chapter_id"),
-            inverseJoinColumns = @JoinColumn(name = "chapter_part_id"))
+    @OneToMany(mappedBy="chapter", cascade = CascadeType.ALL)
     @OrderBy("number")
-    private Set<ChapterPartEntity> parts = new HashSet<>();
+    private List<ChapterPartEntity> parts = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     QuizEntity quiz;
 
     @JsonIgnore
@@ -154,12 +151,12 @@ public class ChapterEntity implements Serializable {
     }
 
 
-    public Set<ChapterPartEntity> getParts() {
+    public List<ChapterPartEntity> getParts() {
         return parts;
     }
 
 
-    public void setParts(Set<ChapterPartEntity> parts) {
+    public void setParts(List<ChapterPartEntity> parts) {
         this.parts = parts;
     }
 

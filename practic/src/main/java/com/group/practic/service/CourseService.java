@@ -3,6 +3,7 @@ package com.group.practic.service;
 import com.group.practic.PropertyLoader;
 import com.group.practic.dto.MentorDto;
 import com.group.practic.dto.NewCourseDto;
+import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
@@ -60,14 +61,11 @@ public class CourseService {
     }
 
 
-    public List<ChapterEntity> getChapters(String slug) {
-        Optional<CourseEntity> course = courseRepository.findBySlug(slug);
-        return course.isEmpty() ? List.of() : chapterService.getAll(course.get());
-    }
-
-
-    public List<ChapterEntity> getChapters(CourseEntity course) {
-        return chapterService.getAll(course);
+    public List<ShortChapterDto> getChapters(CourseEntity course, boolean hide) {
+        return Optional.ofNullable(course.getChapters())
+                .map(chapters -> chapters.stream()
+                        .map(chapter -> ShortChapterDto.map(chapter, hide)).toList())
+                .orElse(List.of());
     }
 
 
@@ -77,14 +75,12 @@ public class CourseService {
     }
 
 
-    public Optional<ChapterEntity> getChapterByNumber(String slug, int number) {
-        Optional<CourseEntity> course = get(slug);
-        return course.isEmpty() ? Optional.empty()
-                : chapterService.getChapterByNumber(course.get(), number);
+    public Optional<ChapterEntity> getChapterByNumber(CourseEntity course, int number) {
+        return chapterService.getChapterByNumber(course, number);
     }
 
 
-    public Set<AdditionalMaterialsEntity> getAdditional(String slug) {
+    public List<AdditionalMaterialsEntity> getAdditional(String slug) {
         Optional<CourseEntity> course = get(slug);
         return course.isEmpty() ? null : course.get().getAdditionalMaterials();
     }
@@ -168,9 +164,8 @@ public class CourseService {
 
 
     public Optional<ChapterEntity> getNextChapterByNumber(CourseEntity course, int number) {
-        return course.getChapters().stream()
-                .filter(chapter -> chapter.getNumber() > number)
-                .min((a, b) -> a.getNumber() - b.getNumber());
+        return course.getChapters().stream().sequential()
+                .filter(chapter -> chapter.getNumber() > number).findFirst();
     }
 
     

@@ -9,33 +9,40 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
+
 
 @Entity
 @Table(name = "practices")
 @Setter
 @Getter
-public class StudentPracticeEntity {
+public class StudentPracticeEntity implements Serializable {
+
+    private static final long serialVersionUID = -4520682618456683847L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
-    
+    long id;
+
     @ManyToOne
-    private ChapterPartEntity chapterPart;
+    StudentChapterEntity studentChapter;
+
+    long chapterPartId;
 
     @Enumerated(EnumType.STRING)
-    private PracticeState state = PracticeState.NOT_STARTED;
+    PracticeState state = PracticeState.NOT_STARTED;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
 
-    public StudentPracticeEntity(ChapterPartEntity chapterPart) {
-        this.chapterPart = chapterPart;
+    public StudentPracticeEntity(StudentChapterEntity studentChapter, long chapterPartId) {
+        this.studentChapter = studentChapter;
+        this.chapterPartId = chapterPartId;
     }
 
 

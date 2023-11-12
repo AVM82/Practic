@@ -1,6 +1,7 @@
 package com.group.practic.entity;
 
 import com.group.practic.enumeration.ChapterState;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,27 +11,35 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+
 @Table(name = "student_chapters")
 @Getter
 @Setter
 @Entity
-public class StudentChapterEntity {
+public class StudentChapterEntity implements Serializable {
+
+    private static final long serialVersionUID = 7733498302034511375L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
-
-    int number;
     
     @ManyToOne
+    StudentEntity student;
+
+    int number;
+
+    @OneToOne
     ChapterEntity chapter;
 
     @Enumerated(EnumType.STRING)
@@ -41,24 +50,28 @@ public class StudentChapterEntity {
     private java.sql.Timestamp createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = true)
     private java.sql.Timestamp updatedAt;
 
     int reportCount;
-/*
-    @OneToMany
-    Set<StudentPracticeEntity> practices = new HashSet<>();
-*/
+
+    @OneToMany(mappedBy = "studentChapter",cascade = CascadeType.MERGE)
+    //@JoinTable(name = "student_chapters_practices",
+    //        joinColumns = @JoinColumn(name = "student_chapter_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "practice_id"))
+    private List<StudentPracticeEntity> practices = new ArrayList<>();
+
 
     public StudentChapterEntity() {}
 
 
-    public StudentChapterEntity(ChapterEntity chapter) {
+    public StudentChapterEntity(StudentEntity student, ChapterEntity chapter) {
+        this.student = student;
         this.chapter = chapter;
         this.number = chapter.number;
     }
 
-    
+
     public boolean setNewChapterState(ChapterState newState) {
         boolean result = state.changeAllowed(newState);
         if (result) {
@@ -66,5 +79,5 @@ public class StudentChapterEntity {
         }
         return result;
     }
-    
+
 }

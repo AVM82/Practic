@@ -72,25 +72,27 @@ public class PersonEntity implements UserDetails {
     String password;
 
     String profilePictureUrl;
+    
+    String personPageUrl;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
-    @OneToMany( cascade = CascadeType.MERGE)
-    @JoinTable(name = "persons_students", joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    //@JoinTable(name = "persons_students", joinColumns = @JoinColumn(name = "person_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<StudentEntity> students = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = "persons_mentors", joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "mentor_id"))
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    //@JoinTable(name = "persons_mentors", joinColumns = @JoinColumn(name = "person_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "mentor_id"))
     private Set<MentorEntity> mentors = new HashSet<>();
 
-    @OneToMany( cascade = CascadeType.MERGE)
-    @JoinTable(name = "persons_applicants", joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "applicant_id"))
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    //@JoinTable(name = "persons_applicants", joinColumns = @JoinColumn(name = "person_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "applicant_id"))
     private Set<ApplicantEntity> applicants = new HashSet<>();
 
 
@@ -102,12 +104,13 @@ public class PersonEntity implements UserDetails {
 
 
     public PersonEntity(String name, String password, String email, String linkedin,
-            String profilePictureUrl) {
+            String profilePictureUrl, RoleEntity guestRole) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.linkedin = linkedin;
         this.profilePictureUrl = profilePictureUrl;
+        this.roles.add(guestRole);
     }
 
 

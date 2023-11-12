@@ -16,7 +16,7 @@
             <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
           </mat-card-header>
         </a>
-        <report-button [reportsNumber]="chapter.reportCount"></report-button>
+        <report-button *ngIf="isInvolved" [reportsNumber]="chapter.reportCount"></report-button>
       </div>
 
       <mat-card-footer *ngIf="isStudent">
@@ -28,7 +28,7 @@
                 Практика: {{ practice.state | StatePipe }}
             </div>
           <div class="info-tag">
-            Доповідь: не проведена
+            Доповідь: {{chapter.myReports == 0 ? 'не' : ''}} проведена
           </div>
         </div>
       </mat-card-footer>

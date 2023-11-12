@@ -1,10 +1,11 @@
-import { Practice } from "./practice";
 import {ChapterPart} from "./chapterpart";
+import { Practice } from "./practice";
 
 interface BaseChapter {
   id: number;
   number: number;
   reportCount: number;
+  myReports: number;
   state: string;
   practices: Practice[];
 }

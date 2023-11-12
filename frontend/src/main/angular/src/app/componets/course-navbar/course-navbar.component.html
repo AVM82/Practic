@@ -7,17 +7,21 @@
         [routerLink]="['/courses', slug]">
         Розділи
     </div>
-    <div *ngFor="let chapter of shortChapters"
-         class="progress"
-         [class.active]="chapter.number == currentChapter"
-         [class.icon]="chapter.hidden"
-         [routerLink]="chapter.hidden ? [] : ['/courses', slug, 'chapters', chapter.number]">
-        <span *ngIf="!chapter.hidden">{{ chapter.number }}</span>
-        <mat-icon class="icon" *ngIf="chapter.hidden">lock</mat-icon>
+    <div *ngFor="let chapter of shortChapters" class="progress">
+        <div *ngIf="!chapter.hidden" 
+            [class.active]="chapter.number == currentChapter"
+            routerLink="/courses/{{slug}}/chapters/{{chapter.number}}"
+            routerLinkActive="app-chapter-details">
+            <span *ngIf="!chapter.hidden">{{ chapter.number }}</span>
+        </div> 
+        <div [class.icon]="chapter.hidden">
+            <mat-icon class="icon" *ngIf="chapter.hidden">lock</mat-icon>
+        </div>
     </div>
     <div *ngIf="showAdditionalMaterials" class="progress active" [routerLink]="['/courses', slug, 'additional']">
         Матеріали
     </div>
 </div>
-<app-edit-btn *ngIf="checkShowEdit()" (editModeChanged)="setEditMode($event)"></app-edit-btn>
-<app-apply-btn *ngIf="checkShowApply()" [slug]="slug"></app-apply-btn>
+
+<app-edit-btn *ngIf="me.isMentor(this.slug)" (editModeChanged)="setEditMode($event)"></app-edit-btn>
+<app-apply-btn *ngIf="!this.me.isStudent(this.slug) && !me.isMentor(this.slug)" [slug]="slug"></app-apply-btn>

@@ -37,17 +37,17 @@ const routes: Routes = [
   },
   {path: 'courses', component: CoursesComponent},
   {path: 'courses/create', component: CreateCourseComponent},
-  {path: 'courses/:slug', component: CourseDetailsComponent},
+  {path: 'courses/:slug/chapters/:chapterN', component: ChapterDetailsComponent},
   {path: 'courses/:slug/main', component: MainPageComponent},
   {path: 'courses/:slug/reports', component: ReportDashboardComponent},
-  {path: 'courses/:slug/chapters/:chapterN', component: ChapterDetailsComponent},
   {path: 'courses/:slug/additional', component: AdditionalMaterialsComponent},
+  {path: 'courses/:slug', component: CourseDetailsComponent},
   
   {path: '**', component: PageNotFoundComponent}
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), MatDatepickerModule, MatNativeDateModule, NativeDateModule],
+  imports: [RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'}), MatDatepickerModule, MatNativeDateModule, NativeDateModule],
   exports: [RouterModule],
   providers: [
     { provide: LOCALE_ID, useValue: 'uk' }

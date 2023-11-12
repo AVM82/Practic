@@ -2,7 +2,9 @@ package com.group.practic.service;
 
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
@@ -29,19 +31,22 @@ public class MentorService {
 
     PersonService personService;
 
+    StudentReportService reportService;
+
     EmailSenderService emailSenderService;
 
 
     @Autowired
     public MentorService(MentorRepository mentorRepository, ApplicantService applicantService,
             StudentService studentService, CourseService courseService, PersonService personService,
-            EmailSenderService emailSenderService) {
+            EmailSenderService emailSenderService, StudentReportService reportService) {
         this.mentorRepository = mentorRepository;
         this.applicantService = applicantService;
         this.studentService = studentService;
         this.courseService = courseService;
         this.personService = personService;
         this.emailSenderService = emailSenderService;
+        this.reportService = reportService;
     }
 
 
@@ -55,6 +60,11 @@ public class MentorService {
     }
 
 
+    public boolean isMyCourse(CourseEntity course) {
+        return mentorRepository.findByPersonAndCourse(PersonService.me(), course) != null;
+    }
+
+
     public MentorEntity create(PersonEntity person, CourseEntity course) {
         MentorEntity mentor = mentorRepository.findByPersonAndCourse(person, course);
         if (mentor == null) {
@@ -63,9 +73,9 @@ public class MentorService {
             mentor.setInactive(false);
         }
         mentor = mentorRepository.save(mentor);
+        personService.addMentor(mentor);
         courseService.addMentor(mentor);
-//        personService.checkOut(mentor);
-        this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Новий ментор.", 
+        this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Новий ментор.",
                 "Вітаємо Вас як ментора курсу \"" + mentor.getCourse().getName() + "\". ");
         return mentor;
     }
@@ -73,18 +83,16 @@ public class MentorService {
 
     public MentorDto addMentor(PersonEntity person, CourseEntity course) {
         MentorEntity mentor = create(person, course);
-//        Optional<StateMentorEntity> stateMentor = person.getMentorStates().stream()
-//                .filter(state -> state.getMentorId() == mentor.getId()).findAny();
         return MentorDto.map(mentor);
     }
 
 
     public boolean removeMentor(MentorEntity mentor) {
         courseService.removeMentor(mentor);
-        mentor.setInactive(true);
-//        personService.checkOut(mentor);
-        this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Не ментор.", 
+        personService.removeMentor(mentor);
+        this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Не ментор.",
                 "Вітаємо Вас. Ви вже не ментор курса \"" + mentor.getCourse().getName() + "\". ");
+        mentorRepository.delete(mentor);
         return true;
     }
 
@@ -106,14 +114,31 @@ public class MentorService {
     }
 
 
-    public Optional<StudentDto> adminStudent(ApplicantEntity applicant) {
-        return applicant.isApplied() ? Optional.of(StudentDto.map(applicant.getStudent()))
+    public StudentDto adminStudent(ApplicantEntity applicant) {
+        return applicant.isApplied() ? StudentDto.map(applicant.getStudent())
                 : StudentDto.map(studentService.create(applicantService.apply(applicant)));
     }
 
 
     public ApplicantEntity rejectApplicant(ApplicantEntity applicant) {
-        return applicantService.reject(applicant);
+        return applicant.isApplied() ? applicant
+                : applicantService.reject(applicant);
+    }
+
+
+    public List<ShortChapterDto> getChapters(CourseEntity course) {
+        return Optional.ofNullable(course.getChapters())
+                        .map(chapters -> chapters.stream()
+                                .map(chapter -> ShortChapterDto.map(chapter,
+                                        reportService.getActualReportCount(chapter)))
+                                .toList())
+                        .orElseGet(List::of);
+    }
+
+
+    public Optional<ChapterDto> getChapter(CourseEntity course, int number) {
+        return courseService.getChapterByNumber(course, number).map(
+                chapter -> ChapterDto.map(chapter, reportService.getActualReportCount(chapter)));
     }
 
 }
