@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit{
   ngOnInit(): void {
     const token: string | null = this.route.snapshot.queryParamMap.get('token');
     const error: string | null = this.route.snapshot.queryParamMap.get('error');
-    const logout: string | null = this.route.snapshot.queryParamMap.get('logout');
+    const logout: string | null = this.route.snapshot.queryParamMap.get('logout\\');
 
     if(logout === 'true') {
       this.tokenStorage.signOut();

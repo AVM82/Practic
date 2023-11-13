@@ -82,18 +82,12 @@ public class PersonEntity implements UserDetails {
     private Set<RoleEntity> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
-    //@JoinTable(name = "persons_students", joinColumns = @JoinColumn(name = "person_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<StudentEntity> students = new HashSet<>();
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
-    //@JoinTable(name = "persons_mentors", joinColumns = @JoinColumn(name = "person_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "mentor_id"))
     private Set<MentorEntity> mentors = new HashSet<>();
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
-    //@JoinTable(name = "persons_applicants", joinColumns = @JoinColumn(name = "person_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "applicant_id"))
     private Set<ApplicantEntity> applicants = new HashSet<>();
 
 

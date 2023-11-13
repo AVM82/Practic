@@ -3,7 +3,7 @@ package com.group.practic.enumeration;
 import java.util.Set;
 
 
-public enum PracticeState {
+public enum PracticeState implements DaysCounting {
 
     NOT_STARTED(false),
 
@@ -30,6 +30,18 @@ public enum PracticeState {
     public boolean changeAllowed(PracticeState newState) {
         return this == newState || newState.allowed.contains(this)
                 || (this.backward && allowed.contains(newState));
+    }
+
+
+    @Override
+    public boolean isStartCountingState() {
+        return this == IN_PROCESS;
+    }
+
+
+    @Override
+    public boolean isStopCountingState() {
+        return this == READY_TO_REVIEW || this == PAUSE;
     }
 
 

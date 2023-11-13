@@ -2,7 +2,8 @@ package com.group.practic.enumeration;
 
 import java.util.Set;
 
-public enum ChapterState {
+
+public enum ChapterState implements DaysCounting {
 
     NOT_STARTED(false),
 
@@ -37,6 +38,18 @@ public enum ChapterState {
             }
         }
         throw new IllegalArgumentException("Unknown ChapterState: " + value);
+    }
+
+
+    @Override
+    public boolean isStartCountingState() {
+        return this == IN_PROCESS;
+    }
+
+
+    @Override
+    public boolean isStopCountingState() {
+        return this == DONE || this == PAUSE;
     }
 
 }

@@ -14,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -56,10 +57,11 @@ public class StudentChapterEntity implements Serializable {
     int reportCount;
 
     @OneToMany(mappedBy = "studentChapter",cascade = CascadeType.MERGE)
-    //@JoinTable(name = "student_chapters_practices",
-    //        joinColumns = @JoinColumn(name = "student_chapter_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "practice_id"))
     private List<StudentPracticeEntity> practices = new ArrayList<>();
+    
+    int daysSpent;
+    
+    LocalDate startCounting;
 
 
     public StudentChapterEntity() {}
@@ -76,6 +78,7 @@ public class StudentChapterEntity implements Serializable {
         boolean result = state.changeAllowed(newState);
         if (result) {
             state = newState;
+           
         }
         return result;
     }
