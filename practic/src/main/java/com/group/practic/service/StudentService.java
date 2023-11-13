@@ -12,6 +12,7 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
+import com.group.practic.enumeration.ChapterState;
 import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -94,7 +95,13 @@ public class StudentService {
                 : List.of();
     }
 
+    
+    public Optional<StudentChapterEntity> getStudentChapter(long studentChapterId) {
+        return studentChapterRepository.findById(studentChapterId);
+    }
 
+    
+    
     @Transactional
     public StudentEntity create(PersonEntity person, CourseEntity course) {
         if (get(person, course).isEmpty()) {
@@ -169,7 +176,17 @@ public class StudentService {
                 .map(StudentChapterDto::map);
     }
 
+    
+    public Optional<StudentChapterDto> changeState(StudentChapterEntity chapter, ChapterState newState) {
+        if (chapter.setNewChapterState(newState)) {
+            //this.processState(chapter)
+        }
+        return Optional.ofNullable(StudentChapterDto.map(chapter));
+    }
 
+    
+//    protected processState(StudentChapterEntity chapter)
+    
     public Optional<Boolean> changeAdditionalMaterial(StudentEntity student,
             AdditionalMaterialsEntity additionalMaterial, boolean state) {
         return Optional.of(studentRepository

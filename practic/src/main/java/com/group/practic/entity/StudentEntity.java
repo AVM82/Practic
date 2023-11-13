@@ -69,8 +69,6 @@ public class StudentEntity implements Serializable {
     private List<AdditionalMaterialsEntity> additionalMaterials = new ArrayList<>();
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.MERGE)
-    //@JoinTable(name = "students_student_chapters", joinColumns = @JoinColumn(name = "student_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "student_chapter_id"))
     @OrderBy("number")
     private List<StudentChapterEntity> studentChapters = new ArrayList<>();
 

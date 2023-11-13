@@ -8,10 +8,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "answers")
-public class AnswerEntity {
+public class AnswerEntity implements Serializable {
+
+    private static final long serialVersionUID = 6500968669125789872L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

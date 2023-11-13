@@ -1,6 +1,5 @@
 package com.group.practic.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,12 +8,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @Table(name = "quizes")
@@ -22,7 +22,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class QuizEntity {
+public class QuizEntity implements Serializable {
+
+    private static final long serialVersionUID = 4011669179341834806L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -31,11 +33,7 @@ public class QuizEntity {
     @Column(name = "chapter_name")
     private String chapterName;
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.MERGE)
     private List<QuestionEntity> questions;
-
-    @OneToMany
-    @JsonIgnore
-    Set<ChapterEntity> chapter;
 
 }
