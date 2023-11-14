@@ -89,7 +89,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request ->
                                 request
-                                        .requestMatchers("/api/courses", "/api/register")
+                                        .requestMatchers("/api/courses",
+                                                "/api/register",
+                                                "/api/password-reset/send-code",
+                                                "/api/password-reset/match-code",
+                                                "/api/password-reset")
                                         .permitAll()
                                         .requestMatchers(
                                                 "/api/**")
@@ -139,7 +143,7 @@ public class SecurityConfig {
 
 
     private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest>
-                authorizationCodeTokenResponseClient() {
+            authorizationCodeTokenResponseClient() {
         OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter =
                 new OAuth2AccessTokenResponseHttpMessageConverter();
         tokenResponseHttpMessageConverter.setAccessTokenResponseConverter(

@@ -1,6 +1,7 @@
 package com.group.practic.service;
 
 import com.group.practic.dto.SendMessageDto;
+import com.group.practic.util.AsyncThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,18 @@ public class EmailSenderService implements Sender {
 
     Logger logger = LoggerFactory.getLogger(EmailSenderService.class);
 
-    @Autowired
     private JavaMailSender mailSender;
+
+    private ThreadGroup mailSenderThreadGroup = new ThreadGroup("Mail Sender");
 
     @Value("${MAIL_USERNAME}")
     private String sender;
+
+
+    @Autowired
+    public EmailSenderService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
 
     public boolean sendMessage(SendMessageDto messageDto) {
@@ -30,12 +38,32 @@ public class EmailSenderService implements Sender {
             mailMessage.setText(messageDto.getMessage());
             mailMessage.setSubject(messageDto.getHeader());
             mailSender.send(mailMessage);
-            logger.info("Yor email is sent to {}", messageDto.getAddress());
+            logger.info("Email is sent to {}", messageDto.getAddress());
             return true;
         } catch (Exception e) {
-            logger.error("Yor email is not sent to {}", messageDto.getAddress(), e);
+            logger.error("Email is not sent to {}", messageDto.getAddress(), e);
         }
         return false;
+    }
+
+
+    public void sendEmail(String emailTo, String emailMessage, String header) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom(sender);
+        mailMessage.setTo(emailTo);
+        mailMessage.setText(emailMessage);
+        mailMessage.setSubject(header);
+        new AsyncThread<SimpleMailMessage>(
+                this.mailSenderThreadGroup, emailTo, this::mailSender, mailMessage).start();
+    }
+
+
+    private void mailSender(SimpleMailMessage mailMessage) {
+        try {
+            mailSender.send(mailMessage);
+        } catch (Exception e) {
+            logger.error("Email is not sent to {}", mailMessage.getTo(), e);
+        }
     }
 
 }

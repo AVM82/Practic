@@ -13,6 +13,7 @@ import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
 import com.group.practic.util.Converter;
+import com.group.practic.util.PasswordGenerator;
 import jakarta.persistence.EntityExistsException;
 import java.util.HashSet;
 import java.util.List;
@@ -20,10 +21,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -50,15 +53,29 @@ public class PersonService implements UserDetailsService {
     public static final List<String> ADVANCED_ROLES =
             List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_MENTOR);
 
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Value("${email.password.message}")
+    private String emailMessage;
+    @Value("${email.password.header}")
+    private String emailHeader;
+
+    private final EmailSenderService emailSenderService;
 
     @Autowired
-    public PersonService(PersonRepository personRepository, RoleRepository roleRepository) {
+    public PersonService(PersonRepository personRepository,
+                         RoleRepository roleRepository,
+                         EmailSenderService emailSenderService,
+                         PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
         ROLES.forEach(this::saveRole);
+        this.passwordEncoder = passwordEncoder;
+        this.emailSenderService = emailSenderService;
     }
 
 
@@ -72,8 +89,8 @@ public class PersonService implements UserDetailsService {
         return roleRepository.findByName(role);
     }
 
-    
-    Set<RoleEntity> getRoles(String ... roles) {
+
+    Set<RoleEntity> getRoles(String... roles) {
         Set<RoleEntity> roleSet = new HashSet<>();
         for (String role : roles) {
             RoleEntity roleEntity = getRole(role);
@@ -139,9 +156,9 @@ public class PersonService implements UserDetailsService {
         String linkedinId = authorizationAttributes.get("id").toString();
         return personRepository.findByLinkedin(linkedinId).isPresent() ? null
                 : personRepository.save(new PersonEntity(
-                        authorizationAttributes.get("localizedFirstName") + " "
-                                + authorizationAttributes.get("localizedLastName"),
-                        linkedinId, Set.of(new RoleEntity(ROLE_GUEST))));
+                authorizationAttributes.get("localizedFirstName") + " "
+                        + authorizationAttributes.get("localizedLastName"),
+                linkedinId, Set.of(new RoleEntity(ROLE_GUEST))));
     }
 
 
@@ -156,7 +173,7 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public void addRolesToPerson(PersonEntity person, String ... roles) {
+    public void addRolesToPerson(PersonEntity person, String... roles) {
         Set<RoleEntity> personRoles = person.getRoles();
         Set<RoleEntity> newRoles = getRoles(roles);
         personRoles.addAll(newRoles);
@@ -204,7 +221,7 @@ public class PersonService implements UserDetailsService {
 
     @Transactional
     public AuthUserDto processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken,
-            OidcUserInfo userInfo) {
+                                               OidcUserInfo userInfo) {
         Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(attributes);
         Optional<PersonEntity> user =
                 personRepository.findPersonEntityByEmail(oauth2UserInfo.getEmail());
@@ -216,7 +233,7 @@ public class PersonService implements UserDetailsService {
 
 
     public PersonEntity updateExistingUser(PersonEntity existingUser,
-            Oauth2UserInfo oauth2UserInfo) {
+                                           Oauth2UserInfo oauth2UserInfo) {
         existingUser.setName(oauth2UserInfo.getName());
         existingUser.setLinkedin(oauth2UserInfo.getId());
         existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());
@@ -225,9 +242,15 @@ public class PersonService implements UserDetailsService {
 
 
     private SignUpRequestDto toUserRegistrationObject(Oauth2UserInfo oauth2UserInfo) {
+        String name = oauth2UserInfo.getName();
+        String email = oauth2UserInfo.getEmail();
+        String password = PasswordGenerator.generateRandomPassword();
+        String message = String.format(emailMessage, name, password);
+        emailSenderService.sendEmail(email, message, emailHeader);
         return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId())
-                .name(oauth2UserInfo.getName()).email(oauth2UserInfo.getEmail())
-                .profilePictureUrl(oauth2UserInfo.getImageUrl()).password("changeit").build();
+                .name(name).email(email)
+                .profilePictureUrl(oauth2UserInfo.getImageUrl())
+                .password(passwordEncoder.encode(password)).build();
     }
 
 
@@ -283,4 +306,5 @@ public class PersonService implements UserDetailsService {
     public PersonEntity loadUserByEmail(String email) {
         return personRepository.findPersonEntityByEmail(email).orElse(null);
     }
+
 }

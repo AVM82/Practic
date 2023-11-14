@@ -28,7 +28,12 @@
     </button>
 </mat-form-field>
 
-<img class="check-password" src="assets/check.png" alt="Here must be background image" width="">
+<div class="check-reset">
+    <img class="check-password" src="assets/rememberme.png" alt="Here must be background image" width="">
+
+    <img class="check-password" (click)="forgotPassword()"src="assets/forgotpass.png" alt="Here must be background image" width="" >
+
+</div>
 
 
 <button mat-button class = "auth-button" *ngIf="!isRegister" (click)="saveUser()">Зареєструватися</button>

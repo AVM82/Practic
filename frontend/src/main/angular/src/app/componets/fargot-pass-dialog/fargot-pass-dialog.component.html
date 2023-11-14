@@ -1,0 +1,70 @@
+<p class="header" *ngIf="!isEmailSend">Для зміни пароля введіть свій email</p>
+<p class="header" *ngIf="isEmailSend">Введіть секретний код з email повідомлення</p>
+
+<div *ngIf="!isCodeSend">
+
+    <mat-form-field class="mat-field" *ngIf="!isEmailSend">
+        <input class="field" matInput [formControl]="emailControl" placeholder="Email">
+        <mat-error *ngIf="emailControl.hasError('required')">Поле обязательно для заполнения</mat-error>
+        <mat-error *ngIf="emailControl.hasError('email')">Неверный формат email</mat-error>
+    </mat-form-field>
+
+    <div class="buttons" *ngIf="!isEmailSend">
+        <button mat- button (click)="sendMail()">Відправити</button>
+        <button mat-button (click)="onClose()">Закрити</button>
+    </div>
+
+    <mat-error *ngIf="getPersonNotFound()"> Користувач з таким email не знайден</mat-error>
+
+
+    <mat-form-field class="mat-field" *ngIf="isEmailSend">
+        <input class="field" matInput [formControl]="secretCode" placeholder="Секретний код з email">
+        <mat-error *ngIf="isValidsecretCode()">Поле обязательно для заполнения</mat-error>
+    </mat-form-field>
+    <div class="buttons" *ngIf="isEmailSend">
+        <button mat- button [disabled]="isValidsecretCode()" (click)="sendCode()">Відправити код</button>
+        <button mat-button (click)="onClose()">Закрити</button>
+    </div>
+
+</div>
+
+
+<div *ngIf="isCodeSend">
+
+    <mat-form-field class="mat-field-pass">
+        <input class="field" matInput [type]="hidePasswordFirst ? 'password' : 'text'" [formControl]="newPassFirst"
+            placeholder="Новий пароль">
+
+        <mat-error *ngIf="newPassFirst.hasError('required')">Поле обязательно для заполнения</mat-error>
+        <button mat-icon-button class="visible-icon" matSuffix (click)="togglePasswordVisibilityFirst()">
+            <mat-icon>{{ hidePasswordFirst ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+
+    </mat-form-field>
+
+    <mat-form-field class="mat-field-pass">
+        <input class="field" matInput [type]="hidePasswordSecond ? 'password' : 'text'" [formControl]="newPassSecond"
+            placeholder="Повторіть введений пароль">
+        <mat-error *ngIf="newPassSecond.hasError('required')">Поле обязательно для заполнения</mat-error>
+
+        <button mat-icon-button class="visible-icon" matSuffix (click)="togglePasswordVisibilitySecond()">
+
+            <mat-icon>{{ hidePasswordSecond ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+
+    </mat-form-field>
+
+    <div class="bottom-line">
+
+        <div class="buttons">
+            <button mat-button [disabled]="!checkPasswordMismatch()" (click)="sendPassword()">Змінити пароль</button>
+            <button mat-button (click)="onClose()">Закрити</button>
+
+        </div>
+        <mat-error *ngIf=!checkPasswordMismatch()>Пароли не совпадают</mat-error>
+
+    </div>
+
+
+
+</div>
