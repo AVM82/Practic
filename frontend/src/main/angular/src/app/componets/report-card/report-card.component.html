@@ -2,23 +2,24 @@
     <mat-card class="base-card">
         <mat-card class="inner-info-card">
             <div class="student-image">
-                <img src="{{profilePictureUrl}}" alt="no image" width="60" height="60">
+                <img src="{{studentReport.profilePictureUrl||'assets/default_profile_picture.png'}}" alt="no image"
+                     width="60" height="60">
             </div>
-            <div class="student-name">{{studentName}}</div>
-            <div class="report-date">{{dateValue | date:"dd MMMM"}}</div>
+            <div class="student-name">{{studentReport.personName}}</div>
+            <div class="report-date">{{studentReport.date | date:"dd MMMM"}}</div>
             <div class="report-time-border">
-                <div class="report-time" >{{formatTime()}}</div>
+                <div class="report-time">{{formatTime()}}</div>
             </div>
         </mat-card>
         <mat-card-title class="report-topic-header">Доповідь на тему:</mat-card-title>
-        <mat-card-title class="report-topic-text">{{reportTopic}}</mat-card-title>
+        <mat-card-title class="report-topic-text">{{studentReport.title}}</mat-card-title>
         <div class="like-counter-location">
             <ng-container *ngIf="isCurrentUserReport()">
                 <button mat-button class="change-report-btn" (click)="openChangeReportDialog()">Змінити</button>
                 <button mat-button class="cancel-report-btn" (click)="openCancelReportDialog()">Скасувати</button>
             </ng-container>
             <mat-card-title class="like-counter-number ">
-                {{likedPersonsIdList.length}}
+                {{studentReport.likedPersonsIdList.length}}
             </mat-card-title>
             <div (click)="pressLikeButton()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 30 30" fill="none">
@@ -29,5 +30,3 @@
         </div>
     </mat-card>
 </div>
-
-
