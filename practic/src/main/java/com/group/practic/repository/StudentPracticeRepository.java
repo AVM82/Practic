@@ -1,11 +1,8 @@
 package com.group.practic.repository;
 
-import com.group.practic.entity.ChapterPartEntity;
-import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import java.util.List;
-import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
