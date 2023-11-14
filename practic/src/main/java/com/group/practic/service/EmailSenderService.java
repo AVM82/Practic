@@ -51,8 +51,8 @@ public class EmailSenderService implements Sender {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom(sender);
         mailMessage.setTo(emailTo);
-        mailMessage.setText(emailSubject);
-        mailMessage.setSubject(emailText);
+        mailMessage.setSubject(emailSubject);
+        mailMessage.setText(emailText);
         new AsyncThread<SimpleMailMessage>(
                 this.mailSenderThreadGroup, emailTo, this::mailSender, mailMessage).start();
     }

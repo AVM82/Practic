@@ -1,4 +1,22 @@
 email:
+  password:
+    header: |
+      Пароль для входу в shpp-practic
+    message: |+
+      Привіт %s, це твій новий пароль для входу до сайту shpp-practic.eu-north-1.elasticbeanstalk.com
+      за допомогою email та пароля ->
+      %s
+      Бажано змінити його на сторінці входу натиснувши на "Забули пароль?"
+      
+  secretCode:
+    header: |
+      Секретний пароль для зміни пароля на сайті shpp-practic
+    message: |+
+      Привіт, якщо це ви вирішили змінити пароль 
+      на сайті shpp-practic.eu-north-1.elasticbeanstalk.com, то введіть цей секретний пароль ->
+      %s
+      він буде дійсний 5 хвилин
+
   calendar:
     header: |+
       Доповідь на тему - %s
