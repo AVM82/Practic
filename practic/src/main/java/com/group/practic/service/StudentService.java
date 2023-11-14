@@ -3,6 +3,7 @@ package com.group.practic.service;
 import static com.group.practic.util.Converter.nonNullList;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
+import com.group.practic.dto.NewStateChapterDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
@@ -15,6 +16,7 @@ import com.group.practic.entity.StudentEntity;
 import com.group.practic.enumeration.ChapterState;
 import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
+import com.group.practic.util.TimeCalculator;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -177,15 +179,18 @@ public class StudentService {
     }
 
     
-    public Optional<StudentChapterDto> changeState(StudentChapterEntity chapter, ChapterState newState) {
-        if (chapter.setNewChapterState(newState)) {
-            //this.processState(chapter)
+    public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter, ChapterState newState) {
+        //check chapter parameters if newState == ChapterState.DONE
+        boolean success = TimeCalculator.setNewState(chapter, newState);
+        if (success) {
+            studentChapterRepository.save(chapter);
+            if (newState == ChapterState.DONE) {
+                openNextChapter(chapter.getStudent());
+            }
         }
-        return Optional.ofNullable(StudentChapterDto.map(chapter));
+        return Optional.of(new NewStateChapterDto(chapter.getState().name(), chapter.getStudent().getActiveChapterNumber()));
     }
 
-    
-//    protected processState(StudentChapterEntity chapter)
     
     public Optional<Boolean> changeAdditionalMaterial(StudentEntity student,
             AdditionalMaterialsEntity additionalMaterial, boolean state) {

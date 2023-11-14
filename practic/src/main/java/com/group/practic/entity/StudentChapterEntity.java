@@ -27,7 +27,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @Setter
 @Entity
-public class StudentChapterEntity implements Serializable {
+public class StudentChapterEntity implements Serializable, DaysCountable<ChapterState> {
 
     private static final long serialVersionUID = 7733498302034511375L;
 

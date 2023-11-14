@@ -8,6 +8,7 @@ import static com.group.practic.util.ResponseUtils.updateResponse;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
 import com.group.practic.dto.MentorPracticeDto;
+import com.group.practic.dto.NewStateChapterDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentPracticeDto;
@@ -130,18 +131,19 @@ public class StudentController {
                 .orElse(badRequest());
     }
 
-    
+
     @PutMapping("/chapters/state/{id}/{newState}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<StudentChapterDto> stateChapter(@PathVariable long studentChapterId,
+    public ResponseEntity<NewStateChapterDto> stateChapter(@PathVariable long studentChapterId,
             @PathVariable String newStateString) {
-        Optional<StudentChapterEntity>  chapter = studentService.getStudentChapter(studentChapterId);
-        ChapterState newState = ChapterState.valueOf(newStateString);
-        return newState != null && chapter.isPresent() ? getResponse(studentService.changeState(newState)) 
+        ChapterState newState = ChapterState.fromString(newStateString);
+        Optional<StudentChapterEntity> chapter = studentService.getStudentChapter(studentChapterId);
+        return chapter.isPresent()
+                ? getResponse(studentService.changeState(chapter.get(), newState))
                 : badRequest();
     }
-    
-    
+
+
     
 /*
     @GetMapping("/practices/my")

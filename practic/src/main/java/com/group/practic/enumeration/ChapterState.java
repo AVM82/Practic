@@ -3,7 +3,7 @@ package com.group.practic.enumeration;
 import java.util.Set;
 
 
-public enum ChapterState implements DaysCounting {
+public enum ChapterState implements StateCountable<ChapterState> {
 
     NOT_STARTED(false),
 
