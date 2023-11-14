@@ -19,3 +19,8 @@ export interface ShortChapter extends BaseChapter {
   shortName: string;
   hidden: boolean;
 }
+
+export interface NewStateChapter {
+  state: string;
+  activeChapterNumber: number;
+}

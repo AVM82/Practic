@@ -1,6 +1,7 @@
 package com.group.practic.entity;
 
 import com.group.practic.enumeration.PracticeState;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,7 +11,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +23,7 @@ import lombok.Setter;
 @Table(name = "practices")
 @Setter
 @Getter
-public class StudentPracticeEntity implements Serializable {
+public class StudentPracticeEntity implements Serializable, DaysCountable<PracticeState> {
 
     private static final long serialVersionUID = -4520682618456683847L;
 
@@ -35,9 +39,17 @@ public class StudentPracticeEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     PracticeState state = PracticeState.NOT_STARTED;
 
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
     LocalDateTime createdAt = LocalDateTime.now();
 
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = true)
     LocalDateTime updatedAt;
+
+    int daysSpent;
+
+    LocalDate startCounting;
 
 
     public StudentPracticeEntity(StudentChapterEntity studentChapter, long chapterPartId) {

@@ -1,10 +1,12 @@
 package com.group.practic.enumeration;
 
 
-interface DaysCounting {
+public interface StateCountable<T> {
 
     boolean isStartCountingState();
 
     boolean isStopCountingState();
+    
+    boolean changeAllowed(T newState);
 
 }

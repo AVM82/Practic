@@ -45,7 +45,7 @@ public class StudentPracticeService {
 
     public StudentPracticeEntity addPractice(StudentEntity student,
             ChapterPartEntity chapterPart) {
-        StudentPracticeEntity practice = new StudentPracticeEntity(chapterPart);
+        StudentPracticeEntity practice = null;
         return studentPracticeRepository.save(practice);
     }
 
