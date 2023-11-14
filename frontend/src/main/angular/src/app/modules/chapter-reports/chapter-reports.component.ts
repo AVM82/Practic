@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {RouterLink} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
-import {StudentReport} from "../../models/studentReport";
+import {StudentReport} from "../../models/report";
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {Level} from "../../models/level";

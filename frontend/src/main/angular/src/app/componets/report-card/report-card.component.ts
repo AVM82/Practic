@@ -10,7 +10,7 @@ import {ChangingReportDialogComponent} from "../changing-report-dialog/changing-
 import {CancelingReportDialogComponent} from "../canceling-report-dialog/canceling-report-dialog.component";
 import {TimeSlot} from "../../models/time-slot";
 import {ReportDashboardComponent} from "../../pages/report-dashboard/report-dashboard.component";
-import {StudentReport} from "../../models/report/studentReport";
+import {StudentReport} from "../../models/report";
 
 @Component({
     selector: 'report-card',

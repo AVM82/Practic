@@ -24,7 +24,15 @@ export enum ApiUrls {
 
   Mentors = '/api/mentors/',
   Applicants = '/api/mentors/applicants',
-  PracticeApprove = '/api/mentors/practices'
+  PracticeApprove = '/api/mentors/practices',
+
+  EmailPassAuth = 'api/register',
+
+  CalendarEventEmailNotification = '/api/events/sendEvent',
+  
+  SendSecretCode = '/api/password-reset/send-code',
+  MatchCode = '/api/password-reset/match-code',
+  ResetPassword = '/api/password-reset'
 }
 
 
