@@ -90,7 +90,7 @@ public class CourseService {
         return Optional.ofNullable(courseRepository.save(course));
     }
 
-    
+
     public Optional<CourseEntity> create(NewCourseDto dto) {
         Optional<CourseEntity> exists = get(dto.getSlug());
         if (exists.isEmpty()) {
@@ -142,7 +142,8 @@ public class CourseService {
         courseEntity.setDescription(prop.getProperty(PropertyUtil.DESCRIPTION_KEY, ""));
         courseEntity.setLevels(levelService.getLevelsSet(courseEntity, prop));
         courseEntity.setChapters(chapterService.getChapters(courseEntity, prop));
-        courseEntity.setAdditionalMaterials(additionalMaterialsService.getAdditionalMaterials(courseEntity, prop));
+        courseEntity.setAdditionalMaterials(
+                additionalMaterialsService.getAdditionalMaterials(courseEntity, prop));
         return save(courseEntity);
     }
 
@@ -168,7 +169,7 @@ public class CourseService {
                 .filter(chapter -> chapter.getNumber() > number).findFirst();
     }
 
-    
+
     public void addMentor(MentorEntity mentor) {
         CourseEntity course = mentor.getCourse();
         course.getMentors().add(mentor);

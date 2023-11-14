@@ -1,10 +1,10 @@
 package com.group.practic.dto;
 
+import com.group.practic.entity.StudentPracticeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.group.practic.entity.StudentPracticeEntity;
 import org.jetbrains.annotations.NotNull;
 
 

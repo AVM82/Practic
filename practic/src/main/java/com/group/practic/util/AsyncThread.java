@@ -8,7 +8,8 @@ public class AsyncThread<A> extends Thread  {
 
     private A argument;
     
-    public AsyncThread(ThreadGroup threadGroup, String threadName, Consumer<A> procedure, A argument) {
+    public AsyncThread(ThreadGroup threadGroup, String threadName, 
+            Consumer<A> procedure, A argument) {
         super(threadGroup, threadName);
         this.procedure = procedure;
         this.argument = argument;

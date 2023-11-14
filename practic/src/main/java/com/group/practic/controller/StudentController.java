@@ -27,9 +27,9 @@ import com.group.practic.enumeration.ReportState;
 import com.group.practic.service.AdditionalMaterialsService;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
-import com.group.practic.service.StudentService;
 import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
+import com.group.practic.service.StudentService;
 import com.group.practic.service.TimeSlotService;
 import com.group.practic.util.Converter;
 import com.group.practic.util.ResponseUtils;
@@ -144,15 +144,16 @@ public class StudentController {
     }
 
 
-    
-/*
-    @GetMapping("/practices/my")
-    @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Collection<PracticeDto>> getAllMyPractices() {
-        return getResponse(studentPracticeService.getAllPracticesByStudent().stream()
-                .map(Converter::convertToPractice).collect(Collectors.toSet()));
-    }
-*/
+
+    /*
+     * @GetMapping("/practices/my")
+     * 
+     * @PreAuthorize("hasRole('STUDENT')") public ResponseEntity<Collection<PracticeDto>>
+     * getAllMyPractices() { return
+     * getResponse(studentPracticeService.getAllPracticesByStudent().stream()
+     * .map(Converter::convertToPractice).collect(Collectors.toSet())); }
+     */
+
 
     @GetMapping("/practices/{practiceState}")
     @PreAuthorize("hasRole('MENTOR')")

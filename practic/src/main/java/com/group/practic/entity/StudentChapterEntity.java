@@ -56,7 +56,7 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
     int reportCount;
 
-    @OneToMany(mappedBy = "studentChapter",cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
     private List<StudentPracticeEntity> practices = new ArrayList<>();
     
     int daysSpent;

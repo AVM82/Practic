@@ -10,7 +10,6 @@ import com.group.practic.repository.StudentPracticeRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,14 +36,16 @@ public class StudentPracticeService {
 
     public Set<StudentPracticeEntity> getAllPracticesByChapter(StudentEntity student,
             ChapterEntity chapter) {
-        return Set.of();/* chapter.getParts().stream()
-                .map(chapterPart -> studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart))
-                .collect(Collectors.toSet());*/
+        return Set.of();
+        /*
+         * chapter.getParts().stream() .map(chapterPart ->
+         * studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart))
+         * .collect(Collectors.toSet());
+         */
     }
 
 
-    public StudentPracticeEntity addPractice(StudentEntity student,
-            ChapterPartEntity chapterPart) {
+    public StudentPracticeEntity addPractice(StudentEntity student, ChapterPartEntity chapterPart) {
         StudentPracticeEntity practice = null;
         return studentPracticeRepository.save(practice);
     }
@@ -52,7 +53,10 @@ public class StudentPracticeService {
 
     public StudentPracticeEntity getPractice(StudentEntity student, long chapterPartId) {
         ChapterPartEntity chapterPart = chapterPartService.getChapterPartById(chapterPartId);
-        return null;/* studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart);*/
+        return null;
+        /*
+         * studentPracticeRepository.findByStudentAndChapterPart(student, chapterPart);
+         */
     }
 
 
@@ -62,7 +66,7 @@ public class StudentPracticeService {
 
 
     public Set<StudentPracticeEntity> getAllPracticesByStudent() {
-        
+
         return Set.of();
     }
 

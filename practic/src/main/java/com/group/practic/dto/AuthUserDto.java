@@ -25,7 +25,7 @@ public class AuthUserDto implements OAuth2User, OidcUser {
     private Map<String, Object> attributes;
 
     private long id;
-    
+
     private String name;
 
     private String email;
@@ -48,8 +48,8 @@ public class AuthUserDto implements OAuth2User, OidcUser {
                 .isEnabled(person.isEnabled()).isAccountNotExpired(person.isAccountNonExpired())
                 .isCredentialsNotExpired(person.isCredentialsNonExpired())
                 .isAccountNotLocked(person.isAccountNonLocked())
-                .authorities(person.getAuthorities()).id(person.getId()).name(person.getName()).idToken(idToken)
-                .userInfo(userInfo).attributes(attributes).build();
+                .authorities(person.getAuthorities()).id(person.getId()).name(person.getName())
+                .idToken(idToken).userInfo(userInfo).attributes(attributes).build();
     }
 
 
@@ -58,7 +58,8 @@ public class AuthUserDto implements OAuth2User, OidcUser {
                 .isEnabled(person.isEnabled()).isAccountNotExpired(person.isAccountNonExpired())
                 .isCredentialsNotExpired(person.isCredentialsNonExpired())
                 .isAccountNotLocked(person.isAccountNonLocked())
-                .authorities(person.getAuthorities()).id(person.getId()).name(person.getName()).build();
+                .authorities(person.getAuthorities()).id(person.getId()).name(person.getName())
+                .build();
     }
 
 
@@ -96,6 +97,7 @@ public class AuthUserDto implements OAuth2User, OidcUser {
     public String getName() {
         return this.name;
     }
+
 
     public Long getId() {
         return this.id;

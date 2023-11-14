@@ -45,7 +45,7 @@ public class SubChapterEntity implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
-    @OneToMany(mappedBy="subChapter", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subChapter", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("number")
     private List<SubSubChapterEntity> subSubChapters = new ArrayList<>();
 
