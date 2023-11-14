@@ -46,8 +46,8 @@ public class PersonService implements UserDetailsService {
 
     public static final String ROLE_GUEST = "GUEST";
 
-    public static final List<String> ROLES =
-            List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE, ROLE_MENTOR, ROLE_STUDENT, ROLE_GUEST);
+    public static final List<String> ROLES = List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE,
+            ROLE_MENTOR, ROLE_STUDENT, ROLE_GUEST);
 
     public static final List<String> ADVANCED_ROLES =
             List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE);
@@ -55,21 +55,21 @@ public class PersonService implements UserDetailsService {
     PersonRepository personRepository;
 
     RoleRepository roleRepository;
-    
+
     CourseService courseService;
 
     ApplicantService applicantService;
 
     RoleEntity roleGuest;
-    
+
     RoleEntity roleStudent;
-    
+
     RoleEntity roleMentor;
-    
+
     RoleEntity roleComrade;
-    
+
     RoleEntity roleCollaborator;
-    
+
     RoleEntity roleAdmin;
 
 
@@ -107,9 +107,7 @@ public class PersonService implements UserDetailsService {
 
 
     Set<RoleEntity> getRoles(String... roles) {
-        return List.of(roles).stream()
-                .map(this::getRole)
-                .filter(Objects::nonNull)
+        return List.of(roles).stream().map(this::getRole).filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
@@ -173,16 +171,24 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public PersonEntity removeRole(PersonEntity person, String roleName) {
-        return addRole(person, getRole(roleName));
-    }
-
-
     public PersonEntity addRole(PersonEntity person, RoleEntity role) {
         Set<RoleEntity> personRoles = person.getRoles();
         personRoles.add(role);
         excludeGuestRole(personRoles);
         return personRepository.save(person);
+    }
+
+
+    public PersonEntity addRoles(PersonEntity person, Set<RoleEntity> newRoles) {
+        Set<RoleEntity> personRoles = person.getRoles();
+        personRoles.addAll(newRoles);
+        excludeGuestRole(personRoles);
+        return personRepository.save(person);
+    }
+
+
+    public PersonEntity removeRole(PersonEntity person, String roleName) {
+        return addRole(person, getRole(roleName));
     }
 
 
@@ -196,14 +202,6 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public PersonEntity addRoles(PersonEntity person, Set<RoleEntity> newRoles) {
-        Set<RoleEntity> personRoles = person.getRoles();
-        personRoles.addAll(newRoles);
-        excludeGuestRole(personRoles);
-        return personRepository.save(person);
-    }
-    
-    
     public PersonEntity removeRoles(PersonEntity person, Set<RoleEntity> roles) {
         Set<RoleEntity> personRoles = person.getRoles();
         if (personRoles.removeAll(roles)) {
@@ -237,8 +235,7 @@ public class PersonService implements UserDetailsService {
                 : personRepository.save(new PersonEntity(
                         authorizationAttributes.get("localizedFirstName") + " "
                                 + authorizationAttributes.get("localizedLastName"),
-                        linkedinId,
-                        roleGuest));
+                        linkedinId, roleGuest));
     }
 
 
@@ -269,13 +266,9 @@ public class PersonService implements UserDetailsService {
 
 
     private SignUpRequestDto toUserRegistrationObject(Oauth2UserInfo oauth2UserInfo) {
-        return SignUpRequestDto.builder()
-                .providerUserId(oauth2UserInfo.getId())
-                .name(oauth2UserInfo.getName())
-                .email(oauth2UserInfo.getEmail())
-                .profilePictureUrl(oauth2UserInfo.getImageUrl())
-                .password("changeit")
-                .build();
+        return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId())
+                .name(oauth2UserInfo.getName()).email(oauth2UserInfo.getEmail())
+                .profilePictureUrl(oauth2UserInfo.getImageUrl()).password("changeit").build();
     }
 
 
@@ -287,13 +280,9 @@ public class PersonService implements UserDetailsService {
 
     @Transactional
     public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
-        return personRepository.save(new PersonEntity(
-                userDetails.getName(),
-                userDetails.getPassword(), 
-                userDetails.getEmail(), 
-                userDetails.getProviderUserId(),
-                userDetails.getProfilePictureUrl(),
-                roleGuest));
+        return personRepository.save(new PersonEntity(userDetails.getName(),
+                userDetails.getPassword(), userDetails.getEmail(), userDetails.getProviderUserId(),
+                userDetails.getProfilePictureUrl(), roleGuest));
     }
 
 

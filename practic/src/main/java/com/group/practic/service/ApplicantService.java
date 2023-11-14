@@ -16,7 +16,7 @@ public class ApplicantService {
 
     EmailSenderService emailSenderService;
 
-    
+
     @Autowired
     public ApplicantService(ApplicantRepository applicantRepository,
             EmailSenderService emailSenderService) {
@@ -31,7 +31,8 @@ public class ApplicantService {
 
 
     public List<ApplicantEntity> get(CourseEntity course, boolean isApplied, boolean isRejected) {
-        return applicantRepository.findAllByCourseAndIsAppliedAndIsRejected(course, isApplied, isRejected);
+        return applicantRepository.findAllByCourseAndIsAppliedAndIsRejected(course, isApplied,
+                isRejected);
     }
 
 
@@ -49,7 +50,7 @@ public class ApplicantService {
     public ApplicantEntity apply(ApplicantEntity applicant) {
         applicant.setApplied(true);
         this.emailSenderService.sendEmail(applicant.getPerson().getEmail(),
-                "Заявку на навчання прийнято!", 
+                "Заявку на навчання прийнято!",
                 "Вітаємо на курсі \"" + applicant.getCourse().getName() + "\"");
         return applicantRepository.save(applicant);
     }

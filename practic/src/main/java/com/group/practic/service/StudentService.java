@@ -97,13 +97,13 @@ public class StudentService {
                 : List.of();
     }
 
-    
+
     public Optional<StudentChapterEntity> getStudentChapter(long studentChapterId) {
         return studentChapterRepository.findById(studentChapterId);
     }
 
-    
-    
+
+
     @Transactional
     public StudentEntity create(PersonEntity person, CourseEntity course) {
         if (get(person, course).isEmpty()) {
@@ -164,10 +164,11 @@ public class StudentService {
                         .map(chapter -> ShortChapterDto.map(chapter,
                                 reportService.getActualReportCount(chapter.getChapter())))
                         .toList());
-        if (visibleMaxNumber > 0)
+        if (visibleMaxNumber > 0) {
             result.addAll(nonNullList(student.getCourse().getChapters()).stream()
                     .filter(chapter -> chapter.getNumber() > visibleMaxNumber)
                     .map(chapter -> ShortChapterDto.map(chapter, true)).toList());
+        }
         return result;
     }
 
@@ -178,9 +179,10 @@ public class StudentService {
                 .map(StudentChapterDto::map);
     }
 
-    
-    public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter, ChapterState newState) {
-        //check chapter parameters if newState == ChapterState.DONE
+
+    public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter,
+            ChapterState newState) {
+        // check chapter parameters if newState == ChapterState.DONE
         boolean success = TimeCalculator.setNewState(chapter, newState);
         if (success) {
             studentChapterRepository.save(chapter);
@@ -188,10 +190,11 @@ public class StudentService {
                 openNextChapter(chapter.getStudent());
             }
         }
-        return Optional.of(new NewStateChapterDto(chapter.getState().name(), chapter.getStudent().getActiveChapterNumber()));
+        return Optional.of(new NewStateChapterDto(chapter.getState().name(),
+                chapter.getStudent().getActiveChapterNumber()));
     }
 
-    
+
     public Optional<Boolean> changeAdditionalMaterial(StudentEntity student,
             AdditionalMaterialsEntity additionalMaterial, boolean state) {
         return Optional.of(studentRepository

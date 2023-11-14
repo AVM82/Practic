@@ -32,8 +32,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-@Table(name = "persons", 
-        uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}),
+@Table(name = "persons", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}),
         indexes = @Index(columnList = "email"))
 @Entity
 @AllArgsConstructor
@@ -73,12 +72,12 @@ public class PersonEntity implements UserDetails {
     String password;
 
     String profilePictureUrl;
-    
+
     String personPageUrl;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id"))
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)

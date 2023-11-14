@@ -13,10 +13,10 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 @Entity
@@ -35,6 +35,8 @@ public class StudentPracticeEntity implements Serializable, DaysCountable<Practi
     StudentChapterEntity studentChapter;
 
     long chapterPartId;
+    
+    long courseId;
 
     @Enumerated(EnumType.STRING)
     PracticeState state = PracticeState.NOT_STARTED;

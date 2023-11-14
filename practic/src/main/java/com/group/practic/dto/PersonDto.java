@@ -51,7 +51,7 @@ public class PersonDto {
         dto.students = entity.getStudents().stream().map(PersonStudentDto::map).toList();
         dto.mentors = entity.getMentors().stream().map(PersonMentorDto::map).toList();
         dto.applicants = entity.getApplicants().stream()
-                .filter(applicant -> !applicant.isApplied() && !applicant.isRejected() )
+                .filter(applicant -> !applicant.isApplied() && !applicant.isRejected())
                 .map(PersonApplicantDto::map).toList();
         return dto;
     }

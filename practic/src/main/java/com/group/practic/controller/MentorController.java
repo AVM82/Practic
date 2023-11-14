@@ -2,6 +2,7 @@ package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
+
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
 import com.group.practic.dto.ChapterDto;
