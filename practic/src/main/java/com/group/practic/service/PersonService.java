@@ -13,6 +13,7 @@ import com.group.practic.repository.PersonRepository;
 import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
+import com.group.practic.util.PasswordGenerator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,10 +21,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -60,6 +63,8 @@ public class PersonService implements UserDetailsService {
 
     ApplicantService applicantService;
 
+    EmailSenderService emailSenderService;
+    
     RoleEntity roleGuest;
 
     RoleEntity roleStudent;
@@ -72,14 +77,25 @@ public class PersonService implements UserDetailsService {
 
     RoleEntity roleAdmin;
 
+    PasswordEncoder passwordEncoder;
+    
+    @Value("${email.password.message}")
+    private String emailMessage;
+    
+    @Value("${email.password.header}")
+    private String emailHeader;
 
+    
     @Autowired
     public PersonService(PersonRepository personRepository, RoleRepository roleRepository,
-            ApplicantService applicantService, CourseService courseService) {
+            ApplicantService applicantService, CourseService courseService,
+            EmailSenderService emailSenderService, PasswordEncoder passwordEncoder) {
         this.courseService = courseService;
         this.applicantService = applicantService;
+        this.emailSenderService = emailSenderService;
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
         ROLES.forEach(this::saveRole);
         this.roleGuest = getRole(ROLE_GUEST);
         this.roleStudent = getRole(ROLE_STUDENT);
@@ -266,11 +282,16 @@ public class PersonService implements UserDetailsService {
 
 
     private SignUpRequestDto toUserRegistrationObject(Oauth2UserInfo oauth2UserInfo) {
+        String name = oauth2UserInfo.getName();
+        String email = oauth2UserInfo.getEmail();
+        String password = PasswordGenerator.generateRandomPassword();
+        String message = String.format(emailMessage, name, password);
+        emailSenderService.sendEmail(email, emailHeader, message);
         return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId())
-                .name(oauth2UserInfo.getName()).email(oauth2UserInfo.getEmail())
-                .profilePictureUrl(oauth2UserInfo.getImageUrl()).password("changeit").build();
+                .name(name).email(email)
+                .profilePictureUrl(oauth2UserInfo.getImageUrl())
+                .password(passwordEncoder.encode(password)).build();
     }
-
 
     @Transactional
     public UserDetails loadUserById(long id) {
@@ -281,10 +302,18 @@ public class PersonService implements UserDetailsService {
     @Transactional
     public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
         return personRepository.save(new PersonEntity(userDetails.getName(),
-                userDetails.getPassword(), userDetails.getEmail(), userDetails.getProviderUserId(),
-                userDetails.getProfilePictureUrl(), roleGuest));
+                userDetails.getPassword(), 
+                userDetails.getEmail(),
+                userDetails.getProviderUserId(),
+                userDetails.getProfilePictureUrl(),
+                roleGuest));
     }
 
+    
+    public PersonEntity save(PersonEntity person) {
+        return personRepository.save(person);
+    }
+    
 
     public static boolean hasAnyRole(List<String> roles) {
         return me().getRoles().stream()
