@@ -64,7 +64,6 @@ public class PersonEntity implements UserDetails {
     String discord;
 
     @Column
-    @NotBlank
     String linkedin;
 
     String contacts;
