@@ -4,78 +4,36 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "reset_code")
 public class ResetCodeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    @OneToOne
-    private PersonEntity person;
+    private String email;
 
-    @NotBlank
     private String code;
 
-    @NotBlank
     private LocalDateTime expiredAt;
 
 
     public ResetCodeEntity() {}
 
 
-    public ResetCodeEntity(PersonEntity person, String code, LocalDateTime expiredAt) {
-        this.person = person;
-        this.code = code;
-        this.expiredAt = expiredAt;
-    }
-
-
-    public void setId(long id) {
+    public ResetCodeEntity(long id, String email, String code, long expiringMinutes) {
         this.id = id;
-    }
-
-
-    public void setPerson(PersonEntity person) {
-        this.person = person;
-    }
-
-
-    public void setCode(String code) {
+        this.email = email;
         this.code = code;
-    }
-
-
-    public void setExpiredAt(LocalDateTime expiredAt) {
-        this.expiredAt = expiredAt;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ResetCodeEntity that = (ResetCodeEntity) o;
-        return id == that.id && Objects.equals(person, that.person)
-                && Objects.equals(code, that.code) && Objects.equals(expiredAt, that.expiredAt);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, person, code, expiredAt);
+        this.expiredAt = LocalDateTime.now().plusMinutes(expiringMinutes);
     }
 
 }

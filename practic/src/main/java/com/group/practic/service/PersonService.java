@@ -168,6 +168,11 @@ public class PersonService implements UserDetailsService {
     }
 
 
+    public boolean existByEmail(String email) {
+        return personRepository.existsByEmail(email);
+    }
+
+
     protected void excludeGuestRole(Set<RoleEntity> roles) {
         if (roles.size() > 1) {
             roles.remove(roleGuest);

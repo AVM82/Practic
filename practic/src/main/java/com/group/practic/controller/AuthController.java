@@ -61,13 +61,10 @@ public class AuthController {
     @PostMapping("/password-reset/send-code")
     public ResponseEntity<Void> sendSecretCodeForPasswordReset(
             @RequestParam("email") String email) {
-        Optional<PersonEntity> person = personService.getByEmail(email);
-        if (person.isEmpty()) {
+        if (!personService.existByEmail(email)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        String resetCode = authService.createResetCode();
-        authService.saveResetCode(resetCode, person.get());
-
+        authService.saveResetCode(email);
         return ResponseEntity.ok().build();
     }
 
@@ -84,7 +81,6 @@ public class AuthController {
         if (authService
                 .isMatchSecretCode(new SecretCodeDto(passwordDto.code(), passwordDto.email()))) {
             authService.changePassword(passwordDto);
-            authService.deleteCodeEntity(passwordDto);
         } else {
             ResponseEntity.notFound().build();
         }
