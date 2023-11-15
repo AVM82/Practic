@@ -34,13 +34,15 @@ public class AuthService {
 
     private final TokenProvider tokenProvider;
 
-    private final Long codeValidityTime = 5L;
+    private static final long CODE_VALIDITY_MINUTES = 5L;
 
     @Value("${email.secretCode.message}")
     private String secretCodeEmailMessage;
 
     @Value("${email.secretCode.header}")
     private String secretCodeEmailHeader;
+
+    Random random = new Random();
 
 
     @Autowired
@@ -56,45 +58,34 @@ public class AuthService {
     }
 
 
-    public String createResetCode() {
-        Random random = new Random();
+    public String createResetCod() {
         int resetCode = 100000 + random.nextInt(900000);
         return String.valueOf(resetCode);
 
     }
 
 
-    public void saveResetCode(String resetCode, PersonEntity person) {
-        String currentResetCode = resetCode;
-        if (resetCode != null && person != null) {
-            ResetCodeEntity entity = codeRepository.findByPersonEmail(person.getEmail());
-            if (entity != null) {
-                LocalDateTime timeEntity = entity.getExpiredAt();
-                if (timeEntity.isBefore(LocalDateTime.now())) {
-                    codeRepository.deleteById(entity.getId());
-                    codeRepository.save(new ResetCodeEntity(person, resetCode,
-                            LocalDateTime.now().plusMinutes(codeValidityTime)));
-                }
-                currentResetCode = entity.getCode();
-            } else {
-                codeRepository.save(new ResetCodeEntity(person, resetCode,
-                        LocalDateTime.now().plusMinutes(codeValidityTime)));
-            }
-            sendEmailAuthMessage(currentResetCode, person.getEmail(), secretCodeEmailMessage,
-                    secretCodeEmailHeader);
-        }
+    public void saveResetCode(String email) {
+        Optional<String> resetCode = codeRepository.findByEmail(email)
+                .map(codeEntity -> codeEntity.getExpiredAt().isBefore(LocalDateTime.now())
+                        ? getNewResetCode(codeEntity.getId(), email)
+                        : codeEntity.getCode());
+        emailService.sendEmail(email, secretCodeEmailHeader, String.format(secretCodeEmailMessage,
+                resetCode.isPresent() ? resetCode.get() : getNewResetCode(0, email)));
     }
 
 
-    public void sendEmailAuthMessage(String authInfo, String email, String message, String header) {
-        String emailMessage = String.format(message, authInfo);
-        emailService.sendEmail(email, emailMessage, header);
+    protected String getNewResetCode(long id, String email) {
+        String resetCode = createResetCod();
+        codeRepository.save(new ResetCodeEntity(id, email, resetCode, CODE_VALIDITY_MINUTES));
+        return resetCode;
     }
 
 
     public boolean isMatchSecretCode(SecretCodeDto passwordDto) {
-        ResetCodeEntity resetCode = codeRepository.findByPersonEmail(passwordDto.email());
-        return resetCode != null && resetCode.getExpiredAt().isAfter(LocalDateTime.now());
+        return codeRepository.findByEmail(passwordDto.email())
+                .map(resetCode -> resetCode.getExpiredAt().isAfter(LocalDateTime.now()))
+                .orElse(false);
     }
 
 
@@ -107,14 +98,6 @@ public class AuthService {
     }
 
 
-    public void deleteCodeEntity(ResetPasswordDto passwordDto) {
-        ResetCodeEntity entity = codeRepository.findByCode(passwordDto.code());
-        if (entity != null) {
-            codeRepository.delete(entity);
-        }
-    }
-
-
     public String encodePass(String password) {
         return passwordEncoder.encode(password);
     }
@@ -122,12 +105,10 @@ public class AuthService {
 
     public PersonEntity registerNewUserByEmail(RegisterByEmailDto byEmailDto) {
         Optional<PersonEntity> person = personService.getByEmail(byEmailDto.getEmail());
-        return person.isPresent() ? person.get() 
+        return person.isPresent() ? person.get()
                 : personService.registerNewUser(SignUpRequestDto.builder()
-                        .name(byEmailDto.getName())
-                        .email(byEmailDto.getEmail())
-                        .password(encodePass(byEmailDto.getPassword()))
-                        .build());
+                        .name(byEmailDto.getName()).email(byEmailDto.getEmail())
+                        .password(encodePass(byEmailDto.getPassword())).build());
     }
 
 

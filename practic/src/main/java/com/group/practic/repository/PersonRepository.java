@@ -21,5 +21,7 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
     Optional<PersonEntity> findByLinkedin(String linkedin);
 
     Optional<PersonEntity> findByEmail(String email);
+
+    boolean existsByEmail(String email);
     
 }
