@@ -3,7 +3,7 @@ name: Java Build & Deploy to Elastic Beanstalk
 on:
   push:
     branches:
-      - development # здесь можно указать имя вашей основной ветки, например, master
+      - Light_Way # здесь можно указать имя вашей основной ветки, например, master
 
 jobs:
   build-and-deploy:
