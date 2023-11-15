@@ -121,13 +121,6 @@ public class PersonEntity implements UserDetails {
 
     @JsonIgnore
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-
-    @JsonIgnore
-    @Override
     public String getUsername() {
         return name;
     }
