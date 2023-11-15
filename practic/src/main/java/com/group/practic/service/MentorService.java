@@ -112,7 +112,7 @@ public class MentorService {
                         getApplicantsForCourse(mentor.getCourse()))));
         return myApplicants;
     }
- 
+  
 
     public StudentDto adminStudent(ApplicantEntity applicant) {
         return applicant.isApplied() ? StudentDto.map(applicant.getStudent())
