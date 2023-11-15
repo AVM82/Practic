@@ -34,14 +34,15 @@ public class AuthService {
 
     private final TokenProvider tokenProvider;
 
-    private static final long CODE_VALIDITY_MINUTES = 5L;
-
     @Value("${email.secretCode.message}")
     private String secretCodeEmailMessage;
 
     @Value("${email.secretCode.header}")
     private String secretCodeEmailHeader;
 
+    @Value("${email.secretCode.codeValidityMinutes}")
+    private long codeValidityMinutes;
+    
     Random random = new Random();
 
 
@@ -70,14 +71,16 @@ public class AuthService {
                 .map(codeEntity -> codeEntity.getExpiredAt().isBefore(LocalDateTime.now())
                         ? getNewResetCode(codeEntity.getId(), email)
                         : codeEntity.getCode());
-        emailService.sendEmail(email, secretCodeEmailHeader, String.format(secretCodeEmailMessage,
-                resetCode.isPresent() ? resetCode.get() : getNewResetCode(0, email)));
+        emailService.sendEmail(email, secretCodeEmailHeader,
+                String.format(secretCodeEmailMessage,
+                        resetCode.isPresent() ? resetCode.get() : getNewResetCode(0, email),
+                                codeValidityMinutes));
     }
 
 
     protected String getNewResetCode(long id, String email) {
         String resetCode = createResetCod();
-        codeRepository.save(new ResetCodeEntity(id, email, resetCode, CODE_VALIDITY_MINUTES));
+        codeRepository.save(new ResetCodeEntity(id, email, resetCode, codeValidityMinutes));
         return resetCode;
     }
 
@@ -90,16 +93,10 @@ public class AuthService {
 
 
     public void changePassword(ResetPasswordDto passwordDto) {
-        Optional<PersonEntity> currentPerson = personService.getByEmail(passwordDto.email());
-        if (currentPerson.isPresent()) {
-            currentPerson.get().setPassword(encodePass(passwordDto.newPassword()));
-            personService.save(currentPerson.get());
-        }
-    }
-
-
-    public String encodePass(String password) {
-        return passwordEncoder.encode(password);
+        personService.getByEmail(passwordDto.email()).ifPresent(person -> {
+            person.setPassword(passwordEncoder.encode(passwordDto.newPassword()));
+            personService.save(person);
+        });
     }
 
 
@@ -108,7 +105,7 @@ public class AuthService {
         return person.isPresent() ? person.get()
                 : personService.registerNewUser(SignUpRequestDto.builder()
                         .name(byEmailDto.getName()).email(byEmailDto.getEmail())
-                        .password(encodePass(byEmailDto.getPassword())).build());
+                        .password(passwordEncoder.encode(byEmailDto.getPassword())).build());
     }
 
 

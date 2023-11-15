@@ -9,13 +9,14 @@ email:
       Бажано змінити його на сторінці входу натиснувши на "Забули пароль?"
       
   secretCode:
+    codeValidityMinutes: 5
     header: |
       Секретний пароль для зміни пароля на сайті shpp-practic
     message: |+
       Привіт, якщо це ви вирішили змінити пароль 
       на сайті shpp-practic.eu-north-1.elasticbeanstalk.com, то введіть цей секретний пароль ->
       %s
-      він буде дійсний 5 хвилин
+      він буде дійсний %d хвилин
 
   calendar:
     header: |+
