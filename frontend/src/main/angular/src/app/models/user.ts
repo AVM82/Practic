@@ -232,6 +232,9 @@ export class User {
     return false; 
   }
 
+  setActiveChapterNumber(slug: string, number:number): void {
+      this.getStudent(slug)!.activeChapterNumber = number;
+  }
 
   swapNameSurname(): void {
     this.name = this.name.split(' ').reverse().join(' ')

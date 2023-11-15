@@ -9,7 +9,6 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.AuthService;
 import com.group.practic.service.PersonService;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
