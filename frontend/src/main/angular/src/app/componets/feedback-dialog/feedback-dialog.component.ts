@@ -5,7 +5,6 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {FeedbackService} from 'src/app/services/feedbacks.service';
-import {TokenStorageService} from "../../services/token-storage.service";
 import {MatInputModule} from '@angular/material/input';
 
 @Component({
@@ -22,8 +21,7 @@ export class FeedbackDialogComponent  {
 
 
     constructor(private dialogRef: MatDialogRef<FeedbackDialogComponent>,
-                private feedbackService: FeedbackService,
-                private tokenStorageService: TokenStorageService) {
+                private feedbackService: FeedbackService) {
     }
 
 
@@ -31,14 +29,12 @@ export class FeedbackDialogComponent  {
     onSave(): void {
         this.feedbackService.postData(this.feedbackText).subscribe({
             next: (response) =>
-                console.log("Feedback added:", response),
+                this.feedbackSaved.emit(this.feedbackText),
             error: (error) => {
-                console.error("Feedback nat added:", error);
+                console.error("Feedback not added:", error);
             }
         })
         this.dialogRef.close(this.feedbackText);
-        this.feedbackSaved.emit(this.feedbackText);
-
     }
 
     onClose(): void {

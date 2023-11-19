@@ -11,8 +11,8 @@ import {Feedback} from "../models/feedback";
 export class FeedbackService {
     constructor(private http: HttpClient) {}
 
-    getFeedbacks(feedbackSortedState: string): Observable<Feedback[]> {
-        return this.http.get<Feedback[]>(`${ApiUrls.Feedbacks}${"?feedbackSort=" + feedbackSortedState}`);
+    getFeedbacks(): Observable<Feedback[]> {
+        return this.http.get<Feedback[]>(ApiUrls.Feedbacks);
     }
 
     postData(feedback: string): Observable<Feedback> {

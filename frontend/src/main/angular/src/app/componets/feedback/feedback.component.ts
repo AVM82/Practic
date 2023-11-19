@@ -39,7 +39,7 @@ export class FeedbackComponent implements OnInit {
 
 
     ngOnInit(): void {
-        this.feedbackService.getFeedbacks(this.feedbackSortedState).subscribe(data => {
+        this.feedbackService.getFeedbacks().subscribe(data => {
             if (data) {
                 this.feedbacks = [];
                 data.forEach(feedback => this.feedbacks.push(new Feedback(feedback, this.me.id)));
@@ -67,6 +67,10 @@ export class FeedbackComponent implements OnInit {
         }
     }
 
+    getDate(date: string): string {
+        return new Date(date).toLocaleDateString();
+    }
+
     openFeedbackDialog(): void {
         const dialogRef = this.dialog.open(FeedbackDialogComponent, {
             width: '1150px',
@@ -80,7 +84,6 @@ export class FeedbackComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.ngOnInit();
-                console.log(result);
             }
         });
     }

@@ -2,10 +2,7 @@ package com.group.practic.service;
 
 import com.group.practic.dto.FeedbackDto;
 import com.group.practic.entity.FeedbackEntity;
-import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,25 +26,8 @@ public class FeedbackService {
         return feedbackRepository.findById(id);
     }
 
-    public List<FeedbackDto> getAllFeedbacks(FeedbackSortState sortState) {
-        ArrayList<FeedbackEntity> list = new ArrayList<>(feedbackRepository.findAll());
-        list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
-        return getSortFeedbackList(list, sortState).stream().map(FeedbackDto::map).toList();
-    }
-
-
-
-    private List<FeedbackEntity> getSortFeedbackList(ArrayList<FeedbackEntity> list,
-                                                     FeedbackSortState sortState) {
-        switch (sortState) {
-            case DATE_ASCENDING -> list
-                    .sort(Comparator.comparing(FeedbackEntity::getDateTime).reversed());
-            case RATING_DESCENDING -> list.sort(Comparator.comparing(FeedbackEntity::getLikes));
-            case RATING_ASCENDING -> list
-                    .sort(Comparator.comparing(FeedbackEntity::getLikes).reversed());
-            default -> list.sort(Comparator.comparing(FeedbackEntity::getDateTime));
-        }
-        return list;
+    public List<FeedbackDto> getAllFeedbacks() {
+        return feedbackRepository.findAll().stream().map(FeedbackDto::map).toList();
     }
 
 

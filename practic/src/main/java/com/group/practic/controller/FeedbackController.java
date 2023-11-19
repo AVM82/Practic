@@ -32,10 +32,8 @@ public class FeedbackController {
     FeedbackService service;
 
     @GetMapping("/")
-    public ResponseEntity<Collection<FeedbackDto>> getAllFeedbacks(
-            @RequestParam(name = "feedbackSort",
-                    defaultValue = "DATE_DESCENDING") FeedbackSortState feedbackSort) {
-        return getResponse(service.getAllFeedbacks(feedbackSort));
+    public ResponseEntity<Collection<FeedbackDto>> getAllFeedbacks() {
+        return getResponse(service.getAllFeedbacks());
     }
 
 

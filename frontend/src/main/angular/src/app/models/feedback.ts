@@ -25,4 +25,5 @@ export class Feedback{
         this.profilePictureUrl = feedback.profilePictureUrl;
         this.meLiked = this.likedByPerson.some(p => p == userId);
     }
+
 }
