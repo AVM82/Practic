@@ -3,13 +3,10 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 
 import com.group.practic.dto.FeedbackDto;
-import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.service.FeedbackService;
 import com.group.practic.util.ResponseUtils;
 import jakarta.validation.Valid;
-
 import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,16 +17,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequestMapping("/api/feedbacks")
 public class FeedbackController {
 
+
+    private final FeedbackService service;
+
     @Autowired
-    FeedbackService service;
+    public FeedbackController(FeedbackService service) {
+        this.service = service;
+    }
 
     @GetMapping("/")
     public ResponseEntity<Collection<FeedbackDto>> getAllFeedbacks() {

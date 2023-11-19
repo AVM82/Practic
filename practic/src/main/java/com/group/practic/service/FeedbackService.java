@@ -32,7 +32,8 @@ public class FeedbackService {
 
 
     public FeedbackDto addFeedback(String feedback) {
-        return FeedbackDto.map(feedbackRepository.save(new FeedbackEntity(PersonService.me(), feedback)));
+        return FeedbackDto.map(feedbackRepository
+                .save(new FeedbackEntity(PersonService.me(), feedback)));
     }
 
 
