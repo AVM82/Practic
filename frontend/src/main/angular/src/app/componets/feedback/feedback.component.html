@@ -12,7 +12,7 @@
         <button mat-menu-item (click)="sortData('DATE_ASCENDING')">Нещодавно створені</button>
         <button mat-menu-item (click)="sortData('DATE_DESCENDING')">Давно створені</button>
       </mat-menu>
-            <button class="create-feedback-button"(click)="openFeedbackDialog()">Залишити відгук</button>     
+            <button class="create-feedback-button" (click)="openFeedbackDialog()">Залишити відгук</button>
     </div>
   </div>
 
@@ -21,7 +21,7 @@
     <div class="user-info">
       <p class="username">{{ feedback.name || "Немає ім'я" }}</p>
       <img class="userpic" [src]="feedback.profilePictureUrl || 'URL зображення відсутьній'" alt="https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg">
-      <p class="date">Створено: {{getDate(feedback.date)}}</p>
+      <p class="date"> {{getDate(feedback.date)}}</p>
     </div>
     <div class="card-info">
 

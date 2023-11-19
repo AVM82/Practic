@@ -29,7 +29,7 @@ export class FeedbackDialogComponent  {
     onSave(): void {
         this.feedbackService.postData(this.feedbackText).subscribe({
             next: (response) =>
-                this.feedbackSaved.emit(this.feedbackText),
+                this.feedbackSaved.emit(response.feedback),
             error: (error) => {
                 console.error("Feedback not added:", error);
             }

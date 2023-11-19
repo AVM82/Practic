@@ -11,12 +11,13 @@ import {TokenStorageService} from "../../services/token-storage.service";
 import {User} from 'src/app/models/user';
 import {MatMenuModule} from '@angular/material/menu';
 import {Feedback} from "../../models/feedback";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
     selector: 'app-feedback',
     standalone: true,
     imports: [CommonModule, HttpClientModule, MatDialogModule, MatPaginatorModule,
-        MatTableModule, MatIconModule, MatMenuModule],
+        MatTableModule, MatIconModule, MatMenuModule, MatButtonModule],
     templateUrl: './feedback.component.html',
     styleUrls: ['./feedback.component.css']
 })
