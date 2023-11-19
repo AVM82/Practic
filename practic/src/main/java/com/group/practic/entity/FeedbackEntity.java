@@ -47,7 +47,7 @@ public class FeedbackEntity {
         this.feedback = feedback;
     }
 
-
+ 
     public FeedbackEntity(PersonEntity student, String feedback, int likes) {
         this.person = student;
         this.feedback = feedback;
