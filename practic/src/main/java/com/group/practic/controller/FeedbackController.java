@@ -1,11 +1,11 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
 
 import com.group.practic.dto.FeedbackDto;
 import com.group.practic.service.FeedbackService;
 import com.group.practic.util.ResponseUtils;
-import jakarta.validation.Valid;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +39,9 @@ public class FeedbackController {
 
     @PostMapping("/")
     @PreAuthorize("!hasRole('GUEST')")
-    public ResponseEntity<FeedbackDto> addFeedback(@Valid @RequestBody String feedback) {
-        return getResponse(service.addFeedback(feedback));
+    public ResponseEntity<FeedbackDto> addFeedback(@RequestBody String feedback) {
+        return feedback == null || feedback.trim().length() < 5 ? badRequest()
+                : getResponse(service.addFeedback(feedback));
     }
 
 

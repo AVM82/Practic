@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class FeedbackEntity {
     @ManyToOne
     private PersonEntity person;
 
-    @NotBlank
+    @Size(min = 5, max = 320)
     @Column(length = 320)
     private String feedback;
 
