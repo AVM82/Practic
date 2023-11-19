@@ -1,173 +1,153 @@
-import { Component,OnInit,ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { FeedbackService } from 'src/app/services/feedbacks.service';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { FeedbackDialogComponent } from 'src/app/componets/feedback-dialog/feedback-dialog.component'
-import { MatPaginatorModule,MatPaginator } from '@angular/material/paginator';
-import { MatTableModule,MatTableDataSource } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { TokenStorageService } from "../../services/token-storage.service";
-import { User } from 'src/app/models/user';
-import { MatMenuModule } from '@angular/material/menu';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
+import {FeedbackService} from 'src/app/services/feedbacks.service';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {FeedbackDialogComponent} from 'src/app/componets/feedback-dialog/feedback-dialog.component'
+import {MatPaginatorModule, MatPaginator} from '@angular/material/paginator';
+import {MatTableModule, MatTableDataSource} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {TokenStorageService} from "../../services/token-storage.service";
+import {User} from 'src/app/models/user';
+import {MatMenuModule} from '@angular/material/menu';
+import {Feedback} from "../../models/feedback";
 
 @Component({
-  selector: 'app-feedback',
-  standalone: true,
-  imports: [CommonModule, HttpClientModule,MatDialogModule,MatPaginatorModule,
-    MatTableModule,MatIconModule,MatMenuModule],
-  templateUrl: './feedback.component.html',
-  styleUrls: ['./feedback.component.css']
+    selector: 'app-feedback',
+    standalone: true,
+    imports: [CommonModule, HttpClientModule, MatDialogModule, MatPaginatorModule,
+        MatTableModule, MatIconModule, MatMenuModule],
+    templateUrl: './feedback.component.html',
+    styleUrls: ['./feedback.component.css']
 })
 export class FeedbackComponent implements OnInit {
-  feedbacks: any[] = [];
-  page = 1;
-  pageSize = 5;
-  dataSource = new MatTableDataSource<any>(this.feedbacks);
-  me!: User;
-  feedbackLiked: boolean = false;
-  loading: boolean = false;
-  loadingIncremend: boolean = false;
-  loadingDecremend: boolean = false;
-  feedbackSortedState : string = "DATE_DESCENDING";
-  
-  constructor(
-    private feedbackService: FeedbackService, 
-    private dialog: MatDialog,
-    private tokenStorageService:TokenStorageService
-  ) {
-    this.me = this.tokenStorageService.getMe();
-   }
-  
+    feedbacks: Feedback[] = [];
+    page = 1;
+    pageSize = 5;
+    dataSource = new MatTableDataSource<any>(this.feedbacks);
+    me!: User;
+    feedbackSortedState: string = "DATE_DESCENDING";
+    @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
-  ngOnInit(): void {
-    this.updateData();
-  }
+    constructor(
+        private feedbackService: FeedbackService,
+        private dialog: MatDialog,
+        private tokenStorageService: TokenStorageService
+    ) {
+        this.me = this.tokenStorageService.getMe();
+    }
 
-  updateData():void{
-    this.feedbackService.getFeedbacks(this.feedbackSortedState).subscribe(data => {
-      this.feedbacks = data;
-      this.dataSource = new MatTableDataSource<any>(this.feedbacks);
-    });
-  }
 
-  sortData(sortState: string) {
-    this.feedbackSortedState = sortState;
-    this.updateData();
-  }
+    ngOnInit(): void {
+        this.feedbackService.getFeedbacks(this.feedbackSortedState).subscribe(data => {
+            if (data) {
+                this.feedbacks = [];
+                data.forEach(feedback => this.feedbacks.push(new Feedback(feedback, this.me.id)));
+                this.dataSource = new MatTableDataSource<any>(this.feedbacks);
+            }
+        });
+    }
 
-  openFeedbackDialog(): void {
-    const dialogRef = this.dialog.open(FeedbackDialogComponent, {
-      width: '1150px', 
-      height: '650px'
-    });
+    sortData(sortState: string) {
+        switch (sortState) {
+            case 'RATING_ASCENDING':
+                this.feedbacks.sort((a, b) => b.likes - a.likes);
+                break;
+            case 'RATING_DESCENDING':
+                this.feedbacks.sort((a, b) => a.likes - b.likes);
+                break;
+            case 'DATE_ASCENDING':
+                this.feedbacks.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                break;
+            case 'DATE_DESCENDING':
+                this.feedbacks.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+                break;
+             default:
+                break;
+        }
+    }
 
-    dialogRef.componentInstance.feedbackSaved.subscribe((savedData) => {
-      this.updateData();
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.updateData();
-        console.log(result);
-      }
-    });}
+    openFeedbackDialog(): void {
+        const dialogRef = this.dialog.open(FeedbackDialogComponent, {
+            width: '1150px',
+            height: '650px'
+        });
+
+        dialogRef.componentInstance.feedbackSaved.subscribe(() => {
+            this.ngOnInit();
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.ngOnInit();
+                console.log(result);
+            }
+        });
+    }
 
     getStudentNames(): string[] {
-    return this.feedbacks.map(feedback => feedback.student.name || "Немає ім'я");
-  }
-
-  getFeedbacks(): string[] {
-    return this.feedbacks.map(feedback => feedback.feedback || 'Немає відгуків');
-  }
-
-  getProfilePictureUrls(): string[] {
-    return this.feedbacks.map(feedback => feedback.student.profilePictureUrl || 'URL зображення відсутній');
-  }
-
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-  }
-
-  onPageChange(event: any): void {
-    this.page = event.pageIndex + 1;
-    this.pageSize=event.pageSize;
-  }
-
-  incrementLikes(feedback: any) {
-    if (!this.loadingIncremend) {
-      this.loadingIncremend = true;
-      const id = feedback.id;
-      this.feedbackService.incrementLikes(id, this.me.id).subscribe(
-        (response) => {
-          console.log("Likes increment:", response);
-          this.updateData();
-        },
-        (error) => {
-          console.error("Likes not incremented:", error);
-        }
-      ).add(() => {
-        this.loadingIncremend = false;
-      });
-      this.feedbackLiked = true;
+        return this.feedbacks.map(feedback => feedback.name || "Немає ім'я");
     }
-  }
-  
-  decrementLikes(feedback:any){
-    if (!this.loadingDecremend) {
-      this.loadingDecremend = true; 
-      const id =  feedback.id;
-      this.feedbackService.decrementLikes(id, this.me.id).subscribe(response=>{
-        console.log("Likes increment:",response);
-        this.updateData();
-      },error=>{console.error("likes not increment:",error);
-      }).add(() => {
-        this.loadingDecremend = false; 
-      });
-      this.feedbackLiked = true;
+
+    getFeedbacks(): string[] {
+        return this.feedbacks.map(feedback => feedback.feedback || 'Немає відгуків');
     }
-  }
 
-  changeLike(feedback: any) {
-    if (this.isLiked(feedback)) {
-            this.decrementLikes(feedback);
-    } else {
-            this.incrementLikes(feedback);
+    getProfilePictureUrls(): string[] {
+        return this.feedbacks.map(feedback => feedback.profilePictureUrl || 'URL зображення відсутній');
     }
-  }
 
-  isLiked(feedback: any):boolean{
-    const likedPersons: any[] = feedback.likedByPerson;
-    const userLikedIndex = likedPersons.findIndex((person: any) => person.id === this.me.id);
-    if (userLikedIndex !== -1) {
-            return true;
-    } else {
-     return false;
+
+    ngAfterViewInit() {
+        this.dataSource.paginator = this.paginator;
     }
-  }
 
-  getDate(feedback: any):string{
-    const date = new Date(feedback.dateTime);
-    return date.toLocaleDateString();
-  }
+    onPageChange(event: any): void {
+        this.page = event.pageIndex + 1;
+        this.pageSize = event.pageSize;
+    }
 
 
-  deleteFeedback(feedback:any){
-      console.log("click feedback button");
-      
-      const id =  feedback.id;
-      console.log("id feedback :"+ id);
-      
-      this.feedbackService.deleteFeedback(id).subscribe(response=>{
-        console.log("feedback delete",response);
-        this.updateData();
-      },error=>{console.error("feedback not delete:",error);
-      });
-    
-  }
+    deleteFeedback(feedback: Feedback) {
+        const id = feedback.id;
 
-  isCreatorOrAdmin(feedback:any):boolean{
-    return feedback.student.id == this.me.id || this.me.hasAdminRole();
-  }
+        this.feedbackService.deleteFeedback(id).subscribe({
+            next: () => this.deleteFeedbackById(id),
+            error: (error) => {
+                if (error.status === 404)
+                    this.deleteFeedbackById(id);
+            }
+        })
+    }
+
+
+    incrementLike(feedback: Feedback) {
+        this.feedbackService.incrementLikes(feedback).subscribe({
+            next: (response) =>
+                feedback.update(response, this.me.id),
+            error: (error) => {
+                if (error.status === 404)
+                    this.deleteFeedbackById(feedback.id);
+            }
+        })
+    }
+
+    decrementLike(feedback: Feedback) {
+        this.feedbackService.decrementLikes(feedback).subscribe({
+            next: (response) =>
+                feedback.update(response, this.me.id),
+            error: (error) => {
+                if (error.status === 404)
+                    this.deleteFeedbackById(feedback.id);
+            }
+        })
+    }
+
+    private deleteFeedbackById(id: number): void {
+        this.feedbacks = this.feedbacks.filter(feedback => feedback.id != id);
+    }
+
+    isAuthorOrAdmin(feedback: Feedback): boolean {
+        return feedback.personId == this.me.id || this.me.hasAdminRole();
+    }
 }

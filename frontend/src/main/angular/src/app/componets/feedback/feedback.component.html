@@ -19,13 +19,13 @@
 <div class="cards-container">
   <div class="feedback-card" *ngFor="let feedback of feedbacks | slice: (page - 1) * pageSize : page * pageSize; let i = index">
     <div class="user-info">
-      <p class="username">{{ feedback.student.name || "Немає ім'я" }}</p>
-      <img class="userpic" [src]="feedback.student.profilePictureUrl || 'URL зображення відсутьній'" alt="https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg">
-      <p class="date">Створено: {{getDate(feedback)}}</p>
+      <p class="username">{{ feedback.name || "Немає ім'я" }}</p>
+      <img class="userpic" [src]="feedback.profilePictureUrl || 'URL зображення відсутьній'" alt="https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg">
+      <p class="date">Створено: {{feedback.date}}</p>
     </div>
     <div class="card-info">
 
-      <div class="delete" [class.visible]="isCreatorOrAdmin(feedback)">
+      <div class="delete" [class.visible]="isAuthorOrAdmin(feedback)">
         <button mat-icon-button class="delete-button" (click)="deleteFeedback(feedback)" >
           <mat-icon class="delete-icon">clear</mat-icon>
         </button>
@@ -37,9 +37,9 @@
     </div>
     <div class="likes">
     
-      <button mat-icon-button class="like-button" (click)="changeLike(feedback)">
-        <mat-icon class="like-icon" *ngIf="!isLiked(feedback)">favorite_border</mat-icon>
-        <mat-icon class="like-icon" *ngIf="isLiked(feedback)">favorite</mat-icon>
+      <button mat-icon-button class="like-button" >
+        <mat-icon class="like-icon" *ngIf="!feedback.meLiked" (click)="incrementLike(feedback)">favorite_border</mat-icon>
+        <mat-icon class="like-icon" *ngIf="feedback.meLiked" (click)="decrementLike(feedback)">favorite</mat-icon>
       </button>
 
     <p>{{feedback.likes}}</p>
