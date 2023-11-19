@@ -4,12 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.group.practic.dto.FeedbackDto;
-import com.group.practic.dto.NewFeedbackDto;
 import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.enumeration.FeedbackSortState;
@@ -54,8 +52,7 @@ class FeedbackServiceTest {
                 feedbackService.getAllFeedbacks(FeedbackSortState.DATE_ASCENDING);
 
         assertEquals(2, result.size());
-//        assertEquals(feedback1, result.get(1));
-//        assertEquals(feedback2, result.get(0));
+
     }
 
     @Test
