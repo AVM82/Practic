@@ -11,13 +11,12 @@ import {TokenStorageService} from "../../services/token-storage.service";
 import {User} from 'src/app/models/user';
 import {MatMenuModule} from '@angular/material/menu';
 import {Feedback} from "../../models/feedback";
-import {MatButtonModule} from "@angular/material/button";
 
 @Component({
     selector: 'app-feedback',
     standalone: true,
     imports: [CommonModule, HttpClientModule, MatDialogModule, MatPaginatorModule,
-        MatTableModule, MatIconModule, MatMenuModule, MatButtonModule],
+        MatTableModule, MatIconModule, MatMenuModule],
     templateUrl: './feedback.component.html',
     styleUrls: ['./feedback.component.css']
 })
@@ -101,7 +100,6 @@ export class FeedbackComponent implements OnInit {
         return this.feedbacks.map(feedback => feedback.profilePictureUrl || 'URL зображення відсутній');
     }
 
-
     ngAfterViewInit() {
         this.dataSource.paginator = this.paginator;
     }
@@ -114,7 +112,6 @@ export class FeedbackComponent implements OnInit {
 
     deleteFeedback(feedback: Feedback) {
         const id = feedback.id;
-
         this.feedbackService.deleteFeedback(id).subscribe({
             next: () => this.deleteFeedbackById(id),
             error: (error) => {
