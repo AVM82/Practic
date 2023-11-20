@@ -11,7 +11,6 @@ import { TOKEN_KEY, USER_KEY, httpOptions } from '../enums/app-constans';
   providedIn: 'root'
 })
 export class TokenStorageService {
-  @Output() freshMe: EventEmitter<User> = new EventEmitter();
   me: User | undefined;
 
   constructor(
@@ -50,7 +49,6 @@ export class TokenStorageService {
     this.getCurrentUser().subscribe(user => {
       this.me = this.me ? this.me.update(user) : User.empty().update(user);
       this.saveUser(user);
-      this.freshMe.emit(this.me);
     })
   }
   
