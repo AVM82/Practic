@@ -17,7 +17,7 @@ import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
 })
 
 export class HeaderComponent implements OnInit{
-
+  
   isAdmin: boolean = false;
   isAuthenticated: boolean = false;
   name: string = "User";

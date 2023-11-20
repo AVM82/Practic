@@ -2,6 +2,22 @@
 
 <div class="chapter-header">
 	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
+	<report-button *ngIf="isMentor" 
+		matTooltip="Всі доповіді розділу"
+		matTooltipPosition="below"
+		[reportsNumber]="chapter!.reportCount">
+	</report-button>
+	<div *ngIf="isStudent">
+		<report-button
+			matTooltip="Мої доповіді розділу"
+            matTooltipPosition="above"
+			[reportsNumber]="chapter!.myReports">
+		</report-button>
+		<button *ngIf="chapter!.state !== done" (click)="changeState($event)">
+			{{getTextAccordingState()}}
+		</button>
+	</div>
+	<!--
     <div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">
         <div *ngIf="isStudent" class="done-btn-container">
             <button class="done-btn"
@@ -16,6 +32,7 @@
             </button>
         </div>
     </div>
+	-->
 </div>
 
 <div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">

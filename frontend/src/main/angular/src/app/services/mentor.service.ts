@@ -44,7 +44,6 @@ export class MentorService {
         console.log(applicant);
         this.http.post<Applicant>(ApiUrls.Applicants + `/reject/` + applicant.id, {}).subscribe(rejectedApplicant => {
             applicant.update(rejectedApplicant);
-            console.log(applicant);
             if (this.tokenStorageService.me!.maybeNotApplicant(rejectedApplicant))
                 this.tokenStorageService.saveMe();
         });
@@ -56,7 +55,6 @@ export class MentorService {
             let state: StateMentor = {mentorId: mentor.id, inactive: mentor.inactive, slug: mentor.slug};
             user.addMentor(state);
             if (user.id == this.tokenStorageService.me!.id) {
-                this.tokenStorageService.me!.addMentor(state);
                 this.coursesService.clearCourse(course.slug);
                 this.tokenStorageService.saveMe();
             }
@@ -70,7 +68,6 @@ export class MentorService {
                 course.mentors = course.mentors.filter(mentor => mentor.id != mentorId);
                 user.removeMentorById(mentorId);
                 if (user.id == this.tokenStorageService.me!.id) {
-                    this.tokenStorageService.me!.removeMentorById(mentorId);
                     this.coursesService.clearCourse(course.slug);
                     this.tokenStorageService.saveMe();
                 }

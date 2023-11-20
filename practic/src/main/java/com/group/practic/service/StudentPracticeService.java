@@ -7,6 +7,7 @@ import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentPracticeRepository;
+import com.group.practic.util.TimeCalculator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -71,14 +72,17 @@ public class StudentPracticeService {
     }
 
 
-    public Optional<StudentPracticeEntity> changeState(StudentPracticeDto studentPracticeDto) {
-        Optional<StudentPracticeEntity> practice =
-                studentPracticeRepository.findById(studentPracticeDto.getId());
-        if (practice.isPresent() && practice.get()
-                .setNewState(PracticeState.fromString(studentPracticeDto.getState()))) {
-            practice = Optional.of(studentPracticeRepository.save(practice.get()));
-        }
-        return practice;
+    public StudentPracticeEntity changeState(StudentPracticeEntity practice,
+            PracticeState newState) {
+        /*
+         * Optional<StudentPracticeEntity> practice =
+         * studentPracticeRepository.findById(studentPracticeDto.getId()); if (practice.isPresent()
+         * && practice.get() .setNewState(PracticeState.fromString(studentPracticeDto.getState())))
+         * { practice = Optional.of(studentPracticeRepository.save(practice.get())); }
+         */
+        return newState != PracticeState.APPROVED && TimeCalculator.setNewState(practice, newState)
+                ? studentPracticeRepository.save(practice)
+                : practice;
     }
 
 }

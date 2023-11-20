@@ -73,14 +73,4 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
         this.number = chapter.number;
     }
 
-
-    public boolean setNewChapterState(ChapterState newState) {
-        boolean result = state.changeAllowed(newState);
-        if (result) {
-            state = newState;
-           
-        }
-        return result;
-    }
-
 }

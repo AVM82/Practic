@@ -11,7 +11,6 @@ import com.group.practic.dto.MentorPracticeDto;
 import com.group.practic.dto.NewStateChapterDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentChapterDto;
-import com.group.practic.dto.StudentPracticeDto;
 import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
@@ -116,9 +115,8 @@ public class StudentController {
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<StudentChapterDto> getChapter(@PathVariable long studentId,
             @PathVariable int number) {
-        return studentService.get(studentId)
-                .map(student -> getResponse(studentService.getOpenedChapter(student, number)))
-                .orElse(badRequest());
+        return getResponse(studentService.get(studentId)
+                .map(student -> studentService.getOpenedChapter(student, number).orElse(null)));
     }
 
 
@@ -126,18 +124,16 @@ public class StudentController {
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<ShortChapterDto>> getOpenChapters(
             @PathVariable long studentId) {
-        return studentService.get(studentId)
-                .map(student -> getResponse(studentService.getChapters(student)))
-                .orElse(badRequest());
+        return getResponse(studentService.get(studentId).map(studentService::getChapters));
     }
 
 
-    @PutMapping("/chapters/state/{id}/{newState}")
+    @PutMapping("/chapters/state/{id}/{newStateString}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<NewStateChapterDto> stateChapter(@PathVariable long studentChapterId,
+    public ResponseEntity<NewStateChapterDto> stateChapter(@PathVariable long id,
             @PathVariable String newStateString) {
         ChapterState newState = ChapterState.fromString(newStateString);
-        Optional<StudentChapterEntity> chapter = studentService.getStudentChapter(studentChapterId);
+        Optional<StudentChapterEntity> chapter = studentService.getStudentChapter(id);
         return chapter.isPresent()
                 ? getResponse(studentService.changeState(chapter.get(), newState))
                 : badRequest();
@@ -172,13 +168,13 @@ public class StudentController {
         return getResponse(practiceStates);
     }
 
-
-    @PostMapping("/practices")
-    public ResponseEntity<StudentPracticeDto> setPracticeState(
-            @RequestBody StudentPracticeDto studentPracticeDto) {
-        return postResponse(
-                StudentPracticeDto.map(studentPracticeService.changeState(studentPracticeDto)));
-    }
+    /*
+     * @PostMapping("/practices/state/{id}/{newState") public ResponseEntity<StudentPracticeDto>
+     * setPracticeState(
+     * 
+     * @RequestBody StudentPracticeDto studentPracticeDto) { return postResponse(
+     * StudentPracticeDto.map(studentPracticeService.changeState(studentPracticeDto))); }
+     */
 
 
     @GetMapping("/reports/states")
@@ -262,9 +258,9 @@ public class StudentController {
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<AdditionalMaterialsDto>> getAdditionalMaterials(
             @PathVariable long studentId) {
-        return studentService.get(studentId)
-                .map(student -> getResponse(studentService.getAdditionalMaterials(student)))
-                .orElse(badRequest());
+        return getResponse(
+                studentService.get(studentId).map(studentService::getAdditionalMaterials));
+
     }
 
 

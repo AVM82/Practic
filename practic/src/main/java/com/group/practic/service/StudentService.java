@@ -10,6 +10,7 @@ import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.DaysCountable;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
@@ -17,9 +18,8 @@ import com.group.practic.enumeration.ChapterState;
 import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
 import com.group.practic.util.TimeCalculator;
-import jakarta.transaction.Transactional;
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -104,11 +104,10 @@ public class StudentService {
 
 
 
-    @Transactional
     public StudentEntity create(PersonEntity person, CourseEntity course) {
         if (get(person, course).isEmpty()) {
             StudentEntity student = studentRepository.save(new StudentEntity(person, course));
-            personService.addStudent(student);
+            personService.addStudent(person);
             return openNextChapter(student);
         }
         return null;
@@ -120,7 +119,7 @@ public class StudentService {
     }
 
 
-    public StudentEntity openNextChapter(StudentEntity student) {
+    protected StudentEntity openNextChapter(StudentEntity student) {
         Optional<ChapterEntity> chapter = courseService.getNextChapterByNumber(student.getCourse(),
                 student.getActiveChapterNumber());
         return studentRepository
@@ -139,14 +138,23 @@ public class StudentService {
     }
 
 
+    protected StudentEntity start(StudentEntity student) {
+        student.setStart(LocalDate.now());
+        return studentRepository.save(student);
+    }
+
+
     protected StudentEntity finish(StudentEntity student) {
         student.setInactive(true);
+        student.setActiveChapterNumber(0);
         student.setFinish(LocalDate.now());
-        student.setWeeks(
-                ((int) Duration.between(student.getFinish(), student.getStart()).toDays()) / 7);
+        student.setWeeks(TimeCalculator.daysToWeeksWithRounding(
+                Period.between(student.getFinish(), student.getStart()).getDays() + 1));
+        student.setDaysSpent(student.getStudentChapters().stream().map(DaysCountable::getDaysSpent)
+                .reduce(0, (a, b) -> a + b));
         this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Курс завершено",
                 "Вітаємо ви закінчили навчання на курсі \"" + student.getCourse().getName() + "\"");
-        return student;
+        return studentRepository.save(student);
     }
 
 
@@ -180,18 +188,38 @@ public class StudentService {
     }
 
 
-    public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter,
+    protected boolean allowToCloseChapter(StudentChapterEntity chapter) {
+        // --> complete the test immediately
+        return chapter.getState().changeAllowed(ChapterState.DONE);
+        // && chapter.getPractices().stream()
+        // .filter(practice -> practice.getState()== PracticeState.APPROVED).count()
+        // == chapter.getChapter().getParts().size()
+        // && chapter.getReportCount() > 0
+        // && chapter.quizResultIsSatisfactory
+    }
+
+
+    protected StudentChapterEntity changeChapterState(StudentChapterEntity chapter,
             ChapterState newState) {
-        // check chapter parameters if newState == ChapterState.DONE
-        boolean success = TimeCalculator.setNewState(chapter, newState);
-        if (success) {
+        // --> complete the test immediately
+        if (chapter.getState() == ChapterState.NOT_STARTED && newState == ChapterState.IN_PROCESS
+                && chapter.getNumber() == 1) {
+            start(chapter.getStudent());
+        }
+        if ((newState != ChapterState.DONE || allowToCloseChapter(chapter))
+                && TimeCalculator.setNewState(chapter, newState)) {
             studentChapterRepository.save(chapter);
             if (newState == ChapterState.DONE) {
                 openNextChapter(chapter.getStudent());
             }
         }
-        return Optional.of(new NewStateChapterDto(chapter.getState().name(),
-                chapter.getStudent().getActiveChapterNumber()));
+        return chapter;
+    }
+
+
+    public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter,
+            ChapterState newState) {
+        return Optional.of(new NewStateChapterDto(changeChapterState(chapter, newState)));
     }
 
 

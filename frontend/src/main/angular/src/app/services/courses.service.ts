@@ -184,6 +184,11 @@ export class CoursesService {
     return course;
   }
   
+  openStudentChapter(number: number): void {
+    let shortChapter = this.shortChapters?.find(chapter => chapter.number == number)!;
+    shortChapter.hidden = false;
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.

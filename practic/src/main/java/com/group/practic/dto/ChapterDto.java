@@ -21,7 +21,6 @@ public class ChapterDto {
     int reportCount;
 
 
-    @Transactional
     public static ChapterDto map(ChapterEntity entity, int reportCount) {
         ChapterDto dto = new ChapterDto();
         dto.id = entity.getId();

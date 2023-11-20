@@ -1,8 +1,8 @@
 package com.group.practic.dto;
 
+import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.Getter;
 
@@ -35,7 +35,6 @@ public class PersonDto {
     List<PersonApplicantDto> applicants;
 
 
-    @Transactional
     public static PersonDto map(PersonEntity entity) {
         if (entity == null) {
             return null;
@@ -49,7 +48,8 @@ public class PersonDto {
         dto.personPageUrl = entity.getPersonPageUrl();
         dto.roles = entity.getRoles().stream().map(RoleEntity::getName).toList();
         dto.students = entity.getStudents().stream().map(PersonStudentDto::map).toList();
-        dto.mentors = entity.getMentors().stream().map(PersonMentorDto::map).toList();
+        dto.mentors = entity.getMentors().stream().filter(MentorEntity::isActive)
+                .map(PersonMentorDto::map).toList();
         dto.applicants = entity.getApplicants().stream()
                 .filter(applicant -> !applicant.isApplied() && !applicant.isRejected())
                 .map(PersonApplicantDto::map).toList();

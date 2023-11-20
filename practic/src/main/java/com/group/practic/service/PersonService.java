@@ -7,7 +7,6 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
-import com.group.practic.entity.StudentEntity;
 import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.repository.PersonRepository;
 import com.group.practic.repository.RoleRepository;
@@ -241,7 +240,6 @@ public class PersonService implements UserDetailsService {
 
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return personRepository.findByEmail(email).orElse(createUserIfNotExists());
     }
@@ -298,13 +296,12 @@ public class PersonService implements UserDetailsService {
                 .password(passwordEncoder.encode(password)).build();
     }
 
-    @Transactional
+    
     public UserDetails loadUserById(long id) {
         return get(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
     }
 
 
-    @Transactional
     public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
         return personRepository.save(new PersonEntity(userDetails.getName(),
                 userDetails.getPassword(), 
@@ -331,40 +328,52 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public Optional<ApplicantDto> createApplication(CourseEntity course) {
-        return applicantService.create(me(), course).map(ApplicantDto::map);
+    public ApplicantDto createApplication(CourseEntity course) {
+        return ApplicantDto.map(applicantService.create(me(), course));
     }
 
 
-    public PersonEntity addMentor(MentorEntity mentor) {
-        PersonEntity person = mentor.getPerson();
-        person.getMentors().add(mentor);
-        return person.getMentors().size() == 1 ? addRole(person, roleMentor)
-                : personRepository.save(person);
+    public void addMentor(PersonEntity person) {
+        if (person.getMentors().size() == 1) {
+            addRole(person, roleMentor);
+        }
     }
 
 
-    public PersonEntity removeMentor(MentorEntity mentor) {
-        PersonEntity person = mentor.getPerson();
-        person.getMentors().remove(mentor);
-        return person.getMentors().isEmpty() ? removeRole(person, roleMentor)
-                : personRepository.save(person);
+    public void removeMentor(PersonEntity person) {
+        if (person.getMentors().stream().allMatch(MentorEntity::isInactive)) { 
+            removeRole(person, roleMentor);
+        }
     }
 
 
-    public PersonEntity addStudent(StudentEntity student) {
-        PersonEntity person = student.getPerson();
-        person.getStudents().add(student);
-        return person.getStudents().size() == 1 ? addRole(person, roleStudent)
-                : personRepository.save(person);
+    public void addStudent(PersonEntity person) {
+        if (person.getStudents().size() == 1) {
+            addRole(person, roleStudent);
+        }
     }
 
 
-    public PersonEntity removeStudent(StudentEntity student) {
-        PersonEntity person = student.getPerson();
-        person.getStudents().remove(student);
-        return person.getStudents().isEmpty() ? removeRole(person, roleStudent)
-                : personRepository.save(person);
+    public void removeStudent(PersonEntity person) {
+        if (person.getStudents().isEmpty()) {
+            removeRole(person, roleStudent);
+        }
     }
 
+    
+    public static boolean isMeMentor(long mentorId) {
+        return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == mentorId);
+    }
+    
+    
+    public static boolean isMeStudent(long studentId) {
+        return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == studentId);
+    }
+    
+    
+    public static boolean isMeApplicant(long applicantId) {
+        return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == applicantId);
+    }
+    
+    
 }

@@ -10,6 +10,7 @@ import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentEntity;
 import com.group.practic.repository.MentorRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class MentorService {
             mentor.setInactive(false);
         }
         mentor = mentorRepository.save(mentor);
-        personService.addMentor(mentor);
+        personService.addMentor(person);
         courseService.addMentor(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Новий ментор.",
                 "Вітаємо Вас як ментора курсу \"" + mentor.getCourse().getName() + "\". ");
@@ -88,11 +89,12 @@ public class MentorService {
 
 
     public boolean removeMentor(MentorEntity mentor) {
+        mentor.setInactive(true);
         courseService.removeMentor(mentor);
-        personService.removeMentor(mentor);
+        personService.removeMentor(mentor.getPerson());
+        mentorRepository.save(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Не ментор.",
                 "Вітаємо Вас. Ви вже не ментор курса \"" + mentor.getCourse().getName() + "\". ");
-        mentorRepository.delete(mentor);
         return true;
     }
 
@@ -115,8 +117,10 @@ public class MentorService {
   
 
     public StudentDto adminStudent(ApplicantEntity applicant) {
-        return applicant.isApplied() ? StudentDto.map(applicant.getStudent())
-                : StudentDto.map(studentService.create(applicantService.apply(applicant)));
+        StudentEntity student = studentService.create(applicantService.apply(applicant));
+        applicant.setStudent(student);
+        applicantService.save(applicant);
+        return StudentDto.map(student);
     }
 
 

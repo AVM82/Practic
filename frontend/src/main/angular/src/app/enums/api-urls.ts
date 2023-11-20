@@ -13,6 +13,7 @@ export enum ApiUrls {
 
   Students = '/api/students',
   StudentChapters = '/api/students/chapters/',
+  StudentChapterStates = '/api/students/chapters/state/',
   StudentAdditionalMaterials = '/api/students/additionalMaterials/',
   Practices = '/api/students/practices/',
   PracticeStates = '/api/students/practices/states',
@@ -92,3 +93,6 @@ export const addMentorUrl = (slug: string, id: number): string =>
 
 export const removeMentorUrl = (id: number): string =>
     ApiUrls.Mentors + `remove/` + id;
+
+export const getSetChapterStateUrl = (chapterId: number, newState: string): string =>
+    ApiUrls.StudentChapterStates + chapterId + `/` + newState;

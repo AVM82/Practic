@@ -62,14 +62,4 @@ public class StudentPracticeEntity implements Serializable, DaysCountable<Practi
 
     public StudentPracticeEntity() {}
 
-
-    public boolean setNewState(PracticeState newState) {
-        if (state.changeAllowed(newState)) {
-            state = newState;
-            updatedAt = LocalDateTime.now();
-            return true;
-        }
-        return false;
-    }
-
 }
