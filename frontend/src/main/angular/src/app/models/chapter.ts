@@ -66,13 +66,7 @@ export class ShortChapter extends BaseChapter {
     this.shortName = _shortName;
     this.hidden = _hidden;
   }
-  
-  open(): void {
-    this.hidden = false;
-    this.state = STATE_NOT_STARTED;
-    this.myReports = 0;
-    this.practices = [];
-  }
+
 }
 
 export interface NewStateChapter {

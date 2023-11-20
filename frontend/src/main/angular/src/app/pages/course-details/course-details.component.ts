@@ -71,7 +71,6 @@ export class CourseDetailsComponent implements OnInit {
 
   getChapters(chapters: ShortChapter[]) {
     this.shortChapters = chapters;
-    console.log(chapters)
   }
 
   setPractices() {
