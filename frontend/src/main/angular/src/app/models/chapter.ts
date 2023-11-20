@@ -5,25 +5,25 @@ import {STATE_NOT_STARTED} from 'src/app/enums/app-constans';
 class BaseChapter {
   id: number;
   number: number;
-  reportCount!: number;
-  myReports!: number;
-  state!: string;
+  reportCount: number;
+  myReports: number;
+  state: string;
   practices!: Practice[];
 
   constructor(
     _id: number,
     _number: number,
-    _reportCount: number | 0,
-    _myReports: number | 0,
-    _state: string | undefined,
-    _practices: Practice[] | []
+    _reportCount: number,
+    _myReports: number,
+    _state: string,
+    _practices: Practice[]
   ) {
     this.id = _id;
     this.number = _number;
-    this.reportCount = _reportCount;
-    this.myReports = _myReports;
-    this.state = _state ? _state : STATE_NOT_STARTED;
-    this.practices =_practices;
+    this.reportCount = _reportCount | 0;
+    this.myReports = _myReports | 0;
+    this.state = _state || STATE_NOT_STARTED;
+    this.practices = _practices || []; 
   }
 
 }

@@ -99,19 +99,17 @@ export class ChapterDetailsComponent implements OnInit {
     return this.chapter!.practices.filter(prac => prac.state === STATE_APPROVED).length == this.chapter!.parts.length;
   }
 
-  getPracticeState(chapterPartId: number): string | undefined {
-    return this.chapter!.practices?.find(practice => practice.chapterPartId === chapterPartId)?.state;
+  getPracticeState(chapterPartId: number): string {
+    return ':-)';
+    //return this.chapter!.practices?.find(practice => practice.chapterPartId === chapterPartId)?.state;
   }
   
   changeState(event: any) {
-    console.log(event);
     switch (event.target.innerText) {
       case BUTTON_CONTINUE:
       case BUTTON_START:  this.studentService.changeChapterState(this.chapter!, STATE_IN_PROCESS); 
                           break;
       case BUTTON_PAUSE:  this.studentService.changeChapterState(this.chapter!, STATE_PAUSE); 
-                          break;
-      case BUTTON_PAUSE:  this.studentService.changeChapterState(this.chapter!, STATE_DONE); 
                           break;
       case BUTTON_REPORT: this.router.navigate(['/courses', this.slug, 'reports']);
                           break;

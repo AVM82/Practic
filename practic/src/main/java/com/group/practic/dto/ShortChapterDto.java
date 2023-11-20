@@ -17,6 +17,8 @@ public class ShortChapterDto {
     String shortName;
 
     int reportCount;
+    
+    int myReports;
 
     boolean hidden;
 
@@ -51,6 +53,7 @@ public class ShortChapterDto {
         ShortChapterDto dto = map(chapter.getChapter(), false, reportCount);
         dto.state = chapter.getState().name();
         dto.practices = chapter.getPractices().stream().map(PracticeDto::map).toList();
+        dto.myReports = chapter.getReportCount();
         return dto;
     }
 
