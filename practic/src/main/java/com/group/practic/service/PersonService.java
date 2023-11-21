@@ -30,7 +30,6 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -234,7 +233,7 @@ public class PersonService implements UserDetailsService {
 
     public PersonEntity setEmailToMe(String email) {
         PersonEntity me = me();
-        me.setContacts(email);
+        me.setEmail(email);
         return personRepository.save(me);
     }
 
@@ -258,7 +257,6 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    @Transactional
     public AuthUserDto processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken,
             OidcUserInfo userInfo) {
         Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(attributes);
@@ -333,28 +331,28 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public void addMentor(PersonEntity person) {
+    public void addMentorRole(PersonEntity person) {
         if (person.getMentors().size() == 1) {
             addRole(person, roleMentor);
         }
     }
 
 
-    public void removeMentor(PersonEntity person) {
+    public void removeMentorRole(PersonEntity person) {
         if (person.getMentors().stream().allMatch(MentorEntity::isInactive)) { 
             removeRole(person, roleMentor);
         }
     }
 
 
-    public void addStudent(PersonEntity person) {
+    public void addStudentRole(PersonEntity person) {
         if (person.getStudents().size() == 1) {
             addRole(person, roleStudent);
         }
     }
 
 
-    public void removeStudent(PersonEntity person) {
+    public void removeStudentRole(PersonEntity person) {
         if (person.getStudents().isEmpty()) {
             removeRole(person, roleStudent);
         }
@@ -374,6 +372,5 @@ public class PersonService implements UserDetailsService {
     public static boolean isMeApplicant(long applicantId) {
         return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == applicantId);
     }
-    
     
 }

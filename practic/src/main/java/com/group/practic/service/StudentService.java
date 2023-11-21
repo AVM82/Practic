@@ -19,7 +19,7 @@ import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
 import com.group.practic.util.TimeCalculator;
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -90,11 +90,9 @@ public class StudentService {
     }
 
 
-    public List<StudentEntity> getStudentsOfCourse(long courseId, boolean inactive, boolean ban) {
-        Optional<CourseEntity> course = courseService.get(courseId);
-        return course.isPresent()
-                ? studentRepository.findAllByCourseAndInactiveAndBan(course.get(), inactive, ban)
-                : List.of();
+    public List<StudentEntity> getStudentsOfCourse(CourseEntity course, boolean inactive,
+            boolean ban) {
+        return studentRepository.findAllByCourseAndInactiveAndBan(course, inactive, ban);
     }
 
 
@@ -103,11 +101,10 @@ public class StudentService {
     }
 
 
-
     public StudentEntity create(PersonEntity person, CourseEntity course) {
         if (get(person, course).isEmpty()) {
             StudentEntity student = studentRepository.save(new StudentEntity(person, course));
-            personService.addStudent(person);
+            personService.addStudentRole(person);
             return openNextChapter(student);
         }
         return null;
@@ -128,9 +125,8 @@ public class StudentService {
 
 
     protected StudentEntity nextChapter(StudentEntity student, ChapterEntity chapter) {
-        StudentChapterEntity studentChapter =
-                studentChapterRepository.save(new StudentChapterEntity(student, chapter));
-        student.addChapter(studentChapter);
+        StudentChapterEntity studentChapter = new StudentChapterEntity(student, chapter);
+        studentChapterRepository.save(studentChapter);
         this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Новий розділ відкрито.",
                 "Розділ №" + studentChapter.getNumber() + " "
                         + studentChapter.getChapter().getShortName());
@@ -148,8 +144,7 @@ public class StudentService {
         student.setInactive(true);
         student.setActiveChapterNumber(0);
         student.setFinish(LocalDate.now());
-        student.setWeeks(TimeCalculator.daysToWeeksWithRounding(
-                Period.between(student.getFinish(), student.getStart()).getDays() + 1));
+        student.setWeeks((int) student.getStart().until(student.getFinish(), ChronoUnit.WEEKS));
         student.setDaysSpent(student.getStudentChapters().stream().map(DaysCountable::getDaysSpent)
                 .reduce(0, (a, b) -> a + b));
         this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Курс завершено",
@@ -201,7 +196,6 @@ public class StudentService {
 
     protected StudentChapterEntity changeChapterState(StudentChapterEntity chapter,
             ChapterState newState) {
-        // --> complete the test immediately
         if (chapter.getState() == ChapterState.NOT_STARTED && newState == ChapterState.IN_PROCESS
                 && chapter.getNumber() == 1) {
             start(chapter.getStudent());
@@ -219,7 +213,7 @@ public class StudentService {
 
     public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter,
             ChapterState newState) {
-        return Optional.of(new NewStateChapterDto(changeChapterState(chapter, newState)));
+        return Optional.of(NewStateChapterDto.map(changeChapterState(chapter, newState)));
     }
 
 

@@ -74,7 +74,7 @@ public class MentorService {
             mentor.setInactive(false);
         }
         mentor = mentorRepository.save(mentor);
-        personService.addMentor(person);
+        personService.addMentorRole(person);
         courseService.addMentor(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Новий ментор.",
                 "Вітаємо Вас як ментора курсу \"" + mentor.getCourse().getName() + "\". ");
@@ -91,7 +91,7 @@ public class MentorService {
     public boolean removeMentor(MentorEntity mentor) {
         mentor.setInactive(true);
         courseService.removeMentor(mentor);
-        personService.removeMentor(mentor.getPerson());
+        personService.removeMentorRole(mentor.getPerson());
         mentorRepository.save(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Не ментор.",
                 "Вітаємо Вас. Ви вже не ментор курса \"" + mentor.getCourse().getName() + "\". ");

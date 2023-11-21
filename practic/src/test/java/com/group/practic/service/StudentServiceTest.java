@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,16 +17,16 @@ import com.group.practic.enumeration.ChapterState;
 import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 
 class StudentServiceTest {
-
-    String slug = "example-slug";
 
     @InjectMocks
     private StudentService studentService;
@@ -163,7 +164,43 @@ class StudentServiceTest {
 
     @Test
     void testFinish() {
-
+        StudentChapterEntity studentChapter = 
+                new StudentChapterEntity(studentEntity, chapterEntity);
+        studentChapter.setState(ChapterState.IN_PROCESS);
+        studentChapter.setStartCounting(LocalDate.of(2023, 11, 1));
+        //add conditions
+        when(courseService.getNextChapterByNumber(any(), eq(0))).thenReturn(Optional.empty());
+        when(studentEntity.getPerson()).thenReturn(personEntity);
+        when(studentEntity.getCourse()).thenReturn(courseEntity);
+        when(studentEntity.getFinish()).thenReturn(LocalDate.of(2023, 12, 31));
+        when(studentEntity.getStart()).thenReturn(LocalDate.of(2023, 1, 1));
+        assertEquals(ChapterState.DONE, studentService
+                .changeChapterState(studentChapter, ChapterState.DONE).getState());
+        verify(studentEntity).setFinish(any());
+        verify(studentEntity).setInactive(true);
+        verify(studentEntity).setActiveChapterNumber(0);
+        verify(studentEntity).setWeeks(52);
+        verify(studentEntity).setDaysSpent(0);
+        verify(emailSenderService).sendEmail(any(), any(), any());
     }
 
+    
+    @Test
+    void testOpenNextChapter() {
+        ChapterEntity chapter = new ChapterEntity(); 
+        chapter.setNumber(1234567);
+        when(studentEntity.getPerson()).thenReturn(personEntity);
+        when(studentEntity.getActiveChapterNumber()).thenReturn(1000);
+        when(courseService.getNextChapterByNumber(any(), eq(1000)))
+                .thenReturn(Optional.of(chapter));
+        studentService.openNextChapter(studentEntity);
+        ArgumentCaptor<StudentChapterEntity> argument = 
+                ArgumentCaptor.forClass(StudentChapterEntity.class);
+        verify(studentChapterRepository).save(argument.capture());
+        assertEquals(1234567, argument.getValue().getNumber());
+        assertEquals(studentEntity, argument.getValue().getStudent());
+        assertEquals(chapter, argument.getValue().getChapter());
+        verify(emailSenderService).sendEmail(any(), any(), any());
+    }
+    
 }

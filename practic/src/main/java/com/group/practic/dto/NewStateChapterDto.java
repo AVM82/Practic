@@ -12,9 +12,11 @@ public class NewStateChapterDto {
     int activeChapterNumber;
 
 
-    public NewStateChapterDto(StudentChapterEntity chapter) {
-        this.state = chapter.getState().name();
-        this.activeChapterNumber = chapter.getStudent().getActiveChapterNumber();
+    public static NewStateChapterDto map(StudentChapterEntity chapter) {
+        NewStateChapterDto dto = new NewStateChapterDto();
+        dto.state = chapter.getState().name();
+        dto.activeChapterNumber = chapter.getStudent().getActiveChapterNumber();
+        return dto;
     }
 
 }
