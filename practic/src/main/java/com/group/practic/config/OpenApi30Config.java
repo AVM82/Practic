@@ -12,12 +12,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApi30Config {
     @Bean
-    public OpenAPI customizeOpenApi(BuildProperties buildProperties) {
+      public OpenAPI customizeOpenApi(BuildProperties buildProperties) {
         final String securitySchemeName = "Bearer Authentication";
         return new OpenAPI()
                 .info(new Info()
                         .title("Practic App API")
-                        .version(buildProperties.getVersion()))
+                           .version(buildProperties.getVersion()))
                 .addSecurityItem(new SecurityRequirement()
                         .addList(securitySchemeName))
                 .components(new Components()
