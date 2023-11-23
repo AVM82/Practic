@@ -6,13 +6,11 @@ import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentReportEntity;
-import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
 
 public interface Converter {
 

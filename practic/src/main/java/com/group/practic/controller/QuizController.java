@@ -5,6 +5,8 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 import com.group.practic.dto.QuizDto;
 import com.group.practic.service.QuizService;
 import jakarta.validation.constraints.Min;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")

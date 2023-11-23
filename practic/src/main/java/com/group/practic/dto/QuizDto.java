@@ -1,7 +1,6 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.QuizEntity;
-
 import java.util.List;
 
 public class QuizDto {
@@ -19,6 +18,8 @@ public class QuizDto {
         dto.setQuestions(questionDtos);
         return dto;
     }
+
+
     public Long getId() {
         return id;
     }

@@ -86,8 +86,8 @@ class QuizServiceTest {
         quizDto.setQuestions(Collections.singletonList(questionDto1));
         Long quizId = 1L;
         when(quizRepository.findById(quizId)).thenReturn(Optional.of(quizEntity));
-//        List<Boolean> result = quizService.getResult(quizId, quizDto);
-//        assertEquals(1, result.size());
-//        assertTrue(result.get(0));
+        // List<Boolean> result = quizService.getResult(quizId, quizDto);
+        // assertEquals(1, result.size());
+        // assertTrue(result.get(0));
     }
 }

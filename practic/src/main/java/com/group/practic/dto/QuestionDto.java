@@ -1,7 +1,6 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.QuestionEntity;
-
 import java.util.List;
 
 public class QuestionDto {
@@ -17,6 +16,7 @@ public class QuestionDto {
         dto.setAnswers(answerDtos);
         return dto;
     }
+
     public Long getId() {
         return id;
     }
