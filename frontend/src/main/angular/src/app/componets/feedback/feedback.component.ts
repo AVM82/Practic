@@ -25,7 +25,8 @@ export class FeedbackComponent implements OnInit {
     page = 1;
     pageSize = 5;
     dataSource = new MatTableDataSource<any>(this.feedbacks);
-    me!: User;
+    me?: User;
+    myId: number = 0;
     feedbackSortedState: string = "DATE_DESCENDING";
     @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 
@@ -34,7 +35,10 @@ export class FeedbackComponent implements OnInit {
         private dialog: MatDialog,
         private tokenStorageService: TokenStorageService
     ) {
-        this.me = this.tokenStorageService.getMe();
+        this.me = this.tokenStorageService.me;
+        if (this.me) {
+            this.myId = this.me.id;
+        }
     }
 
 
@@ -42,7 +46,7 @@ export class FeedbackComponent implements OnInit {
         this.feedbackService.getFeedbacks().subscribe(data => {
             if (data) {
                 this.feedbacks = [];
-                data.forEach(feedback => this.feedbacks.push(new Feedback(feedback, this.me.id)));
+                data.forEach(feedback => this.feedbacks.push(new Feedback(feedback, this.myId)));
                 this.dataSource = new MatTableDataSource<any>(this.feedbacks);
             }
         });
@@ -125,7 +129,7 @@ export class FeedbackComponent implements OnInit {
     incrementLike(feedback: Feedback) {
         this.feedbackService.incrementLikes(feedback).subscribe({
             next: (response) =>
-                feedback.update(response, this.me.id),
+                feedback.update(response, this.myId),
             error: (error) => {
                 if (error.status === 404)
                     this.deleteFeedbackById(feedback.id);
@@ -136,7 +140,7 @@ export class FeedbackComponent implements OnInit {
     decrementLike(feedback: Feedback) {
         this.feedbackService.decrementLikes(feedback).subscribe({
             next: (response) =>
-                feedback.update(response, this.me.id),
+                feedback.update(response, this.myId),
             error: (error) => {
                 if (error.status === 404)
                     this.deleteFeedbackById(feedback.id);
@@ -149,6 +153,6 @@ export class FeedbackComponent implements OnInit {
     }
 
     isAuthorOrAdmin(feedback: Feedback): boolean {
-        return feedback.personId == this.me.id || this.me.hasAdminRole();
+        return feedback.personId == this.myId || this.me!.hasAdminRole();
     }
 }
