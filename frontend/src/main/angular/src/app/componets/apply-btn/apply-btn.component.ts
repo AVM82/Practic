@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User } from 'src/app/models/user';
 import { PersonService } from 'src/app/services/person.service';
+import { StateApplicant } from 'src/app/models/applicant';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 const allowedUpdatePeriodMs = 5000;
 
@@ -14,22 +16,24 @@ const allowedUpdatePeriodMs = 5000;
 })
 export class ApplyBtnComponent implements OnInit {
   @Input() slug: string = '';
-  isApplicant: boolean = false;
+  applicant?: StateApplicant;
   me!: User;
   timeStampMs: number = 0;
 
   constructor(
-      private personService: PersonService
+    private tokenStorageService: TokenStorageService,
+    private personService: PersonService
   ) { }
 
   ngOnInit() {
-    this.me = this.personService.me;
-    this.isApplicant = this.me.isApplicant(this.slug);
+    this.me = this.tokenStorageService.me!;
+    this.applicant = this.me.getApplicant(this.slug);
   }
 
   checkIsNotStudent(): boolean {
-    if (this.me.isStudent(this.slug))
-      window.location.href = window.location.origin + `/courses/` + this.slug + `/chapters` + this.me.getCourseActiveChapterNumber(this.slug);
+    let student = this.me.getStudent(this.slug);
+    if (student)
+      window.location.href = window.location.origin + `/courses/` + this.slug + `/chapters/` + student.activeChapterNumber;
     return true;
   }
 
@@ -38,12 +42,12 @@ export class ApplyBtnComponent implements OnInit {
   }
 
   checkApplied() {
-    this.isApplicant = this.me.isApplicant(this.slug);
-    if (this.isApplicant) {
+    this.applicant = this.me.getApplicant(this.slug);
+    if (this.applicant) {
       const time = Date.now();
       if (time > this.timeStampMs) {
         this.timeStampMs = time + allowedUpdatePeriodMs;
-          this.personService.checkApplicant(this.me.getApplicant(this.slug)!.applicantId);
+          this.personService.checkApplicant(this.applicant.applicantId);
       }
     }
   }

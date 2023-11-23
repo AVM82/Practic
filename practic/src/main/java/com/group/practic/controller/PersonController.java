@@ -12,7 +12,6 @@ import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -69,10 +68,8 @@ public class PersonController {
             @PathVariable String newRole) {
         RoleEntity role = personService.getRole(newRole);
         return role == null ? badRequest()
-                : personService.get(id)
-                        .map(person -> postResponse(Optional.of(
-                                PersonDto.map(personService.addRole(person, role)))))
-                        .orElse(badRequest());
+                : postResponse(personService.get(id)
+                        .map(person -> PersonDto.map(personService.addRole(person, role))));
     }
 
 
@@ -82,10 +79,8 @@ public class PersonController {
             @PathVariable String newRole) {
         RoleEntity role = personService.getRole(newRole);
         return role == null ? badRequest()
-                : personService.get(id)
-                        .map(person -> postResponse(Optional.of(
-                                PersonDto.map(personService.removeRole(person, role)))))
-                        .orElse(badRequest());
+                : postResponse(personService.get(id)
+                        .map(person -> PersonDto.map(personService.removeRole(person, role))));
     }
 
 
@@ -97,16 +92,13 @@ public class PersonController {
 
     @GetMapping("/application/{id}")
     public ResponseEntity<ApplicantDto> isApplied(@PathVariable long id) {
-        return applicantService.get(id).map(applicant -> getResponse(ApplicantDto.map(applicant)))
-                .orElse(getResponse(new ApplicantDto()));
+        return getResponse(applicantService.get(id).map(ApplicantDto::map));
     }
 
 
     @PostMapping("/application/{slug}")
     public ResponseEntity<ApplicantDto> applicationForCourse(@PathVariable String slug) {
-        return courseService.get(slug)
-                .map(course -> postResponse(personService.createApplication(course)))
-                .orElse(badRequest());
+        return postResponse(courseService.get(slug).map(personService::createApplication));
     }
     
 }

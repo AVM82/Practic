@@ -12,6 +12,8 @@ import { TokenStorageService } from './token-storage.service';
 import { StateMentor } from '../models/mentor';
 import { SvgIconRegistryService } from 'angular-svg-icon';
 import { User } from '../models/user';
+import { STATE_NOT_STARTED } from '../enums/app-constans';
+import { Practice } from '../models/practice';
 
 const requestTextResponse: Object = {
   responseType: 'text'
@@ -184,6 +186,29 @@ export class CoursesService {
     return course;
   }
   
+  private getShortChapterByNumber(number:number): ShortChapter {
+    return this.shortChapters?.find(chapter => chapter.number === number)!;
+  }
+
+  openStudentChapter(number: number): void {
+    let shortChapter = this.getShortChapterByNumber(number);
+    shortChapter.hidden = false;
+    shortChapter.parts = [];
+    for(let part = 1; part <= shortChapter.partsCount; part++)
+      shortChapter.parts.push({common: undefined, practice: new Practice(0, part, STATE_NOT_STARTED)});
+  }
+
+  changeChapterState(number: number, state: string): void {
+    this.getShortChapterByNumber(number).state = state;
+  }
+
+  changePracticeState(chapterN: number, practice: Practice): void {
+    let shortChapter = this.getShortChapterByNumber(chapterN);
+    shortChapter.parts.find(part => practice.number === part.practice.number)!.practice.state = practice.state;
+  }
+
+
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.

@@ -13,7 +13,7 @@ public class FeedbackDto {
 
     private String name;
 
-    private  String profilePictureUrl;
+    private String profilePictureUrl;
 
     private String date;
 
