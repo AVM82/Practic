@@ -7,7 +7,7 @@ import { ApiUrls, getSetChapterStateUrl } from "../enums/api-urls";
 import { CoursesService } from "./courses.service";
 import { Practice } from "../models/practice";
 import { ChapterPart } from "../models/chapterpart";
-import { STATE_IN_PROCESS, STATE_PAUSE } from "../enums/app-constans";
+import { STATE_IN_PROCESS, STATE_PAUSE, STATE_READY_TO_REVIEW } from "../enums/app-constans";
 
 @Injectable({
     providedIn: 'root'
@@ -32,7 +32,7 @@ export class StudentService {
             chapter.state = state.state;
             if (state.state === STATE_PAUSE)
                 chapter.parts.forEach(part => {
-                    if (part.practice.state === STATE_IN_PROCESS)
+                    if (part.practice.state === STATE_IN_PROCESS || part.practice.state === STATE_READY_TO_REVIEW)
                         this.changePracticeState(chapter.number, part, STATE_PAUSE);
                 });
             this.coursesService.changeChapterState(chapter.number, chapter.state);

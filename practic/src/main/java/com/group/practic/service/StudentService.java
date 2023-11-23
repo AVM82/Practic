@@ -211,8 +211,7 @@ public class StudentService {
         if ((newState != ChapterState.DONE || allowToCloseChapter(chapter))
                 && TimeCalculator.setNewState(chapter, newState)) {
             if (newState == ChapterState.PAUSE) {
-                chapter.getPractices().forEach(practice ->
-                        changePracticeState(practice, PracticeState.PAUSE));
+                pausePractices(chapter.getPractices());
             }
             studentChapterRepository.save(chapter);
             if (newState == ChapterState.DONE) {
@@ -254,6 +253,15 @@ public class StudentService {
         studentChapter.getChapter().getParts().forEach(part -> result.add(studentPracticeRepository
                 .save(new StudentPracticeEntity(studentChapter, part.getNumber()))));
         return result;
+    }
+
+
+    protected void pausePractices(List<StudentPracticeEntity> practices) {
+        practices.forEach(practice -> {
+            if (practice.getState() == PracticeState.READY_TO_REVIEW)
+                changePracticeState(practice, PracticeState.IN_PROCESS);
+            changePracticeState(practice, PracticeState.PAUSE);
+        });
     }
 
 
