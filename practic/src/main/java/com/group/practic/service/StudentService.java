@@ -258,8 +258,9 @@ public class StudentService {
 
     protected void pausePractices(List<StudentPracticeEntity> practices) {
         practices.forEach(practice -> {
-            if (practice.getState() == PracticeState.READY_TO_REVIEW)
+            if (practice.getState() == PracticeState.READY_TO_REVIEW) {
                 changePracticeState(practice, PracticeState.IN_PROCESS);
+            }
             changePracticeState(practice, PracticeState.PAUSE);
         });
     }
