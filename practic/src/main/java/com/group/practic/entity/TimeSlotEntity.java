@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +16,8 @@ import java.time.LocalTime;
 @Table(name = "report_timeslots")
 public class TimeSlotEntity implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 5120231470538998998L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;

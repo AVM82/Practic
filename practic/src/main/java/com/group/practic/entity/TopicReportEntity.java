@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -15,6 +16,9 @@ import java.util.Objects;
 @Table(name = "topic_reports")
 public class TopicReportEntity implements Serializable {
 
+
+    @Serial
+    private static final long serialVersionUID = -4740269899087146025L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
