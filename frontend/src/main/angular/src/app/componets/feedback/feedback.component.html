@@ -12,7 +12,7 @@
         <button mat-menu-item (click)="sortData('DATE_ASCENDING')">Нещодавно створені</button>
         <button mat-menu-item (click)="sortData('DATE_DESCENDING')">Давно створені</button>
       </mat-menu>
-            <button class="create-feedback-button" (click)="openFeedbackDialog()">Залишити відгук</button>
+            <button *ngIf="me && !me.hasGuestRole()" class="create-feedback-button" (click)="openFeedbackDialog()">Залишити відгук</button>
     </div>
   </div>
 
@@ -25,7 +25,7 @@
     </div>
     <div class="card-info">
 
-      <div class="delete" [class.visible]="isAuthorOrAdmin(feedback)">
+      <div *ngIf="me" class="delete" [class.visible]="isAuthorOrAdmin(feedback)">
         <button mat-icon-button class="delete-button" (click)="deleteFeedback(feedback)" >
           <mat-icon class="delete-icon">clear</mat-icon>
         </button>
@@ -37,10 +37,14 @@
     </div>
     <div class="likes">
     
-      <button mat-icon-button class="like-button" >
+      <button *ngIf="me" mat-icon-button class="like-button" >
         <mat-icon class="like-icon" *ngIf="!feedback.meLiked" (click)="incrementLike(feedback)">favorite_border</mat-icon>
         <mat-icon class="like-icon" *ngIf="feedback.meLiked" (click)="decrementLike(feedback)">favorite</mat-icon>
       </button>
+
+        <button *ngIf="!me" mat-icon-button class="like-button" >
+            <mat-icon class="like-icon">favorite_border</mat-icon>
+        </button>
 
     <p>{{feedback.likes}}</p>
 
