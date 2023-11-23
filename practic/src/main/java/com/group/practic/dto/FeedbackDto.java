@@ -28,11 +28,11 @@ public class FeedbackDto {
         FeedbackDto dto = new FeedbackDto();
         dto.id = entity.getId();
         dto.likes = entity.getLikes();
-        dto.name = entity.getPerson().getName();
-        dto.profilePictureUrl = entity.getPerson().getProfilePictureUrl();
+        dto.name = entity.getName();
+        dto.profilePictureUrl = entity.getProfilePictureUrl();
         dto.feedback = entity.getFeedback();
         dto.date = entity.getDateTime().toString();
-        dto.personId = entity.getPerson().getId();
+        dto.personId = entity.getId();
         dto.likedByPerson = entity.getLikedByPerson();
         return dto;
     }

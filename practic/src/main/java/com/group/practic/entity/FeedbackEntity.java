@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -25,8 +24,11 @@ public class FeedbackEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    @ManyToOne
-    private PersonEntity person;
+    private long personId;
+
+    private String name;
+
+    private  String profilePictureUrl;
 
     @Size(min = 5, max = 320)
     @Column(length = 320)
@@ -38,20 +40,13 @@ public class FeedbackEntity {
 
     private Set<Long> likedByPerson = new HashSet<>();
 
-
     public FeedbackEntity() {}
 
 
-    public FeedbackEntity(PersonEntity student, String feedback) {
-        this.person = student;
+    public FeedbackEntity(PersonEntity person, String feedback) {
+        this.personId = person.id;
+        this.name = person.name;
+        this.profilePictureUrl = person.profilePictureUrl;
         this.feedback = feedback;
     }
-
- 
-    public FeedbackEntity(PersonEntity student, String feedback, int likes) {
-        this.person = student;
-        this.feedback = feedback;
-        this.likes = likes;
-    }
-
 }

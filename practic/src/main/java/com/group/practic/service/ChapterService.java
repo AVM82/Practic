@@ -19,13 +19,15 @@ public class ChapterService {
     ChapterRepository chapterRepository;
 
     ChapterPartService chapterPartService;
-
+    TopicReportService topicReportService;
 
     @Autowired
     public ChapterService(ChapterRepository chapterRepository,
-            ChapterPartService chapterPartService) {
+                          ChapterPartService chapterPartService,
+                          TopicReportService topicReportService) {
         this.chapterRepository = chapterRepository;
         this.chapterPartService = chapterPartService;
+        this.topicReportService = topicReportService;
     }
 
 
@@ -110,6 +112,7 @@ public class ChapterService {
                 ChapterEntity chapter = create(course, n, names[0], fullName);
                 if (chapter != null) {
                     chapterPartService.getChapterPartSet(chapter, prop);
+                    topicReportService.getChapterTopics(chapter, prop);
                     result.add(chapter);
                 }
             }
