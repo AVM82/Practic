@@ -26,8 +26,7 @@ public enum ChapterState implements StateCountable<ChapterState> {
 
 
     public boolean changeAllowed(ChapterState newState) {
-        return this == newState || newState.allowed.contains(this)
-                || (this.backward && allowed.contains(newState));
+        return newState.allowed.contains(this) || (this.backward && allowed.contains(newState));
     }
 
 
@@ -50,6 +49,12 @@ public enum ChapterState implements StateCountable<ChapterState> {
     @Override
     public boolean isStopCountingState() {
         return this == DONE || this == PAUSE;
+    }
+
+
+    @Override
+    public boolean isPauseState() {
+        return this == PAUSE;
     }
 
 }

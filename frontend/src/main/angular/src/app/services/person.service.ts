@@ -23,8 +23,17 @@ export class PersonService {
         this.me = this.tokenStorageService.me!;
     }
 
-    getAllUsers(): Observable<User[]> {
-        return this.http.get<User[]>(ApiUrls.Persons);
+    getAllUsers(users: User[]): void {
+        this.http.get<User[]>(ApiUrls.Persons).subscribe(freshUsers => {
+            users.length = 0;
+            freshUsers.forEach(fresh => {
+                let user = User.new(fresh);
+                if (fresh.id == this.me.id) {
+                    this.tokenStorageService.updateMe(user);
+                    users.push(this.tokenStorageService.me!);
+                } else 
+                    users.push(user);
+            })});
     }
 
     createApplication(slug: string): void {
@@ -44,9 +53,12 @@ export class PersonService {
 
     checkApplicant(id: number): void {
         this.http.get<Applicant>(getApplicationCheckUrl(id)).subscribe(applicant => {
-            if (this.tokenStorageService.me!.maybeNewStudent(applicant)
-                || this.tokenStorageService.me!.maybeNotApplicant(applicant))
+            if (this.tokenStorageService.me!.maybeNewStudent(applicant)) {
+                this.coursesService.openStudentChapter(applicant.student!.activeChapterNumber);
                 this.tokenStorageService.saveMe();
+            } else
+                if (this.tokenStorageService.me!.maybeNotApplicant(applicant))
+                    this.tokenStorageService.saveMe();
         });
     }
 

@@ -25,6 +25,11 @@ public class ApplicantService {
     }
 
 
+    public void save(ApplicantEntity applicant) {
+        applicantRepository.save(applicant);
+    }
+
+
     public Optional<ApplicantEntity> get(long id) {
         return applicantRepository.findById(id);
     }
@@ -41,9 +46,10 @@ public class ApplicantService {
     }
 
 
-    public Optional<ApplicantEntity> create(PersonEntity person, CourseEntity course) {
-        return Optional.of(get(person, course)
-                .orElse(applicantRepository.save(new ApplicantEntity(person, course))));
+    public ApplicantEntity create(PersonEntity person, CourseEntity course) {
+        Optional<ApplicantEntity> applicant = get(person, course);
+        return applicant.isPresent() ? applicant.get()
+                : applicantRepository.save(new ApplicantEntity(person, course));
     }
 
 

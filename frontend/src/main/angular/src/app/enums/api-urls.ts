@@ -13,9 +13,10 @@ export enum ApiUrls {
 
   Students = '/api/students',
   StudentChapters = '/api/students/chapters/',
+  StudentChapterStates = '/api/students/chapters/states/',
   StudentAdditionalMaterials = '/api/students/additionalMaterials/',
   Practices = '/api/students/practices/',
-  PracticeStates = '/api/students/practices/states',
+  PracticeStates = '/api/students/practices/states/',
   Reports = '/api/students/reports/course/',
   ReportStates = '/api/students/reports/states',
   ReportLikeList = '/api/students/reports/likes/',
@@ -92,3 +93,6 @@ export const addMentorUrl = (slug: string, id: number): string =>
 
 export const removeMentorUrl = (id: number): string =>
     ApiUrls.Mentors + `remove/` + id;
+
+export const getSetChapterStateUrl = (chapterId: number, newState: string): string =>
+    ApiUrls.StudentChapterStates + chapterId + `/` + newState;

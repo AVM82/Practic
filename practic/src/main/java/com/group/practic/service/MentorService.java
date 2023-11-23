@@ -4,12 +4,16 @@ import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentEntity;
+import com.group.practic.entity.StudentPracticeEntity;
+import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.MentorRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +77,7 @@ public class MentorService {
             mentor.setInactive(false);
         }
         mentor = mentorRepository.save(mentor);
-        personService.addMentor(mentor);
+        personService.addMentorRole(person);
         courseService.addMentor(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Новий ментор.",
                 "Вітаємо Вас як ментора курсу \"" + mentor.getCourse().getName() + "\". ");
@@ -88,11 +92,12 @@ public class MentorService {
 
 
     public boolean removeMentor(MentorEntity mentor) {
+        mentor.setInactive(true);
         courseService.removeMentor(mentor);
-        personService.removeMentor(mentor);
+        personService.removeMentorRole(mentor.getPerson());
+        mentorRepository.save(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Не ментор.",
                 "Вітаємо Вас. Ви вже не ментор курса \"" + mentor.getCourse().getName() + "\". ");
-        mentorRepository.delete(mentor);
         return true;
     }
 
@@ -112,11 +117,13 @@ public class MentorService {
                         getApplicantsForCourse(mentor.getCourse()))));
         return myApplicants;
     }
- 
+  
 
     public StudentDto adminStudent(ApplicantEntity applicant) {
-        return applicant.isApplied() ? StudentDto.map(applicant.getStudent())
-                : StudentDto.map(studentService.create(applicantService.apply(applicant)));
+        StudentEntity student = studentService.create(applicantService.apply(applicant));
+        applicant.setStudent(student);
+        applicantService.save(applicant);
+        return StudentDto.map(student);
     }
 
 
@@ -141,4 +148,19 @@ public class MentorService {
                 chapter -> ChapterDto.map(chapter, reportService.getActualReportCount(chapter)));
     }
 
+    
+    public PracticeDto approvePractice(StudentPracticeEntity practice) {
+        return studentService.changePracticeState(practice, PracticeState.APPROVED);
+    }
+    
+
+    public PracticeDto rejectPractice(StudentPracticeEntity practice) {
+        return studentService.changePracticeState(practice, PracticeState.IN_PROCESS);
+    }
+    
+    
+    public PracticeDto cancelApprovedPractice(StudentPracticeEntity practice) {
+        return studentService.changePracticeState(practice, PracticeState.READY_TO_REVIEW);
+    }
+    
 }

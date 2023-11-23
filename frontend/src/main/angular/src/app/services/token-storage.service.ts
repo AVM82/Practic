@@ -11,7 +11,6 @@ import { TOKEN_KEY, USER_KEY, httpOptions } from '../enums/app-constans';
   providedIn: 'root'
 })
 export class TokenStorageService {
-
   me: User | undefined;
 
   constructor(
@@ -19,7 +18,6 @@ export class TokenStorageService {
   ) { }
 
   getCurrentUser(): Observable<User> {
-    console.log('query current user ');
     return this.http.get<User>(ApiUrls.Me, httpOptions);
   }
 
