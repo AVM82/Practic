@@ -26,7 +26,6 @@ public class AnswerEntity implements Serializable {
     private boolean isCorrect;
 
     @ManyToOne
-    @JoinColumn(name = "question_id")
     private QuestionEntity question;
 
 

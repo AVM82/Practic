@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -23,11 +24,14 @@ import lombok.Setter;
 @Setter
 public class QuestionEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 358301213722284371L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
+
+    private int number;
 
     private String question;
 
