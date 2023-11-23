@@ -13,11 +13,11 @@ export class StatePipe implements PipeTransform {
     'PAUSE': 'на паузі',
     'READY_TO_REVIEW': 'на розгляді',
     'APPROVED': 'зараховано',
-    'DONE': 'завершено'
+    'DONE': 'пройдено'
   };
 
-  transform(state?: string): string {
-      return this.stateTranslations[state ? state : 'NOT_STARTED'];
+  transform(state: string): string {
+      return this.stateTranslations[state];
   }
 
 

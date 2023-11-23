@@ -24,8 +24,8 @@
           <div class="info-tag">
             Теорія: {{chapter.state | StatePipe}}
           </div>
-            <div *ngFor="let practice of chapter.practices" class="info-tag">
-                Практика: {{ practice.state | StatePipe }}
+            <div *ngFor="let part of chapter.parts" class="info-tag">
+                Практика {{chapter.parts.length > 1 ? part.practice.number : ''}}: {{ part.practice.state | StatePipe }}
             </div>
           <div class="info-tag">
             Доповідь: {{chapter.myReports == 0 ? 'не' : ''}} проведена
