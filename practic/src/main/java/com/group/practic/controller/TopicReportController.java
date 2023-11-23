@@ -25,10 +25,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/topicsreports")
 public class TopicReportController {
 
-    @Autowired
     TopicReportService reportService;
-    @Autowired
+
     ChapterService chapterService;
+
+
+    @Autowired
+    public TopicReportController(ChapterService chapterService,
+            TopicReportService reportService) {
+        this.chapterService = chapterService;
+        this.reportService = reportService;
+    }
 
     @GetMapping("/")
     public ResponseEntity<Collection<TopicReportEntity>> getAllTopics() {

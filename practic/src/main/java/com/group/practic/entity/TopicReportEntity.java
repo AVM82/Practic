@@ -7,12 +7,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Objects;
 
 
 @Entity
 @Table(name = "topic_reports")
-public class TopicReportEntity {
+public class TopicReportEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
