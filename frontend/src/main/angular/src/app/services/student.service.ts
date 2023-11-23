@@ -3,8 +3,11 @@ import { Injectable } from "@angular/core";
 import { TokenStorageService } from "./token-storage.service";
 import { Chapter, NewStateChapter } from "../models/chapter";
 import { StateStudent } from "../models/student";
-import { getSetChapterStateUrl } from "../enums/api-urls";
+import { ApiUrls, getSetChapterStateUrl } from "../enums/api-urls";
 import { CoursesService } from "./courses.service";
+import { Practice } from "../models/practice";
+import { ChapterPart } from "../models/chapterpart";
+import { STATE_IN_PROCESS, STATE_PAUSE } from "../enums/app-constans";
 
 @Injectable({
     providedIn: 'root'
@@ -27,6 +30,12 @@ export class StudentService {
     changeChapterState(chapter: Chapter, newState: string): void {
         this.http.put<NewStateChapter>(getSetChapterStateUrl(chapter.id, newState), {}).subscribe(state => {
             chapter.state = state.state;
+            if (state.state === STATE_PAUSE)
+                chapter.parts.forEach(part => {
+                    if (part.practice.state === STATE_IN_PROCESS)
+                        this.changePracticeState(chapter.number, part, STATE_PAUSE);
+                });
+            this.coursesService.changeChapterState(chapter.number, chapter.state);
             if (this.student.activeChapterNumber != state.activeChapterNumber) {
                 this.student.activeChapterNumber = state.activeChapterNumber;
                 if (state.activeChapterNumber == 0)
@@ -38,6 +47,13 @@ export class StudentService {
         })
     }
     
-    
+    changePracticeState(chapterN: number, part: ChapterPart, newState: string): void {
+        this.http.put<Practice>(ApiUrls.PracticeStates + part.practice.id + `/` + newState, {}).subscribe(fresh => {
+            part.practice.state = fresh.state;
+            this.coursesService.changePracticeState(chapterN, fresh);
+        })
+    }
+
+
 }
 

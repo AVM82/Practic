@@ -31,9 +31,9 @@ export class ApplyBtnComponent implements OnInit {
   }
 
   checkIsNotStudent(): boolean {
-    console.log('check id not student')
-    if (this.me.isStudent(this.slug))
-      window.location.href = window.location.origin + `/courses/` + this.slug + `/chapters` + this.me.getCourseActiveChapterNumber(this.slug);
+    let student = this.me.getStudent(this.slug);
+    if (student)
+      window.location.href = window.location.origin + `/courses/` + this.slug + `/chapters/` + student.activeChapterNumber;
     return true;
   }
 

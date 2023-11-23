@@ -55,16 +55,6 @@ export class CourseDetailsComponent implements OnInit {
         this.stateStudent = this.me.getStudent(slug);
         this.isStudent = this.stateStudent != undefined;
         this.isInvolved = this.isStudent || this.me.isMentor(slug);
-/*        
-        this.reportService.getAllActualReports(slug).subscribe(reports => {
-            if (reports) {
-              this.reports.push(...reports);
-              this.reports = [...this.reports];
-            }
-        });
-        if (this.student)
-          this.setPractices();
-*/
       }
     })
   }
@@ -72,20 +62,6 @@ export class CourseDetailsComponent implements OnInit {
   getChapters(chapters: ShortChapter[]) {
     this.shortChapters = chapters;
   }
-
-  setPractices() {
-/*    const practices = this.tokenStorageService.getPractice();
-    if(practices){
-      this.practices = practices;
-    } else {
-      this.chaptersService.getMyPractices().subscribe({
-        next: value => {
-          this.practices = value;
-          this.tokenStorageService.updatePractice(value);
-        }
-      })
-    }
-  */  }
 
   setEditMode(editMode: boolean) {
     this.editMode = editMode;

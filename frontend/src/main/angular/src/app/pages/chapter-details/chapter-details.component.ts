@@ -11,7 +11,7 @@ import {EditBtnComponent} from 'src/app/componets/edit-btn/edit-course.component
 import {MatChipsModule} from "@angular/material/chips";
 import {StatePipe} from "../../pipes/practice-state.pipe";
 import {PracticeButtonsVisibilityPipe} from "../../pipes/practice-btn-visibility.pipe";
-import { Chapter, ShortChapter } from 'src/app/models/chapter';
+import { Chapter } from 'src/app/models/chapter';
 import { Practice } from 'src/app/models/practice';
 import { User } from 'src/app/models/user';
 import { CoursesService } from 'src/app/services/courses.service';
@@ -21,7 +21,7 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { ChapterPart } from 'src/app/models/chapterpart';
 import { ReportButtonComponent } from 'src/app/componets/report-button/report-button.component';
 import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START,
-         STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE } from 'src/app/enums/app-constans';
+         STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW } from 'src/app/enums/app-constans';
 
 
 
@@ -39,14 +39,19 @@ export class ChapterDetailsComponent implements OnInit {
   practices: Practice[] = [];
   isStudent: boolean = false;
   isMentor: boolean = false;
-  shortChapters: ShortChapter[] = [];
   chapter?: Chapter;
   isActive: boolean = false;
   showPartNumber: boolean = false;
   number: number = 0;
   slug: string = '';
   me!: User;
+  readonly not_started = STATE_NOT_STARTED;
   readonly done = STATE_DONE;
+  readonly process = STATE_IN_PROCESS;
+  readonly pause = STATE_PAUSE;
+  readonly ready = STATE_READY_TO_REVIEW;
+  readonly approved = STATE_APPROVED;
+  service: StudentService;
 
   constructor(
     private coursesService: CoursesService,
@@ -58,6 +63,7 @@ export class ChapterDetailsComponent implements OnInit {
     private router: Router
   ) {
     this.me = this.tokenStorageService.getMe();
+    this.service = this.studentService;
   }
 
   ngOnInit(): void {
@@ -84,8 +90,8 @@ export class ChapterDetailsComponent implements OnInit {
       case STATE_NOT_STARTED: return BUTTON_START;
       case STATE_PAUSE: return BUTTON_CONTINUE;
       case STATE_IN_PROCESS: 
-//         if (!this.practicesHaveBeenApproved())
-//            return BUTTON_PAUSE;
+         if (this.notAllPracticesHaveBeenApproved())
+            return BUTTON_PAUSE;
 //          if (this.chapter!.myReports == 0)
 //            return BUTTON_REPORT;
 //          if (!this.chapter!.testIsPassed)
@@ -95,15 +101,10 @@ export class ChapterDetailsComponent implements OnInit {
     }
   }
 
-  private practicesHaveBeenApproved(): boolean {
-    return this.chapter!.practices.filter(prac => prac.state === STATE_APPROVED).length == this.chapter!.parts.length;
+  private notAllPracticesHaveBeenApproved(): boolean {
+    return this.chapter!.parts.filter(part => part.practice.state === STATE_APPROVED).length !== this.chapter!.parts.length;
   }
 
-  getPracticeState(chapterPartId: number): string {
-    return ':-)';
-    //return this.chapter!.practices?.find(practice => practice.chapterPartId === chapterPartId)?.state;
-  }
-  
   changeState(event: any) {
     switch (event.target.innerText) {
       case BUTTON_CONTINUE:
@@ -117,65 +118,6 @@ export class ChapterDetailsComponent implements OnInit {
                           break;
       default: console.error(' BUTTON failure : ', event.target.value);
     }
-  }
-
-  setPractices() {
- /*   const practices = this.tokenStorageService.getPractice();
-    if(practices){
-      this.practices = practices;
-    } else {
-      this.updatePractices();
-    }
-  */  }
-
-  updatePractices() {
-/*    this.chaptersService.getMyPractices().subscribe({
-      next: value => {
-        this.practices = value;
-        this.tokenStorageService.updatePractice(value);
-      }
-    })
-  */ }
-
-  playAction(chapterPart: ChapterPart) {
-    this.chaptersService.setPracticeState('IN_PROCESS', chapterPart.id).subscribe({
-      next: () => {
-        this.updatePractices();
-        this.messagesService.showMessage("Стан практичної змінено на стан 'В ПРОЦЕССІ'", "normal");
-      },
-      error: err => {
-        this.showError(err);
-      }
-    });
-  }
-
-  pauseAction(chapterPart: ChapterPart) {
-    this.chaptersService.setPracticeState('PAUSE', chapterPart.id).subscribe({
-      next: () => {
-        this.updatePractices();
-        this.messagesService.showMessage("Стан практичної змінено на стан 'НА ПАУЗІ'", "normal");
-      },
-      error: err => {
-        this.showError(err);
-      }
-    });
-  }
-
-  doneAction(chapterPart: ChapterPart) {
-    this.chaptersService.setPracticeState('READY_TO_REVIEW', chapterPart.id).subscribe({
-      next: () => {
-        this.updatePractices();
-        this.messagesService.showMessage("Стан практичної змінено на стан 'ГОТОВО ДО РЕВЬЮ'", "normal");
-      },
-      error: err => {
-        this.showError(err);
-      }
-    });
-  }
-
-  showError(error: any) {
-    console.error("Не можливо оновити статус практичної: " + error);
-    this.messagesService.showMessage("Помилка при зміні стану практичної. Див. консоль", "error");
   }
 
 }
