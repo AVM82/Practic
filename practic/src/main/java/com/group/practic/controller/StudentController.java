@@ -7,8 +7,8 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 import static com.group.practic.util.ResponseUtils.updateResponse;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
-import com.group.practic.dto.MentorPracticeDto;
 import com.group.practic.dto.NewStateChapterDto;
+import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentReportCreationDto;
@@ -26,7 +26,6 @@ import com.group.practic.enumeration.ReportState;
 import com.group.practic.service.AdditionalMaterialsService;
 import com.group.practic.service.CourseService;
 import com.group.practic.service.PersonService;
-import com.group.practic.service.StudentPracticeService;
 import com.group.practic.service.StudentReportService;
 import com.group.practic.service.StudentService;
 import com.group.practic.service.TimeSlotService;
@@ -58,8 +57,6 @@ public class StudentController {
 
     private StudentService studentService;
 
-    private final StudentPracticeService studentPracticeService;
-
     private final PersonService personService;
 
     private final StudentReportService studentReportService;
@@ -72,12 +69,10 @@ public class StudentController {
 
 
     @Autowired
-    public StudentController(StudentService studentService,
-            StudentPracticeService studentPracticeService, PersonService personService,
-            StudentReportService studentReportService, TimeSlotService timeSlotService,
-            CourseService courseService, AdditionalMaterialsService additionalMaterialsService) {
+    public StudentController(StudentService studentService, TimeSlotService timeSlotService,
+            PersonService personService, AdditionalMaterialsService additionalMaterialsService,
+            StudentReportService studentReportService, CourseService courseService) {
         this.studentService = studentService;
-        this.studentPracticeService = studentPracticeService;
         this.personService = personService;
         this.studentReportService = studentReportService;
         this.timeSlotService = timeSlotService;
@@ -92,19 +87,23 @@ public class StudentController {
             @RequestParam(required = false) Optional<Long> personId,
             @RequestParam(required = false) boolean inactive,
             @RequestParam(required = false) boolean ban) {
+        Optional<CourseEntity> course;
+        Optional<PersonEntity> person;
         if (courseId.isEmpty()) {
             if (personId.isEmpty()) {
                 return getResponse(studentService.get(inactive, ban));
             }
-            Optional<PersonEntity> person = personService.get(personId.get());
+            person = personService.get(personId.get());
             return person.isEmpty() ? badRequest()
                     : getResponse(studentService.getCoursesOfPerson(person.get(), inactive, ban));
         }
         if (personId.isEmpty()) {
-            return getResponse(studentService.getStudentsOfCourse(courseId.get(), inactive, ban));
+            course = courseService.get(courseId.get());
+            return course.isEmpty() ? badRequest()
+                    : getResponse(studentService.getStudentsOfCourse(course.get(), inactive, ban));
         }
-        Optional<PersonEntity> person = personService.get(personId.get());
-        Optional<CourseEntity> course = courseService.get(courseId.get());
+        person = personService.get(personId.get());
+        course = courseService.get(courseId.get());
         return person.isEmpty() || course.isEmpty() ? badRequest()
                 : getResponse(studentService.get(person.get(), course.get(), inactive, ban)
                         .map(List::of).orElseGet(List::of));
@@ -128,7 +127,7 @@ public class StudentController {
     }
 
 
-    @PutMapping("/chapters/state/{id}/{newStateString}")
+    @PutMapping("/chapters/states/{id}/{newStateString}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<NewStateChapterDto> stateChapter(@PathVariable long id,
             @PathVariable String newStateString) {
@@ -140,41 +139,16 @@ public class StudentController {
     }
 
 
-
-    /*
-     * @GetMapping("/practices/my")
-     * 
-     * @PreAuthorize("hasRole('STUDENT')") public ResponseEntity<Collection<PracticeDto>>
-     * getAllMyPractices() { return
-     * getResponse(studentPracticeService.getAllPracticesByStudent().stream()
-     * .map(Converter::convertToPractice).collect(Collectors.toSet())); }
-     */
-
-
-    @GetMapping("/practices/{practiceState}")
-    @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<Collection<MentorPracticeDto>> getPracticeWithStateFilter(
-            @PathVariable String practiceState) {
-        PracticeState state = PracticeState.fromString(practiceState);
-        List<StudentPracticeEntity> students = studentPracticeService.getAllStudentsByState(state);
-        return getResponse(students.stream().map(MentorPracticeDto::map).toList());
+    @PutMapping("/practices/states/{id}/{newStateString}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<PracticeDto> statePractice(@PathVariable long id,
+            @PathVariable String newStateString) {
+        PracticeState newState = PracticeState.fromString(newStateString);
+        Optional<StudentPracticeEntity> practice = studentService.getPractice(id);
+        return practice.isEmpty() || newState == PracticeState.APPROVED ? badRequest()
+                : updateResponse(
+                        Optional.of(studentService.changePracticeState(practice.get(), newState)));
     }
-
-
-    @GetMapping("/practices/states")
-    public ResponseEntity<Collection<String>> getPracticeStates() {
-        List<String> practiceStates = Arrays.stream(PracticeState.values())
-                .map(state -> state.name().toLowerCase()).toList();
-        return getResponse(practiceStates);
-    }
-
-    /*
-     * @PostMapping("/practices/state/{id}/{newState") public ResponseEntity<StudentPracticeDto>
-     * setPracticeState(
-     * 
-     * @RequestBody StudentPracticeDto studentPracticeDto) { return postResponse(
-     * StudentPracticeDto.map(studentPracticeService.changeState(studentPracticeDto))); }
-     */
 
 
     @GetMapping("/reports/states")

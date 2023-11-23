@@ -4,6 +4,7 @@ import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentDto;
 import com.group.practic.entity.ApplicantEntity;
@@ -11,6 +12,8 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentEntity;
+import com.group.practic.entity.StudentPracticeEntity;
+import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.MentorRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,4 +148,19 @@ public class MentorService {
                 chapter -> ChapterDto.map(chapter, reportService.getActualReportCount(chapter)));
     }
 
+    
+    public PracticeDto approvePractice(StudentPracticeEntity practice) {
+        return studentService.changePracticeState(practice, PracticeState.APPROVED);
+    }
+    
+
+    public PracticeDto rejectPractice(StudentPracticeEntity practice) {
+        return studentService.changePracticeState(practice, PracticeState.IN_PROCESS);
+    }
+    
+    
+    public PracticeDto cancelApprovedPractice(StudentPracticeEntity practice) {
+        return studentService.changePracticeState(practice, PracticeState.READY_TO_REVIEW);
+    }
+    
 }

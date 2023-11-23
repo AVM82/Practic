@@ -17,14 +17,14 @@ public class ShortChapterDto {
     String shortName;
 
     int reportCount;
-    
+
     int myReports;
 
     boolean hidden;
 
     String state;
 
-    List<PracticeDto> practices;
+    List<ChapterPartDto> parts;
 
 
     @Bean
@@ -52,7 +52,8 @@ public class ShortChapterDto {
     public static ShortChapterDto map(StudentChapterEntity chapter, int reportCount) {
         ShortChapterDto dto = map(chapter.getChapter(), false, reportCount);
         dto.state = chapter.getState().name();
-        dto.practices = chapter.getPractices().stream().map(PracticeDto::map).toList();
+        dto.parts = chapter.getPractices().stream().map(prac -> ChapterPartDto.map(null, prac))
+                .toList();
         dto.myReports = chapter.getReportCount();
         return dto;
     }

@@ -11,8 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,29 +34,27 @@ public class StudentPracticeEntity implements Serializable, DaysCountable<Practi
     @ManyToOne
     StudentChapterEntity studentChapter;
 
-    long chapterPartId;
-    
-    long courseId;
+    int number;
 
     @Enumerated(EnumType.STRING)
     PracticeState state = PracticeState.NOT_STARTED;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    LocalDateTime createdAt = LocalDateTime.now();
+    Timestamp createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = true)
-    LocalDateTime updatedAt;
+    Timestamp updatedAt;
 
     int daysSpent;
 
     LocalDate startCounting;
 
 
-    public StudentPracticeEntity(StudentChapterEntity studentChapter, long chapterPartId) {
+    public StudentPracticeEntity(StudentChapterEntity studentChapter, int number) {
         this.studentChapter = studentChapter;
-        this.chapterPartId = chapterPartId;
+        this.number = number;
     }
 
 

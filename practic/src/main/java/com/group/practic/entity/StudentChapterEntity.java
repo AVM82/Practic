@@ -12,11 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,7 +37,7 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
-    
+
     @ManyToOne
     StudentEntity student;
 
@@ -48,19 +51,20 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private java.sql.Timestamp createdAt;
+    Timestamp createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = true)
-    private java.sql.Timestamp updatedAt;
+    Timestamp updatedAt;
 
     int reportCount;
 
     @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
+    @OrderBy("number")
     private List<StudentPracticeEntity> practices = new ArrayList<>();
-    
+
     int daysSpent;
-    
+
     LocalDate startCounting;
 
 
@@ -71,6 +75,11 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
         this.student = student;
         this.chapter = chapter;
         this.number = chapter.number;
+    }
+
+
+    public Optional<StudentPracticeEntity> getPracticeByNumber(int number) {
+        return practices.stream().filter(prac -> prac.number == number).findFirst();
     }
 
 }
