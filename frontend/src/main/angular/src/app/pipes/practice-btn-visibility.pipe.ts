@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import {Practice} from "../models/practice";
-import { STATE_NOT_STARTED, STATE_PAUSE, STATE_IN_PROCESS, STATE_APPROVED, STATE_READY_TO_REVIEW } from '../enums/app-constans';
+import { STATE_NOT_STARTED, STATE_PAUSE, STATE_IN_PROCESS, STATE_READY_TO_REVIEW } from '../enums/app-constans';
 
 @Pipe({
   name: 'practiceBtnVisibility',
