@@ -71,3 +71,4 @@ public interface Converter {
         return studentReportEntityList.stream().map(Converter::convert).toList();
     }
 }
+ 
