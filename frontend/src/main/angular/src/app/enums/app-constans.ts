@@ -52,6 +52,10 @@ export const STATE_PAUSE = 'PAUSE';
 export const STATE_DONE = 'DONE';
 export const STATE_READY_TO_REVIEW = 'READY_TO_REVIEW';
 export const STATE_APPROVED = 'APPROVED';
+export const STATE_CANCELLED = 'CANCELLED';
+export const STATE_FINISHED = 'FINISHED';
+export const STATE_STARTED = 'STARTED';
+export const STATE_ANNOUNCED = 'ANNOUNCED';
 
 export class ChapterState {
   static readonly NOT_STARTED = STATE_NOT_STARTED;
@@ -68,6 +72,13 @@ export class PracticeState {
   static readonly APPROVED = STATE_APPROVED;
 }
 
+export class ReportState {
+  static readonly ANNOUNCED = STATE_ANNOUNCED;
+  static readonly STARTED = STATE_STARTED;
+  static readonly FINISHED = STATE_FINISHED;
+  static readonly APPROVED = STATE_APPROVED;
+  static readonly CANCELLED = STATE_CANCELLED;
+}
 
 export const BUTTON_START = 'ПОЧАТИ';
 export const BUTTON_FINISH = 'ЗАВЕРШИТИ';

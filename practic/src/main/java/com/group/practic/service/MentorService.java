@@ -4,6 +4,7 @@ import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.PersonStudentDto;
 import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentDto;
@@ -119,11 +120,11 @@ public class MentorService {
     }
   
 
-    public StudentDto adminStudent(ApplicantEntity applicant) {
+    public PersonStudentDto admitStudent(ApplicantEntity applicant) {
         StudentEntity student = studentService.create(applicantService.apply(applicant));
         applicant.setStudent(student);
         applicantService.save(applicant);
-        return StudentDto.map(student);
+        return PersonStudentDto.map(student);
     }
 
 

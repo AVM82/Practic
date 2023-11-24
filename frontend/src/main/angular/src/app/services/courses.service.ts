@@ -238,7 +238,7 @@ export class CoursesService {
   }
 
   approvePractice(studentId: number, chapterPartId: number): Observable<any> {
-    return this.http.post(ApiUrls.PracticeApprove, {studentId, chapterPartId});
+    return this.http.post(ApiUrls.MentorPractices, {studentId, chapterPartId});
   }
 
 

@@ -7,6 +7,7 @@ import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.PersonStudentDto;
 import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentDto;
@@ -98,9 +99,9 @@ public class MentorController {
 
     @PostMapping("/applicants/admit/{id}")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<StudentDto> adminStudent(@Min(1) @PathVariable long id) {
+    public ResponseEntity<PersonStudentDto> adminStudent(@Min(1) @PathVariable long id) {
         return getResponse(
-                applicantService.get(id).map(applicant -> mentorService.adminStudent(applicant)));
+                applicantService.get(id).map(applicant -> mentorService.admitStudent(applicant)));
     }
 
 
@@ -129,7 +130,14 @@ public class MentorController {
                 .map(course -> mentorService.getChapter(course, number).orElseGet(null)));
     }
 
+    
+    @GetMapping("/students")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Collection<StudentsForCourseDto>> getMyStudents() {
+        return getResponse(mentorService.getMyStudents());
+    }
 
+    
     @PutMapping("/practices/approve/{id}")
     @PreAuthorize("hasRole('MENTOR')")
     public ResponseEntity<PracticeDto> approvePractice(@PathVariable long id) {

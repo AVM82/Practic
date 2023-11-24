@@ -1,6 +1,8 @@
 package com.group.practic.dto;
 
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
+import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 
@@ -13,13 +15,17 @@ public class StudentDto {
 
     boolean ban;
     
-    String registered;
-
-    String slug;
-
+    String name;
+    
     int activeChapterNumber;
+    
+    String chapterState;
+    
+    List<PracticeDto> practices;
 
-
+    List<StudentReportDto> reports;
+    
+    
     public static StudentDto map(StudentEntity entity) {
         if (entity == null) {
             return null;
@@ -28,9 +34,11 @@ public class StudentDto {
         dto.id = entity.getId();
         dto.inactive = entity.isInactive();
         dto.ban = entity.isBan();
-        dto.registered = entity.getRegistered().toString();
-        dto.slug = entity.getCourse().getSlug();
+        dto.name = entity.getPerson().getName();
         dto.activeChapterNumber = entity.getActiveChapterNumber();
+        StudentChapterEntity chapter = entity.getStudentChapters().stream().filter(chapter -> chapter.getNumber() == dto.activeChapterNumber).findFirst().get(); 
+        dto.chapterState = chapter.getState().name();
+        dto.practices = chapter.getPractices().stream().map(PracticeDto::map).toList();
         return dto;
     }
 

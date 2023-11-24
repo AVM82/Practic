@@ -1,4 +1,4 @@
-h2 {
+h1 h2 {
     width: 100%;
     text-align: center;
 }
@@ -17,7 +17,19 @@ table {
     gap: 2px;
 }
 
-.applicant-row {
+.person-row {
     gap: 5px;
     background-color: rgb(173, 173, 164);
+}
+
+br {
+    margin: 10px;
+}
+
+.approve {
+    background-color:palegreen;
+}
+
+.reject {
+    background-color: tomato;
 }
