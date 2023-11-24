@@ -38,6 +38,7 @@ public interface PropertyUtil {
 
     public static final String ADDITIONAL_PART = "add.";
 
+    public static final String TOPIC_REPORT_PART = "topic.";
 
     public static boolean keyStartsWith(Object key, String start) {
         return ((String) key).startsWith(start);

@@ -16,19 +16,19 @@ export class FeedbackService {
     }
 
     postData(feedback: string): Observable<Feedback> {
-        return this.http.post<Feedback>(ApiUrls.Feedbacks, feedback, httpOptions)
+        return this.http.post<Feedback>(ApiUrls.Feedbacks + `/`, feedback, httpOptions)
     }
 
     incrementLikes(feedback: Feedback): Observable<Feedback>{
-      return this.http.patch<Feedback>(ApiUrls.Feedbacks + `add/` + feedback.id, {});
+      return this.http.patch<Feedback>(ApiUrls.Feedbacks  + `/add/` + feedback.id, {});
     }
 
     decrementLikes(feedback: Feedback): Observable<Feedback> {
-        return this.http.patch<Feedback>(ApiUrls.Feedbacks + `remove/` + feedback.id, {});
+        return this.http.patch<Feedback>(ApiUrls.Feedbacks + `/remove/` + feedback.id, {});
     }
 
     deleteFeedback(feedbackId: number): Observable<Feedback> {
-        return this.http.delete<Feedback>(ApiUrls.Feedbacks + `delete/` + feedbackId);
+        return this.http.delete<Feedback>(ApiUrls.Feedbacks + `/delete/` + feedbackId);
     }
 
 }

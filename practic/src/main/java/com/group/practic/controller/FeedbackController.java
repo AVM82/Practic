@@ -31,7 +31,7 @@ public class FeedbackController {
         this.service = service;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<Collection<FeedbackDto>> getAllFeedbacks() {
         return getResponse(service.getAllFeedbacks());
     }

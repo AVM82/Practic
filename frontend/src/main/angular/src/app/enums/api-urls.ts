@@ -3,7 +3,7 @@ export enum ApiUrls {
   Persons = '/api/persons',
   Application = '/api/persons/application/',
   
-  Feedbacks = '/api/feedbacks/',
+  Feedbacks = '/api/feedbacks',
 
   Courses = '/api/courses',
   Course = '/api/courses/',
