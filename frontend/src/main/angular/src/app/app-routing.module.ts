@@ -19,6 +19,7 @@ import { FeedbackComponent } from './componets/feedback/feedback.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { StartPanelComponent } from './pages/start-panel/start-panel.component';
 import { UsersComponent } from './pages/users/users.component';
+import { BannedComponent } from './pages/ban/ban.component';
 
 registerLocaleData(localeUk, 'uk');
 
@@ -27,6 +28,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'logout', component: LoginComponent},
   {path: 'feedback',component: FeedbackComponent},
+  {path: 'ban', component: BannedComponent},
 
   {path: 'users', component: UsersComponent},
   {path: 'mentor', component: MentorDashboardComponent,

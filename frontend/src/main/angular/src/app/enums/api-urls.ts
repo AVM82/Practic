@@ -25,7 +25,8 @@ export enum ApiUrls {
 
   Mentors = '/api/mentors/',
   Applicants = '/api/mentors/applicants',
-  PracticeApprove = '/api/mentors/practices',
+  CourseStudents = '/api/mentors/students',
+  MentorPractices = '/api/mentors/practices',
 
   EmailPassAuth = 'api/register',
 

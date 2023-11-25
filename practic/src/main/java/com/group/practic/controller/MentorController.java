@@ -7,9 +7,10 @@ import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.PersonStudentDto;
 import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
-import com.group.practic.dto.StudentDto;
+import com.group.practic.dto.StudentsForCourseDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
@@ -75,7 +76,7 @@ public class MentorController {
     public ResponseEntity<Boolean> removeMentor(@Min(1) @PathVariable long id) {
         Optional<MentorEntity> mentor = mentorService.get(id);
         return mentor.isEmpty() ? badRequest()
-                : getResponse(Optional.of(mentorService.removeMentor(mentor.get())));
+                : getResponse(Optional.of(mentorService.removeMentor(mentor.get()).isInactive()));
     }
 
 
@@ -98,9 +99,9 @@ public class MentorController {
 
     @PostMapping("/applicants/admit/{id}")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<StudentDto> adminStudent(@Min(1) @PathVariable long id) {
+    public ResponseEntity<PersonStudentDto> adminStudent(@Min(1) @PathVariable long id) {
         return getResponse(
-                applicantService.get(id).map(applicant -> mentorService.adminStudent(applicant)));
+                applicantService.get(id).map(applicant -> mentorService.admitStudent(applicant)));
     }
 
 
@@ -127,6 +128,13 @@ public class MentorController {
             @Min(1) @PathVariable int number) {
         return getResponse(courseService.get(slug).filter(mentorService::isMyCourse)
                 .map(course -> mentorService.getChapter(course, number).orElseGet(null)));
+    }
+
+
+    @GetMapping("/students")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Collection<StudentsForCourseDto>> getMyStudents() {
+        return getResponse(mentorService.getMyStudents());
     }
 
 

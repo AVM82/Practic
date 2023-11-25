@@ -20,12 +20,11 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
     List<StudentEntity> findAllByPersonAndInactiveAndBan(PersonEntity personEntity,
             boolean inactive, boolean ban);
 
-    List<StudentEntity> findAllByCourseAndInactiveAndBan(CourseEntity courseEntity,
-            boolean inactive, boolean ban);
+    List<StudentEntity> findAllByCourseAndInactiveAndBanOrderByActiveChapterNumber(
+            CourseEntity courseEntity, boolean inactive, boolean ban);
 
-    List<StudentEntity> 
-            findAllByBanFalseAndInactiveFalseAndActiveChapterNumberEquals(
-                    int chapterNumber);
+    List<StudentEntity> findAllByBanFalseAndInactiveFalseAndActiveChapterNumberEquals(
+            int chapterNumber);
 
     Optional<StudentEntity> findByPersonAndCourse(PersonEntity person, CourseEntity course);
 

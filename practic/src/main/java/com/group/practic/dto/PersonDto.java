@@ -41,6 +41,8 @@ public class PersonDto {
         }
         PersonDto dto = new PersonDto();
         dto.id = entity.getId();
+        dto.inactive = entity.isInactive();
+        dto.ban = entity.isBan();
         dto.name = entity.getName();
         dto.discord = entity.getDiscord();
         dto.email = entity.getEmail();

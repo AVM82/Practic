@@ -4,6 +4,7 @@ import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.repository.ApplicantRepository;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,4 +71,10 @@ public class ApplicantService {
         return applicantRepository.save(applicant);
     }
 
+    
+    public List<ApplicantEntity> reject(Collection<ApplicantEntity> applicants) {
+        return applicantRepository.saveAll(applicants.stream()
+                .map(ApplicantEntity::reject).toList());
+    }
+    
 }

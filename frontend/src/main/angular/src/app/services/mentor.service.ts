@@ -4,11 +4,13 @@ import { Observable } from "rxjs/internal/Observable";
 import { HttpClient } from "@angular/common/http";
 import { TokenStorageService } from "./token-storage.service";
 import { ApiUrls, addMentorUrl, removeMentorUrl } from "../enums/api-urls";
-import { StateStudent } from "../models/student";
+import { CourseStudents, StateStudent } from "../models/student";
 import { User } from "../models/user";
 import { Course } from "../models/course";
 import { Mentor, StateMentor } from "../models/mentor";
 import { CoursesService } from "./courses.service";
+import { Practice } from "../models/practice";
+import { Report } from "../models/report";
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +22,14 @@ export class MentorService {
         private coursesService: CoursesService,
         private http: HttpClient
     ) {}
+
+    getMyCourses(myCourses: Course[]): void {
+        for(let mentorCourse of this.tokenStorageService.me!.mentors)
+            this.coursesService.getCourse(mentorCourse.slug).subscribe(course => {
+                if (course)
+                    myCourses.push(course)
+            });
+    }
 
     getMyApplicants(): Observable<CourseApplicants[]> {
         return this.http.get<CourseApplicants[]>(ApiUrls.Applicants);
@@ -75,4 +85,29 @@ export class MentorService {
         });
     }
 
+    getMyStudents(): Observable<CourseStudents[]> {
+        return this.http.get<CourseStudents[]>(ApiUrls.CourseStudents);
+    }
+
+    approvePractice(practice: Practice): void {
+        this.http.put<Practice>(ApiUrls.MentorPractices + `/approve/` + practice.id, {}).subscribe(fresh =>
+            practice.state = fresh.state);
+    }
+
+    rejectPractice(practice: Practice): void {
+        this.http.put<Practice>(ApiUrls.MentorPractices + `/reject/` + practice.id, {}).subscribe(fresh =>
+            practice.state = fresh.state);
+    }
+
+    approveReport(report: Report): void {
+        this.http.put<Report>(ApiUrls.MentorPractices + `/approve/` + report.id, {}).subscribe(fresh =>
+            report.state = fresh.state);
+    }
+
+    rejectReport(report: Report): void {
+        this.http.put<Report>(ApiUrls.MentorPractices + `/reject/` + report.id, {}).subscribe(fresh =>
+            report.state = fresh.state);
+    }
+
+    
 }

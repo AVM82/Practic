@@ -9,7 +9,9 @@ import com.group.practic.dto.PersonDto;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.ApplicantService;
 import com.group.practic.service.CourseService;
+import com.group.practic.service.MentorService;
 import com.group.practic.service.PersonService;
+import com.group.practic.service.StudentService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,23 +30,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    private PersonService personService;
+    PersonService personService;
 
-    private ApplicantService applicantService;
+    ApplicantService applicantService;
+
+    MentorService mentorService;
+
+    StudentService studentService;
 
     CourseService courseService;
 
-    
+
     @Autowired
     public PersonController(PersonService personService, CourseService courseService,
-            ApplicantService applicantService) {
+            ApplicantService applicantService, MentorService mentorService,
+            StudentService studentService) {
         this.personService = personService;
         this.courseService = courseService;
         this.applicantService = applicantService;
+        this.mentorService = mentorService;
+        this.studentService = studentService;
     }
 
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<Collection<PersonDto>> getAll() {
+        return getResponse(PersonDto.map(personService.get()));
+    }
+
+
+    @GetMapping("/")
     @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
     public ResponseEntity<Collection<PersonDto>> get(@RequestParam(required = false) String name,
             @RequestParam(required = false) boolean inactive,
@@ -62,10 +79,24 @@ public class PersonController {
     }
 
 
+    @PutMapping("/ban/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PersonDto> ban(@PathVariable long id) {
+        return getResponse(personService.get(id)
+                .map(person -> {
+                    applicantService.reject(person.getApplicants());
+                    studentService.ban(person.getStudents());
+                    mentorService.removeMentors(person.getMentors());
+                    return person;
+                })
+                .map(personService::ban)
+                .map(PersonDto::map));
+    }
+
+
     @PostMapping("/{id}/add/{newRole}")
     @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
-    public ResponseEntity<PersonDto> addRole(@PathVariable long id,
-            @PathVariable String newRole) {
+    public ResponseEntity<PersonDto> addRole(@PathVariable long id, @PathVariable String newRole) {
         RoleEntity role = personService.getRole(newRole);
         return role == null ? badRequest()
                 : postResponse(personService.get(id)
@@ -86,7 +117,7 @@ public class PersonController {
 
     @GetMapping("/me")
     public ResponseEntity<PersonDto> getCurrentUser() {
-        return getResponse(PersonDto.map(PersonService.me()));
+        return getResponse(PersonDto.map(personService.getMe()));
     }
 
 
@@ -100,5 +131,5 @@ public class PersonController {
     public ResponseEntity<ApplicantDto> applicationForCourse(@PathVariable String slug) {
         return postResponse(courseService.get(slug).map(personService::createApplication));
     }
-    
+
 }
