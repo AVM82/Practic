@@ -10,7 +10,7 @@ import com.group.practic.dto.MentorDto;
 import com.group.practic.dto.PersonStudentDto;
 import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
-import com.group.practic.dto.StudentDto;
+import com.group.practic.dto.StudentsForCourseDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;

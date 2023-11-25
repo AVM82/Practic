@@ -8,6 +8,7 @@ import com.group.practic.dto.PersonStudentDto;
 import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentDto;
+import com.group.practic.dto.StudentsForCourseDto;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
@@ -119,6 +120,23 @@ public class MentorService {
         return myApplicants;
     }
   
+
+    public List<StudentsForCourseDto> getMyStudents() {
+        List<StudentsForCourseDto> myStudents = new ArrayList<>();
+        get(PersonService.me()).forEach(
+                mentor -> myStudents.add(new StudentsForCourseDto(mentor.getCourse(),
+                        getStudentsForCourse(mentor.getCourse()))));
+        return myStudents;
+    }
+  
+
+    public List<StudentDto> getStudentsForCourse(CourseEntity course) {
+        List<StudentDto> students = new ArrayList<>();
+        studentService.getStudentsOfCourse(course, false, false)
+                .forEach(student -> students.add(StudentDto.map(student)));
+        return students;
+    }
+
 
     public PersonStudentDto admitStudent(ApplicantEntity applicant) {
         StudentEntity student = studentService.create(applicantService.apply(applicant));

@@ -22,8 +22,8 @@
          *ngFor="let feedback of feedbacks | slice: (page - 1) * pageSize : page * pageSize; let i = index">
         <div class="user-info">
             <p class="username">{{ feedback.name || "Немає ім'я" }}</p>
-            <img class="userpic" [src]="feedback.profilePictureUrl || 'URL зображення відсутьній'"
-                 alt="https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg">
+            <img class="userpic" [src]="feedback.profilePictureUrl || 'assets/default_profile_picture.png'"
+                 alt="avatar">
             <p class="date"> {{getDate(feedback.date)}}</p>
         </div>
         <div class="card-info">

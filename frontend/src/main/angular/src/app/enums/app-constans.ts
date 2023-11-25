@@ -39,6 +39,7 @@ export class Roles {
   static readonly STUDENT = ROLE_STUDENT;
   static readonly GUEST = ROLE_GUEST;  
   static readonly ADVANCED: string [] = [ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE, ROLE_MENTOR];
+  static readonly isAdvanceRole = (role: string): boolean => Roles.ADVANCED.some(adv => adv === role);
 }
 
 export const ROLES = [ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE, ROLE_MENTOR, ROLE_STUDENT, ROLE_GUEST];

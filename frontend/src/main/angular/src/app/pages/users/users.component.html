@@ -62,23 +62,20 @@
     <ng-template matMenuContent parentMenu="mentorMenu" let-user="u" let-add="add">
         <div *ngIf="add" class="course-add">
             <div *ngFor="let course of courses">
-                <div mat-menu-item *ngIf="!user.isMentor(course.slug)" class="menuitem" (click)="mentorService.addMentor(course, user)">
-                    <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
+                <div mat-menu-item *ngIf="!user.isMentor(course.slug) && !user.isApplicant(course.slug) && !user.isStudent(course.slug)"
+                        class="menuitem" 
+                        (click)="mentorService.addMentor(course, user)">
+                        <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
                     {{course.name}}
                 </div>
-<!---   Розкоментувати на  PROD
-                <div mat-menu-item *ngIf="!user.isMentor(course.slug) && !user.isApplicant(course.slug) && !user.isStudent(course.slug)"
-                     class="menuitem" (click)="mentorService.addMentor(course, user)">
-                     <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
-                     {{course.name}}
-                </div>
---->
             </div>
         </div>
         <div *ngIf="!add" class="course-remove">
             <div *ngFor="let course of courses">
-                <div mat-menu-item *ngIf="user.isMentor(course.slug)" class="menuitem" (click)="mentorService.removeMentor(course, user)">
-                    <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
+                <div mat-menu-item *ngIf="user.isMentor(course.slug)" 
+                        class="menuitem" 
+                        (click)="mentorService.removeMentor(course, user)">
+                        <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
                     {{course.name}}
                 </div>
             </div>

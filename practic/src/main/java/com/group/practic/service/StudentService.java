@@ -100,7 +100,7 @@ public class StudentService {
 
     public List<StudentEntity> getStudentsOfCourse(CourseEntity course, boolean inactive,
             boolean ban) {
-        return studentRepository.findAllByCourseAndInactiveAndBan(course, inactive, ban);
+        return studentRepository.findAllByCourseAndInactiveAndBanOrderByActiveChapterNumber(course, inactive, ban);
     }
 
 

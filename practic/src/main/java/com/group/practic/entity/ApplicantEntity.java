@@ -30,7 +30,7 @@ public class ApplicantEntity implements Serializable {
     @ManyToOne
     PersonEntity person;
 
-    @OneToOne
+    @ManyToOne
     CourseEntity course;
     
     @Column(columnDefinition = "boolean default false")

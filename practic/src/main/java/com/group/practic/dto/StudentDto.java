@@ -14,18 +14,18 @@ public class StudentDto {
     boolean inactive;
 
     boolean ban;
-    
+
     String name;
-    
+
     int activeChapterNumber;
-    
+
     String chapterState;
-    
+
     List<PracticeDto> practices;
 
     List<StudentReportDto> reports;
-    
-    
+
+
     public static StudentDto map(StudentEntity entity) {
         if (entity == null) {
             return null;
@@ -36,9 +36,13 @@ public class StudentDto {
         dto.ban = entity.isBan();
         dto.name = entity.getPerson().getName();
         dto.activeChapterNumber = entity.getActiveChapterNumber();
-        StudentChapterEntity chapter = entity.getStudentChapters().stream().filter(chapter -> chapter.getNumber() == dto.activeChapterNumber).findFirst().get(); 
-        dto.chapterState = chapter.getState().name();
-        dto.practices = chapter.getPractices().stream().map(PracticeDto::map).toList();
+        Optional<StudentChapterEntity> chapter = entity.getStudentChapters().stream()
+                .filter(studentChapter -> studentChapter.getNumber() == dto.activeChapterNumber)
+                .findFirst();
+        if (chapter.isPresent()) {
+            dto.chapterState = chapter.get().getState().name();
+            dto.practices = chapter.get().getPractices().stream().map(PracticeDto::map).toList();
+        }
         return dto;
     }
 
