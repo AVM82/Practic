@@ -73,7 +73,8 @@ public class ApplicantService {
 
     
     public List<ApplicantEntity> reject(Collection<ApplicantEntity> applicants) {
-        return applicantRepository.saveAll(applicants.stream().map(ApplicantEntity::reject).toList());
+        return applicantRepository.saveAll(applicants.stream()
+                .map(ApplicantEntity::reject).toList());
     }
     
 }

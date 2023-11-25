@@ -385,7 +385,8 @@ public class PersonService implements UserDetailsService {
     public PersonEntity ban(PersonEntity person) {
         person.setBan(true);
         person.setRoles(Set.of());
-        this.emailSenderService.sendEmail(person.getEmail(), "Бан !!!", "Вітаємо. Вас повністю забанено.");
+        this.emailSenderService.sendEmail(person.getEmail(), "Бан !!!",
+                "Вітаємо. Вас повністю забанено.");
         return personRepository.save(person);
     }
 

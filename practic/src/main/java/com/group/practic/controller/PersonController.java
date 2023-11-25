@@ -72,25 +72,25 @@ public class PersonController {
     }
 
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<PersonDto> get(@Min(1) @PathVariable long id) {
+        return getResponse(personService.get(id).map(PersonDto::map));
+    }
+
+
     @PutMapping("/ban/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PersonDto> ban(@PathVariable long id) {
         return getResponse(personService.get(id)
                 .map(person -> {
-                        applicantService.reject(person.getApplicants());
-                        studentService.ban(person.getStudents());
-                        mentorService.removeMentors(person.getMentors());
-                        return person;
+                    applicantService.reject(person.getApplicants());
+                    studentService.ban(person.getStudents());
+                    mentorService.removeMentors(person.getMentors());
+                    return person;
                 })
                 .map(personService::ban)
                 .map(PersonDto::map));
-    }
-
-
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
-    public ResponseEntity<PersonDto> get(@Min(1) @PathVariable long id) {
-        return getResponse(personService.get(id).map(PersonDto::map));
     }
 
 
