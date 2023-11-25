@@ -193,6 +193,7 @@ export class CoursesService {
   openStudentChapter(number: number): void {
     let shortChapter = this.getShortChapterByNumber(number);
     shortChapter.hidden = false;
+    shortChapter.state = STATE_NOT_STARTED;
     shortChapter.parts = [];
     for(let part = 1; part <= shortChapter.partsCount; part++)
       shortChapter.parts.push({common: undefined, practice: new Practice(0, part, STATE_NOT_STARTED)});
