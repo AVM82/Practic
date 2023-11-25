@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,6 +60,13 @@ public class PersonController {
             return getResponse(PersonDto.map(personService.get(inactive, ban)));
         }
         return getResponse(PersonDto.map(personService.get(name, inactive, ban)));
+    }
+
+
+    @PutMapping("/ban/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PersonDto> ban(@PathVariable long id) {
+        return getResponse(personService.get(id).map(personService::ban).map(PersonDto::map));
     }
 
 

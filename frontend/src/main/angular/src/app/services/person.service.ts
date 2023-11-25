@@ -86,4 +86,10 @@ export class PersonService {
         })
     }
 
+    ban(user: User): void {
+        if (user.id != this.me.id)
+            this.http.put<User>(ApiUrls.Persons + `/ban/` + user.id, {}).subscribe(fresh => 
+                user.update(fresh));
+    }
+
 }

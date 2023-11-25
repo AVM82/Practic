@@ -62,7 +62,7 @@ public class PersonService implements UserDetailsService {
     ApplicantService applicantService;
 
     EmailSenderService emailSenderService;
-    
+
     RoleEntity roleGuest;
 
     RoleEntity roleStudent;
@@ -76,14 +76,14 @@ public class PersonService implements UserDetailsService {
     RoleEntity roleAdmin;
 
     PasswordEncoder passwordEncoder;
-    
+
     @Value("${email.password.message}")
     private String emailMessage;
-    
+
     @Value("${email.password.header}")
     private String emailHeader;
 
-    
+
     @Autowired
     public PersonService(PersonRepository personRepository, RoleRepository roleRepository,
             ApplicantService applicantService, CourseService courseService,
@@ -288,13 +288,12 @@ public class PersonService implements UserDetailsService {
         String password = PasswordGenerator.generateRandomPassword();
         String message = String.format(emailMessage, name, password);
         emailSenderService.sendEmail(email, emailHeader, message);
-        return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId())
-                .name(name).email(email)
-                .profilePictureUrl(oauth2UserInfo.getImageUrl())
+        return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId()).name(name)
+                .email(email).profilePictureUrl(oauth2UserInfo.getImageUrl())
                 .password(passwordEncoder.encode(password)).build();
     }
 
-    
+
     public UserDetails loadUserById(long id) {
         return get(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
     }
@@ -302,18 +301,15 @@ public class PersonService implements UserDetailsService {
 
     public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
         return personRepository.save(new PersonEntity(userDetails.getName(),
-                userDetails.getPassword(), 
-                userDetails.getEmail(),
-                userDetails.getProviderUserId(),
-                userDetails.getProfilePictureUrl(),
-                roleGuest));
+                userDetails.getPassword(), userDetails.getEmail(), userDetails.getProviderUserId(),
+                userDetails.getProfilePictureUrl(), roleGuest));
     }
 
-    
+
     public PersonEntity save(PersonEntity person) {
         return personRepository.save(person);
     }
-    
+
 
     public static boolean hasAnyRole(List<String> roles) {
         return me().getRoles().stream()
@@ -339,7 +335,7 @@ public class PersonService implements UserDetailsService {
 
 
     public void removeMentorRole(PersonEntity person) {
-        if (person.getMentors().stream().allMatch(MentorEntity::isInactive)) { 
+        if (person.getMentors().stream().allMatch(MentorEntity::isInactive)) {
             removeRole(person, roleMentor);
         }
     }
@@ -358,19 +354,25 @@ public class PersonService implements UserDetailsService {
         }
     }
 
-    
+
     public static boolean isMeMentor(long mentorId) {
         return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == mentorId);
     }
-    
-    
+
+
     public static boolean isMeStudent(long studentId) {
         return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == studentId);
     }
-    
-    
+
+
     public static boolean isMeApplicant(long applicantId) {
         return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == applicantId);
     }
-    
+
+
+    public PersonEntity ban(PersonEntity person) {
+        person.setBan(true);
+        return personRepository.save(person);
+    }
+
 }

@@ -11,7 +11,7 @@
     </tr>
     <tr *ngFor="let user of users" class="user-row" 
             [class.inactive]="user.inactive" [class.ban]="user.ban" [class.inactive-ban]="user.inactive && user.ban">
-        <td [matMenuTriggerFor]="sortMenu">{{user.name}}</td>
+        <td [matMenuTriggerFor]="sortMenu" [matMenuTriggerData]="{u: user}">{{user.name}}</td>
         <td >
             <div *ngFor="let applicantSlug of user.getApplicantSlugs()">
                 {{applicantSlug}}
@@ -36,13 +36,17 @@
 </table>
 
 <mat-menu #sortMenu xPosition="after" class="menus">
-    <div class="menu-header"><b>Сортувати</b></div>
-    <br>
-    <div mat-menu-item class="menuitem" (click)="sortByName(false)">на ім'я за зростанням</div>
-    <div mat-menu-item class="menuitem" (click)="sortByName(true)">на ім'я за спаданням</div>
-    <br>
-    <div mat-menu-item class="menuitem" (click)="sortBySurname(false)">на прізвище за зростанням</div>
-    <div mat-menu-item class="menuitem" (click)="sortBySurname(true)">на прізвище за спаданням</div>
+    <ng-template matMenuContent let-user="u">
+        <div class="menu-header"><b>Сортувати</b></div>
+        <br>
+        <div mat-menu-item class="menuitem" (click)="sortByName(false)">на ім'я за зростанням</div>
+        <div mat-menu-item class="menuitem" (click)="sortByName(true)">на ім'я за спаданням</div>
+        <br>
+        <div mat-menu-item class="menuitem" (click)="sortBySurname(false)">на прізвище за зростанням</div>
+        <div mat-menu-item class="menuitem" (click)="sortBySurname(true)">на прізвище за спаданням</div>
+        <br>
+        <div *ngIf="!user.ban" mat-menu-item class="menuitem" [class.ban]="true" (click)="personService.ban(user)">забанити {{user.name}}</div>
+    </ng-template>
 </mat-menu>            
 
 <mat-menu #mentorMenu yPosition="below" class="menus">

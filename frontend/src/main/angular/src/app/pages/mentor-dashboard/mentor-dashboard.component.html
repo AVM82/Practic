@@ -36,11 +36,11 @@
         <caption><h2>{{courseStudent.courseName}}</h2></caption>
         <tr class="headers">
             <th>Студент\Розділ</th>
-            <th *ngFor="let number of courseStudent.chapterNumbers">{{number}}</th>
+            <th *ngFor="let number of courseStudent.chapterNumbers" scope="col">{{number}}</th>
         </tr>
-        <tr *ngFor="let student of courseStudent.students" class="person-row">
+        <tr *ngFor="let student of courseStudent.students" class="person-row" scope="row">
             <td>{{student.name}}</td>
-            <th *ngFor="let number of courseStudent.chapterNumbers">
+            <th *ngFor="let number of courseStudent.chapterNumbers" scope="col">
                 <div *ngIf="student.activeChapterNumber === number">
                     <div *ngFor="let practice of student.practices">
                         <div *ngIf="practice.state === ready">
