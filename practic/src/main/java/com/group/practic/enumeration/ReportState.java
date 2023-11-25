@@ -9,10 +9,12 @@ public enum ReportState {
     @Order(0)
     CANCELLED(),
     @Order(1)
-    FINISHED(),
+    APPROVED,
     @Order(2)
-    STARTED(FINISHED, CANCELLED),
+    FINISHED(APPROVED, CANCELLED),
     @Order(3)
+    STARTED(FINISHED, CANCELLED),
+    @Order(4)
     ANNOUNCED(STARTED, CANCELLED);
 
 
