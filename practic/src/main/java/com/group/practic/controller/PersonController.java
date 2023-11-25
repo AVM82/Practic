@@ -33,7 +33,7 @@ public class PersonController {
 
     CourseService courseService;
 
-    
+
     @Autowired
     public PersonController(PersonService personService, CourseService courseService,
             ApplicantService applicantService) {
@@ -44,6 +44,13 @@ public class PersonController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    public ResponseEntity<Collection<PersonDto>> getAll() {
+        return getResponse(PersonDto.map(personService.get()));
+    }
+
+
+    @GetMapping("/")
     @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
     public ResponseEntity<Collection<PersonDto>> get(@RequestParam(required = false) String name,
             @RequestParam(required = false) boolean inactive,
@@ -64,8 +71,7 @@ public class PersonController {
 
     @PostMapping("/{id}/add/{newRole}")
     @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
-    public ResponseEntity<PersonDto> addRole(@PathVariable long id,
-            @PathVariable String newRole) {
+    public ResponseEntity<PersonDto> addRole(@PathVariable long id, @PathVariable String newRole) {
         RoleEntity role = personService.getRole(newRole);
         return role == null ? badRequest()
                 : postResponse(personService.get(id)
@@ -100,5 +106,5 @@ public class PersonController {
     public ResponseEntity<ApplicantDto> applicationForCourse(@PathVariable String slug) {
         return postResponse(courseService.get(slug).map(personService::createApplication));
     }
-    
+
 }

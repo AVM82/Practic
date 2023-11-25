@@ -12,7 +12,7 @@
     <tr *ngFor="let user of users" class="user-row" 
             [class.inactive]="user.inactive" [class.ban]="user.ban" [class.inactive-ban]="user.inactive && user.ban">
         <td [matMenuTriggerFor]="sortMenu">{{user.name}}</td>
-        <td>
+        <td >
             <div *ngFor="let applicantSlug of user.getApplicantSlugs()">
                 {{applicantSlug}}
             </div>    
