@@ -104,6 +104,18 @@ public class PersonService implements UserDetailsService {
     }
 
 
+    public PersonEntity getMe() {
+        PersonEntity me = me();
+        if (me != null && me.isBan()) {
+            me.setMentors(null);
+            me.setStudents(null);
+            me.setApplicants(null);
+            me.setRoles(null);
+            me.setId(0);
+        }
+        return me;
+    }
+    
     public static PersonEntity me() {
         return (PersonEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
@@ -372,6 +384,8 @@ public class PersonService implements UserDetailsService {
 
     public PersonEntity ban(PersonEntity person) {
         person.setBan(true);
+        person.setRoles(Set.of());
+        this.emailSenderService.sendEmail(person.getEmail(), "Бан !!!", "Вітаємо. Вас повністю забанено.");
         return personRepository.save(person);
     }
 

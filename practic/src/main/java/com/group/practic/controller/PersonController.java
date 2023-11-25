@@ -9,7 +9,9 @@ import com.group.practic.dto.PersonDto;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.ApplicantService;
 import com.group.practic.service.CourseService;
+import com.group.practic.service.MentorService;
 import com.group.practic.service.PersonService;
+import com.group.practic.service.StudentService;
 import jakarta.validation.constraints.Min;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +30,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    private PersonService personService;
+    PersonService personService;
 
-    private ApplicantService applicantService;
+    ApplicantService applicantService;
+
+    MentorService mentorService;
+
+    StudentService studentService;
 
     CourseService courseService;
 
 
     @Autowired
     public PersonController(PersonService personService, CourseService courseService,
-            ApplicantService applicantService) {
+            ApplicantService applicantService, MentorService mentorService,
+            StudentService studentService) {
         this.personService = personService;
         this.courseService = courseService;
         this.applicantService = applicantService;
+        this.mentorService = mentorService;
+        this.studentService = studentService;
     }
 
 
@@ -66,7 +75,15 @@ public class PersonController {
     @PutMapping("/ban/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PersonDto> ban(@PathVariable long id) {
-        return getResponse(personService.get(id).map(personService::ban).map(PersonDto::map));
+        return getResponse(personService.get(id)
+                .map(person -> {
+                        applicantService.reject(person.getApplicants());
+                        studentService.ban(person.getStudents());
+                        mentorService.removeMentors(person.getMentors());
+                        return person;
+                })
+                .map(personService::ban)
+                .map(PersonDto::map));
     }
 
 
@@ -100,7 +117,7 @@ public class PersonController {
 
     @GetMapping("/me")
     public ResponseEntity<PersonDto> getCurrentUser() {
-        return getResponse(PersonDto.map(PersonService.me()));
+        return getResponse(PersonDto.map(personService.getMe()));
     }
 
 

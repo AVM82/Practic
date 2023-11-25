@@ -18,6 +18,7 @@ import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.MentorRepository;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,17 +94,22 @@ public class MentorService {
     }
 
 
-    public boolean removeMentor(MentorEntity mentor) {
+    public MentorEntity removeMentor(MentorEntity mentor) {
         mentor.setInactive(true);
         courseService.removeMentor(mentor);
         personService.removeMentorRole(mentor.getPerson());
         mentorRepository.save(mentor);
         this.emailSenderService.sendEmail(mentor.getPerson().getEmail(), "Не ментор.",
                 "Вітаємо Вас. Ви вже не ментор курса \"" + mentor.getCourse().getName() + "\". ");
-        return true;
+        return mentorRepository.save(mentor);
     }
 
 
+    public List<MentorEntity> removeMentors(Collection<MentorEntity> mentors) {
+        return mentors.stream().map(this::removeMentor).toList();
+    }
+    
+    
     public List<ApplicantDto> getApplicantsForCourse(CourseEntity course) {
         List<ApplicantDto> applicants = new ArrayList<>();
         applicantService.get(course, false, false)

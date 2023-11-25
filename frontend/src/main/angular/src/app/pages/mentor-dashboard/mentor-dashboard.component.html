@@ -35,10 +35,10 @@
     <table>
         <caption><h2>{{courseStudent.courseName}}</h2></caption>
         <tr class="headers">
-            <th>Студент\Розділ</th>
+            <th scope="col">Студент\Розділ</th>
             <th *ngFor="let number of courseStudent.chapterNumbers" scope="col">{{number}}</th>
         </tr>
-        <tr *ngFor="let student of courseStudent.students" class="person-row" scope="row">
+        <tr *ngFor="let student of courseStudent.students" class="person-row">
             <td>{{student.name}}</td>
             <th *ngFor="let number of courseStudent.chapterNumbers" scope="col">
                 <div *ngIf="student.activeChapterNumber === number">

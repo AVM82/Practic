@@ -25,6 +25,7 @@ import com.group.practic.util.TimeCalculator;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -271,6 +272,19 @@ public class StudentService {
         return PracticeDto.map(TimeCalculator.setNewState(practice, newState)
                 ? studentPracticeRepository.save(practice)
                 : practice);
+    }
+
+
+    public StudentEntity ban(StudentEntity student) {
+        student.setBan(true);
+        this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Бан на курсі !",
+                "Вітаємо. Вас забанено на курсі \"" + student.getCourse().getName() + "\".");
+        return studentRepository.save(student);
+    }
+
+
+    public List<StudentEntity> ban(Collection<StudentEntity> students) {
+        return students.stream().map(this::ban).toList();
     }
 
 }

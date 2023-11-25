@@ -32,10 +32,10 @@ public class ApplicantEntity implements Serializable {
 
     @ManyToOne
     CourseEntity course;
-    
+
     @Column(columnDefinition = "boolean default false")
     boolean isApplied = false;
-    
+
     @Column(columnDefinition = "boolean default false")
     boolean isRejected;
 
@@ -43,17 +43,23 @@ public class ApplicantEntity implements Serializable {
 
     @OneToOne
     StudentEntity student;
-    
-    
+
+
     public ApplicantEntity(PersonEntity person, CourseEntity course) {
         this.person = person;
         this.course = course;
     }
-    
-    
+
+
     public ApplicantEntity apply(StudentEntity student) {
         this.isApplied = true;
         this.student = student;
+        return this;
+    }
+
+
+    public ApplicantEntity reject() {
+        this.isRejected = true;
         return this;
     }
 

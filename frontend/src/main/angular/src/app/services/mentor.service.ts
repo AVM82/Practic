@@ -25,8 +25,10 @@ export class MentorService {
 
     getMyCourses(myCourses: Course[]): void {
         for(let mentorCourse of this.tokenStorageService.me!.mentors)
-            this.coursesService.getCourse(mentorCourse.slug).subscribe(course =>
-                myCourses.push(course!));
+            this.coursesService.getCourse(mentorCourse.slug).subscribe(course => {
+                if (course)
+                    myCourses.push(course)
+            });
     }
 
     getMyApplicants(): Observable<CourseApplicants[]> {

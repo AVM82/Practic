@@ -76,7 +76,7 @@ public class MentorController {
     public ResponseEntity<Boolean> removeMentor(@Min(1) @PathVariable long id) {
         Optional<MentorEntity> mentor = mentorService.get(id);
         return mentor.isEmpty() ? badRequest()
-                : getResponse(Optional.of(mentorService.removeMentor(mentor.get())));
+                : getResponse(Optional.of(mentorService.removeMentor(mentor.get()).isInactive()));
     }
 
 
@@ -130,14 +130,14 @@ public class MentorController {
                 .map(course -> mentorService.getChapter(course, number).orElseGet(null)));
     }
 
-    
+
     @GetMapping("/students")
     @PreAuthorize("hasRole('MENTOR')")
     public ResponseEntity<Collection<StudentsForCourseDto>> getMyStudents() {
         return getResponse(mentorService.getMyStudents());
     }
 
-    
+
     @PutMapping("/practices/approve/{id}")
     @PreAuthorize("hasRole('MENTOR')")
     public ResponseEntity<PracticeDto> approvePractice(@PathVariable long id) {
