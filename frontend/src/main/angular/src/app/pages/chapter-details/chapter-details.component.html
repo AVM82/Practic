@@ -35,9 +35,9 @@
 							[attr.aria-controls]="'accordion-body-' + index">
 			<div (click)="accordionItem.toggle()" class="subchapter-header">
 				{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}
-				<span *ngIf=subchapter.subSubChapters.length||subchapter.refs>
-					{{accordionItem.expanded ? '-' : '+'}}
-				</span>
+				<mat-icon *ngIf=subchapter.subSubChapters.length||subchapter.refs>
+					{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+				</mat-icon>
 			</div>
 			<div *ngIf=accordionItem.expanded
 				role="region" 
@@ -70,11 +70,11 @@
 								|| chapterPart.practice.state === ready"
 						mat-icon-button
                         (click)="service.changePracticeState(chapter!.number, chapterPart, process)"
-                        matTooltip="Почати практичну"
+                        matTooltip="{{chapterPart.practice.state === not_started ? 'Почати практичну' : 'Продовжити практичну'}}"
                         matTooltipPosition="below"
                         aria-label="Play"
 						[disabled]="chapter?.state === pause">
-                    <mat-icon>play_circle_outline</mat-icon>
+                    <mat-icon class="action-icon">play_circle_outline</mat-icon>
                 </button>
                 <button *ngIf="chapterPart.practice.state === process"
 						mat-icon-button
@@ -83,18 +83,18 @@
                         matTooltipPosition="below"
                         aria-label="Pause"
 						[disabled]="chapter?.state === pause">
-                    <mat-icon>pause_circle_outline</mat-icon>
+                    <mat-icon class="action-icon">pause_circle_outline</mat-icon>
                 </button>
 				<button *ngIf="chapterPart.practice.state === process
 								|| chapterPart.practice.state === ready"
 						class="done-btn"
-						(click)="service.changePracticeState(chapter!.number, chapterPart, ready)"
+						(click)="practiceReview(chapterPart)"
 						matTooltip="Практична готова до ревью"
 						matTooltipPosition="below"
 						aria-label="Done"
 						[disabled]="chapterPart.practice.state === ready
 								|| chapter?.state === pause">
-					<mat-icon>stop_circle_outline</mat-icon>
+					<mat-icon class="action-icon">stop_circle_outline</mat-icon>
 				</button>
 			</div>
 			{{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />

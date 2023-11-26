@@ -18,10 +18,10 @@ import { CoursesService } from 'src/app/services/courses.service';
 import { StudentService } from 'src/app/services/student.service';
 import { ChaptersService } from 'src/app/services/chapters.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
-import { ChapterPart } from 'src/app/models/chapterpart';
 import { ReportButtonComponent } from 'src/app/componets/report-button/report-button.component';
 import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START,
          STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW } from 'src/app/enums/app-constans';
+import { ChapterPart } from 'src/app/models/chapterpart';
 
 
 
@@ -118,6 +118,11 @@ export class ChapterDetailsComponent implements OnInit {
                           break;
       default: console.error(' BUTTON failure : ', event.target.value);
     }
+  }
+
+  practiceReview(chapterPart: ChapterPart) {
+    if (confirm('Всі вимоги практичної роботи виконані ?'))
+      this.studentService.changePracticeState(this.chapter!.number, chapterPart, this.ready)
   }
 
 }
