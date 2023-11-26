@@ -27,7 +27,7 @@ public enum ReportState {
 
 
     public boolean changeAllowed(ReportState newState) {
-        return this == newState || allowed.contains(newState);
+        return allowed.contains(newState);
     }
 
     public static ReportState fromString(String value) {

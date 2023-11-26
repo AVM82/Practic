@@ -5,7 +5,6 @@ import { HttpClient } from "@angular/common/http";
 import { ApiUrls, addRoleUrl, getApplicationCheckUrl, getApplicationUrl, removeRoleUrl } from "src/app/enums/api-urls";
 import { Applicant } from "src/app/models/applicant";
 import { InfoMessagesService } from "./info-messages.service";
-import { Observable } from "rxjs/internal/Observable";
 import { CoursesService } from "./courses.service";
 import { Roles } from "../enums/app-constans";
 

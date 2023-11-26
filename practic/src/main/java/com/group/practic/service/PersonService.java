@@ -367,21 +367,6 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public static boolean isMeMentor(long mentorId) {
-        return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == mentorId);
-    }
-
-
-    public static boolean isMeStudent(long studentId) {
-        return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == studentId);
-    }
-
-
-    public static boolean isMeApplicant(long applicantId) {
-        return me().getMentors().stream().anyMatch(mentor -> mentor.getId() == applicantId);
-    }
-
-
     public PersonEntity ban(PersonEntity person) {
         person.setBan(true);
         person.setRoles(Set.of());
