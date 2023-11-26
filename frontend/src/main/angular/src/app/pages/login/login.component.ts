@@ -93,9 +93,7 @@ export class LoginComponent implements OnInit {
       const password: string | null = this.passwordControl.value!;
 
       if (name != null || email != null || password != null) {
-        console.log("Прошли ифы");
-        console.log(name + "email:" + email + "pass:" + password);
-
+       
         this.emailAuth.verificateByEmail(name, email, password).subscribe(
           (response) => {
             this.nameControl.reset();
