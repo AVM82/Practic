@@ -88,9 +88,11 @@ public class SecurityConfig {
                                         .authenticationEntryPoint(
                                                 new RestAuthenticationEntryPoint()))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/courses", "/api/register",
+                        .requestMatchers("/api/register",
+                                "/api/auth",
                                 "/api/password-reset/send-code", "/api/password-reset/match-code",
-                                "/api/password-reset")
+                                "/api/password-reset",
+                                "api/verification")
                         .permitAll().requestMatchers("/api/**").authenticated().anyRequest()
                         .permitAll())
                 .oauth2Login(oauth -> oauth

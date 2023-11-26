@@ -10,16 +10,43 @@ export class EmailPassAuthService {
 
   constructor(private http: HttpClient) { }
 
-  postData(name: string, email: string, password: string): Observable<any> {
+  emailPassAuth(email: string, password: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const body = {
-      name: name,
       email: email,
       password: password
     };
 
     return this.http.post(ApiUrls.EmailPassAuth, body, { headers: headers })
   }
+
+  verificateByEmail(name: string, email: string, password: string): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = {
+      name: name,
+      email: email,
+      password: password
+    };  
+    console.log("verification send :"+name+email+password);
+      
+    return this.http.post(ApiUrls.VerificateByEmail, body, { headers: headers })
+  }
+
+  emailPassRegister(token: string): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    
+    const apiUrl = `${ApiUrls.EmailPassRegister + "?verificationToken="}${token}`;
+
+    return this.http.post(apiUrl, headers);
+  };
+
+  matchVerificateToken(token: string): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    const apiUrl = `${ApiUrls.MatchTokenForVerificateByEmail + "?token="}${token}`;
+
+    return this.http.post(apiUrl, headers);
+  };  
 
   sendEmailForGetSecretCode(email: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -50,5 +77,7 @@ export class EmailPassAuthService {
 
     return this.http.patch(ApiUrls.ResetPassword, body, { headers: headers })
   };
+
+
 
 }
