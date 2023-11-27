@@ -155,14 +155,14 @@ export class LoginComponent implements OnInit {
   }
 
   forgotPassword(): void {
-    const dialogRef = this.dialog.open(FargotPassDialogComponent, {
+    this.dialog.open(FargotPassDialogComponent, {
       width: '600px',
       height: '300px'
     });
   }
 
   openVerificateDialog(): void {
-    const dialogRef = this.dialog.open(VerificationEmailDialogComponent, {
+    this.dialog.open(VerificationEmailDialogComponent, {
       width: '600px',
       height: '150px'
     });
