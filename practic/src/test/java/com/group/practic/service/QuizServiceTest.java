@@ -6,15 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import com.group.practic.dto.AnswerDto;
-import com.group.practic.dto.QuestionDto;
-import com.group.practic.dto.QuizDto;
 import com.group.practic.entity.AnswerEntity;
 import com.group.practic.entity.QuestionEntity;
 import com.group.practic.entity.QuizEntity;
 import com.group.practic.repository.QuizRepository;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +26,8 @@ class QuizServiceTest {
     private QuizService quizService;
     @Mock
     private QuizRepository quizRepository;
+    @Mock
+    private AnswerService answerService;
 
     @BeforeEach
     public void setup() {
@@ -64,30 +62,21 @@ class QuizServiceTest {
 
     @Test
     void testGetResult() {
+        List<Long> fromUi = List.of(1L, 5L, 7L);
+        AnswerEntity answer1 = new AnswerEntity(1L, true);
+        AnswerEntity answer5 = new AnswerEntity(5L, true);
+        AnswerEntity answer7 = new AnswerEntity(7L, false);
+        List<Boolean> fromDb = List.of(
+                answer1.isCorrect(),
+                answer5.isCorrect(),
+                answer7.isCorrect()
+        );
+        when(answerService.getAllById(fromUi)).thenReturn(fromDb);
 
-        QuestionEntity questionEntity1 = new QuestionEntity();
-        questionEntity1.setQuestion("Question 1");
-        AnswerEntity answerEntity1 = new AnswerEntity();
-        answerEntity1.setAnswer("Answer 1");
-        answerEntity1.setCorrect(true);
-        questionEntity1.setAnswers(Collections.singletonList(answerEntity1));
-
-        QuizEntity quizEntity = new QuizEntity();
-        quizEntity.setQuestions(Collections.singletonList(questionEntity1));
-
-        QuestionDto questionDto1 = new QuestionDto();
-        questionDto1.setQuestion("Question 1");
-        AnswerDto answerDto1 = new AnswerDto();
-        answerDto1.setAnswer("Answer 1");
-        answerDto1.setCorrect(true);
-        questionDto1.setAnswers(Collections.singletonList(answerDto1));
-
-        QuizDto quizDto = new QuizDto();
-        quizDto.setQuestions(Collections.singletonList(questionDto1));
-        Long quizId = 1L;
-        when(quizRepository.findById(quizId)).thenReturn(Optional.of(quizEntity));
-        // List<Boolean> result = quizService.getResult(quizId, quizDto);
-        // assertEquals(1, result.size());
-        // assertTrue(result.get(0));
+        List<Boolean> result = quizService.getResult(fromUi);
+        for (int i = 0; i < result.size() - 1; i++) {
+            assertTrue(fromDb.get(i));
+        }
+        assertFalse(fromDb.get(result.size() - 1));
     }
 }
