@@ -5,15 +5,28 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.io.Serial;
 import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Entity
 @Table(name = "answers")
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class AnswerEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 6500968669125789872L;
 
     @Id
@@ -28,44 +41,8 @@ public class AnswerEntity implements Serializable {
     @ManyToOne
     private QuestionEntity question;
 
-
-    public Long getId() {
-        return id;
-    }
-
-
-    public void setId(Long id) {
+    public AnswerEntity(Long id, Boolean isCorrect) {
         this.id = id;
+        this.isCorrect = isCorrect;
     }
-
-
-    public String getAnswer() {
-        return answer;
-    }
-
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-
-    public boolean isCorrect() {
-        return isCorrect;
-    }
-
-
-    public void setCorrect(boolean correct) {
-        isCorrect = correct;
-    }
-
-
-    public QuestionEntity getQuestion() {
-        return question;
-    }
-
-
-    public void setQuestion(QuestionEntity question) {
-        this.question = question;
-    }
-
 }
