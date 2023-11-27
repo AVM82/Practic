@@ -132,7 +132,6 @@ public class AuthService {
 
     public boolean isNewPerson(String email) {
         return personService.getByEmail(email).isEmpty();
-
     }
 
     public PreVerificationUserEntity createPreVerificationUser(VerificationByEmailDto byEmailDto,
@@ -164,13 +163,9 @@ public class AuthService {
     }
 
     public boolean isMatchVerificationToken(String token) {
-        Optional<PreVerificationUserEntity> verificationToken =
-                verificationUserRepository.findByToken(token);
-        if (verificationToken.isPresent()) {
-            PreVerificationUserEntity tokenEntity = verificationToken.get();
-            return tokenEntity.getExpiredAt().isAfter(LocalDateTime.now());
-        }
-        return false;
+        return verificationUserRepository.findByToken(token)
+                .map(tokenEntity -> tokenEntity.getExpiredAt().isAfter(LocalDateTime.now()))
+                .orElse(false);
     }
 
     public UserInfoDto createUserInfo(PersonEntity person) {
@@ -180,18 +175,21 @@ public class AuthService {
     }
 
     public PersonEntity createPersonByVerificationToken(String token) {
-        Optional<PreVerificationUserEntity> optional =
-                verificationUserRepository.findByToken(token);
-        if (optional.isPresent()) {
-            PreVerificationUserEntity preVerificationUser = optional.get();
-            return isNewPerson(preVerificationUser.getEmail())
-                    ? personService.registerNewUser(SignUpRequestDto.builder()
-                            .name(preVerificationUser.getName())
-                            .email(preVerificationUser.getEmail())
-                            .password(preVerificationUser.getPassword()).build()) : null;
-        }
-        return null;
+        return verificationUserRepository.findByToken(token)
+                .map(preVerificationUser -> {
+                    if (isNewPerson(preVerificationUser.getEmail())) {
+                        SignUpRequestDto signUpRequest = SignUpRequestDto.builder()
+                                .name(preVerificationUser.getName())
+                                .email(preVerificationUser.getEmail())
+                                .password(preVerificationUser.getPassword())
+                                .build();
+                        return personService.registerNewUser(signUpRequest);
+                    }
+                    return null;
+                })
+                .orElse(null);
     }
+
 
     public void deletePreVerificationUser(String token) {
         verificationUserRepository.findByToken(token)
