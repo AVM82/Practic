@@ -1,3 +1,14 @@
+export interface Report {
+  id: number;
+  studentId: number;
+  date: any;
+  time: any;
+  timeslotId:number;
+  state: string;
+  title: string;
+  likedStudentsIdList: number[];
+}
+
 export interface StudentReport {
   id:number;
   personId:number;

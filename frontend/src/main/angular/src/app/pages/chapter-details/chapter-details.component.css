@@ -145,12 +145,16 @@
     align-items: center;
 }
 
+.action-buttons .action-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+}
+
 button.done-btn {
-    font-size: 16px;
-    height: calc(1.5em + 10px);
     width: auto;
-    display: inline-flex;
-    align-items: center;
+    display: flex;
+    text-align: center;
     justify-content: center;
     position: relative;
     color: white;
@@ -172,16 +176,18 @@ button.done-btn:not([disabled]) {
 .custom-chip {
     height: calc(1.5em + 10px);
     width: auto;
-    display: inline-flex;
+    right: 0;
+    top: 58%;
+    display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
+    position: absolute;
     padding: 1px 12px;
     margin: 2px;
     background-color: white;
     border: 1px solid #27AE60;
     color: #27AE60;
-    font-size: 12px;
+    font-size: 16px;
     border-radius: calc(1.5em + 5px);
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }

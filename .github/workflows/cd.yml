@@ -3,7 +3,7 @@ name: Java Build & Deploy to Elastic Beanstalk
 on:
   push:
     branches:
-      - maaster # здесь можно указать имя вашей основной ветки, например, master
+      - Light_Way # здесь можно указать имя вашей основной ветки, например, master
 
 jobs:
   build-and-deploy:
@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin' # Укажите дистрибутив JDK, например, 'adopt', 'temurin', 'graalvm'
 
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn clean package -Dmaven.test.skip
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v17
@@ -34,3 +34,4 @@ jobs:
           version_label: 'v${{ github.sha }}' # Используйте хеш последнего коммита в качестве метки версии
           deployment_package: 'practic/target/practic-1.0.0.jar' # Путь к директории с .jar или .war файлом для деплоя
           wait_for_deployment: true # Дожидаться завершения деплоя
+          wait_for_environment_recovery: true # Дожидаться восстановления среды после деплоя

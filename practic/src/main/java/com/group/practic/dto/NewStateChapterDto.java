@@ -1,15 +1,22 @@
 package com.group.practic.dto;
 
-import lombok.AllArgsConstructor;
+import com.group.practic.entity.StudentChapterEntity;
 import lombok.Getter;
 
 
 @Getter
-@AllArgsConstructor
 public class NewStateChapterDto {
 
     String state;
 
     int activeChapterNumber;
+
+
+    public static NewStateChapterDto map(StudentChapterEntity chapter) {
+        NewStateChapterDto dto = new NewStateChapterDto();
+        dto.state = chapter.getState().name();
+        dto.activeChapterNumber = chapter.getStudent().getActiveChapterNumber();
+        return dto;
+    }
 
 }

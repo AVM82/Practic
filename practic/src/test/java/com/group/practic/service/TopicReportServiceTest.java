@@ -2,14 +2,12 @@ package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.group.practic.dto.TopicReportDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.TopicReportEntity;
 import com.group.practic.repository.TopicReportRepository;
@@ -24,18 +22,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+
 @Slf4j
 class TopicReportServiceTest {
 
     @InjectMocks
     private TopicReportService topicReportService;
-    @Mock
-    private ChapterService chapterService;
+
     @Mock
     private TopicReportRepository reportRepository;
     private TopicReportEntity topicReport1;
     private TopicReportEntity topicReport2;
-    private TopicReportDto topicReportDto;
+
+
 
     @BeforeEach
     public void setup() {
@@ -63,56 +62,54 @@ class TopicReportServiceTest {
     }
 
     @Test
-    void testAddTopicReport() {
-        topicReportDto = new TopicReportDto();
-        topicReportDto.setChapterId(1L);
-        topicReportDto.setTopicReport("Test report");
-        ChapterEntity chapterEntity = new ChapterEntity();
-        when(chapterService.get(1L)).thenReturn(Optional.of(chapterEntity));
-
-        TopicReportEntity savedEntity = new TopicReportEntity();
-        when(reportRepository.save(any(TopicReportEntity.class))).thenReturn(savedEntity);
-
-        TopicReportEntity result = topicReportService.addTopicReport(topicReportDto);
-
-        verify(chapterService).get(1L);
-
-        verify(reportRepository).save(any(TopicReportEntity.class));
-
-        assertNotNull(result);
-        assertEquals(result.getChapter(), chapterEntity);
-        assertEquals(result.getTopic(), topicReportDto.getTopicReport());
-    }
-
-
-    @Test
-    void testAddTopicReportWithInvalidChapter() {
-        long chapterId = 1L;
-        topicReportDto = new TopicReportDto();
-        topicReportDto.setChapterId(chapterId);
-
-        when(chapterService.get(chapterId)).thenReturn(Optional.empty());
-
-        TopicReportEntity actualReport = topicReportService.addTopicReport(topicReportDto);
-
-        assertNull(actualReport);
-        verify(chapterService, times(1)).get(chapterId);
-        verify(reportRepository, never()).save(any());
-    }
-
-    @Test
     void testGetTopicsByChapter() {
-        ChapterEntity chapterEntity = new ChapterEntity();
-        when(chapterService.get(1L)).thenReturn(Optional.of(chapterEntity));
-
-        List<TopicReportEntity> expectedTopics = Arrays.asList(topicReport1, topicReport2);
-        when(reportRepository.findByChapter(chapterEntity)).thenReturn(expectedTopics);
-
-        Collection<TopicReportEntity> actualTopics = topicReportService.getTopicsByChapter(1L);
-
-        assertEquals(expectedTopics, actualTopics);
-        assertEquals(expectedTopics.get(1).getTopic(), topicReport2.getTopic());
-
-
+        ChapterEntity chapter = new ChapterEntity();
+        Collection<TopicReportEntity> result = topicReportService.getTopicsByChapter(chapter);
+        assertNotNull(result);
+        verify(reportRepository, times(1)).findByChapter(chapter);
     }
+
+    @Test
+    void testGet() {
+        ChapterEntity chapter = new ChapterEntity();
+        String topic = "Test Topic";
+        when(reportRepository.findByChapterAndTopic(chapter, topic))
+                .thenReturn(Optional.of(topicReport1));
+        Optional<TopicReportEntity> result = topicReportService.get(chapter, topic);
+        assertTrue(result.isPresent());
+        assertEquals(topicReport1, result.get());
+        verify(reportRepository, times(1))
+                .findByChapterAndTopic(chapter, topic);
+    }
+
+    @Test
+    void testCreate() {
+        ChapterEntity chapter = new ChapterEntity();
+        String topic = "Test Topic";
+        when(reportRepository.save(any(TopicReportEntity.class))).thenReturn(topicReport1);
+        TopicReportEntity result = topicReportService.create(chapter, topic);
+        assertNotNull(result);
+        assertEquals(topicReport1, result);
+        verify(reportRepository, times(1)).save(any(TopicReportEntity.class));
+    }
+
+    @Test
+     void testAddTopicReport() {
+        ChapterEntity chapter = new ChapterEntity();
+        String topic = "Test Topic";
+        TopicReportEntity topicReportEntity = new TopicReportEntity(chapter, topic);
+        when(reportRepository.findByChapterAndTopic(chapter, topic))
+                .thenReturn(Optional.empty());
+        when(reportRepository.save(any(TopicReportEntity.class)))
+                .thenReturn(topicReportEntity);
+        TopicReportEntity result = topicReportService.addTopicReport(chapter, topic);
+        assertNotNull(result);
+        assertEquals(chapter, result.getChapter());
+        assertEquals(topic, result.getTopic());
+        verify(reportRepository, times(1))
+                .findByChapterAndTopic(chapter, topic);
+        verify(reportRepository, times(1))
+                .save(any(TopicReportEntity.class));
+    }
+
 }

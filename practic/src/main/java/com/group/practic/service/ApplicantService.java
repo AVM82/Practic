@@ -4,6 +4,7 @@ import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.repository.ApplicantRepository;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class ApplicantService {
     }
 
 
+    public void save(ApplicantEntity applicant) {
+        applicantRepository.save(applicant);
+    }
+
+
     public Optional<ApplicantEntity> get(long id) {
         return applicantRepository.findById(id);
     }
@@ -41,9 +47,10 @@ public class ApplicantService {
     }
 
 
-    public Optional<ApplicantEntity> create(PersonEntity person, CourseEntity course) {
-        return Optional.of(get(person, course)
-                .orElse(applicantRepository.save(new ApplicantEntity(person, course))));
+    public ApplicantEntity create(PersonEntity person, CourseEntity course) {
+        Optional<ApplicantEntity> applicant = get(person, course);
+        return applicant.isPresent() ? applicant.get()
+                : applicantRepository.save(new ApplicantEntity(person, course));
     }
 
 
@@ -64,4 +71,10 @@ public class ApplicantService {
         return applicantRepository.save(applicant);
     }
 
+    
+    public List<ApplicantEntity> reject(Collection<ApplicantEntity> applicants) {
+        return applicantRepository.saveAll(applicants.stream()
+                .map(ApplicantEntity::reject).toList());
+    }
+    
 }

@@ -3,7 +3,6 @@ package com.group.practic.util;
 import com.group.practic.entity.DaysCountable;
 import com.group.practic.enumeration.StateCountable;
 import java.time.LocalDate;
-import java.util.Collection;
 
 
 public interface TimeCalculator {
@@ -15,9 +14,9 @@ public interface TimeCalculator {
             if (newState.isStartCountingState()) {
                 entity.setStartCounting(LocalDate.now());
             } else if (newState.isStopCountingState()) {
-                entity.setDaysSpent(
-                        entity.getStartCounting().until(LocalDate.now().plusDays(1L)).getDays()
-                                + entity.getDaysSpent());
+                entity.setDaysSpent(entity.getStartCounting()
+                        .until(LocalDate.now().plusDays(newState.isPauseState() ? 0 : 1)).getDays()
+                        + entity.getDaysSpent());
             }
             return true;
         }
@@ -25,13 +24,7 @@ public interface TimeCalculator {
     }
 
 
-    public static int countDaysSpent(Collection<DaysCountable<?>> collection) {
-        return collection.stream().map(DaysCountable::getDaysSpent).reduce(0, (a, b) -> a + b);
-
-    }
-
-
-    public static int roundDaysToWeeks(int days) {
+    public static int daysToWeeksWithRounding(int days) {
         return days / 7 + (days % 7 > 3 ? 1 : 0);
     }
 

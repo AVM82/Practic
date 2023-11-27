@@ -28,8 +28,7 @@ public enum PracticeState implements StateCountable<PracticeState> {
 
 
     public boolean changeAllowed(PracticeState newState) {
-        return this == newState || newState.allowed.contains(this)
-                || (this.backward && allowed.contains(newState));
+        return newState.allowed.contains(this) || (this.backward && allowed.contains(newState));
     }
 
 
@@ -52,6 +51,12 @@ public enum PracticeState implements StateCountable<PracticeState> {
             }
         }
         throw new IllegalArgumentException("Unknown PracticeState: " + value);
+    }
+
+
+    @Override
+    public boolean isPauseState() {
+        return this == PAUSE;
     }
 
 }
