@@ -10,7 +10,7 @@ email:
     verificationTokenValidityHours:
       12
     linkForVerification:
-      http://localhost:4200/login?veriftoken=%s
+      http://shpp-practic.eu-north-1.elasticbeanstalk.com/login?veriftoken=%s
   password:
     header: |
       Пароль для входу в shpp-practic
