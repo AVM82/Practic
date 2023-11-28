@@ -1,9 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from "@angular/core";
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-verification-email-dialog',
@@ -13,7 +10,7 @@ import { MatInputModule } from "@angular/material/input";
   styleUrls: ['./verification-email-dialog.component.css']
 })
 export class VerificationEmailDialogComponent {
- 
+
   constructor(private dialogRef: MatDialogRef<VerificationEmailDialogComponent>) {
   }
 
