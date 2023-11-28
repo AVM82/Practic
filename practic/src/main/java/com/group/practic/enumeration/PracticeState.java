@@ -40,7 +40,7 @@ public enum PracticeState implements StateCountable<PracticeState> {
 
     @Override
     public boolean isStopCountingState() {
-        return this == READY_TO_REVIEW || this == PAUSE;
+        return this == READY_TO_REVIEW || this == PAUSE || this == APPROVED;
     }
 
 
@@ -56,7 +56,7 @@ public enum PracticeState implements StateCountable<PracticeState> {
 
     @Override
     public boolean isPauseState() {
-        return this == PAUSE;
+        return this == READY_TO_REVIEW || this == PAUSE;
     }
 
 }
