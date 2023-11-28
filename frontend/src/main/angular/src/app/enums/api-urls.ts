@@ -28,13 +28,17 @@ export enum ApiUrls {
   CourseStudents = '/api/mentors/students',
   MentorPractices = '/api/mentors/practices',
 
-  EmailPassAuth = 'api/register',
+  EmailPassAuth = 'api/auth',
+  EmailPassRegister = 'api/register',
 
   CalendarEventEmailNotification = '/api/events/sendEvent',
   
   SendSecretCode = '/api/password-reset/send-code',
   MatchCode = '/api/password-reset/match-code',
-  ResetPassword = '/api/password-reset'
+  ResetPassword = '/api/password-reset',
+  VerificateByEmail = 'api/verification',
+  MatchTokenForVerificateByEmail = 'api/verification/match-token'
+
 }
 
 
