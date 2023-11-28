@@ -51,7 +51,6 @@ export class MentorService {
     }
 
     reject(applicant: Applicant): void {
-        console.log(applicant);
         this.http.post<Applicant>(ApiUrls.Applicants + `/reject/` + applicant.id, {}).subscribe(rejectedApplicant => {
             applicant.update(rejectedApplicant);
             if (this.tokenStorageService.me!.maybeNotApplicant(rejectedApplicant))

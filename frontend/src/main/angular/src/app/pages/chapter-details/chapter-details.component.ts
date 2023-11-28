@@ -125,4 +125,8 @@ export class ChapterDetailsComponent implements OnInit {
       this.studentService.changePracticeState(this.chapter!.number, chapterPart, this.ready)
   }
 
+  checkApproved(chapterPart: ChapterPart) {
+    this.studentService.checkPracticeState(this.chapter!.number, chapterPart)
+  }
+
 }

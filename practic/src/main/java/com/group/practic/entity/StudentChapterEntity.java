@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.io.Serializable;
@@ -43,7 +42,7 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
     int number;
 
-    @OneToOne
+    @ManyToOne
     ChapterEntity chapter;
 
     @Enumerated(EnumType.STRING)

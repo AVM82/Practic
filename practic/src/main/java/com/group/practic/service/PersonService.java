@@ -252,7 +252,8 @@ public class PersonService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return personRepository.findByEmail(email).orElse(createUserIfNotExists());
+        Optional<PersonEntity> person = personRepository.findByEmail(email);
+        return person.isPresent() ? person.get() : createUserIfNotExists();
     }
 
 
@@ -307,7 +308,11 @@ public class PersonService implements UserDetailsService {
 
 
     public UserDetails loadUserById(long id) {
-        return get(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+        Optional<PersonEntity> user = get(id);
+        if (user.isEmpty()) {
+            throw(new ResourceNotFoundException("User", "id", id));
+        }
+        return user.get();
     }
 
 

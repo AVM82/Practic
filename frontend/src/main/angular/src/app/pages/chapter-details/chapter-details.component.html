@@ -64,7 +64,7 @@
 
 	<div *ngIf="chapterPart.common?.praxisPurpose">
 		<div class="chapter-part">
-            <div *ngIf="isStudent" class="action-buttons">
+            <div *ngIf="isStudent && chapter?.state === process" class="action-buttons">
                 <button *ngIf="chapterPart.practice.state === not_started 
 								|| chapterPart.practice.state === pause
 								|| chapterPart.practice.state === ready"
@@ -85,16 +85,21 @@
 						[disabled]="chapter?.state === pause">
                     <mat-icon class="action-icon">pause_circle_outline</mat-icon>
                 </button>
-				<button *ngIf="chapterPart.practice.state === process
-								|| chapterPart.practice.state === ready"
+				<button *ngIf="chapterPart.practice.state === process"
 						class="done-btn"
 						(click)="practiceReview(chapterPart)"
 						matTooltip="Практична готова до ревью"
 						matTooltipPosition="below"
-						aria-label="Done"
-						[disabled]="chapterPart.practice.state === ready
-								|| chapter?.state === pause">
+						aria-label="Done">
 					<mat-icon class="action-icon">stop_circle_outline</mat-icon>
+				</button>
+				<button *ngIf="chapterPart.practice.state === ready"
+						class="done-btn"
+						(click)="checkApproved(chapterPart)"
+						matTooltip="Перевірити стан"
+						matTooltipPosition="below"
+						aria-label="Done">
+					<mat-icon class="action-icon">star_half</mat-icon>
 				</button>
 			</div>
 			{{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />

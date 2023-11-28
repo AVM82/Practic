@@ -41,16 +41,16 @@ public class PreVerificationUserEntity {
     @NotNull
     private LocalDateTime expiredAt;
 
-    public PreVerificationUserEntity() {
-    }
+    public PreVerificationUserEntity() {}
 
-    public PreVerificationUserEntity(String name,
-                                     String email, String password,
-                                     String token, LocalDateTime expiredAt) {
+
+    public PreVerificationUserEntity(String name, String email, String password, String token,
+            LocalDateTime expiredAt) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.token = token;
         this.expiredAt = expiredAt;
     }
+
 }

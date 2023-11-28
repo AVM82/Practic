@@ -82,7 +82,7 @@ public class StudentController {
 
 
     @GetMapping
-    @PreAuthorize("hasAnyRole(PersonService.ROLE_COLLABORATOR, PersonService.ROLE_ADMIN)") 
+    @PreAuthorize("hasAnyRole(PersonService.ROLE_COLLABORATOR, PersonService.ROLE_ADMIN)")
     public ResponseEntity<Collection<StudentEntity>> get(
             @RequestParam(required = false) Optional<Long> courseId,
             @RequestParam(required = false) Optional<Long> personId,
@@ -137,6 +137,13 @@ public class StudentController {
         return chapter.isPresent()
                 ? getResponse(studentService.changeState(chapter.get(), newState))
                 : badRequest();
+    }
+
+
+    @GetMapping("/practices/{id}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<PracticeDto> getPractice(@PathVariable long id) {
+        return getResponse(studentService.getPractice(id).map(PracticeDto::map));
     }
 
 
