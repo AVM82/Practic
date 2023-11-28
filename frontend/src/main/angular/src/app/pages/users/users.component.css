@@ -16,19 +16,19 @@ table {
 }
 
 .user-row {
-    background-color: rgb(226, 226, 223);
+    background-color: rgb(235, 235, 235);
 }
 
 .ban {
-    background-color: rgb(207, 113, 113);
+    background-color: rgb(212, 145, 145);
 }
 
 .inactive {
-    background-color: steelblue;
+    background-color: rgb(126, 158, 185);
 }
 
 .inactive-ban {
-    background-color: darkviolet;
+    background-color: rgb(191, 126, 219);
 }
 
 .column {

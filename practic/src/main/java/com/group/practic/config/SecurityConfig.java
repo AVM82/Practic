@@ -88,7 +88,7 @@ public class SecurityConfig {
                                         .authenticationEntryPoint(
                                                 new RestAuthenticationEntryPoint()))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/register",
+                        .requestMatchers("/api/feedbacks", "/api/register",
                                 "/api/auth",
                                 "/api/password-reset/send-code", "/api/password-reset/match-code",
                                 "/api/password-reset",

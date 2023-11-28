@@ -46,8 +46,7 @@ import { TokenStorageService } from "src/app/services/token-storage.service";
     }
     
     ngOnInit(): void {
-        this.personService.getAllUsers().subscribe(users => {
-            users.forEach(user => this.users.push(User.new(user)))});
+        this.personService.getAllUsers(this.users);
         this.courseService.getAllCourses().subscribe(courses => {
             this.courses = courses
         });

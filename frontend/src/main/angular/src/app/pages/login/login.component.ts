@@ -16,6 +16,8 @@ import { VerificationEmailDialogComponent } from "src/app/componets/verification
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatDialogModule, MatDialog } from "@angular/material/dialog";
+import { User } from "src/app/models/user";
+
 @Component({
   selector: "app-login",
   standalone: true,
@@ -73,10 +75,14 @@ export class LoginComponent implements OnInit {
       this.redirect();
   }
 
-  login(data: any): void {
-    this.tokenStorage.saveUser(data);
-    this.tokenStorage.me = data;
-    this.redirect();
+  login(data: User): void {
+    if (data.ban)
+      window.location.href = "/ban"
+    else {
+      this.tokenStorage.saveUser(data);
+      this.tokenStorage.me = data;
+      this.redirect();
+    }
   }
 
   redirect(): void {

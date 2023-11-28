@@ -1,8 +1,6 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.ChapterEntity;
-import com.group.practic.entity.ChapterPartEntity;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.Getter;
 
@@ -16,18 +14,17 @@ public class ChapterDto {
 
     String name;
 
-    List<ChapterPartEntity> parts;
+    List<ChapterPartDto> parts;
 
     int reportCount;
 
 
-    @Transactional
     public static ChapterDto map(ChapterEntity entity, int reportCount) {
         ChapterDto dto = new ChapterDto();
         dto.id = entity.getId();
         dto.number = entity.getNumber();
         dto.name = entity.getName();
-        dto.parts = entity.getParts();
+        dto.parts = entity.getParts().stream().map(part -> ChapterPartDto.map(part, null)).toList();
         dto.reportCount = reportCount;
         return dto;
     }

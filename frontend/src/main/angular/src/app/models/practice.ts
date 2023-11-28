@@ -1,15 +1,15 @@
 export class Practice {
   id: number;
-  chapterPartId: number;
+  number: number;
   state: string;
 
   constructor(
     _id: number,
-    _chapterPartId: number,
+    _number: number,
     _state: string
     ) {
       this.id = _id;
-      this.chapterPartId = _chapterPartId;
+      this.number = _number;
       this.state = _state;
     }
     

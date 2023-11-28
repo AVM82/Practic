@@ -41,5 +41,10 @@ public class MentorEntity implements Serializable {
         this.course = course;
     }
 
+
+    public boolean isActive() {
+        return !this.inactive;
+    }
+
 }
 

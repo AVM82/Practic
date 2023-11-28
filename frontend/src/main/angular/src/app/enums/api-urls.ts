@@ -3,7 +3,7 @@ export enum ApiUrls {
   Persons = '/api/persons',
   Application = '/api/persons/application/',
   
-  Feedbacks = '/api/feedbacks/',
+  Feedbacks = '/api/feedbacks',
 
   Courses = '/api/courses',
   Course = '/api/courses/',
@@ -13,9 +13,10 @@ export enum ApiUrls {
 
   Students = '/api/students',
   StudentChapters = '/api/students/chapters/',
+  StudentChapterStates = '/api/students/chapters/states/',
   StudentAdditionalMaterials = '/api/students/additionalMaterials/',
   Practices = '/api/students/practices/',
-  PracticeStates = '/api/students/practices/states',
+  PracticeStates = '/api/students/practices/states/',
   Reports = '/api/students/reports/course/',
   ReportStates = '/api/students/reports/states',
   ReportLikeList = '/api/students/reports/likes/',
@@ -24,7 +25,8 @@ export enum ApiUrls {
 
   Mentors = '/api/mentors/',
   Applicants = '/api/mentors/applicants',
-  PracticeApprove = '/api/mentors/practices',
+  CourseStudents = '/api/mentors/students',
+  MentorPractices = '/api/mentors/practices',
 
   EmailPassAuth = 'api/auth',
   EmailPassRegister = 'api/register',
@@ -96,3 +98,6 @@ export const addMentorUrl = (slug: string, id: number): string =>
 
 export const removeMentorUrl = (id: number): string =>
     ApiUrls.Mentors + `remove/` + id;
+
+export const getSetChapterStateUrl = (chapterId: number, newState: string): string =>
+    ApiUrls.StudentChapterStates + chapterId + `/` + newState;

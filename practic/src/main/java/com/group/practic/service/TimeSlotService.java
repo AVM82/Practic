@@ -46,7 +46,7 @@ public class TimeSlotService {
 
 
     public Optional<TimeSlotEntity> updateTimeSlotAvailability(Long timeslotId,
-            boolean availability) {
+                                                               boolean availability) {
         Optional<TimeSlotEntity> timeslotOp = timeSlotRepository.findById(timeslotId);
         if (timeslotOp.isPresent()) {
             TimeSlotEntity timeSlot = timeslotOp.get();
@@ -65,6 +65,7 @@ public class TimeSlotService {
             int daysNum = Integer.parseInt(loader.getProperty("numberOfDays", "5"));
             LocalDate currentDate = LocalDate.now();
             LocalDate endDate = currentDate.plusDays(daysNum);
+
             while (currentDate.isBefore(endDate)) {
                 Optional<List<TimeSlotEntity>> timeSlotEntities =
                         timeSlotRepository.findAllByDateOrderByDate(currentDate);

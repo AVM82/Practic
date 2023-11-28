@@ -4,23 +4,28 @@ import static com.group.practic.util.Converter.nonNullList;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
 import com.group.practic.dto.NewStateChapterDto;
+import com.group.practic.dto.PracticeDto;
 import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ApplicantEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.DaysCountable;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
+import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.ChapterState;
+import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentChapterRepository;
+import com.group.practic.repository.StudentPracticeRepository;
 import com.group.practic.repository.StudentRepository;
 import com.group.practic.util.TimeCalculator;
-import jakarta.transaction.Transactional;
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +38,8 @@ public class StudentService {
     StudentRepository studentRepository;
 
     StudentChapterRepository studentChapterRepository;
+
+    StudentPracticeRepository studentPracticeRepository;
 
     PersonService personService;
 
@@ -47,10 +54,12 @@ public class StudentService {
     public StudentService(StudentRepository studentRepository, CourseService courseService,
             PersonService personService, ChapterService chapterService,
             StudentChapterRepository studentChapterRepository,
-            EmailSenderService emailSenderService, StudentReportService reportService) {
+            EmailSenderService emailSenderService, StudentReportService reportService,
+            StudentPracticeRepository studentPracticeRepository) {
         this.studentRepository = studentRepository;
         this.courseService = courseService;
         this.studentChapterRepository = studentChapterRepository;
+        this.studentPracticeRepository = studentPracticeRepository;
         this.personService = personService;
         this.emailSenderService = emailSenderService;
         this.reportService = reportService;
@@ -90,11 +99,10 @@ public class StudentService {
     }
 
 
-    public List<StudentEntity> getStudentsOfCourse(long courseId, boolean inactive, boolean ban) {
-        Optional<CourseEntity> course = courseService.get(courseId);
-        return course.isPresent()
-                ? studentRepository.findAllByCourseAndInactiveAndBan(course.get(), inactive, ban)
-                : List.of();
+    public List<StudentEntity> getStudentsOfCourse(CourseEntity course, boolean inactive,
+            boolean ban) {
+        return studentRepository.findAllByCourseAndInactiveAndBanOrderByActiveChapterNumber(course,
+                inactive, ban);
     }
 
 
@@ -103,12 +111,10 @@ public class StudentService {
     }
 
 
-
-    @Transactional
     public StudentEntity create(PersonEntity person, CourseEntity course) {
         if (get(person, course).isEmpty()) {
             StudentEntity student = studentRepository.save(new StudentEntity(person, course));
-            personService.addStudent(student);
+            personService.addStudentRole(person);
             return openNextChapter(student);
         }
         return null;
@@ -120,7 +126,7 @@ public class StudentService {
     }
 
 
-    public StudentEntity openNextChapter(StudentEntity student) {
+    protected StudentEntity openNextChapter(StudentEntity student) {
         Optional<ChapterEntity> chapter = courseService.getNextChapterByNumber(student.getCourse(),
                 student.getActiveChapterNumber());
         return studentRepository
@@ -131,22 +137,30 @@ public class StudentService {
     protected StudentEntity nextChapter(StudentEntity student, ChapterEntity chapter) {
         StudentChapterEntity studentChapter =
                 studentChapterRepository.save(new StudentChapterEntity(student, chapter));
-        student.addChapter(studentChapter);
+        student.setActiveChapterNumber(chapter.getNumber());
+        createPractices(studentChapter);
         this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Новий розділ відкрито.",
-                "Розділ №" + studentChapter.getNumber() + " "
-                        + studentChapter.getChapter().getShortName());
+                "Розділ №" + chapter.getNumber() + " " + chapter.getShortName());
         return student;
+    }
+
+
+    protected StudentEntity start(StudentEntity student) {
+        student.setStart(LocalDate.now());
+        return studentRepository.save(student);
     }
 
 
     protected StudentEntity finish(StudentEntity student) {
         student.setInactive(true);
+        student.setActiveChapterNumber(0);
         student.setFinish(LocalDate.now());
-        student.setWeeks(
-                ((int) Duration.between(student.getFinish(), student.getStart()).toDays()) / 7);
+        student.setWeeks((int) student.getStart().until(student.getFinish(), ChronoUnit.WEEKS));
+        student.setDaysSpent(student.getStudentChapters().stream().map(DaysCountable::getDaysSpent)
+                .reduce(0, (a, b) -> a + b));
         this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Курс завершено",
                 "Вітаємо ви закінчили навчання на курсі \"" + student.getCourse().getName() + "\"");
-        return student;
+        return studentRepository.save(student);
     }
 
 
@@ -180,18 +194,39 @@ public class StudentService {
     }
 
 
-    public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter,
+    protected boolean allowToCloseChapter(StudentChapterEntity chapter) {
+        // --> complete the test immediately
+        return chapter.getState().changeAllowed(ChapterState.DONE) && chapter.getPractices()
+                .stream().filter(practice -> practice.getState() == PracticeState.APPROVED)
+                .count() == chapter.getChapter().getParts().size();
+        // && chapter.getReportCount() > 0
+        // && chapter.quizResultIsSatisfactory
+    }
+
+
+    protected StudentChapterEntity changeChapterState(StudentChapterEntity chapter,
             ChapterState newState) {
-        // check chapter parameters if newState == ChapterState.DONE
-        boolean success = TimeCalculator.setNewState(chapter, newState);
-        if (success) {
+        if (chapter.getState() == ChapterState.NOT_STARTED && newState == ChapterState.IN_PROCESS
+                && chapter.getNumber() == 1) {
+            start(chapter.getStudent());
+        }
+        if ((newState != ChapterState.DONE || allowToCloseChapter(chapter))
+                && TimeCalculator.setNewState(chapter, newState)) {
+            if (newState == ChapterState.PAUSE) {
+                pausePractices(chapter.getPractices());
+            }
             studentChapterRepository.save(chapter);
             if (newState == ChapterState.DONE) {
                 openNextChapter(chapter.getStudent());
             }
         }
-        return Optional.of(new NewStateChapterDto(chapter.getState().name(),
-                chapter.getStudent().getActiveChapterNumber()));
+        return chapter;
+    }
+
+
+    public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter,
+            ChapterState newState) {
+        return Optional.of(NewStateChapterDto.map(changeChapterState(chapter, newState)));
     }
 
 
@@ -206,6 +241,50 @@ public class StudentService {
         List<AdditionalMaterialsEntity> studentAdd = student.getAdditionalMaterials();
         return student.getCourse().getAdditionalMaterials().stream()
                 .map(add -> AdditionalMaterialsDto.map(add, studentAdd.contains(add))).toList();
+    }
+
+
+
+    public Optional<StudentPracticeEntity> getPractice(long id) {
+        return studentPracticeRepository.findById(id);
+    }
+
+
+    protected List<StudentPracticeEntity> createPractices(StudentChapterEntity studentChapter) {
+        List<StudentPracticeEntity> result = new ArrayList<>();
+        studentChapter.getChapter().getParts().forEach(part -> result.add(studentPracticeRepository
+                .save(new StudentPracticeEntity(studentChapter, part.getNumber()))));
+        return result;
+    }
+
+
+    protected void pausePractices(List<StudentPracticeEntity> practices) {
+        practices.forEach(practice -> {
+            if (practice.getState() == PracticeState.READY_TO_REVIEW) {
+                changePracticeState(practice, PracticeState.IN_PROCESS);
+            }
+            changePracticeState(practice, PracticeState.PAUSE);
+        });
+    }
+
+
+    public PracticeDto changePracticeState(StudentPracticeEntity practice, PracticeState newState) {
+        return PracticeDto.map(TimeCalculator.setNewState(practice, newState)
+                ? studentPracticeRepository.save(practice)
+                : practice);
+    }
+
+
+    public StudentEntity ban(StudentEntity student) {
+        student.setBan(true);
+        this.emailSenderService.sendEmail(student.getPerson().getEmail(), "Бан на курсі !",
+                "Вітаємо. Вас забанено на курсі \"" + student.getCourse().getName() + "\".");
+        return studentRepository.save(student);
+    }
+
+
+    public List<StudentEntity> ban(Collection<StudentEntity> students) {
+        return students.stream().map(this::ban).toList();
     }
 
 }

@@ -52,7 +52,9 @@ public class StudentEntity implements Serializable {
 
     LocalDate finish;
 
-    Integer weeks;
+    int weeks;
+    
+    int daysSpent;
 
     String skills;
 

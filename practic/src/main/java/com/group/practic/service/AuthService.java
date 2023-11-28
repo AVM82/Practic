@@ -83,8 +83,7 @@ public class AuthService {
 
 
     public String createResetCod() {
-        int resetCode = 100000 + random.nextInt(900000);
-        return String.valueOf(resetCode);
+        return String.valueOf(100000 + random.nextInt(900000));
 
     }
 

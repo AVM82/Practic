@@ -5,8 +5,8 @@ import { HttpClient } from "@angular/common/http";
 import { ApiUrls, addRoleUrl, getApplicationCheckUrl, getApplicationUrl, removeRoleUrl } from "src/app/enums/api-urls";
 import { Applicant } from "src/app/models/applicant";
 import { InfoMessagesService } from "./info-messages.service";
-import { Observable } from "rxjs/internal/Observable";
 import { CoursesService } from "./courses.service";
+import { Roles } from "../enums/app-constans";
 
 @Injectable({
     providedIn: 'root'
@@ -23,8 +23,17 @@ export class PersonService {
         this.me = this.tokenStorageService.me!;
     }
 
-    getAllUsers(): Observable<User[]> {
-        return this.http.get<User[]>(ApiUrls.Persons);
+    getAllUsers(users: User[]): void {
+        this.http.get<User[]>(ApiUrls.Persons).subscribe(freshUsers => {
+            users.length = 0;
+            freshUsers.forEach(fresh => {
+                let user = User.new(fresh);
+                if (fresh.id == this.me.id) {
+                    this.tokenStorageService.updateMe(user);
+                    users.push(this.tokenStorageService.me!);
+                } else 
+                    users.push(user);
+            })});
     }
 
     createApplication(slug: string): void {
@@ -44,9 +53,13 @@ export class PersonService {
 
     checkApplicant(id: number): void {
         this.http.get<Applicant>(getApplicationCheckUrl(id)).subscribe(applicant => {
-            if (this.tokenStorageService.me!.maybeNewStudent(applicant)
-                || this.tokenStorageService.me!.maybeNotApplicant(applicant))
+            if (this.tokenStorageService.me!.maybeNewStudent(applicant)) {
+                this.coursesService.stateStudent = applicant.student;
+                this.coursesService.openStudentChapter(applicant.student!.activeChapterNumber);
                 this.tokenStorageService.saveMe();
+            } else
+                if (this.tokenStorageService.me!.maybeNotApplicant(applicant))
+                    this.tokenStorageService.saveMe();
         });
     }
 
@@ -54,8 +67,9 @@ export class PersonService {
         this.http.post<User>(addRoleUrl(user.id, role), {}).subscribe(updated => {
             user.update(updated);
             if (updated.id === this.me.id) {
+                if (Roles.isAdvanceRole(role) && !this.me.hasAdvancedRole)
+                    this.coursesService.clearCourse(this.coursesService.slug);
                 this.tokenStorageService.updateMe(user);
-                this.coursesService.clearCourse(this.coursesService.slug);
             }
         })
     }
@@ -65,9 +79,16 @@ export class PersonService {
             user.update(updated);
             if (updated.id === this.me.id) {
                 this.tokenStorageService.updateMe(user);
-                this.coursesService.clearCourse(this.coursesService.slug);
+                if (Roles.isAdvanceRole(role) && !this.me.hasAdvancedRole)
+                    this.coursesService.clearCourse(this.coursesService.slug);
             }
         })
+    }
+
+    ban(user: User): void {
+        if (user.id != this.me.id)
+            this.http.put<User>(ApiUrls.Persons + `/ban/` + user.id, {}).subscribe(fresh => 
+                user.update(fresh));
     }
 
 }

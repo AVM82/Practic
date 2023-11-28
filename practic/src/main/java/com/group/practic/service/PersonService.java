@@ -7,7 +7,6 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
-import com.group.practic.entity.StudentEntity;
 import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.repository.PersonRepository;
 import com.group.practic.repository.RoleRepository;
@@ -31,7 +30,6 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -64,7 +62,7 @@ public class PersonService implements UserDetailsService {
     ApplicantService applicantService;
 
     EmailSenderService emailSenderService;
-    
+
     RoleEntity roleGuest;
 
     RoleEntity roleStudent;
@@ -78,14 +76,14 @@ public class PersonService implements UserDetailsService {
     RoleEntity roleAdmin;
 
     PasswordEncoder passwordEncoder;
-    
+
     @Value("${email.password.message}")
     private String emailMessage;
-    
+
     @Value("${email.password.header}")
     private String emailHeader;
 
-    
+
     @Autowired
     public PersonService(PersonRepository personRepository, RoleRepository roleRepository,
             ApplicantService applicantService, CourseService courseService,
@@ -106,6 +104,18 @@ public class PersonService implements UserDetailsService {
     }
 
 
+    public PersonEntity getMe() {
+        PersonEntity me = me();
+        if (me != null && me.isBan()) {
+            me.setMentors(null);
+            me.setStudents(null);
+            me.setApplicants(null);
+            me.setRoles(null);
+            me.setId(0);
+        }
+        return me;
+    }
+    
     public static PersonEntity me() {
         return (PersonEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
@@ -235,13 +245,12 @@ public class PersonService implements UserDetailsService {
 
     public PersonEntity setEmailToMe(String email) {
         PersonEntity me = me();
-        me.setContacts(email);
+        me.setEmail(email);
         return personRepository.save(me);
     }
 
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return personRepository.findByEmail(email).orElse(createUserIfNotExists());
     }
@@ -260,7 +269,6 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    @Transactional
     public AuthUserDto processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken,
             OidcUserInfo userInfo) {
         Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(attributes);
@@ -292,33 +300,28 @@ public class PersonService implements UserDetailsService {
         String password = PasswordGenerator.generateRandomPassword();
         String message = String.format(emailMessage, name, password);
         emailSenderService.sendEmail(email, emailHeader, message);
-        return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId())
-                .name(name).email(email)
-                .profilePictureUrl(oauth2UserInfo.getImageUrl())
+        return SignUpRequestDto.builder().providerUserId(oauth2UserInfo.getId()).name(name)
+                .email(email).profilePictureUrl(oauth2UserInfo.getImageUrl())
                 .password(passwordEncoder.encode(password)).build();
     }
 
-    @Transactional
+
     public UserDetails loadUserById(long id) {
         return get(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
     }
 
 
-    @Transactional
     public PersonEntity registerNewUser(final SignUpRequestDto userDetails) {
         return personRepository.save(new PersonEntity(userDetails.getName(),
-                userDetails.getPassword(), 
-                userDetails.getEmail(),
-                userDetails.getProviderUserId(),
-                userDetails.getProfilePictureUrl(),
-                roleGuest));
+                userDetails.getPassword(), userDetails.getEmail(), userDetails.getProviderUserId(),
+                userDetails.getProfilePictureUrl(), roleGuest));
     }
 
-    
+
     public PersonEntity save(PersonEntity person) {
         return personRepository.save(person);
     }
-    
+
 
     public static boolean hasAnyRole(List<String> roles) {
         return me().getRoles().stream()
@@ -331,40 +334,45 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public Optional<ApplicantDto> createApplication(CourseEntity course) {
-        return applicantService.create(me(), course).map(ApplicantDto::map);
+    public ApplicantDto createApplication(CourseEntity course) {
+        return ApplicantDto.map(applicantService.create(me(), course));
     }
 
 
-    public PersonEntity addMentor(MentorEntity mentor) {
-        PersonEntity person = mentor.getPerson();
-        person.getMentors().add(mentor);
-        return person.getMentors().size() == 1 ? addRole(person, roleMentor)
-                : personRepository.save(person);
+    public void addMentorRole(PersonEntity person) {
+        if (person.getMentors().size() == 1) {
+            addRole(person, roleMentor);
+        }
     }
 
 
-    public PersonEntity removeMentor(MentorEntity mentor) {
-        PersonEntity person = mentor.getPerson();
-        person.getMentors().remove(mentor);
-        return person.getMentors().isEmpty() ? removeRole(person, roleMentor)
-                : personRepository.save(person);
+    public void removeMentorRole(PersonEntity person) {
+        if (person.getMentors().stream().allMatch(MentorEntity::isInactive)) {
+            removeRole(person, roleMentor);
+        }
     }
 
 
-    public PersonEntity addStudent(StudentEntity student) {
-        PersonEntity person = student.getPerson();
-        person.getStudents().add(student);
-        return person.getStudents().size() == 1 ? addRole(person, roleStudent)
-                : personRepository.save(person);
+    public void addStudentRole(PersonEntity person) {
+        if (person.getStudents().size() == 1) {
+            addRole(person, roleStudent);
+        }
     }
 
 
-    public PersonEntity removeStudent(StudentEntity student) {
-        PersonEntity person = student.getPerson();
-        person.getStudents().remove(student);
-        return person.getStudents().isEmpty() ? removeRole(person, roleStudent)
-                : personRepository.save(person);
+    public void removeStudentRole(PersonEntity person) {
+        if (person.getStudents().isEmpty()) {
+            removeRole(person, roleStudent);
+        }
+    }
+
+
+    public PersonEntity ban(PersonEntity person) {
+        person.setBan(true);
+        person.setRoles(Set.of());
+        this.emailSenderService.sendEmail(person.getEmail(), "Бан !!!",
+                "Вітаємо. Вас повністю забанено.");
+        return personRepository.save(person);
     }
 
 }
