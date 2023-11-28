@@ -4,12 +4,10 @@ import com.group.practic.dto.AuthUserDto;
 import com.group.practic.dto.ResetPasswordDto;
 import com.group.practic.dto.SecretCodeDto;
 import com.group.practic.dto.SignUpRequestDto;
-import com.group.practic.dto.UserInfoDto;
 import com.group.practic.dto.VerificationByEmailDto;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.PreVerificationUserEntity;
 import com.group.practic.entity.ResetCodeEntity;
-import com.group.practic.entity.RoleEntity;
 import com.group.practic.repository.PreVerificationUserRepository;
 import com.group.practic.repository.ResetCodeRepository;
 import com.group.practic.security.CustomAuthenticationProvider;
@@ -165,12 +163,6 @@ public class AuthService {
         return verificationUserRepository.findByToken(token)
                 .map(tokenEntity -> tokenEntity.getExpiredAt().isAfter(LocalDateTime.now()))
                 .orElse(false);
-    }
-
-    public UserInfoDto createUserInfo(PersonEntity person) {
-        return new UserInfoDto(String.valueOf(person.getId()), person.getName(),
-                person.getEmail(),
-                person.getRoles().stream().map(RoleEntity::getName).toList());
     }
 
     public PersonEntity createPersonByVerificationToken(String token) {
