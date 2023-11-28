@@ -1,5 +1,5 @@
 <h1>HOT CHANGES</h1>
-<table>
+<table *ngIf="me.hasAnyRole(ADMIN, COLLABORATOR)">
     <caption>Користувачі</caption>
     <tr class="headers">
         <th *ngIf="!surnameFirst" [matMenuTriggerFor]="sortMenu">Ім'я та призвіще</th>

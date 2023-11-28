@@ -49,8 +49,7 @@ export class CourseDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug');
-
-      if(slug) {
+     if(slug) {
         this.slug = slug;
         this.stateStudent = this.me.getStudent(slug);
         this.isStudent = this.stateStudent != undefined;

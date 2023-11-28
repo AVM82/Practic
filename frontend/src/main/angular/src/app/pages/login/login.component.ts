@@ -73,7 +73,6 @@ export class LoginComponent implements OnInit {
     if (data.ban)
       window.location.href = "/ban"
     else {
-      console.log('login : ', data)
       this.tokenStorage.saveUser(data);
       this.tokenStorage.me = data;
       this.redirect();
@@ -82,8 +81,8 @@ export class LoginComponent implements OnInit {
 
   redirect(): void {
     const baseUrl = window.location.origin;
-//    window.history.replaceState({}, document.title, baseUrl);
-//    window.location.reload();
+    window.history.replaceState({}, document.title, baseUrl);
+    window.location.reload();
   }
 
   saveUser(): void {
@@ -97,7 +96,6 @@ export class LoginComponent implements OnInit {
       if (name != null || email != null || password != null) {
         this.emailAuth.postData(username, email, password).subscribe(
           response => {
-            console.log(response);
             this.tokenStorage.saveToken(response.accessToken);
             this.login(response.user);
             this.nameControl.reset();

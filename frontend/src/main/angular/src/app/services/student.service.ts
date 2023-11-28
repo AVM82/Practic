@@ -54,6 +54,11 @@ export class StudentService {
         })
     }
 
-
+    checkPracticeState(chapterN: number, part: ChapterPart): void {
+        this.http.get<Practice>(ApiUrls.Practices + part.practice.id). subscribe(fresh => {
+            part.practice.state = fresh.state;
+            this.coursesService.changePracticeState(chapterN, fresh);
+        })
+    }
 }
 
