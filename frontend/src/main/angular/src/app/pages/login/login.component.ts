@@ -12,6 +12,7 @@ import {
 } from "@angular/forms";
 import { EmailPassAuthService } from "src/app/services/email-pass-auth.service";
 import { FargotPassDialogComponent } from "src/app/componets/forgotten-password/forgotten-password.component";
+import { VerificationEmailDialogComponent } from "src/app/componets/verification-email-dialog/verification-email-dialog.component";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatDialogModule, MatDialog } from "@angular/material/dialog";
@@ -44,13 +45,18 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private tokenStorage: TokenStorageService,
     private emailAuth: EmailPassAuthService,
-    private dialog: MatDialog,
-  ) {}
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     const token: string | null = this.route.snapshot.queryParamMap.get("token");
     const error: string | null = this.route.snapshot.queryParamMap.get("error");
     const logout: string | null = this.route.snapshot.queryParamMap.get("logout");
+    const veriftoken: string | null = this.route.snapshot.queryParamMap.get("veriftoken");
+
+    if (veriftoken) {
+      this.registerNewUser(veriftoken);
+    }
 
     if (logout === "true") {
       this.tokenStorage.signOut();
@@ -65,7 +71,7 @@ export class LoginComponent implements OnInit {
       this.tokenStorage.saveToken(token);
       this.tokenStorage.getCurrentUser().subscribe(
         value => this.login(value));
-    } else if (error) 
+    } else if (error)
       this.redirect();
   }
 
@@ -85,25 +91,28 @@ export class LoginComponent implements OnInit {
     window.location.reload();
   }
 
-  saveUser(): void {
+  verificateUser(): void {
+
     if (this.emailControl.valid && this.passwordControl.valid) {
       const name: string | null = this.nameControl.value!;
       const email: string | null = this.emailControl.value!;
       const password: string | null = this.passwordControl.value!;
 
-      const username: string = name == null ? " " : name;
-
       if (name != null || email != null || password != null) {
-        this.emailAuth.postData(username, email, password).subscribe(
-          response => {
-            this.tokenStorage.saveToken(response.accessToken);
-            this.login(response.user);
+       
+        this.emailAuth.verificateByEmail(name, email, password).subscribe(
+          (response) => {
             this.nameControl.reset();
             this.emailControl.reset();
-            this.passwordControl.reset();
+            this.passwordControl.reset();  
+            this.openVerificateDialog();
           },
           (error) => {
-            console.error("User not added:", error);
+            if (error.status === 409) {
+              this.authUser();
+            } else {
+              console.error('An error occurred:', error);
+            }
           }
         );
       }
@@ -111,16 +120,58 @@ export class LoginComponent implements OnInit {
       console.error("Invalid data. Name, email, and password are required.");
     }
   }
-  
+
+  authUser(): void {
+    const email: string | null = this.emailControl.value!;
+    const password: string | null = this.passwordControl.value!;
+    if (email != null || password != null) {
+      this.emailAuth.emailPassAuth(email, password).subscribe(
+        (response) => {
+          this.tokenStorage.saveToken(response.accessToken);
+          this.login(response.user);
+          this.nameControl.reset();
+          this.emailControl.reset();
+          this.passwordControl.reset();
+        },
+        (error) => {
+          console.error("User not added:", error);
+        }
+      );
+    }
+  }
+
+
+  registerNewUser(token: string): void {
+    this.emailAuth.emailPassRegister(token).subscribe(
+      (response) => {
+        this.tokenStorage.saveToken(response.accessToken);
+        this.login(response.user);
+        this.nameControl.reset();
+        this.emailControl.reset();
+        this.passwordControl.reset();
+      },
+      (error) => {
+        console.error("User not added:", error);
+      }
+    );
+  }
+
   togglePasswordVisibility(): void {
     this.hidePassword = !this.hidePassword;
   }
-  
+
   forgotPassword(): void {
-    const dialogRef = this.dialog.open(FargotPassDialogComponent, {
-      width: '600px', 
+    this.dialog.open(FargotPassDialogComponent, {
+      width: '600px',
       height: '300px'
-    });  
+    });
+  }
+
+  openVerificateDialog(): void {
+    this.dialog.open(VerificationEmailDialogComponent, {
+      width: '600px',
+      height: '150px'
+    });
   }
 
 }
