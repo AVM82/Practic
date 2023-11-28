@@ -252,7 +252,8 @@ public class PersonService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return personRepository.findByEmail(email).orElse(createUserIfNotExists());
+        Optional<PersonEntity> person = personRepository.findByEmail(email);
+        return person.isPresent() ? person.get() : createUserIfNotExists();
     }
 
 

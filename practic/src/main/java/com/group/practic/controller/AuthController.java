@@ -1,14 +1,16 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.getResponse;
+
 import com.group.practic.dto.JwtAuthenticationResponse;
+import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.RegisterByEmailDto;
 import com.group.practic.dto.ResetPasswordDto;
 import com.group.practic.dto.SecretCodeDto;
-import com.group.practic.dto.UserInfoDto;
 import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.RoleEntity;
 import com.group.practic.service.AuthService;
 import com.group.practic.service.PersonService;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,19 +43,14 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUserByEmail(@RequestBody RegisterByEmailDto byEmailDto) {
+    public ResponseEntity<JwtAuthenticationResponse> registerUserByEmail(
+            @RequestBody RegisterByEmailDto byEmailDto) {
         PersonEntity person = authService.registerNewUserByEmail(byEmailDto);
-        if (person != null) {
-            String token = authService.createToken(byEmailDto);
-
-            UserInfoDto userInfo = new UserInfoDto(String.valueOf(person.getId()), person.getName(),
-                    person.getEmail(),
-                    person.getRoles().stream().map(RoleEntity::getName).toList());
-
-            return ResponseEntity.ok(new JwtAuthenticationResponse(token, userInfo));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User registration failed");
-        }
+        return getResponse(Optional.ofNullable(
+                person != null
+                        ? new JwtAuthenticationResponse(authService.createToken(byEmailDto),
+                                PersonDto.map(person))
+                        : null));
     }
 
 
