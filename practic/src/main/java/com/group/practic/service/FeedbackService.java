@@ -1,11 +1,15 @@
 package com.group.practic.service;
 
 import com.group.practic.dto.FeedbackDto;
+import com.group.practic.dto.FeedbackPageDto;
 import com.group.practic.entity.FeedbackEntity;
+import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,8 +30,18 @@ public class FeedbackService {
         return feedbackRepository.findById(id);
     }
 
-    public List<FeedbackDto> getAllFeedbacks() {
-        return feedbackRepository.findAll().stream().map(FeedbackDto::map).toList();
+
+    public FeedbackPageDto getAllFeedbacksPaginated(
+            int page, int size, FeedbackSortState sortState) {
+        Sort sort = switch (sortState) {
+            case DATE_ASCENDING -> Sort.by("id").ascending();
+            case RATING_DESCENDING -> Sort.by("likes").descending();
+            case RATING_ASCENDING -> Sort.by("likes").ascending();
+            default -> Sort.by("id").descending();
+        };
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return FeedbackPageDto.map(feedbackRepository.findAll(pageable));
     }
 
 
@@ -57,9 +71,9 @@ public class FeedbackService {
     }
 
 
-    public FeedbackEntity deleteFeedback(FeedbackEntity feedback) {
-        feedback.setLikedByPerson(null);
-        feedbackRepository.delete(feedback);
-        return feedback;
+    public void deleteFeedback(Long id) {
+        if (id > 0) {
+            feedbackRepository.deleteById(id);
+        }
     }
 }

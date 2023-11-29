@@ -4,9 +4,10 @@ import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
 
 import com.group.practic.dto.FeedbackDto;
+import com.group.practic.dto.FeedbackPageDto;
+import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.service.FeedbackService;
 import com.group.practic.util.ResponseUtils;
-import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,12 +18,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/api/feedbacks")
 public class FeedbackController {
-
 
     private final FeedbackService service;
 
@@ -32,8 +34,11 @@ public class FeedbackController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<FeedbackDto>> getAllFeedbacks() {
-        return getResponse(service.getAllFeedbacks());
+    public ResponseEntity<FeedbackPageDto> getAllFeedbacksPaginated(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam FeedbackSortState sortState) {
+        return ResponseEntity.ok(service.getAllFeedbacksPaginated(page, size, sortState));
     }
 
 
@@ -50,6 +55,9 @@ public class FeedbackController {
         return ResponseUtils.getResponse(service.get(id)
                 .map(service::incrementLike)
                 .map(FeedbackDto::map));
+
+
+
     }
 
 
@@ -62,10 +70,11 @@ public class FeedbackController {
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<FeedbackDto> deleteFeedback(@PathVariable Long id) {
-        return ResponseUtils.getResponse(service.get(id)
-                .map(service::deleteFeedback)
-                .map(FeedbackDto::map));
+    public ResponseEntity<FeedbackPageDto> deleteFeedback(@PathVariable Long id,
+                   @RequestParam int page,
+                   @RequestParam int size,
+                   @RequestParam FeedbackSortState sortState) {
+        service.deleteFeedback(id);
+        return ResponseEntity.ok(service.getAllFeedbacksPaginated(page, size, sortState));
     }
-
 }

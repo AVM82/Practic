@@ -7,10 +7,10 @@
             <mat-icon>sort</mat-icon>
         </button>
         <mat-menu #sortMenu="matMenu">
-            <button mat-menu-item (click)="sortData('RATING_ASCENDING')">Більше лайків</button>
-            <button mat-menu-item (click)="sortData('RATING_DESCENDING')">Меньше лайків</button>
-            <button mat-menu-item (click)="sortData('DATE_ASCENDING')">Нещодавно створені</button>
-            <button mat-menu-item (click)="sortData('DATE_DESCENDING')">Давно створені</button>
+            <button mat-menu-item (click)="sortData('RATING_DESCENDING')">Більше лайків</button>
+            <button mat-menu-item (click)="sortData('RATING_ASCENDING')">Меньше лайків</button>
+            <button mat-menu-item (click)="sortData('DATE_DESCENDING')">Нещодавно створені</button>
+            <button mat-menu-item (click)="sortData('DATE_ASCENDING')">Давно створені</button>
         </mat-menu>
         <button *ngIf="me && !me.hasGuestRole()" class="create-feedback-button" (click)="openFeedbackDialog()">Залишити
             відгук
@@ -19,7 +19,7 @@
 </div>
 <div class="cards-container">
     <div class="feedback-card"
-         *ngFor="let feedback of feedbacks | slice: (page - 1) * pageSize : page * pageSize; let i = index">
+         *ngFor="let feedback of feedbacks">
         <div class="user-info">
             <p class="username">{{ feedback.name || "Немає ім'я" }}</p>
             <img class="userpic" [src]="feedback.profilePictureUrl || 'assets/default_profile_picture.png'"
@@ -54,6 +54,6 @@
         </div>
     </div>
 </div>
-<mat-paginator [length]="feedbacks.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]"
+<mat-paginator [length]="totalFeedbacks" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true"
                (page)="onPageChange($event)"></mat-paginator>
 
