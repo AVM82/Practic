@@ -4,10 +4,12 @@ import static com.group.practic.util.ResponseUtils.badRequest;
 import static com.group.practic.util.ResponseUtils.getResponse;
 
 import com.group.practic.dto.FeedbackDto;
-import com.group.practic.dto.FeedbackPageDto;
+import com.group.practic.dto.FeedbackLikesDto;
+import com.group.practic.dto.FeedbackPage;
+import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.service.FeedbackService;
-import com.group.practic.util.ResponseUtils;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +36,7 @@ public class FeedbackController {
     }
 
     @GetMapping
-    public ResponseEntity<FeedbackPageDto> getAllFeedbacksPaginated(
+    public ResponseEntity<FeedbackPage> getAllFeedbacksPaginated(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam FeedbackSortState sortState) {
@@ -49,31 +51,41 @@ public class FeedbackController {
                 : getResponse(service.addFeedback(feedback));
     }
 
-
     @PatchMapping("/add/{id}")
-    public ResponseEntity<FeedbackDto> incrementLike(@PathVariable Long id) {
-        return ResponseUtils.getResponse(service.get(id)
-                .map(service::incrementLike)
-                .map(FeedbackDto::map));
-
-
-
+    public ResponseEntity<FeedbackLikesDto> incrementLike(
+            @PathVariable Long id,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam FeedbackSortState sortState) {
+        Optional<FeedbackEntity> feedbackEntity = service.get(id);
+        return getResponse(feedbackEntity
+                .map(entity -> new FeedbackLikesDto(service.incrementLike(entity)))
+                .orElseGet(() -> new FeedbackLikesDto(
+                        service.getAllFeedbacksPaginated(page, size, sortState))));
     }
 
 
     @PatchMapping("/remove/{id}")
-    public ResponseEntity<FeedbackDto> decrementLike(@PathVariable Long id) {
-        return ResponseUtils.getResponse(service.get(id)
-                .map(service::decrementLike)
-                .map(FeedbackDto::map));
+    public ResponseEntity<FeedbackLikesDto> decrementLike(
+            @PathVariable Long id,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam FeedbackSortState sortState) {
+        Optional<FeedbackEntity> feedbackEntity = service.get(id);
+        return getResponse(feedbackEntity
+                .map(entity -> new FeedbackLikesDto(service.decrementLike(entity)))
+                .orElseGet(() -> new FeedbackLikesDto(
+                        service.getAllFeedbacksPaginated(page, size, sortState))));
+
     }
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<FeedbackPageDto> deleteFeedback(@PathVariable Long id,
-                   @RequestParam int page,
-                   @RequestParam int size,
-                   @RequestParam FeedbackSortState sortState) {
+    public ResponseEntity<FeedbackPage> deleteFeedback(
+            @PathVariable Long id,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam FeedbackSortState sortState) {
         service.deleteFeedback(id);
         return ResponseEntity.ok(service.getAllFeedbacksPaginated(page, size, sortState));
     }

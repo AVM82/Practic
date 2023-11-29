@@ -24,7 +24,7 @@ export class FeedbackComponent implements OnInit {
     feedbacks: Feedback[] = [];
     page = 0;
     pageSize = 5;
-    totalPages  = 0;
+    totalPages = 0;
     totalFeedbacks = 0;
 
     dataSource = new MatTableDataSource<any>(this.feedbacks);
@@ -45,7 +45,7 @@ export class FeedbackComponent implements OnInit {
     }
 
     ngOnInit(): void {
-       this.getFeedbackPage();
+        this.getFeedbackPage();
     }
 
     private freshPage(page: FeedbackPage) {
@@ -119,24 +119,20 @@ export class FeedbackComponent implements OnInit {
 
 
     incrementLike(feedback: Feedback) {
-        this.feedbackService.incrementLikes(feedback).subscribe({
-            next: (response) =>
-                feedback.update(response, this.myId),
-            error: (error) => {
-                if (error.status === 404)
-                    this.getFeedbackPage();
-            }
+        this.feedbackService.incrementLikes(feedback, this.page, this.pageSize, this.feedbackSortedState).subscribe(response => {
+            if (response.feedback)
+                feedback.update(response.feedback, this.myId)
+            else
+                this.freshPage(response.page);
         })
     }
 
     decrementLike(feedback: Feedback) {
-        this.feedbackService.decrementLikes(feedback).subscribe({
-            next: (response) =>
-                feedback.update(response, this.myId),
-            error: (error) => {
-                if (error.status === 404)
-                    this.getFeedbackPage();
-            }
+        this.feedbackService.decrementLikes(feedback, this.page, this.pageSize, this.feedbackSortedState).subscribe(response => {
+            if (response.feedback)
+                feedback.update(response.feedback, this.myId)
+            else
+                this.freshPage(response.page);
         })
     }
 

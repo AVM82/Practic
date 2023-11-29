@@ -34,3 +34,8 @@ export interface FeedbackPage {
     totalPages: number;
 
 }
+
+export interface FeedbackLike {
+    page: FeedbackPage;
+    feedback: Feedback;
+}
