@@ -9,10 +9,10 @@
         <mat-card *ngIf="isMentor" (click)="this.router.navigate(['/mentor'])">
             Менторська панель
         </mat-card>
-        <mat-card *ngIf="isAdmin || isCollaborator || isMentor">
+        <mat-card *ngIf="isAdmin || isStaff || isMentor">
             Студенти
         </mat-card>
-        <mat-card *ngIf="isAdmin || isCollaborator">
+        <mat-card *ngIf="isAdmin || isStaff">
             Статистика
         </mat-card>
     </section>

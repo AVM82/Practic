@@ -2,6 +2,7 @@ package com.group.practic.service;
 
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.AuthUserDto;
+import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.SignUpRequestDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
@@ -37,21 +38,23 @@ public class PersonService implements UserDetailsService {
 
     public static final String ROLE_ADMIN = "ADMIN";
 
-    public static final String ROLE_COLLABORATOR = "COLLABORATOR";
+    public static final String ROLE_STAFF = "STAFF";
 
     public static final String ROLE_COMRADE = "COMRADE";
 
     public static final String ROLE_MENTOR = "MENTOR";
 
+    public static final String ROLE_GRADUATE = "GRADUATE";
+
     public static final String ROLE_STUDENT = "STUDENT";
 
     public static final String ROLE_GUEST = "GUEST";
 
-    public static final List<String> ROLES = List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE,
-            ROLE_MENTOR, ROLE_STUDENT, ROLE_GUEST);
+    public static final List<String> ROLES = List.of(ROLE_ADMIN, ROLE_STAFF, ROLE_COMRADE,
+            ROLE_MENTOR, ROLE_GRADUATE, ROLE_STUDENT, ROLE_GUEST);
 
     public static final List<String> ADVANCED_ROLES =
-            List.of(ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE);
+            List.of(ROLE_ADMIN, ROLE_STAFF, ROLE_COMRADE);
 
     PersonRepository personRepository;
 
@@ -66,12 +69,14 @@ public class PersonService implements UserDetailsService {
     RoleEntity roleGuest;
 
     RoleEntity roleStudent;
+    
+    RoleEntity roleGraduate;
 
     RoleEntity roleMentor;
 
     RoleEntity roleComrade;
 
-    RoleEntity roleCollaborator;
+    RoleEntity roleStaff;
 
     RoleEntity roleAdmin;
 
@@ -99,7 +104,7 @@ public class PersonService implements UserDetailsService {
         this.roleStudent = getRole(ROLE_STUDENT);
         this.roleMentor = getRole(ROLE_MENTOR);
         this.roleComrade = getRole(ROLE_COMRADE);
-        this.roleCollaborator = getRole(ROLE_COLLABORATOR);
+        this.roleStaff = getRole(ROLE_STAFF);
         this.roleAdmin = getRole(ROLE_ADMIN);
     }
 
@@ -372,12 +377,14 @@ public class PersonService implements UserDetailsService {
     }
 
 
-    public PersonEntity ban(PersonEntity person) {
-        person.setBan(true);
-        person.setRoles(Set.of());
-        this.emailSenderService.sendEmail(person.getEmail(), "Бан !!!",
-                "Вітаємо. Вас повністю забанено.");
-        return personRepository.save(person);
+    public PersonDto ban(PersonEntity person, boolean ban) {
+        if (person.isBan() == ban) {
+            return PersonDto.map(person);
+        }
+        person.setBan(ban);
+        this.emailSenderService.sendEmail(person.getEmail(), ban ? "Бан !!!" : "Бан знято !",
+                "Вітаємо Вас з" + (ban ? " встановленим" : "і знятим") + " баном.");
+        return PersonDto.map(personRepository.save(person));
     }
 
 }
