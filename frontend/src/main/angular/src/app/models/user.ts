@@ -31,6 +31,7 @@ export class User {
       _profilePictureUrl: string,
       _roles: string[],
       _students: StateStudent[],
+      _graduates: StateGraduate[],
       _mentors: StateMentor[],
       _applicants: StateApplicant[]
   ) {
@@ -45,6 +46,7 @@ export class User {
     this.profilePictureUrl =_profilePictureUrl;
     this.roles = _roles;
     this.students = _students;
+    this.graduates = _graduates || [];
     this.mentors =_mentors;
     this.applicants = _applicants;
   }
@@ -54,7 +56,7 @@ export class User {
   }
 
   static empty(): User {
-    return new User(0, false, false, '', '', null, '', null, '', [], [], [], []);
+    return new User(0, false, false, '', '', null, '', null, '', [], [], [], [], []);
   }
 
   update(user: User): User {
@@ -295,6 +297,7 @@ static fromJson(json: any): User {
         json.profilePictureUrl,
         json.roles,
         json.students,
+        json.graduates,
         json.mentors,
         json.applicants
     );

@@ -79,18 +79,11 @@ public class PersonController {
     }
 
 
-    @PutMapping("/ban/{id}")
+    @PutMapping("/ban/{id}/{ban}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PersonDto> ban(@PathVariable long id) {
+    public ResponseEntity<PersonDto> ban(@PathVariable long id, @PathVariable boolean ban) {
         return getResponse(personService.get(id)
-                .map(person -> {
-                    applicantService.reject(person.getApplicants());
-                    studentService.ban(person.getStudents());
-                    mentorService.removeMentors(person.getMentors());
-                    return person;
-                })
-                .map(personService::ban)
-                .map(PersonDto::map));
+                .map(person -> personService.ban(person, ban)));
     }
 
 

@@ -110,12 +110,9 @@ public class PersonEntity implements UserDetails {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<SimpleGrantedAuthority> authorities = new HashSet<>();
-        if (roles != null) {
-            authorities = roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
-                    .collect(Collectors.toUnmodifiableSet());
-        }
-        return authorities;
+        return roles == null ? new HashSet<>()
+                : roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
+                        .collect(Collectors.toUnmodifiableSet());
     }
 
 
@@ -150,7 +147,7 @@ public class PersonEntity implements UserDetails {
     @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return true;
+        return !ban;
     }
 
 }

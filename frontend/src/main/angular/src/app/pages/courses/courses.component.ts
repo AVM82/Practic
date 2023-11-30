@@ -16,7 +16,7 @@ import { Course } from 'src/app/models/course';
     templateUrl: './courses.component.html',
     styleUrls: ['./courses.component.css'],
     standalone: true,
-    imports: [MatCardModule, RouterLink, MatIconModule, AngularSvgIconModule]
+    imports: [NgForOf, NgIf, MatCardModule, RouterLink, MatIconModule, AngularSvgIconModule]
 })
 export class CoursesComponent implements OnInit{
   courses: Course[] = [];

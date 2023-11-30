@@ -29,6 +29,8 @@ public class PersonDto {
     List<String> roles;
 
     List<PersonStudentDto> students;
+    
+    List<?> graduates;
 
     List<PersonMentorDto> mentors;
 
@@ -55,6 +57,7 @@ public class PersonDto {
         dto.applicants = entity.getApplicants().stream()
                 .filter(applicant -> !applicant.isApplied() && !applicant.isRejected())
                 .map(PersonApplicantDto::map).toList();
+        dto.graduates = List.of();
         return dto;
     }
 

@@ -51,7 +51,8 @@
         <div mat-menu-item class="menuitem" (click)="sortBySurname(false)">на прізвище за зростанням</div>
         <div mat-menu-item class="menuitem" (click)="sortBySurname(true)">на прізвище за спаданням</div>
         <br>
-        <div *ngIf="!user.ban" mat-menu-item class="menuitem" [class.ban]="true" (click)="personService.ban(user)">забанити {{user.name}}</div>
+        <div *ngIf="!user.ban" mat-menu-item class="menuitem" [class.ban]="true" (click)="personService.ban(user, true)">забанити {{user.name}}</div>
+        <div *ngIf="user.ban" mat-menu-item class="menuitem" (click)="personService.ban(user, false)">розбанити {{user.name}}</div>
     </ng-template>
 </mat-menu>            
 
