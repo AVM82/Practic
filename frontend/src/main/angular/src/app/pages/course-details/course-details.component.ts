@@ -53,7 +53,7 @@ export class CourseDetailsComponent implements OnInit {
         this.slug = slug;
         this.stateStudent = this.me.getStudent(slug);
         this.isStudent = this.stateStudent != undefined;
-        this.isInvolved = this.isStudent || this.me.isMentor(slug);
+        this.isInvolved = this.isStudent || this.me.isMentor(slug) || this.me.isGraduate(slug);
       }
     })
   }

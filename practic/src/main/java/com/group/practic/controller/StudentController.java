@@ -82,7 +82,7 @@ public class StudentController {
 
 
     @GetMapping
-    @PreAuthorize("hasAnyRole(PersonService.ROLE_COLLABORATOR, PersonService.ROLE_ADMIN)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<Collection<StudentEntity>> get(
             @RequestParam(required = false) Optional<Long> courseId,
             @RequestParam(required = false) Optional<Long> personId,

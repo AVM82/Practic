@@ -1,7 +1,7 @@
 import { ROLE_GUEST, ROLE_MENTOR, ROLE_STUDENT, Roles } from "../enums/app-constans";
 import { Applicant, StateApplicant } from "./applicant";
 import { StateMentor } from "./mentor";
-import { StateStudent } from "./student";
+import { StateGraduate, StateStudent } from "./student";
 
 export class User {
   id!: number;
@@ -15,6 +15,7 @@ export class User {
   profilePictureUrl!: string;
   roles!: string[];
   students!: StateStudent[];
+  graduates!: StateGraduate[];
   mentors!: StateMentor[];
   applicants!: StateApplicant[];
   
@@ -92,6 +93,10 @@ export class User {
     return this.hasAnyRole(Roles.STUDENT);
   }
 
+  hasGraduateRole(): boolean {
+    return this.hasAnyRole(Roles.GRADUATE);
+  }
+
   hasMentorRole(): boolean {
     return this.hasAnyRole(Roles.MENTOR);
   }
@@ -100,8 +105,8 @@ export class User {
     return this.hasAnyRole(Roles.COMRADE);
   }
 
-  hasCollaboratorRole() : boolean {
-    return this.hasAnyRole(Roles.COLLABORATOR);
+  hasStaffRole() : boolean {
+    return this.hasAnyRole(Roles.STAFF);
   }
 
   hasAdminRole(): boolean {
@@ -121,13 +126,21 @@ export class User {
     return this.students?.find(student => student.slug === slug);
   }
 
+  getGraduate(slug: string): StateGraduate | undefined {
+    return this.graduates?.find(graduate => graduate.slug === slug);
+  }
+
   getMentor(slug: string): StateMentor | undefined {
     return this.mentors?.find(mentor => mentor.slug === slug);
   }
 
 
- isStudent(slug:string): boolean {
+  isStudent(slug:string): boolean {
     return this.hasStudentRole() && (this.getStudent(slug) != undefined);
+  }
+
+  isGraduate(slug:string): boolean {
+    return this.hasGraduateRole() && (this.getGraduate(slug) != undefined);
   }
 
   isMentor(slug: string): boolean {
@@ -145,6 +158,10 @@ export class User {
 
   getStudentSlugs(): string[] {
     return this.students.map(student => student.slug);
+  }
+ 
+  getGraduateSlugs(): string[] {
+    return this.graduates.map(graduate => graduate.slug);
   }
  
   getMentorSlugs(): string[] {
@@ -165,6 +182,11 @@ export class User {
     this.checkRoles();
   }
 
+  addGraduate(graduate: StateGraduate): void {
+    this.graduates.push(graduate);
+    this.checkRoles();
+  }
+
   addMentor(mentor: StateMentor): void {
     this.mentors.push(mentor);
     this.checkRoles()
@@ -176,10 +198,14 @@ export class User {
   }
 
   removeApplicantById(id: number): void {
-      this.applicants = this.applicants.filter(myApplicant => myApplicant.applicantId != id);
+    this.applicants = this.applicants.filter(applicant => applicant.applicantId != id);
   }
 
-  removeMentorById(mentorId: number): void {
+  removeStudentById(id: number): void {
+    this.students = this.students.filter(student => student.id != id);
+  }
+
+removeMentorById(mentorId: number): void {
     this.mentors = this.mentors.filter(mentor => mentor.mentorId != mentorId);
     this.checkRoles()
   }
@@ -230,6 +256,15 @@ export class User {
       return true;
     }
     return false; 
+  }
+
+  maybeNotStudent(student: StateStudent): boolean {
+    if (student.activeChapterNumber == 0 && student.inactive) {
+      this.removeStudentById(student.id);
+      this.addGraduate(student);
+      return true;
+    }
+    return false;
   }
 
   setActiveChapterNumber(slug: string, number:number): void {

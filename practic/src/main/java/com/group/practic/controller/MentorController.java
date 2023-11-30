@@ -61,7 +61,7 @@ public class MentorController {
 
 
     @PostMapping("/add/{slug}/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<MentorDto> addMentor(@PathVariable String slug,
             @Min(1) @PathVariable long id) {
         Optional<CourseEntity> course = courseService.get(slug);
@@ -72,7 +72,7 @@ public class MentorController {
 
 
     @PostMapping("/remove/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<Boolean> removeMentor(@Min(1) @PathVariable long id) {
         Optional<MentorEntity> mentor = mentorService.get(id);
         return mentor.isEmpty() ? badRequest()

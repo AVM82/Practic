@@ -25,26 +25,28 @@ export class CreateMethod {
 
 
 export const ROLE_ADMIN = 'ADMIN';
-export const ROLE_COLLABORATOR = 'COLLABORATOR';
+export const ROLE_STAFF = 'STAFF';
 export const ROLE_COMRADE = 'COMRADE';
 export const ROLE_MENTOR = 'MENTOR';
+export const ROLE_GRADUATE = 'GRADUATE';
 export const ROLE_STUDENT = 'STUDENT';
 export const ROLE_GUEST = 'GUEST';
 
 export class Roles {
   static readonly ADMIN = ROLE_ADMIN;
-  static readonly COLLABORATOR = ROLE_COLLABORATOR;
+  static readonly STAFF = ROLE_STAFF;
   static readonly COMRADE = ROLE_COMRADE;
   static readonly MENTOR = ROLE_MENTOR;
+  static readonly GRADUATE = ROLE_GRADUATE;
   static readonly STUDENT = ROLE_STUDENT;
   static readonly GUEST = ROLE_GUEST;  
-  static readonly ADVANCED: string [] = [ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE, ROLE_MENTOR];
+  static readonly ADVANCED: string [] = [ROLE_ADMIN, ROLE_STAFF, ROLE_COMRADE, ROLE_MENTOR];
   static readonly isAdvanceRole = (role: string): boolean => Roles.ADVANCED.some(adv => adv === role);
 }
 
-export const ROLES = [ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE, ROLE_MENTOR, ROLE_STUDENT, ROLE_GUEST];
+export const ROLES = [ROLE_ADMIN, ROLE_STAFF, ROLE_COMRADE, ROLE_MENTOR, ROLE_STUDENT, ROLE_GUEST];
 
-export const MANUALLY_CHANGED_ROLES = [ROLE_ADMIN, ROLE_COLLABORATOR, ROLE_COMRADE, ROLE_GUEST];
+export const MANUALLY_CHANGED_ROLES = [ROLE_ADMIN, ROLE_STAFF, ROLE_COMRADE, ROLE_GUEST];
 
 
 export const STATE_NOT_STARTED = 'NOT_STARTED';

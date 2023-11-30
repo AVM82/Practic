@@ -54,14 +54,14 @@ public class PersonController {
 
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<Collection<PersonDto>> getAll() {
         return getResponse(PersonDto.map(personService.get()));
     }
 
 
     @GetMapping("/")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<Collection<PersonDto>> get(@RequestParam(required = false) String name,
             @RequestParam(required = false) boolean inactive,
             @RequestParam(required = false) boolean ban) {
@@ -73,7 +73,7 @@ public class PersonController {
 
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<PersonDto> get(@Min(1) @PathVariable long id) {
         return getResponse(personService.get(id).map(PersonDto::map));
     }
@@ -95,7 +95,7 @@ public class PersonController {
 
 
     @PostMapping("/{id}/add/{newRole}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<PersonDto> addRole(@PathVariable long id, @PathVariable String newRole) {
         RoleEntity role = personService.getRole(newRole);
         return role == null ? badRequest()
@@ -105,7 +105,7 @@ public class PersonController {
 
 
     @PostMapping("/{id}/remove/{newRole}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<PersonDto> removeRole(@PathVariable long id,
             @PathVariable String newRole) {
         RoleEntity role = personService.getRole(newRole);

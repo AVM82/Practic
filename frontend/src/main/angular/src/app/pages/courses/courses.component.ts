@@ -7,7 +7,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {AngularSvgIconModule} from 'angular-svg-icon';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { User } from 'src/app/models/user';
-import { ROLE_ADMIN, ROLE_COLLABORATOR } from 'src/app/enums/app-constans';
+import { ROLE_ADMIN, ROLE_STAFF } from 'src/app/enums/app-constans';
 import { Course } from 'src/app/models/course';
 
 
@@ -16,7 +16,7 @@ import { Course } from 'src/app/models/course';
     templateUrl: './courses.component.html',
     styleUrls: ['./courses.component.css'],
     standalone: true,
-    imports: [NgForOf, NgIf, MatCardModule, RouterLink, MatIconModule, AngularSvgIconModule]
+    imports: [MatCardModule, RouterLink, MatIconModule, AngularSvgIconModule]
 })
 export class CoursesComponent implements OnInit{
   courses: Course[] = [];
@@ -28,7 +28,7 @@ export class CoursesComponent implements OnInit{
     private coursesService: CoursesService
   ) { 
     this.me = this.tokenStorageService.getMe();
-    this.createCapability = this.me.hasAnyRole(ROLE_ADMIN, ROLE_COLLABORATOR);
+    this.createCapability = this.me.hasAnyRole(ROLE_ADMIN, ROLE_STAFF);
   }
 
   ngOnInit(): void {

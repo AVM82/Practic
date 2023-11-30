@@ -16,7 +16,7 @@ export class StartPanelComponent {
     router!: Router;
     me!: User;
     isAdmin: boolean = false;
-    isCollaborator: boolean = false;
+    isStaff: boolean = false;
     isMentor: boolean = false;
     isStudent: boolean = false;
     isGuest: boolean = false;
@@ -29,7 +29,7 @@ export class StartPanelComponent {
         this.me = tokenStorageService.getMe();
         if (this.me) {
             this.isAdmin = this.me.hasAdminRole();
-            this.isCollaborator = this.me.hasCollaboratorRole();
+            this.isStaff = this.me.hasStaffRole();
             this.isMentor = this.me.hasMentorRole();
             this.isStudent = this.me.hasStudentRole();
             this.isGuest = this.me.hasGuestRole();
