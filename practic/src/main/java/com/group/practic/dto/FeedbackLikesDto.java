@@ -9,14 +9,14 @@ import lombok.Setter;
 @Getter
 public class FeedbackLikesDto {
 
-    FeedbackPage page;
+    FeedbackPageDto page;
     FeedbackDto feedback;
 
     public FeedbackLikesDto(FeedbackEntity entity) {
         this.feedback = FeedbackDto.map(entity);
     }
 
-    public FeedbackLikesDto(FeedbackPage page) {
+    public FeedbackLikesDto(FeedbackPageDto page) {
         this.page = page;
 
     }

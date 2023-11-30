@@ -8,13 +8,13 @@ import org.springframework.data.domain.Page;
 
 @Getter
 @Setter
-public class FeedbackPage {
+public class FeedbackPageDto {
     long totalFeedbacks;
     int totalPages;
     List<FeedbackDto> feedbacksOnPage;
 
-    public static FeedbackPage map(Page<FeedbackEntity> page) {
-        FeedbackPage dto = new FeedbackPage();
+    public static FeedbackPageDto map(Page<FeedbackEntity> page) {
+        FeedbackPageDto dto = new FeedbackPageDto();
         dto.totalFeedbacks = page.getTotalElements();
         dto.totalPages = page.getTotalPages();
         dto.feedbacksOnPage = page.get().map(FeedbackDto::map).toList();

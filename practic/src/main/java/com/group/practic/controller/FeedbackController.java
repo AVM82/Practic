@@ -5,7 +5,7 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 
 import com.group.practic.dto.FeedbackDto;
 import com.group.practic.dto.FeedbackLikesDto;
-import com.group.practic.dto.FeedbackPage;
+import com.group.practic.dto.FeedbackPageDto;
 import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.service.FeedbackService;
@@ -36,7 +36,7 @@ public class FeedbackController {
     }
 
     @GetMapping
-    public ResponseEntity<FeedbackPage> getAllFeedbacksPaginated(
+    public ResponseEntity<FeedbackPageDto> getAllFeedbacksPaginated(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam FeedbackSortState sortState) {
@@ -81,7 +81,7 @@ public class FeedbackController {
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<FeedbackPage> deleteFeedback(
+    public ResponseEntity<FeedbackPageDto> deleteFeedback(
             @PathVariable Long id,
             @RequestParam int page,
             @RequestParam int size,

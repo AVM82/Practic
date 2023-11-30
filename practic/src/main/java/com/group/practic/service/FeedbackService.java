@@ -1,7 +1,7 @@
 package com.group.practic.service;
 
 import com.group.practic.dto.FeedbackDto;
-import com.group.practic.dto.FeedbackPage;
+import com.group.practic.dto.FeedbackPageDto;
 import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
@@ -31,7 +31,7 @@ public class FeedbackService {
     }
 
 
-    public FeedbackPage getAllFeedbacksPaginated(
+    public FeedbackPageDto getAllFeedbacksPaginated(
             int page, int size, FeedbackSortState sortState) {
         Sort sort = switch (sortState) {
             case DATE_ASCENDING -> Sort.by("id").ascending();
@@ -41,7 +41,7 @@ public class FeedbackService {
         };
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        return FeedbackPage.map(feedbackRepository.findAll(pageable));
+        return FeedbackPageDto.map(feedbackRepository.findAll(pageable));
     }
 
 
