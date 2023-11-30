@@ -1,6 +1,13 @@
 import { Practice } from "./practice";
 import { Report } from "src/app/models/report";
 
+export interface StateGraduate {
+    id: number;
+    inactive: boolean;
+    ban: boolean;
+    slug: string;
+}
+
 export interface StateStudent {
     id: number;
     inactive: boolean;

@@ -29,14 +29,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromToken(jwt);
-
                 UserDetails userDetails = personService.loadUserById(userId);
-                UsernamePasswordAuthenticationToken
-                        authentication = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication = userDetails.isEnabled() 
+                        ? new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities())
+                        : new UsernamePasswordAuthenticationToken(userDetails, null);
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
 

@@ -64,14 +64,14 @@ public class CourseController {
 
 
     @PostMapping("/NewCourseFromProperties")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<CourseDto> createCourse(@NotBlank @RequestBody String propertyFile) {
         return postResponse(courseService.create(propertyFile).map(CourseDto::map));
     }
 
 
     @PostMapping("/NewCourse")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<CourseDto> createCourse(@NotBlank @RequestBody NewCourseDto dto) {
         return postResponse(courseService.create(dto).map(CourseDto::map));
     }
@@ -84,7 +84,7 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/chapters/{number}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLLABORATOR', 'COMRADE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'COMRADE')")
     public ResponseEntity<ChapterDto> getChapterByNumber(@PathVariable("slug") String slug,
             @PathVariable int number) {
         return getResponse(courseService.get(slug)

@@ -25,10 +25,10 @@ import { TokenStorageService } from "src/app/services/token-storage.service";
     personService: PersonService;
     mentorService: MentorService;
     surnameFirst: boolean = false;
-    isCollaborator: boolean = false;
+    isStaff: boolean = false;
     roles = MANUALLY_CHANGED_ROLES;
     ADMIN = Roles.ADMIN;
-    COLLABORATOR = Roles.COLLABORATOR;
+    STAFF = Roles.STAFF;
     
     constructor(
         private tokenStorage: TokenStorageService,
@@ -38,9 +38,9 @@ import { TokenStorageService } from "src/app/services/token-storage.service";
         private router: Router
     ) {
         this.me = tokenStorage.getMe();
-        if (!this.me.hasAnyRole(Roles.ADMIN, Roles.COLLABORATOR))
+        if (!this.me.hasAnyRole(Roles.ADMIN, Roles.STAFF))
           router.navigate(['']);
-        this.isCollaborator = this.me.hasCollaboratorRole();
+        this.isStaff = this.me.hasStaffRole();
         this.personService = personService0;
         this.mentorService = mentorService0;
     }

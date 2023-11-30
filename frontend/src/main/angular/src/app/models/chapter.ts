@@ -18,6 +18,7 @@ class BaseChapter {
     _myReports: number,
     _state: string,
     _parts: ChapterPart[]
+    
   ) {
     this.id = _id;
     this.number = _number;
