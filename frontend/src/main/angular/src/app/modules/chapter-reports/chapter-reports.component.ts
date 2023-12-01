@@ -21,6 +21,7 @@ export class ChapterReportsComponent {
   @Input() chapterNumber!: number
   @Input() studentReports!: StudentReport[];
   @Input() currentUserId!:number;
+  @Input() activeStudentChapterId!:number;
   @Input() timeslots!: any;
 
   reportsNumberOnPage: number = 5;

@@ -78,8 +78,6 @@ export class NewReportDialogComponent implements OnInit{
         Validators.maxLength(100)
     ]));
     dateStr: string = '';
-    openChapters$ = new BehaviorSubject<number[]>([]);
-    activeChapter:number = 1;
     topicsReport$: Observable<{ topic: string }[]> = new BehaviorSubject<{ topic: string }[]>([]);
 
         constructor(
@@ -87,7 +85,7 @@ export class NewReportDialogComponent implements OnInit{
         @Inject(MAT_DIALOG_DATA) public newStudentReport: NewStudentReport,
         @Inject(MAT_DIALOG_DATA) public data: any,
         private coursesService: CoursesService,
-        private topicReportService: TopicReportService
+        private topicReportService: TopicReportService,
     ) {
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth();
@@ -98,40 +96,12 @@ export class NewReportDialogComponent implements OnInit{
     }
 
     ngOnInit(): void {
-        this.getOpenChapters();
-
-        this.openChapters$.subscribe(chapters => {
-            console.log(chapters);
-            if (chapters.length > 0) {
-                this.activeChapter = chapters[chapters.length - 1];
-                this.initTopicsReports();
-            }
-        });
+        this.initTopicsReports();
     }
 
-      updateActiveChapter(selectChapter:number){
-        this.activeChapter=selectChapter;
-        this.initTopicsReports();
-      }
-
-    getOpenChapters(): void {
-
-        this.coursesService.getOpenChapters().subscribe({
-          next: chapters => {
-            const ids = chapters.map(chapter => chapter.id).sort((a, b) => a - b);
-            this.openChapters$.next(ids);
-
-          },
-          error: error => {
-            console.error('Помилка при запиті доступних глав', error);
-            this.openChapters$.next([]);
-          }
-        });
-      }
 
     initTopicsReports(){
-        console.log(this.activeChapter + " new student chapt");
-        this.topicReportService.getTopicsReportsOnChapter(this.activeChapter).subscribe({
+        this.topicReportService.getStudentChapterTopicsReports(this.data.activeStudentChapterId).subscribe({
             next: topics => {
                 if (topics) {
                     const topicsReports = topics.map((topic:any) => topic.topic);
@@ -148,7 +118,7 @@ export class NewReportDialogComponent implements OnInit{
 
 
     getnewStudentReport():NewStudentReport{
-        this.newStudentReport.chapter=this.activeChapter;
+        this.newStudentReport.chapterId=this.data.activeStudentChapterId;
         return this.newStudentReport;
     }
 

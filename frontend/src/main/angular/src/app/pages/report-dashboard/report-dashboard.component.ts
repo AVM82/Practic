@@ -18,6 +18,7 @@ import {CalendarEventService} from "../../services/calendar-event.service";
 import * as _moment from "moment/moment";
 import {default as _rollupMoment} from "moment/moment";
 import { TokenStorageService } from 'src/app/services/token-storage.service';
+import {User} from "../../models/user";
 
 const moment = _rollupMoment || _moment;
 
@@ -42,6 +43,8 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     levels: Level[] = []
     timeslots!: Map<string, TimeSlot[]>;
     currentUserId!: any;
+    me!:User;
+    activeStudentChapterId: number = 0;
 
     constructor(
         public dialog: MatDialog,
@@ -52,6 +55,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         private timeSlotService: TimeSlotService,
         private calendarEventService: CalendarEventService
     ) {
+        this.me = tokenStorageService.getMe();
     }
 
 
@@ -73,7 +77,10 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     }
 
     getChapters(chapters: ShortChapter[]) {
+        console.log(chapters)
         this.chapters = chapters;
+        let openedChapters = chapters.filter(chapter=>!chapter.hidden);
+        this.activeStudentChapterId = openedChapters[openedChapters.length-1].id;
     }
 
 
@@ -108,29 +115,29 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
                 height: '60%',
                 width: '50%',
                 data: {
-                    chapters: this.chapters,
-                    timeslots: this.timeslots
+                    timeslots: this.timeslots,
+                    me: this.me,
+                    activeStudentChapterId: this.activeStudentChapterId
                 },
             });
-
         dialogRef.afterClosed().subscribe(result => {
             this.route.paramMap.subscribe(params => {
                 const slug = params.get('slug');
                 console.log('The dialog was closed');
                 console.log("result of creating report dialog: ", result);
-                if (result.timeslotId && result.title && result.chapter && slug) {
+                if (result.timeslotId && result.title && result.chapterId && slug) {
                     this.reportService.createNewReport(result, slug).subscribe();
                     const startReportDateTime = this.toUnionDate(result.date, result.time);
                     console.log("start report date and time: ", startReportDateTime)
                     const endReportDateTime = moment(startReportDateTime).add(30, 'm').toDate();
                     console.log("end report date and time: ", endReportDateTime)
-                      this.calendarEventService.sendEmailNotification({
+                      this.calendarEventService.sendEmailNotification(slug,{
                           "startEvent": startReportDateTime,
                           "endEvent": endReportDateTime,
                           "subjectReport": result.title,
                           "description": "description"
                       }).subscribe()
-                }
+               }
             });
         });
     }
