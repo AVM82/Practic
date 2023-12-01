@@ -31,7 +31,7 @@ public class StudentChapterDto {
         dto.parts = entity.getChapter().getParts().stream().map(part -> ChapterPartDto.map(part,
                 entity.getPracticeByNumber(part.getNumber()).get())).toList();
         dto.state = entity.getState().name();
-        dto.reportCount = entity.getReportCount();
+        //dto.reportCount = entity.getReportCount();
         return dto;
     }
 
