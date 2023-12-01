@@ -5,9 +5,11 @@ import com.group.practic.dto.AuthUserDto;
 import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.SignUpRequestDto;
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.GraduateEntity;
 import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
+import com.group.practic.entity.StudentEntity;
 import com.group.practic.exception.ResourceNotFoundException;
 import com.group.practic.repository.PersonRepository;
 import com.group.practic.repository.RoleRepository;
@@ -53,8 +55,7 @@ public class PersonService implements UserDetailsService {
     public static final List<String> ROLES = List.of(ROLE_ADMIN, ROLE_STAFF, ROLE_COMRADE,
             ROLE_MENTOR, ROLE_GRADUATE, ROLE_STUDENT, ROLE_GUEST);
 
-    public static final List<String> ADVANCED_ROLES =
-            List.of(ROLE_ADMIN, ROLE_STAFF, ROLE_COMRADE);
+    public static final List<String> ADVANCED_ROLES = List.of(ROLE_ADMIN, ROLE_STAFF, ROLE_COMRADE);
 
     PersonRepository personRepository;
 
@@ -69,7 +70,7 @@ public class PersonService implements UserDetailsService {
     RoleEntity roleGuest;
 
     RoleEntity roleStudent;
-    
+
     RoleEntity roleGraduate;
 
     RoleEntity roleMentor;
@@ -102,6 +103,7 @@ public class PersonService implements UserDetailsService {
         ROLES.forEach(this::saveRole);
         this.roleGuest = getRole(ROLE_GUEST);
         this.roleStudent = getRole(ROLE_STUDENT);
+        this.roleGraduate = getRole(ROLE_GRADUATE);
         this.roleMentor = getRole(ROLE_MENTOR);
         this.roleComrade = getRole(ROLE_COMRADE);
         this.roleStaff = getRole(ROLE_STAFF);
@@ -120,7 +122,8 @@ public class PersonService implements UserDetailsService {
         }
         return me;
     }
-    
+
+
     public static PersonEntity me() {
         return (PersonEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
@@ -315,7 +318,7 @@ public class PersonService implements UserDetailsService {
     public UserDetails loadUserById(long id) {
         Optional<PersonEntity> user = get(id);
         if (user.isEmpty()) {
-            throw(new ResourceNotFoundException("User", "id", id));
+            throw (new ResourceNotFoundException("User", "id", id));
         }
         return user.get();
     }
@@ -372,6 +375,16 @@ public class PersonService implements UserDetailsService {
 
     public void removeStudentRole(PersonEntity person) {
         if (person.getStudents().isEmpty()) {
+            removeRole(person, roleStudent);
+        }
+    }
+
+
+    public void addGraduateRole(GraduateEntity graduate) {
+        PersonEntity person = graduate.getPerson();
+        addRole(person, roleGraduate);
+        Set<StudentEntity> students = person.getStudents();
+        if (students.size() == students.stream().filter(StudentEntity::isFinished).count()) {
             removeRole(person, roleStudent);
         }
     }

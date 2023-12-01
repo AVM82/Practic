@@ -88,6 +88,9 @@ public class PersonEntity implements UserDetails {
     @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
     private Set<ApplicantEntity> applicants = new HashSet<>();
 
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    private Set<GraduateEntity> garduates = new HashSet<>();
+
 
     public PersonEntity(String name, String linkedin, RoleEntity guestRole) {
         this.name = name;

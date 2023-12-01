@@ -152,7 +152,6 @@ public class StudentService {
 
 
     protected StudentEntity finish(StudentEntity student) {
-        student.setInactive(true);
         student.setActiveChapterNumber(0);
         student.setFinish(LocalDate.now());
         student.setWeeks((int) student.getStart().until(student.getFinish(), ChronoUnit.WEEKS));

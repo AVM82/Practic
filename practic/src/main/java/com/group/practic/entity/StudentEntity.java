@@ -53,10 +53,10 @@ public class StudentEntity implements Serializable {
     LocalDate finish;
 
     int weeks;
-    
+
     int daysSpent;
 
-    String skills;
+    private List<String> skills;
 
     String os;
 
@@ -90,40 +90,14 @@ public class StudentEntity implements Serializable {
     }
 
 
-    public StudentEntity(PersonEntity person, CourseEntity course, String skills, String os,
-            String english, String purpose) {
-        this(person, course);
-        this.skills = skills;
-        this.os = os;
-        this.english = english;
-        this.purpose = purpose;
-    }
-
-
     public StudentEntity changeAdditionalMaterial(
             AdditionalMaterialsEntity additionalMaterialsEntity, boolean state) {
         if (state) {
-            addAdditionalMaterial(additionalMaterialsEntity);
+            additionalMaterials.add(additionalMaterialsEntity);
         } else {
-            removeAdditionalMaterial(additionalMaterialsEntity);
+            additionalMaterials.remove(additionalMaterialsEntity);
         }
         return this;
-    }
-
-
-    public void addAdditionalMaterial(AdditionalMaterialsEntity additionalMaterialsEntity) {
-        additionalMaterials.add(additionalMaterialsEntity);
-    }
-
-
-    public void removeAdditionalMaterial(AdditionalMaterialsEntity additionalMaterialsEntity) {
-        additionalMaterials.remove(additionalMaterialsEntity);
-    }
-
-
-    public void addChapter(StudentChapterEntity chapter) {
-        this.studentChapters.add(chapter);
-        this.activeChapterNumber = chapter.number;
     }
 
 
