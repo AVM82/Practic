@@ -3,7 +3,8 @@ package com.group.practic.service;
 import com.group.practic.dto.EventDto;
 import com.group.practic.dto.MessageSendingResultDto;
 import com.group.practic.dto.SendMessageDto;
-import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.StudentEntity;
 import java.text.DateFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CalendarEventService {
 
-    PersonService personService;
+    StudentService studentService;
 
     @Value("${email.message.body}")
     private String emailMessage;
@@ -31,16 +32,18 @@ public class CalendarEventService {
     private String calendarLocation;
 
     @Autowired
-    CalendarEventService(PersonService personService) {
-        this.personService = personService;
+    CalendarEventService(StudentService studentService) {
+        this.studentService = studentService;
     }
 
-    public MessageSendingResultDto sendEventMessageAllPerson(Sender sender, EventDto eventDto) {
+    public MessageSendingResultDto sendEventMessageAllPerson(Sender sender, EventDto eventDto,
+            CourseEntity course) {
         String eventMessage = getEventMessage(eventDto);
-        List<PersonEntity> allPerson = personService.get();
+        List<StudentEntity> allStudentsOfCourse = studentService
+                .getStudentsOfCourse(course, false, false);
         int counter = 0;
-        for (PersonEntity person : allPerson) {
-            if (sender.sendMessage(new SendMessageDto(person.getEmail(), eventMessage,
+        for (StudentEntity student : allStudentsOfCourse) {
+            if (sender.sendMessage(new SendMessageDto(student.getPerson().getEmail(), eventMessage,
                     emailMessageHeader))) {
                 counter++;
             }

@@ -2,15 +2,23 @@ package com.group.practic.controller;
 
 import com.group.practic.dto.EventDto;
 import com.group.practic.dto.MessageSendingResultDto;
+import com.group.practic.entity.CourseEntity;
 import com.group.practic.service.CalendarEventService;
+import com.group.practic.service.CourseService;
 import com.group.practic.service.EmailSenderService;
-import jakarta.validation.Valid;
+import com.group.practic.util.ResponseUtils;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+
+
+
 
 
 @RestController
@@ -21,20 +29,25 @@ public class CalendarEventController {
 
     EmailSenderService emailSenderService;
 
+    CourseService courseService;
+
 
     @Autowired
     public CalendarEventController(CalendarEventService eventService,
-            EmailSenderService emailSenderService) {
+            EmailSenderService emailSenderService, CourseService courseService) {
         this.eventService = eventService;
         this.emailSenderService = emailSenderService;
+        this.courseService = courseService;
     }
 
 
-    @PostMapping("/sendEvent")
-    public ResponseEntity<MessageSendingResultDto> sendMail(@Valid @RequestBody EventDto eventDto) {
+    @PostMapping("/sendEvent/{slug}")
+    public ResponseEntity<MessageSendingResultDto> sendMail(@RequestBody EventDto eventDto,
+                @PathVariable  String slug) {
+        Optional<CourseEntity> course = courseService.get(slug);
         MessageSendingResultDto messageAllPerson = eventService
-                .sendEventMessageAllPerson(emailSenderService, eventDto);
-        return ResponseEntity.ok(messageAllPerson);
+                .sendEventMessageAllPerson(emailSenderService, eventDto, course.get());
+        return course.isEmpty() ? ResponseUtils.badRequest() : ResponseEntity.ok(messageAllPerson);
     }
 
 }
