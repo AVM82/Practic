@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -124,6 +125,11 @@ public class StudentEntity implements Serializable {
     public void addChapter(StudentChapterEntity chapter) {
         this.studentChapters.add(chapter);
         this.activeChapterNumber = chapter.number;
+    }
+
+    public Optional<StudentChapterEntity> getActiveChapter() {
+        return studentChapters.stream().filter(chapter -> chapter.number == activeChapterNumber)
+                .findFirst();
     }
 
 

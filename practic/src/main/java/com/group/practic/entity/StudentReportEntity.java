@@ -14,10 +14,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "student_reports")
+@Getter
+@Setter
 public class StudentReportEntity {
 
     @Id
@@ -25,10 +29,10 @@ public class StudentReportEntity {
     long id;
 
     @ManyToOne
-    ChapterEntity chapter;
+    StudentChapterEntity studentChapter;
+ 
 
-    @ManyToOne
-    PersonEntity student;
+    //int number;
 
     @OneToOne
     @NotNull
@@ -43,93 +47,20 @@ public class StudentReportEntity {
     List<Long> likedPersonsIdList = new ArrayList<>();
 
 
-    public StudentReportEntity() {}
+    public StudentReportEntity() {
+    }
 
 
-    public StudentReportEntity(ChapterEntity chapter, PersonEntity student, TimeSlotEntity timeslot,
-            @NotBlank String title) {
-        this.chapter = chapter;
-        this.student = student;
+    public StudentReportEntity(StudentChapterEntity studentChapter, TimeSlotEntity timeslot,
+                               @NotBlank String title/*, int number*/) {
+        this.studentChapter = studentChapter;
         this.timeSlot = timeslot;
         this.title = title;
+        // this.number = number;
 
     }
 
 
-    public StudentReportEntity(long id, ChapterEntity chapter, PersonEntity student,
-            TimeSlotEntity timeslot, @NotBlank String title) {
-        this(chapter, student, timeslot, title);
-        this.id = id;
-    }
-
-
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public ChapterEntity getChapter() {
-        return chapter;
-    }
-
-
-    public void setChapter(ChapterEntity chapter) {
-        this.chapter = chapter;
-    }
-
-
-    public PersonEntity getStudent() {
-        return student;
-    }
-
-
-    public void setStudent(PersonEntity student) {
-        this.student = student;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-
-    public ReportState getState() {
-        return state;
-    }
-
-
-    public void setState(ReportState state) {
-        this.state = state;
-    }
-
-
-    public TimeSlotEntity getTimeSlot() {
-        return timeSlot;
-    }
-
-
-    public void setTimeSlot(TimeSlotEntity timeSlot) {
-        this.timeSlot = timeSlot;
-    }
-
-
-    public List<Long> getLikedPersonsIdList() {
-        return likedPersonsIdList;
-    }
-
-
-    public void setLikedPersonsIdList(List<Long> likedPersonsIdList) {
-        this.likedPersonsIdList = likedPersonsIdList;
-    }
 
 }
+

@@ -57,11 +57,13 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @Column(name = "updated_at", nullable = true)
     Timestamp updatedAt;
 
-    int reportCount;
-
     @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
     @OrderBy("number")
     private List<StudentPracticeEntity> practices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
+    @OrderBy("number")
+    private List<StudentReportEntity> reports = new ArrayList<>();
 
     int daysSpent;
 
