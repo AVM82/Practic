@@ -15,6 +15,8 @@ public class ChapterDto {
     String name;
 
     List<ChapterPartDto> parts;
+    
+    List<String> skills;
 
     int reportCount;
 
@@ -25,6 +27,7 @@ public class ChapterDto {
         dto.number = entity.getNumber();
         dto.name = entity.getName();
         dto.parts = entity.getParts().stream().map(part -> ChapterPartDto.map(part, null)).toList();
+        dto.skills = entity.getSkills();
         dto.reportCount = reportCount;
         return dto;
     }

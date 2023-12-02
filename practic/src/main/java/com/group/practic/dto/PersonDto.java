@@ -59,7 +59,7 @@ public class PersonDto {
         dto.applicants = entity.getApplicants().stream()
                 .filter(applicant -> !applicant.isApplied() && !applicant.isRejected())
                 .map(PersonApplicantDto::map).toList();
-        dto.graduates = entity.getGarduates().stream().map(GraduateDto::map).toList();
+        dto.graduates = entity.getGraduates().stream().map(GraduateDto::map).toList();
         return dto;
     }
 

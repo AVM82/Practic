@@ -15,7 +15,9 @@ import jakarta.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,7 +58,7 @@ public class StudentEntity implements Serializable {
 
     int daysSpent;
 
-    private List<String> skills;
+    private Set<String> skills = new HashSet<>();
 
     String os;
 

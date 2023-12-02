@@ -9,7 +9,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,9 +47,9 @@ public class GraduateEntity implements Serializable {
 
     int daysSpent;
 
-    private List<String> skills;
+    private Set<String> skills;
 
-    
+
     public GraduateEntity(StudentEntity student) {
         this.student = student;
         person = student.person;
@@ -60,5 +60,5 @@ public class GraduateEntity implements Serializable {
         daysSpent = student.daysSpent;
         skills = student.getSkills();
     }
-    
+
 }

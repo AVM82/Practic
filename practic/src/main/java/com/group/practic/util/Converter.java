@@ -6,7 +6,6 @@ import com.group.practic.dto.StudentReportDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentReportEntity;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.modelmapper.ModelMapper;
@@ -52,17 +51,6 @@ public interface Converter {
 
     static List<StudentReportDto> convert(List<StudentReportEntity> studentReportEntityList) {
         return studentReportEntityList.stream().map(StudentReportDto::map).toList();
-    }
-
-
-    static List<CourseDto> convertCourseEntityList(List<CourseEntity> courses) {
-        List<CourseDto> result = new ArrayList<>(courses.size());
-        courses.forEach(course -> {
-            if (!course.getInactive()) {
-                result.add(CourseDto.map(course));
-            }
-        });
-        return result;
     }
 
 

@@ -16,10 +16,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "chapter_parts")
+@Getter
+@Setter
 public class ChapterPartEntity implements Serializable {
 
     private static final long serialVersionUID = 2228357501851519506L;
@@ -90,74 +94,10 @@ public class ChapterPartEntity implements Serializable {
                 || (number == other.number && Objects.equals(praxisPurpose, other.praxisPurpose));
     }
 
-
-    public long getId() {
-        return id;
+    
+    public ChapterPartEntity update(ChapterPartEntity chapterPart) {
+        this.praxisPurpose = chapterPart.praxisPurpose;
+        return this;
     }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public ChapterEntity getChapter() {
-        return chapter;
-    }
-
-
-    public void setChapter(ChapterEntity chapter) {
-        this.chapter = chapter;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public List<SubChapterEntity> getSubChapters() {
-        return subChapters;
-    }
-
-
-    public void setSubChapters(List<SubChapterEntity> subChapters) {
-        this.subChapters = subChapters;
-    }
-
-
-    public String getPraxisPurpose() {
-        return praxisPurpose;
-    }
-
-
-    public void setPraxisPurpose(String praxisPurpose) {
-        this.praxisPurpose = praxisPurpose;
-    }
-
-
-    public List<PraxisEntity> getPraxis() {
-        return praxis;
-    }
-
-
-    public void setPraxis(List<PraxisEntity> praxis) {
-        this.praxis = praxis;
-    }
-
-
-    public List<AdditionalEntity> getAdditionals() {
-        return additionals;
-    }
-
-
-    public void setAdditionals(List<AdditionalEntity> additionals) {
-        this.additionals = additionals;
-    }
-
+    
 }

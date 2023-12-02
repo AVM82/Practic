@@ -143,6 +143,14 @@ public class StudentService {
                 "Розділ №" + chapter.getNumber() + " " + chapter.getShortName());
         return student;
     }
+    
+    
+    protected void closeChapter(StudentChapterEntity chapter) {
+        StudentEntity student = chapter.getStudent();
+        student.getSkills().addAll(chapter.getChapter().getSkills());
+        //save ?
+        //pass chapter to the statistics
+    }
 
 
     protected StudentEntity start(StudentEntity student) {
@@ -216,6 +224,7 @@ public class StudentService {
             }
             studentChapterRepository.save(chapter);
             if (newState == ChapterState.DONE) {
+                closeChapter(chapter);
                 openNextChapter(chapter.getStudent());
             }
         }

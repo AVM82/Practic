@@ -22,6 +22,7 @@
 <div *ngFor="let chapterPart of chapter?.parts">
 	<div class="chapter-part">
 		{{ chapter?.number }}. Теоретичний блок {{showPartNumber ? '№'+ chapterPart.common?.number : ''}}
+		<div *ngFor="let skill of chapter?.skills" class="skill">{{skill}}</div>
 	</div>
 
 	<cdk-accordion class="chapter-details-container" [multi]="true">

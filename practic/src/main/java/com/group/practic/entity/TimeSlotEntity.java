@@ -15,6 +15,8 @@ import java.time.LocalTime;
 @Table(name = "report_timeslots")
 public class TimeSlotEntity implements Serializable {
 
+    private static final long serialVersionUID = -7631041812673178991L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
