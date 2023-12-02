@@ -9,10 +9,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 
 @Entity
 @Table(name = "statistic_student_chapters")
@@ -43,29 +44,29 @@ public class StatisticStudentChapterEntity implements Serializable {
     long studentChapterCount;
 
     long dayCount;
-    
+
     long reportCount;
-    
+
     long quizPassedResult;
-    
+
     long quizPassedCount;
 
     long quizTotalResult;
-    
+
     long quizTotalCount;
 
-    
+
     public StatisticStudentChapterEntity(CourseEntity course, ChapterEntity chapter) {
         this.course = course;
         this.chapter = chapter;
     }
-    
-    
+
+
     public void passData(StudentChapterEntity studentChapter) {
         studentChapterCount++;
         dayCount += studentChapter.daysSpent;
         reportCount += studentChapter.reportCount;
-        //quiz statistic
+        // quiz statistic
     }
-    
+
 }

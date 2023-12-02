@@ -9,10 +9,11 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 
 @Entity
 @Table(name = "statistic_course")
@@ -38,18 +39,18 @@ public class StatisticCourseEntity implements Serializable {
     Timestamp updatedAt;
 
     long applicantTotalCount;
-    
+
     long applicantAppliedCount;
-    
+
     long applicantRejectedCount;
-    
+
     long studentStartedCount;
-    
+
     long studentFinishedCount;
-    
+
     long studentBannedCount;
-    
+
     long graduateCount;
-    
-    
+
+
 }

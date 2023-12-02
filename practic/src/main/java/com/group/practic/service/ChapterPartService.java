@@ -97,19 +97,18 @@ public class ChapterPartService {
 
 
     public PraxisEntity createOrUpdatePraxis(PraxisEntity newEntity) {
-        PraxisEntity praxis = praxisRepository.findByChapterPartAndNumber(
-                newEntity.getChapterPart(), newEntity.getNumber());
+        PraxisEntity praxis = praxisRepository
+                .findByChapterPartAndNumber(newEntity.getChapterPart(), newEntity.getNumber());
         if (praxis == null) {
             return praxisRepository.save(newEntity);
         }
-        return praxis.equals(newEntity) ? praxis
-                : praxisRepository.save(praxis.update(newEntity));
+        return praxis.equals(newEntity) ? praxis : praxisRepository.save(praxis.update(newEntity));
     }
 
 
     public AdditionalEntity createOrUpdateAdditional(AdditionalEntity newEntity) {
-        AdditionalEntity additional = additionalRepository.findByChapterPartAndNumber(
-                newEntity.getChapterPart(), newEntity.getNumber());
+        AdditionalEntity additional = additionalRepository
+                .findByChapterPartAndNumber(newEntity.getChapterPart(), newEntity.getNumber());
         if (additional == null) {
             return additionalRepository.save(newEntity);
         }
@@ -217,8 +216,8 @@ public class ChapterPartService {
             String key = (String) entry.getKey();
             if (key.startsWith(keyStarts) && (n = PropertyUtil.getChapterNumber(3, key)) != 0) {
                 String[] nameRefs = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
-                PraxisEntity praxis = createOrUpdatePraxis(new PraxisEntity(0, chapterPart, n, nameRefs[0],
-                        referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
+                PraxisEntity praxis = createOrUpdatePraxis(new PraxisEntity(0, chapterPart, n,
+                        nameRefs[0], referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
                 if (praxis != null) {
                     result.add(praxis);
                 }
@@ -236,8 +235,8 @@ public class ChapterPartService {
             String key = (String) entry.getKey();
             if (key.startsWith(keyStarts) && (n = PropertyUtil.getChapterNumber(3, key)) != 0) {
                 String[] nameRefs = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
-                AdditionalEntity additional =
-                        createOrUpdateAdditional(new AdditionalEntity(0, chapterPart, n, nameRefs[0],
+                AdditionalEntity additional = createOrUpdateAdditional(
+                        new AdditionalEntity(0, chapterPart, n, nameRefs[0],
                                 referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
                 if (additional != null) {
                     result.add(additional);
