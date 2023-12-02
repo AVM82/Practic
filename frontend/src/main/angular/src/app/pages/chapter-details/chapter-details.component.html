@@ -2,18 +2,18 @@
 
 <div class="chapter-header">
 	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
-	<report-button *ngIf="isMentor" 
+	<report-button *ngIf="isMentor" class="report-button"
 		matTooltip="Всі доповіді розділу"
 		matTooltipPosition="below"
 		[reportsNumber]="chapter!.reportCount">
 	</report-button>
 	<div *ngIf="isStudent">
-		<report-button
+		<report-button class="report-button"
 			matTooltip="Мої доповіді розділу"
             matTooltipPosition="above"
 			[reportsNumber]="chapter!.myReports">
 		</report-button>
-		<button *ngIf="chapter!.state !== done" (click)="changeState($event)">
+		<button *ngIf="chapter!.state !== done" class="chapter-button" (click)="changeState($event)">
 			{{getTextAccordingState()}}
 		</button>
 	</div>
@@ -22,7 +22,6 @@
 <div *ngFor="let chapterPart of chapter?.parts">
 	<div class="chapter-part">
 		{{ chapter?.number }}. Теоретичний блок {{showPartNumber ? '№'+ chapterPart.common?.number : ''}}
-		<div *ngFor="let skill of chapter?.skills" class="skill">{{skill}}</div>
 	</div>
 
 	<cdk-accordion class="chapter-details-container" [multi]="true">
@@ -138,4 +137,11 @@
 			</div>
 		</div>
 	</div>
+
+	<div *ngIf="chapter?.skills">
+		<div class="skill-part">
+			<div *ngFor="let skill of chapter?.skills" class="skill">{{skill}}</div>
+		</div>
+	</div>
 </div>
+

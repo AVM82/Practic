@@ -137,7 +137,25 @@
     margin-bottom: 10px;
 }
 
-.chapter-part .action-buttons {
+.report-button {
+    position: relative;
+    top: 0;
+    right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
+    display: flex;
+    align-items: center;
+}
+
+.chapter-button  {
+    margin-top: 10px;
+    position: relative;
+    bottom: 0;
+    right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
+    display: flex;
+    align-items: center;
+    min-height: 30px;
+}
+
+.action-buttons {
     position: absolute;
     top: 0;
     right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
@@ -190,6 +208,16 @@ button.done-btn:not([disabled]) {
     font-size: 16px;
     border-radius: calc(1.5em + 5px);
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.skill-part {
+    align-items: center;
+    margin-left: 40px;
+    margin-right: 40px;    
+    margin-bottom: 10px;
+    display: flex;
+    padding: 10px;
+    position: relative;
 }
 
 .skill {

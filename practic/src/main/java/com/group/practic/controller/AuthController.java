@@ -42,25 +42,20 @@ public class AuthController {
     @PostMapping("/auth")
     public ResponseEntity<JwtAuthenticationResponse> authUserByEmail(
             @RequestBody AuthByEmailDto byEmailDto) {
-        return getResponse(personService.getByEmail(byEmailDto.getEmail())
+        return getResponse(
+                personService.getByEmail(byEmailDto.getEmail())
                         .map(person -> new JwtAuthenticationResponse(
                                 authService.createAuthenticationToken(byEmailDto.getEmail(),
-                                        byEmailDto.getPassword()), PersonDto.map(person))));
+                                        byEmailDto.getPassword()),
+                                PersonDto.map(person))));
     }
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUserByEmail(@RequestParam String verificationToken) {
-        if (authService.isMatchVerificationToken(verificationToken)) {
-            PersonEntity person = authService.createPersonByVerificationToken(verificationToken);
-            authService.deletePreVerificationUser(verificationToken);
-            String token = authService.createTokenForPerson(person);
-            PersonDto userInfo = PersonDto.map(person);
-
-            return ResponseEntity.ok(new JwtAuthenticationResponse(token, userInfo));
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User registration failed");
+    public ResponseEntity<JwtAuthenticationResponse> registerUserByEmail(
+            @RequestParam String verificationToken) {
+        return getResponse(authService
+                .createJwtResponse(authService.createPersonByVerificationToken(verificationToken)));
     }
 
 
@@ -68,8 +63,8 @@ public class AuthController {
     public ResponseEntity<Void> verificationByEmail(
             @RequestBody VerificationByEmailDto byEmailDto) {
         if (authService.isNewPerson(byEmailDto.getEmail())) {
-            String verificationToken = authService
-                    .createTokenForPerson(new PersonEntity(byEmailDto.getName(), "", null));
+            String verificationToken =
+                    authService.createToken(new PersonEntity(byEmailDto.getName(), "", null));
 
             PreVerificationUserEntity preVerificationUser =
                     authService.createPreVerificationUser(byEmailDto, verificationToken);

@@ -1,6 +1,8 @@
 package com.group.practic.service;
 
 import com.group.practic.dto.AuthUserDto;
+import com.group.practic.dto.JwtAuthenticationResponse;
+import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.ResetPasswordDto;
 import com.group.practic.dto.SecretCodeDto;
 import com.group.practic.dto.SignUpRequestDto;
@@ -150,8 +152,9 @@ public class AuthService {
                 String.format(verificationEmailMessage, link,
                         verificationTokenValidityHours));
     }
+    
 
-    public String createTokenForPerson(PersonEntity person) {
+    public String createToken(PersonEntity person) {
         AuthUserDto userDto = AuthUserDto.create(person);
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDto, person.getPassword(),
@@ -159,6 +162,14 @@ public class AuthService {
         return tokenProvider.createToken(authentication);
     }
 
+    
+    public JwtAuthenticationResponse createJwtResponse(PersonEntity person) {
+        return person == null ? null
+                : new JwtAuthenticationResponse(createToken(person), PersonDto.map(person));
+    }
+    
+    
+    
     public boolean isMatchVerificationToken(String token) {
         return verificationUserRepository.findByToken(token)
                 .map(tokenEntity -> tokenEntity.getExpiredAt().isAfter(LocalDateTime.now()))
@@ -168,12 +179,14 @@ public class AuthService {
     public PersonEntity createPersonByVerificationToken(String token) {
         return verificationUserRepository.findByToken(token)
                 .map(preVerificationUser -> {
-                    if (isNewPerson(preVerificationUser.getEmail())) {
+                    if (preVerificationUser.getExpiredAt().isAfter(LocalDateTime.now())
+                            && isNewPerson(preVerificationUser.getEmail())) {
                         SignUpRequestDto signUpRequest = SignUpRequestDto.builder()
                                 .name(preVerificationUser.getName())
                                 .email(preVerificationUser.getEmail())
                                 .password(preVerificationUser.getPassword())
                                 .build();
+                        deletePreVerificationUser(token);
                         return personService.registerNewUser(signUpRequest);
                     }
                     return null;
