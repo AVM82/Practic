@@ -33,7 +33,7 @@ public class CourseDto {
     public static CourseDto map(CourseEntity entity) {
         CourseDto dto = new CourseDto();
         dto.id = entity.getId();
-        dto.inactive = entity.getInactive();
+        dto.inactive = entity.isInactive();
         dto.authors = entity.getAuthors();
         dto.mentors = entity.getMentors().stream().map(CourseMentorDto::map).toList();
         dto.courseType = entity.getCourseType();

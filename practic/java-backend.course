@@ -114,6 +114,8 @@ https://aws.amazon.com/ru/ec2/getting-started/
 1.add.=Додатково (з розділу 6)
 1.add.1.=Версії Java https://en.wikipedia.org/wiki/Java_version_history<>https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features
 1.add.2.=Jar-file specification<>https://docs.oracle.com/en/java/javase/18/docs/specs/jar/jar.html
+1.skills=maven,AWS EC2
+
 
 2.=Перевірка коду<>Перевірка перед передачею коду іншим
 2.1.=Системи контролю версій
@@ -168,6 +170,7 @@ https://dou.ua/lenta/columns/why-refactoring-is-important/
 2.prac.7.=Запустіть, що змержили, на EC2 автоматично, using Jenkins.
 2.add.1.=Ssh, keys (+KeyStore Explorer tool), bash у linux/win. Checking the Ubuntu version in the terminal.
 2.add.2.=Запуск по розкладу, cron формат. В ідеалі ще показати різницю крон-формату в різних системах (2-3 приклади)<>http://crontab.guru
+2.skills=Git,Gitlab,Github,Jenkins,CI,JUnit,Mockito,git-flow
 
 3.=DTO, POJO, MQ, Validation<>DTO, POJO, Validation, черги повідомлень
 3.1.=Для старту чистого коду: проговорити принципи KISS, DRY, YAGNI<>https://senior.ua/articles/kiss-dry-solid-yagni--navscho-dotrimuvatis-principv-programuvannya https://refactoring.guru/uk/refactoring/smells
@@ -199,6 +202,7 @@ https://uk.wikipedia.org/wiki/%D0%84%D0%B4%D0%B8%D0%BD%D0%B8%D0%B9_%D0%B4%D0%B5%
 3.prac.4.=Валідні записати у один csv-файл із двома полями name & count
 3.prac.5.=Невалідні - у інший csv файл із додатковим полем errors у вигляді json {“errors”:[]}.
 3.prac.6.=Додаткове завдання для тих, кому стане нудно: запустіть 2-5 сервісів на різних AWS (найкраще одногрупника) щоб кілька сервісів заповнювали чергу, а один вичитував.
+3.skills=MQ/jms,Big-O notation,Hibernate validator,streams
 
 4.=Реляційні бази даних<>Реляційні бази даних (візьміть IntelliJ IDEA Ultimate у Романа, час, i не забудьте написати йому мейл, на який вам прийде ліцензія)
 4.1.=Ознайомлення з реляційними базами даних
@@ -216,6 +220,7 @@ https://uk.wikipedia.org/wiki/%D0%84%D0%B4%D0%B8%D0%BD%D0%B8%D0%B9_%D0%B4%D0%B5%
 4.prac.4.=Видати адресу магазину із найбільшою кількістю товарів якогось типу: тип товару запитувати із консолі, параметром командного рядка (для автозапуску Дженкінсом після білда можна параметризувати джобу параметром ‘Тип_товару’)
 4.prac.5.=Профілірування джава-процесів. Підключитись до свого процесу використовуючи VisualVm та/або Idea Profiler та відслідковувати треди та пам’ять своєї програми.
 4.prac.6.=Додаткова задача: розпаралелити заради прискорення роботи генерацію і валідацію, використовуючи пакет java.concurrency<>https://www.baeldung.com/java-executor-wait-for-threads
+4.skills=Sql,concurrency,RDS,data structures
 
 5.=Нереляційні бази даних<>NotOnlySQL(NoSql) і розподілені БД 
 5.1.=Json-data: MongoDB, FireBase<>https://codeguida.com/post/519 https://firebase.google.com/products/realtime-database https://youtu.be/0buKQHokLK8?t=34
@@ -230,6 +235,7 @@ https://www.educative.io/blog/what-is-cap-theorem
 https://towardsdatascience.com/datastore-choices-sql-vs-nosql-database-ebec24d56106#3f01 https://www.youtube.com/watch?v=W2Z7fbCLSTw \
 https://naiveskill.com/mongodb-vs-postgresql/ https://kinsta.com/blog/mongodb-vs-postgresql/
 5.prac.=Повторити завдання Розділу №4 практичної на NoSql БД. (На вибір: MongoDb, Firebase, ElasticSearch, Apache Cassandra, Amazon Keyspace)
+5.skills=NoSql
 
 6.=System Design<>System Design
 6.1.=Стартуєм<>https://dou.ua/lenta/articles/java-beginner-guide-2/
@@ -241,6 +247,7 @@ https://dou.ua/lenta/articles/solid-principles/ https://medium.com/@shubhadeepch
 6.6.=Власне системний дизайн (самостійно - вилазить за курс %, але ж)<>https://www.educative.io/blog/complete-guide-to-system-design https://www.youtube.com/watch?v=J_Ad9BG84oI https://www.youtube.com/watch?v=Be7INI_U6GY https://fwdays.com/event/system-design-crash-course-v3 https://www.youtube.com/watch?v=vH8a6dbGHaI
 6.7.=Казочка про Event-driven дизайн<>https://www.youtube.com/watch?v=oTTfaynD1Xc
 6.prac.=Реалізувати 3 паттерни на вибір у власний Github-repo
+6.skills=design principals&patterns
 
 7.=Spring Framework<>Реалізація Restful API використовуючи Spring Framework (Boot 2.7 & Spring MVC) без Webflux&Reactive please: реактивність поза курсом.
 7.1.=Spring Boot<>https://docs.spring.io/spring-boot/docs/2.7.6/reference/html/
@@ -279,6 +286,7 @@ https://aws.amazon.com/ru/blogs/devops/deploying-a-spring-boot-application-on-aw
 7-2.prac.5.=Написати шелл-скрипти із викликами API за допомогою curl
 7-2.prac.6.=Додати до АПІ пару користувачів із різними ролями та i18n
 7-2.prac.7.=Додатково: повикликати сервіси інших студентів HttpClient. Як є можливість щось більше: авто-синхронізація даних між сервісами.
+7.skills=RestApi,Spring boot,Spring Data,Spring Security,Beanstalk,i18n,Websocket,Swagger,OpenAPI,Postman
 
 8.=Моніторинг/тести API<>Моніторимо/тестуємо API ззовні
 8.1.=Інструметарій<>https://dou.ua/forums/topic/43750/
@@ -299,6 +307,7 @@ https://learn.microsoft.com/ru-ru/azure/azure-monitor/app/opentelemetry-overview
 8.prac.=Моніторинг роботи API
 8.prac.1.=Протестувати навантаження із профіліровщиком та метриками.
 8.prac.2.=Залогувати час роботи методів контроллера в окремий лог за допомогою аспектів.<>https://medium.com/@vegabryam40/aop-for-logs-in-spring-boot-60365c9faae
+8.skills=jmeter&gatling,prometheus&grafana
 
 9.=Фінальний проєкт<>Робота в команді, спільний фінальний проєкт (коли збереться 5+ тих. хто здав першу частину, по домовленості, 3-4 тижні)
 9.1.=SDLC Процеси: Waterfall, Agile, Scrum, Kanban, TDD, XP (Extreme Programming)<>https://www.youtube.com/watch?v=ouAUYLyMo80 https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/ \
@@ -315,6 +324,7 @@ https://www.youtube.com/watch?v=WSflPE_oIRI https://www.youtube.com/watch?v=vSuJ
 https://www.youtube.com/watch?v=QVBlnCTu9Ms https://highload.today/blogs/chto-nado-znat-o-tdd-i-bdd-kak-testy-pomogayut-razrabotchikam-rabotat-v-komande-i-ponyat-zakazchika/
 9.9.=Links to keep up-to-date<>https://www.baeldung.com/java-weekly-384 https://dzone.com/java-jdk-development-tutorials-tools-news https://medium.com/javarevisited/the-java-programmer-roadmap-f9db163ef2c2
 9.10.=Jobs<>https://remoteok.io/ https://angel.co/jobs
+9.skills=CI/CD,SDLC,Estimating tasks,Jira,teamwork using SCRUM,Angular,Kanban
 
 add.1=Сервлет-контейнери i деплой на них: tomcat, jetty etc
 add.2=JMX, профілювання з VisualVM<>https://blog.jetbrains.com/idea/2021/05/get-started-with-profiling-in-intellij-idea/

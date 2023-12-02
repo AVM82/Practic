@@ -137,7 +137,25 @@
     margin-bottom: 10px;
 }
 
-.chapter-part .action-buttons {
+.report-button {
+    position: relative;
+    top: 0;
+    right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
+    display: flex;
+    align-items: center;
+}
+
+.chapter-button  {
+    margin-top: 10px;
+    position: relative;
+    bottom: 0;
+    right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
+    display: flex;
+    align-items: center;
+    min-height: 30px;
+}
+
+.action-buttons {
     position: absolute;
     top: 0;
     right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
@@ -192,3 +210,28 @@ button.done-btn:not([disabled]) {
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
+.skill-part {
+    align-items: center;
+    margin-left: 40px;
+    margin-right: 40px;    
+    margin-bottom: 10px;
+    display: flex;
+    padding: 10px;
+    position: relative;
+}
+
+.skill {
+    height: calc(1.5em + 10px);
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 5px;
+    padding: 2px;
+    background-color: rgb(248, 246, 224);
+    border: 1px solid #cdd94c;
+    color: #ca9e17;
+    font-size: 12px;
+    border-radius: calc(1.5em + 5px);
+}

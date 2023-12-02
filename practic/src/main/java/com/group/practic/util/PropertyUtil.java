@@ -31,6 +31,8 @@ public interface PropertyUtil {
     public static final String REFERENCE_SEPARATOR = " ";
 
     public static final String AUTHOR_SEPARATOR = ", ";
+    
+    public static final String SKILL_SEPARATOR = ",";
 
     public static final String PART_SEPARATOR = "-";
 
@@ -39,6 +41,9 @@ public interface PropertyUtil {
     public static final String ADDITIONAL_PART = "add.";
 
     public static final String TOPIC_REPORT_PART = "topic.";
+    
+    public static final String SKILL_PART = "skills";
+    
 
     public static boolean keyStartsWith(Object key, String start) {
         return ((String) key).startsWith(start);
