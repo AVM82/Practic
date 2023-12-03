@@ -1,6 +1,7 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.MentorEntity;
 import java.util.List;
 import java.util.Set;
 import lombok.Getter;
@@ -35,7 +36,8 @@ public class CourseDto {
         dto.id = entity.getId();
         dto.inactive = entity.isInactive();
         dto.authors = entity.getAuthors();
-        dto.mentors = entity.getMentors().stream().map(CourseMentorDto::map).toList();
+        dto.mentors = entity.getMentors().stream().filter(MentorEntity::isActive)
+                .map(CourseMentorDto::map).toList();
         dto.courseType = entity.getCourseType();
         dto.name = entity.getName();
         dto.description = entity.getDescription();
