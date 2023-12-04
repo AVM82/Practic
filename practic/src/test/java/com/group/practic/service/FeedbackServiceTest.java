@@ -61,16 +61,19 @@ class FeedbackServiceTest {
             utilities.when(PersonService::me).thenReturn(person);
 
             FeedbackEntity savedFeedbackEntity = new FeedbackEntity(person, feedbackText);
-            when(feedbackRepository.save(any(FeedbackEntity.class))).thenReturn(savedFeedbackEntity);
+            when(feedbackRepository.save(any(FeedbackEntity.class)))
+                    .thenReturn(savedFeedbackEntity);
 
-            List<FeedbackDto> getAllFeedbacksList = List.of(feedbackService.addFeedback(feedbackText));
+            List<FeedbackDto> getAllFeedbacksList =
+                    List.of(feedbackService.addFeedback(feedbackText));
+            assertEquals(1, getAllFeedbacksList.size());
 
             FeedbackDto result = feedbackService.addFeedback(feedbackText);
 
             assertNotNull(result);
             assertNotEquals(wrongText, result.getFeedback());
             assertEquals(feedbackText, result.getFeedback());
-            assertEquals(1, getAllFeedbacksList.size());
+
 
             verify(feedbackRepository, times(2)).save(any(FeedbackEntity.class));
         }
@@ -81,7 +84,8 @@ class FeedbackServiceTest {
         int page = 0;
         int size = 10;
 
-        Pageable result = feedbackService.getPageable(page, size, FeedbackSortState.RATING_ASCENDING);
+        Pageable result =
+                feedbackService.getPageable(page, size, FeedbackSortState.RATING_ASCENDING);
         assertEquals(page, result.getPageNumber());
         assertEquals(size, result.getPageSize());
         assertEquals(Sort.by(Sort.Direction.ASC, "likes"), result.getSort());
@@ -110,6 +114,7 @@ class FeedbackServiceTest {
         assertNotEquals(Sort.by(Sort.Direction.DESC, "likes"), result.getSort());
 
     }
+
     @Test
     void testGetFeedbackById() {
         long feedbackId = 1L;
@@ -152,8 +157,10 @@ class FeedbackServiceTest {
             utilities.when(PersonService::me).thenReturn(person);
 
             FeedbackEntity savedFeedbackEntity = new FeedbackEntity(person, feedbackText);
-            when(feedbackRepository.save(any(FeedbackEntity.class))).thenReturn(savedFeedbackEntity);
-            when(feedbackRepository.findById(person.getId())).thenReturn(Optional.of(savedFeedbackEntity));
+            when(feedbackRepository.save(any(FeedbackEntity.class)))
+                    .thenReturn(savedFeedbackEntity);
+            when(feedbackRepository.findById(person.getId()))
+                    .thenReturn(Optional.of(savedFeedbackEntity));
 
             Optional<FeedbackEntity> feedbacks = feedbackService.get(1L);
             assertTrue(feedbacks.isPresent());
