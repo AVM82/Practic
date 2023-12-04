@@ -106,8 +106,6 @@ export class FeedbackComponent implements OnInit {
     onPageChange(event: any): void {
         this.page = event.pageIndex;
         this.pageSize = event.pageSize;
-        this.totalPages = event.length;
-
         this.getFeedbackPage()
     }
 

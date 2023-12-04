@@ -3,7 +3,7 @@
         <p>Відгуки та пропозиції</p>
     </div>
     <div class="right-corner">
-        <button class="sort-button" mat-icon-button [matMenuTriggerFor]="sortMenu">
+        <button class="sort-button" *ngIf="totalPages" mat-icon-button [matMenuTriggerFor]="sortMenu">
             <mat-icon>sort</mat-icon>
         </button>
         <mat-menu #sortMenu="matMenu">
@@ -54,6 +54,24 @@
         </div>
     </div>
 </div>
-<mat-paginator [length]="totalFeedbacks" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true"
-               (page)="onPageChange($event)"></mat-paginator>
+
+<div class="extended-paginator" *ngIf="totalPages">
+
+    <div class="pager">
+       {{page + 1}} of {{totalPages}} pages
+    </div>
+
+    <mat-paginator class="paginator"
+                   [length]="totalFeedbacks"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="[5, 10, 20]"
+                   [showFirstLastButtons]="true"
+                   (page)="onPageChange($event)">
+    </mat-paginator>
+
+</div>
+
+
+
+
 
