@@ -8,7 +8,6 @@ import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
-import com.group.practic.entity.MentorEntity;
 import com.group.practic.repository.CourseRepository;
 import com.group.practic.util.PropertyUtil;
 import java.util.HashSet;
@@ -76,7 +75,7 @@ public class CourseService {
 
 
     public Optional<ChapterEntity> getChapterByNumber(CourseEntity course, int number) {
-        return chapterService.getChapterByNumber(course, number);
+        return chapterService.get(course, number);
     }
 
 
@@ -106,40 +105,24 @@ public class CourseService {
 
     public Optional<CourseEntity> create(String properties) {
         PropertyLoader prop = new PropertyLoader(properties, true);
-        return prop.initialized ? create(prop) : Optional.empty();
+        return prop.initialized ? createOrUpdate(prop) : Optional.empty();
     }
 
 
-    public Optional<CourseEntity> create(PropertyLoader prop) {
-        CourseEntity courseEntity;
+    public Optional<CourseEntity> createOrUpdate(PropertyLoader prop) {
         String slug = prop.getProperty(PropertyUtil.SLUG_KEY, "");
         if (slug.length() < 5) {
             return Optional.empty();
         }
-        Optional<CourseEntity> course = get(slug);
-        String name = prop.getProperty(PropertyUtil.NAME_KEY, "");
-        String svg = prop.getProperty(PropertyUtil.SVG_KEY, "");
-        if (name.length() < 5) {
-            return Optional.empty();
-        }
-        if (course.isPresent()) {
-            courseEntity = course.get();
-            if (!name.isEmpty()) {
-                courseEntity.setName(name);
-            }
-            if (!svg.isEmpty()) {
-                courseEntity.setSvg(svg);
-            }
-        } else {
-            course = save(new CourseEntity(slug, name, svg));
-            if (course.isEmpty()) {
-                return Optional.empty();
-            }
-            courseEntity = course.get();
-        }
+        CourseEntity courseEntity =
+                new CourseEntity(slug, prop.getProperty(PropertyUtil.NAME_KEY, ""),
+                        prop.getProperty(PropertyUtil.SVG_KEY, ""));
         courseEntity.setAuthors(getAuthorSet(prop));
         courseEntity.setCourseType(prop.getProperty(PropertyUtil.TYPE_KEY, ""));
         courseEntity.setDescription(prop.getProperty(PropertyUtil.DESCRIPTION_KEY, ""));
+        Optional<CourseEntity> course = get(slug);
+        courseEntity = course.isEmpty() ? courseRepository.save(courseEntity)
+                : course.get().update(courseEntity);
         courseEntity.setLevels(levelService.getLevelsSet(courseEntity, prop));
         courseEntity.setChapters(chapterService.getChapters(courseEntity, prop));
         courseEntity.setAdditionalMaterials(
@@ -167,20 +150,6 @@ public class CourseService {
     public Optional<ChapterEntity> getNextChapterByNumber(CourseEntity course, int number) {
         return course.getChapters().stream().sequential()
                 .filter(chapter -> chapter.getNumber() > number).findFirst();
-    }
-
-
-    public void addMentor(MentorEntity mentor) {
-        CourseEntity course = mentor.getCourse();
-        course.getMentors().add(mentor);
-        courseRepository.save(course);
-    }
-
-
-    public void removeMentor(MentorEntity mentor) {
-        CourseEntity course = mentor.getCourse();
-        course.getMentors().remove(mentor);
-        courseRepository.save(course);
     }
 
 }

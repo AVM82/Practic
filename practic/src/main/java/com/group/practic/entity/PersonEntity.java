@@ -88,11 +88,16 @@ public class PersonEntity implements UserDetails {
     @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
     private Set<ApplicantEntity> applicants = new HashSet<>();
 
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    private Set<GraduateEntity> graduates = new HashSet<>();
 
-    public PersonEntity(String name, String linkedin, RoleEntity guestRole) {
+
+    public PersonEntity(String name, String linkedin, RoleEntity role) {
         this.name = name;
         this.linkedin = linkedin;
-        this.roles.add(guestRole);
+        if (role != null) {
+            this.roles.add(role);
+        }
     }
 
 
@@ -110,8 +115,7 @@ public class PersonEntity implements UserDetails {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles == null ? new HashSet<>()
-                : roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
+        return roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
                         .collect(Collectors.toUnmodifiableSet());
     }
 

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PraxisRepository extends JpaRepository<PraxisEntity, Long> {
 
-    PraxisEntity findByChapterPartAndNumberAndName(ChapterPartEntity chapterPart, int number,
-            String name);
+    PraxisEntity findByChapterPartAndNumber(ChapterPartEntity chapterPart, int number);
 
 }

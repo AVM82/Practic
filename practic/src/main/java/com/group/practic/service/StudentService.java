@@ -143,6 +143,14 @@ public class StudentService {
                 "Розділ №" + chapter.getNumber() + " " + chapter.getShortName());
         return student;
     }
+    
+    
+    protected void closeChapter(StudentChapterEntity chapter) {
+        StudentEntity student = chapter.getStudent();
+        student.getSkills().addAll(chapter.getChapter().getSkills());
+        //save ?
+        //pass chapter to the statistics
+    }
 
 
     protected StudentEntity start(StudentEntity student) {
@@ -152,7 +160,6 @@ public class StudentService {
 
 
     protected StudentEntity finish(StudentEntity student) {
-        student.setInactive(true);
         student.setActiveChapterNumber(0);
         student.setFinish(LocalDate.now());
         student.setWeeks((int) student.getStart().until(student.getFinish(), ChronoUnit.WEEKS));
@@ -217,6 +224,7 @@ public class StudentService {
             }
             studentChapterRepository.save(chapter);
             if (newState == ChapterState.DONE) {
+                closeChapter(chapter);
                 openNextChapter(chapter.getStudent());
             }
         }
