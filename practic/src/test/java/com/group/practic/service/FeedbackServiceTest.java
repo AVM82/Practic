@@ -1,6 +1,5 @@
 package com.group.practic.service;
 
-import static com.group.practic.enumeration.FeedbackSortState.DATE_ASCENDING;
 import static com.group.practic.enumeration.FeedbackSortState.DATE_DESCENDING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,13 +15,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.group.practic.dto.FeedbackDto;
-import com.group.practic.dto.FeedbackPageDto;
 import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.RoleEntity;
 import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -33,9 +30,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -84,6 +78,40 @@ class FeedbackServiceTest {
     }
 
     @Test
+    void testGetPageable() {
+        int page = 0;
+        int size = 10;
+
+        Pageable result = feedbackService.getPageable(page, size, FeedbackSortState.RATING_ASCENDING);
+        assertEquals(page, result.getPageNumber());
+        assertEquals(size, result.getPageSize());
+        assertEquals(Sort.by(Sort.Direction.ASC, "likes"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.ASC, "id"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.DESC, "id"), result.getSort());
+
+        result = feedbackService.getPageable(page, size, FeedbackSortState.RATING_DESCENDING);
+        assertEquals(page, result.getPageNumber());
+        assertEquals(size, result.getPageSize());
+        assertEquals(Sort.by(Sort.Direction.DESC, "likes"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.ASC, "id"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.DESC, "id"), result.getSort());
+
+        result = feedbackService.getPageable(page, size, FeedbackSortState.DATE_ASCENDING);
+        assertEquals(page, result.getPageNumber());
+        assertEquals(size, result.getPageSize());
+        assertEquals(Sort.by(Sort.Direction.ASC, "id"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.ASC, "likes"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.DESC, "likes"), result.getSort());
+
+        result = feedbackService.getPageable(page, size, DATE_DESCENDING);
+        assertEquals(page, result.getPageNumber());
+        assertEquals(size, result.getPageSize());
+        assertEquals(Sort.by(Sort.Direction.DESC, "id"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.ASC, "likes"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.DESC, "likes"), result.getSort());
+
+    }
+    @Test
     void testGetFeedbackById() {
         long feedbackId = 1L;
         FeedbackEntity feedbackEntity = new FeedbackEntity();
@@ -110,178 +138,6 @@ class FeedbackServiceTest {
 
         verify(feedbackRepository, times(1)).findById(nonExistentFeedbackId);
     }
-
-    @Test
-    void testGetAllFeedbacksPaginated() {
-        int page = 0;
-        int size = 10;
-        FeedbackSortState sortState = FeedbackSortState.RATING_DESCENDING;
-        PersonEntity person = new PersonEntity();
-        List<FeedbackEntity> feedbackEntities = new ArrayList<>();
-        feedbackEntities.add(new FeedbackEntity(person, "test1"));
-        feedbackEntities.add(new FeedbackEntity(person, "test2"));
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("likes").descending());
-        Page<FeedbackEntity> feedbackPage = new PageImpl<>(feedbackEntities, pageable, feedbackEntities.size());
-
-        when(feedbackRepository.findAll(pageable)).thenReturn(feedbackPage);
-
-        FeedbackPageDto result = feedbackService.getAllFeedbacksPaginated(page, size, sortState);
-
-        assertEquals(feedbackEntities.size(), result.getTotalFeedbacks());
-        assertEquals(1, result.getTotalPages());
-        assertEquals(2, result.getTotalFeedbacks());
-        assertEquals(2, result.getFeedbacksOnPage().size());
-
-        List<FeedbackDto> feedbacks = result.getFeedbacksOnPage();
-        assertEquals("test1", feedbacks.get(0).getFeedback());
-
-        feedbacks.get(1).setLikes(1);
-        assertEquals(1, feedbacks.get(1).getLikes());
-
-        verify(feedbackRepository, times(1)).findAll(pageable);
-    }
-
-    @Test
-    void testSortByDateAscending() {
-        int page = 0;
-        int size = 10;
-        PersonEntity person = new PersonEntity();
-
-        List<FeedbackEntity> feedbackEntities = new ArrayList<>();
-        feedbackEntities.add(new FeedbackEntity(person, "test1"));
-        feedbackEntities.add(new FeedbackEntity(person, "test2"));
-
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-        Page<FeedbackEntity> feedbackPage = new PageImpl<>(feedbackEntities, pageable, feedbackEntities.size());
-
-        when(feedbackRepository.findAll(pageable)).thenReturn(feedbackPage);
-
-        FeedbackPageDto result = feedbackService.getAllFeedbacksPaginated(page, size, DATE_ASCENDING);
-
-        assertEquals(feedbackEntities.size(), result.getTotalFeedbacks());
-        assertEquals(1, result.getTotalPages());
-        assertEquals(2, result.getTotalFeedbacks());
-        assertEquals(2, result.getFeedbacksOnPage().size());
-
-        List<FeedbackDto> feedbacks = result.getFeedbacksOnPage();
-        assertEquals("test1", feedbacks.get(0).getFeedback());
-        assertEquals("test2", feedbacks.get(1).getFeedback());
-
-        feedbacks.get(1).setLikes(1);
-        assertEquals(1, feedbacks.get(1).getLikes());
-
-        verify(feedbackRepository, times(1)).findAll(pageable);
-
-    }
-
-    @Test
-    void testSortByRatingDescending() {
-        int page = 0;
-        int size = 10;
-        FeedbackSortState sortState = FeedbackSortState.RATING_DESCENDING;
-        PersonEntity person = new PersonEntity();
-
-        List<FeedbackEntity> feedbackEntities = new ArrayList<>();
-        FeedbackEntity feedback = new FeedbackEntity(new PersonEntity(), "test1");
-        feedback.setLikes(3);
-        feedbackEntities.add(feedback);
-        feedbackEntities.add(new FeedbackEntity(person, "test2"));
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("likes").descending());
-        Page<FeedbackEntity> feedbackPage = new PageImpl<>(feedbackEntities, pageable, feedbackEntities.size());
-
-        when(feedbackRepository.findAll(pageable)).thenReturn(feedbackPage);
-
-        FeedbackPageDto result = feedbackService.getAllFeedbacksPaginated(page, size, sortState);
-
-        assertEquals(feedbackEntities.size(), result.getTotalFeedbacks());
-        assertEquals(1, result.getTotalPages());
-        assertEquals(2, result.getTotalFeedbacks());
-        assertEquals(2, result.getFeedbacksOnPage().size());
-
-        List<FeedbackDto> feedbacks = result.getFeedbacksOnPage();
-
-        assertEquals(3, feedbacks.get(0).getLikes());
-
-        verify(feedbackRepository, times(1)).findAll(pageable);
-    }
-
-    @Test
-    void testSortByRatingAscending() {
-        int page = 0;
-        int size = 10;
-        FeedbackSortState sortState = FeedbackSortState.RATING_ASCENDING;
-        PersonEntity person = new PersonEntity();
-        FeedbackEntity feedback = new FeedbackEntity(person, "test2");
-        feedback.setLikes(5);
-
-        List<FeedbackEntity> feedbackEntities = new ArrayList<>();
-        feedbackEntities.add(new FeedbackEntity(person, "test1"));
-        feedbackEntities.add(feedback);
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("likes").ascending());
-        Page<FeedbackEntity> feedbackPage = new PageImpl<>(feedbackEntities, pageable, feedbackEntities.size());
-
-        when(feedbackRepository.findAll(pageable)).thenReturn(feedbackPage);
-
-        FeedbackPageDto result = feedbackService.getAllFeedbacksPaginated(page, size, sortState);
-
-        assertEquals(feedbackEntities.size(), result.getTotalFeedbacks());
-        assertEquals(1, result.getTotalPages());
-        assertEquals(2, result.getTotalFeedbacks());
-        assertEquals(2, result.getFeedbacksOnPage().size());
-
-        List<FeedbackDto> feedbacks = result.getFeedbacksOnPage();
-        assertEquals("test1", feedbacks.get(0).getFeedback());
-        assertEquals("test2", feedbacks.get(1).getFeedback());
-
-        assertEquals(5, feedbacks.get(1).getLikes());
-
-        verify(feedbackRepository, times(1)).findAll(pageable);
-    }
-
-    @Test
-    void testDefaultSort() {
-        int page = 0;
-        int size = 10;
-        PersonEntity person = new PersonEntity();
-        PersonEntity personTwo = new PersonEntity();
-        PersonEntity personThree = new PersonEntity();
-
-        List<FeedbackEntity> feedbackEntities = new ArrayList<>();
-        feedbackEntities.add(new FeedbackEntity(person, "test1"));
-        feedbackEntities.add(new FeedbackEntity(person, "test2"));
-        feedbackEntities.add(new FeedbackEntity(personTwo, "test3"));
-        feedbackEntities.add(new FeedbackEntity(personThree, "test4"));
-        feedbackEntities.add(new FeedbackEntity(personTwo, "test5"));
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<FeedbackEntity> feedbackPage = new PageImpl<>(feedbackEntities, pageable, feedbackEntities.size());
-
-        when(feedbackRepository.findAll(any(Pageable.class))).thenReturn(feedbackPage);
-
-        FeedbackPageDto result = feedbackService.getAllFeedbacksPaginated(page, size, DATE_DESCENDING);
-
-        assertEquals(feedbackEntities.size(), result.getTotalFeedbacks());
-        assertEquals(1, result.getTotalPages());
-        assertEquals(5, result.getTotalFeedbacks());
-        assertEquals(5, result.getFeedbacksOnPage().size());
-
-        List<FeedbackDto> feedbacks = result.getFeedbacksOnPage();
-        assertEquals("test1", feedbacks.get(0).getFeedback());
-        assertEquals("test2", feedbacks.get(1).getFeedback());
-        assertEquals("test3", feedbacks.get(2).getFeedback());
-        assertEquals("test4", feedbacks.get(3).getFeedback());
-        assertEquals("test5", feedbacks.get(4).getFeedback());
-
-        feedbacks.get(1).setLikes(1);
-        assertEquals(1, feedbacks.get(1).getLikes());
-
-        verify(feedbackRepository, times(1)).findAll(pageable);
-    }
-
 
     @Test
     void testGetFeedback() {

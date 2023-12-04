@@ -33,17 +33,19 @@ public class FeedbackService {
 
     public FeedbackPageDto getAllFeedbacksPaginated(
             int page, int size, FeedbackSortState sortState) {
+        return FeedbackPageDto.map(feedbackRepository.findAll(getPageable(page, size, sortState)));
+    }
+
+
+    protected Pageable getPageable(int page, int size, FeedbackSortState sortState) {
         Sort sort = switch (sortState) {
             case DATE_ASCENDING -> Sort.by("id").ascending();
             case RATING_DESCENDING -> Sort.by("likes").descending();
             case RATING_ASCENDING -> Sort.by("likes").ascending();
             default -> Sort.by("id").descending();
         };
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return FeedbackPageDto.map(feedbackRepository.findAll(pageable));
+        return PageRequest.of(page, size, sort);
     }
-
 
     public FeedbackDto addFeedback(String feedback) {
         return FeedbackDto.map(feedbackRepository
