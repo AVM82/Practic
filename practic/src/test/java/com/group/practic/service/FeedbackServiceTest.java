@@ -2,26 +2,35 @@ package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.group.practic.dto.FeedbackDto;
 import com.group.practic.entity.FeedbackEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.RoleEntity;
 import com.group.practic.enumeration.FeedbackSortState;
 import com.group.practic.repository.FeedbackRepository;
-import com.group.practic.repository.PersonRepository;
-import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 class FeedbackServiceTest {
 
@@ -31,115 +40,235 @@ class FeedbackServiceTest {
     @Mock
     private FeedbackRepository feedbackRepository;
 
-    @Mock
-    private PersonRepository personRepository;
-
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void testGetAllFeedbacksDateAscending() {
-        FeedbackEntity feedback1 = new FeedbackEntity();
-        feedback1.setDateTime(LocalDateTime.of(2023, 4, 1, 10, 0));
-        FeedbackEntity feedback2 = new FeedbackEntity();
-        feedback2.setDateTime(LocalDateTime.of(2023, 4, 2, 11, 0));
-
-        when(feedbackRepository.findAll()).thenReturn(List.of(feedback1, feedback2));
-
-        List<FeedbackDto> result =
-                feedbackService.getAllFeedbacks(FeedbackSortState.DATE_ASCENDING);
-
-        assertEquals(2, result.size());
-
-    }
 
     @Test
     void testAddFeedback() {
-        NewFeedbackDto newFeedbackDto = new NewFeedbackDto();
-        newFeedbackDto.setEmail("test@example.com");
-        newFeedbackDto.setFeedback("Test feedback");
+        String feedbackText = "Test feedback";
+        String wrongText = "Test feedback2";
 
         PersonEntity person = new PersonEntity();
+        person.setId(1L);
+        person.setName("John");
         person.setEmail("test@example.com");
+        person.setRoles(Set.of(new RoleEntity("GUEST")));
 
-        when(personRepository.findPersonEntityByEmail(newFeedbackDto.getEmail()))
-                .thenReturn(Optional.of(person));
+        try (MockedStatic<PersonService> utilities = mockStatic(PersonService.class)) {
+            utilities.when(PersonService::me).thenReturn(person);
 
-        FeedbackEntity savedFeedback = new FeedbackEntity(person, "Test feedback", 0);
-        savedFeedback.setDateTime(LocalDateTime.now());
-        when(feedbackRepository.save(Mockito.any(FeedbackEntity.class))).thenReturn(savedFeedback);
+            FeedbackEntity savedFeedbackEntity = new FeedbackEntity(person, feedbackText);
+            when(feedbackRepository.save(any(FeedbackEntity.class))).thenReturn(savedFeedbackEntity);
 
-        FeedbackEntity result = feedbackService.addFeedback(newFeedbackDto);
+            List<FeedbackDto> getAllFeedbacksList = List.of(feedbackService.addFeedback(feedbackText));
 
-        assertNotNull(result);
-        assertEquals(newFeedbackDto.getFeedback(), result.getFeedback());
+            FeedbackDto result = feedbackService.addFeedback(feedbackText);
+
+            assertNotNull(result);
+            assertNotEquals(wrongText, result.getFeedback());
+            assertEquals(feedbackText, result.getFeedback());
+            assertEquals(1, getAllFeedbacksList.size());
+
+            verify(feedbackRepository, times(2)).save(any(FeedbackEntity.class));
+        }
     }
 
     @Test
-    void testAddFeedbackWithInvalidEmail() {
-        NewFeedbackDto newFeedbackDto = new NewFeedbackDto();
-        newFeedbackDto.setEmail("");
+    void testGetPageable() {
+        int page = 0;
+        int size = 10;
 
-        FeedbackEntity result = feedbackService.addFeedback(newFeedbackDto);
+        Pageable result = feedbackService.getPageable(page, size, FeedbackSortState.RATING_ASCENDING);
+        assertEquals(page, result.getPageNumber());
+        assertEquals(size, result.getPageSize());
+        assertEquals(Sort.by(Sort.Direction.ASC, "likes"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.ASC, "id"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.DESC, "id"), result.getSort());
 
-        assertNull(result);
+        result = feedbackService.getPageable(page, size, FeedbackSortState.RATING_DESCENDING);
+        assertEquals(page, result.getPageNumber());
+        assertEquals(size, result.getPageSize());
+        assertEquals(Sort.by(Sort.Direction.DESC, "likes"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.ASC, "id"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.DESC, "id"), result.getSort());
+
+        result = feedbackService.getPageable(page, size, FeedbackSortState.DATE_ASCENDING);
+        assertEquals(page, result.getPageNumber());
+        assertEquals(size, result.getPageSize());
+        assertEquals(Sort.by(Sort.Direction.ASC, "id"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.ASC, "likes"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.DESC, "likes"), result.getSort());
+
+        result = feedbackService.getPageable(page, size, FeedbackSortState.DATE_DESCENDING);
+        assertEquals(page, result.getPageNumber());
+        assertEquals(size, result.getPageSize());
+        assertEquals(Sort.by(Sort.Direction.DESC, "id"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.ASC, "likes"), result.getSort());
+        assertNotEquals(Sort.by(Sort.Direction.DESC, "likes"), result.getSort());
+
+    }
+    @Test
+    void testGetFeedbackById() {
+        long feedbackId = 1L;
+        FeedbackEntity feedbackEntity = new FeedbackEntity();
+        feedbackEntity.setId(feedbackId);
+
+        when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedbackEntity));
+        Optional<FeedbackEntity> result = feedbackService.get(feedbackId);
+
+        assertTrue(result.isPresent());
+        assertEquals(feedbackId, result.get().getId());
+
+        verify(feedbackRepository, times(1)).findById(feedbackId);
     }
 
     @Test
-    void testAddFeedbackWithNonExistingPerson() {
-        NewFeedbackDto newFeedbackDto = new NewFeedbackDto();
-        newFeedbackDto.setEmail("nonexisting@example.com");
+    void testGetFeedbackByIdNotFound() {
+        long nonExistentFeedbackId = 10L;
 
-        when(personRepository.findPersonEntityByEmail(newFeedbackDto.getEmail()))
-                .thenReturn(Optional.empty());
+        when(feedbackRepository.findById(nonExistentFeedbackId)).thenReturn(Optional.empty());
 
-        FeedbackEntity result = feedbackService.addFeedback(newFeedbackDto);
+        Optional<FeedbackEntity> result = feedbackService.get(nonExistentFeedbackId);
 
-        assertNull(result);
+        assertFalse(result.isPresent());
+
+        verify(feedbackRepository, times(1)).findById(nonExistentFeedbackId);
     }
 
     @Test
-    void testIncrementLikeAndSavePerson() {
-        FeedbackEntity feedback = new FeedbackEntity();
+    void testGetFeedback() {
+        String feedbackText = "Test feedback";
+
+        PersonEntity person = new PersonEntity();
+        person.setId(1L);
+        person.setName("John");
+        person.setEmail("test@example.com");
+        person.setRoles(Set.of(new RoleEntity("GUEST")));
+
+        try (MockedStatic<PersonService> utilities = mockStatic(PersonService.class)) {
+            utilities.when(PersonService::me).thenReturn(person);
+
+            FeedbackEntity savedFeedbackEntity = new FeedbackEntity(person, feedbackText);
+            when(feedbackRepository.save(any(FeedbackEntity.class))).thenReturn(savedFeedbackEntity);
+            when(feedbackRepository.findById(person.getId())).thenReturn(Optional.of(savedFeedbackEntity));
+
+            Optional<FeedbackEntity> feedbacks = feedbackService.get(1L);
+            assertTrue(feedbacks.isPresent());
+
+            String result = feedbacks.get().getFeedback();
+
+            assertEquals(feedbackText, result);
+
+            verify(feedbackRepository, times(1)).findById(any(Long.class));
+        }
+    }
+
+    @Test
+    void testDeleteFeedbackValidId() {
+        long feedbackId = 1L;
+
+        feedbackService.deleteFeedback(feedbackId);
+
+        verify(feedbackRepository, times(1)).deleteById(feedbackId);
+    }
+
+    @Test
+    void testDeleteFeedbackInvalidId() {
+        long invalidFeedbackId = -1L;
+
+        feedbackService.deleteFeedback(invalidFeedbackId);
+
+        verify(feedbackRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    void testIncrementLikeValidFeedbackEntityReturnsIncrementedLikes() {
+        FeedbackEntity feedbackEntity = new FeedbackEntity();
+        feedbackEntity.setId(1L);
+        feedbackEntity.setLikes(0);
         PersonEntity person = new PersonEntity();
 
-        when(feedbackRepository.findById(1L)).thenReturn(Optional.of(feedback));
-        when(personRepository.findById(2L)).thenReturn(Optional.of(person));
+        try (MockedStatic<PersonService> utilities = mockStatic(PersonService.class)) {
+            utilities.when(PersonService::me).thenReturn(person);
 
-        FeedbackEntity result = feedbackService.incrementLike(1L, 2L);
+            when(feedbackRepository.findById(anyLong())).thenReturn(Optional.of(feedbackEntity));
+            when(feedbackRepository.save(any(FeedbackEntity.class))).thenReturn(feedbackEntity);
 
-        assertNotNull(result);
-        assertTrue(result.getLikedByPerson().contains(person));
+            FeedbackEntity result = feedbackService.incrementLike(feedbackEntity);
+
+            assertNotNull(result);
+            assertEquals(1, result.getLikes());
+        }
     }
 
     @Test
-    void testDecrementLikeAndRemovePerson() {
-        FeedbackEntity feedback = new FeedbackEntity();
+    void testIncrementLike() {
+        long personId = 1L;
+        long feedbackId = 10L;
+
         PersonEntity person = new PersonEntity();
+        person.setId(personId);
 
-        feedback.getLikedByPerson().add(person);
+        try (MockedStatic<PersonService> utilities = mockStatic(PersonService.class)) {
+            utilities.when(PersonService::me).thenReturn(person);
 
-        when(feedbackRepository.findById(1L)).thenReturn(Optional.of(feedback));
-        when(personRepository.findById(2L)).thenReturn(Optional.of(person));
+            FeedbackEntity feedback = new FeedbackEntity();
+            feedback.setId(feedbackId);
+            feedback.setLikes(5);
 
-        FeedbackEntity result = feedbackService.decrementLike(1L, 2L);
+            Set<Long> likedBy = new HashSet<>();
+            feedback.setLikedByPerson(likedBy);
 
-        assertNotNull(result);
-        assertFalse(result.getLikedByPerson().contains(person));
+            when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
+            when(feedbackRepository.save(feedback)).thenReturn(feedback);
+
+            FeedbackEntity result = feedbackService.incrementLike(feedback);
+
+            assertEquals(6, result.getLikes());
+            assertEquals(1, result.getLikedByPerson().size());
+
+            FeedbackEntity secondResult = feedbackService.incrementLike(result);
+            assertEquals(6, secondResult.getLikes());
+            assertEquals(1, secondResult.getLikedByPerson().size());
+        }
     }
 
     @Test
-    void testDeleteFeedback() {
-        FeedbackEntity feedback = new FeedbackEntity();
-        feedback.setId(1L);
+    void testDecrementLike() {
+        long personId = 1L;
+        long feedbackId = 10L;
 
-        when(feedbackRepository.findById(1L)).thenReturn(Optional.of(feedback));
+        PersonEntity person = new PersonEntity();
+        person.setId(personId);
 
-        FeedbackEntity result = feedbackService.deleteFeedback(1L);
+        try (MockedStatic<PersonService> utilities = mockStatic(PersonService.class)) {
+            utilities.when(PersonService::me).thenReturn(person);
 
-        assertNotNull(result);
-        assertNull(result.getLikedByPerson());
+            FeedbackEntity feedback = new FeedbackEntity();
+            feedback.setId(feedbackId);
+            feedback.setLikes(5);
+
+            Set<Long> likedBy = new HashSet<>();
+            likedBy.add(personId);
+            feedback.setLikedByPerson(likedBy);
+
+            when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
+            when(feedbackRepository.save(feedback)).thenReturn(feedback);
+
+            assertEquals(1, feedback.getLikedByPerson().size());
+
+            FeedbackEntity result = feedbackService.decrementLike(feedback);
+
+            assertEquals(4, result.getLikes());
+            assertEquals(0, result.getLikedByPerson().size());
+
+            FeedbackEntity secondResult = feedbackService.decrementLike(result);
+            assertEquals(4, secondResult.getLikes());
+            assertEquals(0, secondResult.getLikedByPerson().size());
+        }
     }
+
 }

@@ -132,9 +132,29 @@
   visibility: visible;
 }
 
-.delete-button{
+.delete-button {
   background-color: transparent;
   border: none;
    box-shadow: none;
   cursor: pointer;
+}
+
+.paginator {
+    width: auto;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+
+}
+
+.pager {
+right: 0;
+    color: rgba(0,0,0,0.87);
+    margin-top: 19px;
+    font-size: 16px;
+    display: block;
+}
+
+.extended-paginator {
+    display: flex;
+    justify-content: right;
+    margin-bottom: 0;
 }
