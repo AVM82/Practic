@@ -1,6 +1,5 @@
 package com.group.practic.service;
 
-import static com.group.practic.enumeration.FeedbackSortState.DATE_DESCENDING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -103,7 +102,7 @@ class FeedbackServiceTest {
         assertNotEquals(Sort.by(Sort.Direction.ASC, "likes"), result.getSort());
         assertNotEquals(Sort.by(Sort.Direction.DESC, "likes"), result.getSort());
 
-        result = feedbackService.getPageable(page, size, DATE_DESCENDING);
+        result = feedbackService.getPageable(page, size, FeedbackSortState.DATE_DESCENDING);
         assertEquals(page, result.getPageNumber());
         assertEquals(size, result.getPageSize());
         assertEquals(Sort.by(Sort.Direction.DESC, "id"), result.getSort());
