@@ -75,10 +75,8 @@ export class ChapterDetailsComponent implements OnInit {
         this.coursesService.getChapter(slug, number).subscribe(chapter => {
           this.chapter = chapter;
           for(const part of chapter.parts) 
-            for(const sub of part.common!.subChapters) {
+            for(const sub of part.common!.subChapters)
               sub.checked = this.isSelected(sub.id);
-              console.log(sub)
-            }
           this.slug = slug;
           this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
           this.isMentor = this.me.isMentor(slug);
