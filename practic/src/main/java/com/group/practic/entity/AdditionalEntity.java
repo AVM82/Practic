@@ -72,12 +72,14 @@ public class AdditionalEntity implements Serializable {
             return false;
         }
         AdditionalEntity other = (AdditionalEntity) obj;
-        return this == obj || (Objects.equals(name, other.name) && number == other.number);
+        return this == obj || (Objects.equals(name, other.name) && number == other.number
+                && Objects.equals(refs, other.refs));
     }
 
 
     public AdditionalEntity update(AdditionalEntity additional) {
         name = additional.name;
+        refs = additional.refs;
         return this;
     }
 

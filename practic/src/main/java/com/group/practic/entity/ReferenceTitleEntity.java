@@ -49,8 +49,7 @@ public class ReferenceTitleEntity implements Serializable {
             return false;
         }
         ReferenceTitleEntity other = (ReferenceTitleEntity) obj;
-        return this == other || (Objects.equals(reference, other.reference)
-                && Objects.equals(title, other.title));
+        return this == other || (Objects.equals(reference, other.reference));
     }
 
 

@@ -16,6 +16,7 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
+import com.group.practic.entity.SubChapterEntity;
 import com.group.practic.enumeration.ChapterState;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentChapterRepository;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -143,13 +145,20 @@ public class StudentService {
                 "Розділ №" + chapter.getNumber() + " " + chapter.getShortName());
         return student;
     }
-    
-    
-    protected void closeChapter(StudentChapterEntity chapter) {
-        StudentEntity student = chapter.getStudent();
-        student.getSkills().addAll(chapter.getChapter().getSkills());
-        //save ?
-        //pass chapter to the statistics
+
+
+    protected void closeChapter(StudentChapterEntity studentChapter) {
+        StudentEntity student = studentChapter.getStudent();
+        ChapterEntity chapter = studentChapter.getChapter();
+        Set<String> studentSkills = student.getSkills();
+        Set<Long> subs = studentChapter.getSubs();
+        chapter.getParts()
+                .forEach(part -> part.getSubChapters().stream()
+                        .filter(sub -> subs.contains(sub.getId())).map(SubChapterEntity::getSkills)
+                        .forEach(studentSkills::addAll));
+        student.getSkills().addAll(chapter.getSkills());
+        // save ?
+        // pass chapter to the statistics
     }
 
 
@@ -293,6 +302,16 @@ public class StudentService {
 
     public List<StudentEntity> ban(Collection<StudentEntity> students) {
         return students.stream().map(this::ban).toList();
+    }
+
+
+    public boolean reSetSkills(StudentChapterEntity chapter, long subChapterId, boolean state) {
+        if (chapter.getChapter().getParts().stream().anyMatch(part -> part.getSubChapters().stream()
+                .anyMatch(sub -> sub.getId() == subChapterId))) {
+            studentChapterRepository.save(chapter.reSetSub(state, subChapterId));
+            return state;
+        }
+        return false;
     }
 
 }

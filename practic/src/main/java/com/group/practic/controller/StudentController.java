@@ -140,6 +140,15 @@ public class StudentController {
     }
 
 
+    @PutMapping("/skills/{chapterId}/{subChapterId}/{state}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Boolean> reSetSkills(@PathVariable long chapterId,
+            @PathVariable long subChapterId, @PathVariable boolean state) {
+        return getResponse(studentService.getStudentChapter(chapterId)
+                .map(chapter -> studentService.reSetSkills(chapter, subChapterId, state)));
+    }
+
+
     @GetMapping("/practices/{id}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<PracticeDto> getPractice(@PathVariable long id) {

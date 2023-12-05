@@ -97,6 +97,7 @@ public class ChapterPartEntity implements Serializable {
     
     public ChapterPartEntity update(ChapterPartEntity chapterPart) {
         this.praxisPurpose = chapterPart.praxisPurpose;
+        this.number = chapterPart.number;
         return this;
     }
     

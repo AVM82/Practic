@@ -33,7 +33,7 @@ class BaseChapter {
 
 export class Chapter extends BaseChapter {
   name: string;
-  skills: string[];
+  subs: number[];
 
   constructor(
     _id: number,
@@ -44,12 +44,12 @@ export class Chapter extends BaseChapter {
     _state: string,
     _parts: ChapterPart[],
     _name: string,
-    _skills: string[]
+    _subs: number[]
   ) {
     super(_id, _number, _partsCount, _reportCount, _myReports, _state, _parts);
     this.name = _name;
     this.parts = _parts;
-    this.skills = _skills || [];
+    this.subs = _subs ? _subs : [];
   }
 }
 

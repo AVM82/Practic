@@ -113,7 +113,8 @@ public class ChapterService {
                 String[] names = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
                 String fullName = names.length > 1 ? names[1] : names[0];
                 ChapterEntity chapter = createOrUpdate(
-                        new ChapterEntity(course, n, names[0], fullName, getSkills(n, prop)));
+                        new ChapterEntity(course, n, names[0], fullName, 
+                                getSkills(key, prop)));
                 if (chapter != null) {
                     chapterPartService.getChapterPartSet(chapter, prop);
                     topicReportService.getChapterTopics(chapter, prop);
@@ -125,8 +126,8 @@ public class ChapterService {
     }
 
 
-    protected List<String> getSkills(int number, PropertyLoader prop) {
-        String key = PropertyUtil.createKeyStarts(number, PropertyUtil.SKILL_PART);
+    protected List<String> getSkills(String keyStarts, PropertyLoader prop) {
+        String key = keyStarts + PropertyUtil.SKILL_PART;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             if (((String) entry.getKey()).equals(key)) {
                 return List.of(((String) entry.getValue()).split(PropertyUtil.SKILL_SEPARATOR));

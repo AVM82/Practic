@@ -53,23 +53,18 @@ public class SubChapterEntity implements Serializable {
     @OrderBy("number")
     private List<SubSubChapterEntity> subSubChapters = new ArrayList<>();
 
+    private List<String> skills = new ArrayList<>();
+
 
     public SubChapterEntity() {}
 
 
-    public SubChapterEntity(ChapterPartEntity chapterPart, int number, String name) {
+    public SubChapterEntity(ChapterPartEntity chapterPart, int number, String name,
+            List<String> skills, Set<ReferenceTitleEntity> refs) {
         this.chapterPart = chapterPart;
         this.number = number;
         this.name = name;
-    }
-
-
-    public SubChapterEntity(long id, ChapterPartEntity chapterPart, int number, String name,
-            Set<ReferenceTitleEntity> refs) {
-        this.id = id;
-        this.chapterPart = chapterPart;
-        this.number = number;
-        this.name = name;
+        this.skills = skills;
         this.refs = refs;
     }
 
@@ -87,12 +82,14 @@ public class SubChapterEntity implements Serializable {
         }
         SubChapterEntity other = (SubChapterEntity) obj;
         return this == other || (Objects.equals(name, other.name) && number == other.number
-                && Objects.equals(refs, other.refs));
+                && Objects.equals(skills, other.skills) && Objects.equals(refs, other.refs));
     }
 
 
     public SubChapterEntity update(SubChapterEntity sub) {
         this.name = sub.name;
+        this.skills = sub.skills;
+        this.refs = sub.refs;
         return this;
     }
 

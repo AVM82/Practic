@@ -22,6 +22,7 @@ import { ReportButtonComponent } from 'src/app/componets/report-button/report-bu
 import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START,
          STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW } from 'src/app/enums/app-constans';
 import { ChapterPart } from 'src/app/models/chapterpart';
+import { SubChapter } from 'src/app/models/subchapter';
 
 
 
@@ -40,7 +41,7 @@ export class ChapterDetailsComponent implements OnInit {
   isStudent: boolean = false;
   isMentor: boolean = false;
   chapter?: Chapter;
-  isActive: boolean = false;
+  isActiveChapter: boolean = false;
   showPartNumber: boolean = false;
   number: number = 0;
   slug: string = '';
@@ -73,10 +74,16 @@ export class ChapterDetailsComponent implements OnInit {
       if (slug && number > 0)
         this.coursesService.getChapter(slug, number).subscribe(chapter => {
           this.chapter = chapter;
+          for(const part of chapter.parts) 
+            for(const sub of part.common!.subChapters) {
+              sub.checked = this.isSelected(sub.id);
+              console.log(sub)
+            }
           this.slug = slug;
           this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
           this.isMentor = this.me.isMentor(slug);
           this.number = number;
+          this.isActiveChapter = number === this.me.getCourseActiveChapterNumber(slug);
           this.isStudent = this.coursesService.stateStudent != undefined;
           if (this.isStudent)
             this.studentService.setStudent(this.me.getStudent(slug)!);
@@ -127,6 +134,14 @@ export class ChapterDetailsComponent implements OnInit {
 
   checkApproved(chapterPart: ChapterPart) {
     this.studentService.checkPracticeState(this.chapter!.number, chapterPart)
+  }
+
+  isSelected(subId: number): boolean {
+    return this.chapter!.subs?.some(sub => sub === subId);
+  }
+
+  changeSkills(event: any, subchapter: SubChapter) {
+    this.studentService.putSubChapterSkills(this.chapter!, subchapter, event);
   }
 
 }
