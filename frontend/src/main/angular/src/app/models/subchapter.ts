@@ -23,6 +23,6 @@ export class SubChapter {
     this.name = name;
     this.refs = refs;
     this.subSubChapters = subSubChapters;
-    this.skills = skills ? skills : [];
+    this.skills = skills || [];
   }
 }

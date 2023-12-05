@@ -44,7 +44,7 @@ export class Chapter extends BaseChapter {
     _state: string,
     _parts: ChapterPart[],
     _name: string,
-    _subs: number[] | []
+    _subs: number[]
   ) {
     super(_id, _number, _partsCount, _reportCount, _myReports, _state, _parts);
     this.name = _name;
