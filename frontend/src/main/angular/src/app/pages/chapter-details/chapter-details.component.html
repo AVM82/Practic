@@ -1,7 +1,7 @@
 <app-course-navbar [currentChapter]="number"></app-course-navbar>
 
 <div class="chapter-header">
-	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
+	<h3 class="fit-text">Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
 	<report-button *ngIf="isMentor" class="report-button"
 		matTooltip="Всі доповіді розділу"
 		matTooltipPosition="below"
@@ -13,7 +13,7 @@
             matTooltipPosition="above"
 			[reportsNumber]="chapter!.myReports">
 		</report-button>
-		<button *ngIf="chapter!.state !== done" class="chapter-button" (click)="changeState($event)">
+		<button *ngIf="chapter?.state !== done" class="chapter-button" (click)="changeState($event)">
 			{{getTextAccordingState()}}
 		</button>
 	</div>
@@ -33,11 +33,20 @@
 							[attr.id]="'accordion-header-' + index"
 							[attr.aria-expanded]="accordionItem.expanded"
 							[attr.aria-controls]="'accordion-body-' + index">
-			<div (click)="accordionItem.toggle()" class="subchapter-header">
-				{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}
-				<mat-icon *ngIf=subchapter.subSubChapters.length||subchapter.refs>
-					{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
-				</mat-icon>
+			<div  class="subchapter-header">
+				<div class="subblock">
+					<mat-icon *ngIf="subchapter.subSubChapters?.length || subchapter.refs" 
+							(click)="accordionItem.toggle()"
+							class="accordion-button">
+						{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+					</mat-icon>
+					<div class="sub">{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}</div>
+					<div *ngIf="subchapter.checked">
+						<div *ngFor="let skill of subchapter.skills" class="skill">{{skill}}</div>
+					</div>
+				</div>
+				<input *ngIf="isActiveChapter && chapter?.state === process" type="checkbox" [id]="subchapter.id" [checked]="isSelected(subchapter.id)" 
+						(change)="changeSkills($event, subchapter)"/>
 			</div>
 			<div *ngIf=accordionItem.expanded
 				role="region" 
@@ -102,8 +111,10 @@
 					<mat-icon class="action-icon">star_half</mat-icon>
 				</button>
 			</div>
-			{{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />
-			Мета: {{chapterPart.common?.praxisPurpose}}
+			<div class="fit-text">
+				{{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />
+				Мета: {{chapterPart.common?.praxisPurpose}}
+			</div>
             <div *ngIf="isStudent" class="custom-chip">{{chapterPart.practice.state | StatePipe}}</div>
 		</div>
 		<div *ngIf="chapterPart.common?.praxis?.length" class="chapter-details-container-ext">
@@ -135,12 +146,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-
-	<div *ngIf="chapter?.skills">
-		<div class="skill-part">
-			<div *ngFor="let skill of chapter?.skills" class="skill">{{skill}}</div>
 		</div>
 	</div>
 </div>

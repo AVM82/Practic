@@ -78,6 +78,8 @@ public class PraxisEntity implements Serializable {
 
     public PraxisEntity update(PraxisEntity praxis) {
         this.name = praxis.name;
+        this.number = praxis.number;
+        this.refs = praxis.refs;
         return this;
     }
 

@@ -13,5 +13,4 @@ export interface CommonPart {
   praxisPurpose: string;
   praxis: SubChapter[];
   additionals: SubChapter[];
-  state: string;
 }

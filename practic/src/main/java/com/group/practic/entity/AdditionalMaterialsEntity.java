@@ -14,10 +14,14 @@ import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "additional_materials")
+@Getter
+@Setter
 public class AdditionalMaterialsEntity implements Serializable {
 
     private static final long serialVersionUID = -7620809512419827291L;
@@ -36,8 +40,6 @@ public class AdditionalMaterialsEntity implements Serializable {
     String name;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    //@JoinTable(name = "add_mats_refs", joinColumns = @JoinColumn(name = "add_mat_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "ref_id"))
     private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
 
@@ -50,56 +52,6 @@ public class AdditionalMaterialsEntity implements Serializable {
         this.course = course;
         this.number = number;
         this.name = name;
-        this.refs = refs;
-    }
-
-
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public CourseEntity getCourse() {
-        return course;
-    }
-
-
-    public void setCourse(CourseEntity course) {
-        this.course = course;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public Set<ReferenceTitleEntity> getRefs() {
-        return refs;
-    }
-
-
-    public void setRefs(Set<ReferenceTitleEntity> refs) {
         this.refs = refs;
     }
 

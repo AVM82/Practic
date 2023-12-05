@@ -54,7 +54,7 @@ public class ChapterEntity implements Serializable {
     @JsonIgnore
     String shortName;
 
-    private List<String> skills;
+    private List<String> skills = new ArrayList<>();
 
 
     public ChapterEntity() {}

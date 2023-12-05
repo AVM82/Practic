@@ -13,6 +13,7 @@ export enum ApiUrls {
 
   Students = '/api/students',
   StudentChapters = '/api/students/chapters/',
+  StudentSkills = '/api/students/skills/',
   StudentChapterStates = '/api/students/chapters/states/',
   StudentAdditionalMaterials = '/api/students/additionalMaterials/',
   Practices = '/api/students/practices/',

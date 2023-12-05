@@ -4,6 +4,7 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 
 
@@ -17,13 +18,12 @@ public class StudentChapterDto {
     String name;
 
     List<ChapterPartDto> parts;
-    
-    List<String> skills;
+
+    Set<Long> subs;
 
     String state;
 
     int reportCount;
-
 
 
     public static StudentChapterDto map(StudentChapterEntity entity) {
@@ -34,7 +34,7 @@ public class StudentChapterDto {
         dto.name = chapter.getName();
         dto.parts = chapter.getParts().stream().map(part -> ChapterPartDto.map(part,
                 entity.getPracticeByNumber(part.getNumber()).get())).toList();
-        dto.skills = chapter.getSkills();
+        dto.subs = entity.getSubs();
         dto.state = entity.getState().name();
         dto.reportCount = entity.getReportCount();
         return dto;

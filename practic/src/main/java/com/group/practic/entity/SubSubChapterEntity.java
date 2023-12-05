@@ -78,6 +78,8 @@ public class SubSubChapterEntity implements Serializable {
 
     public SubSubChapterEntity update(SubSubChapterEntity subSub) {
         this.name = subSub.name;
+        this.number = subSub.number;
+        this.refs = subSub.refs;
         return this;
     }
     

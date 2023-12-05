@@ -17,8 +17,10 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -66,6 +68,8 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
     LocalDate startCounting;
 
+    private Set<Long> subs = new HashSet<>();
+
 
     public StudentChapterEntity() {}
 
@@ -79,6 +83,16 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
     public Optional<StudentPracticeEntity> getPracticeByNumber(int number) {
         return practices.stream().filter(prac -> prac.number == number).findFirst();
+    }
+
+
+    public StudentChapterEntity reSetSub(boolean state, Long subChapterId) {
+        if (state) {
+            subs.add(subChapterId);
+        } else {
+            subs.remove(subChapterId);
+        }
+        return this;
     }
 
 }

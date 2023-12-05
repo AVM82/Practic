@@ -174,8 +174,8 @@ public class ChapterPartService {
             if (key.startsWith(keyStarts) && PropertyUtil.countDots(key) == 2 && key.endsWith(".")
                     && (n = PropertyUtil.getChapterNumber(2, key)) != 0) {
                 String[] nameRefs = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
-                SubChapterEntity subChapter =
-                        createOrUpdateSub(new SubChapterEntity(0, chapterPart, n, nameRefs[0],
+                SubChapterEntity subChapter = createOrUpdateSub(
+                        new SubChapterEntity(chapterPart, n, nameRefs[0], getSkills(key, prop),
                                 referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
                 if (subChapter != null) {
                     subChapter.setSubSubChapters(getSubSubChapterSet(subChapter, prop, key));
@@ -184,6 +184,17 @@ public class ChapterPartService {
             }
         }
         return result;
+    }
+
+
+    protected List<String> getSkills(String keyStarts, PropertyLoader prop) {
+        String key = keyStarts + PropertyUtil.SKILL_PART;
+        for (Entry<Object, Object> entry : prop.getEntrySet()) {
+            if (((String) entry.getKey()).equals(key)) {
+                return List.of(((String) entry.getValue()).split(PropertyUtil.SKILL_SEPARATOR));
+            }
+        }
+        return List.of();
     }
 
 
