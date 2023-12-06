@@ -85,11 +85,6 @@ public class CourseService {
     }
 
 
-    public Optional<CourseEntity> save(CourseEntity course) {
-        return Optional.ofNullable(courseRepository.save(course));
-    }
-
-
     public Optional<CourseEntity> create(NewCourseDto dto) {
         Optional<CourseEntity> exists = get(dto.getSlug());
         if (exists.isEmpty()) {
@@ -127,7 +122,7 @@ public class CourseService {
         courseEntity.setChapters(chapterService.getChapters(courseEntity, prop));
         courseEntity.setAdditionalMaterials(
                 additionalMaterialsService.getAdditionalMaterials(courseEntity, prop));
-        return save(courseEntity);
+        return Optional.ofNullable(courseRepository.save(courseEntity));
     }
 
 
