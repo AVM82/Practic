@@ -44,7 +44,7 @@ public class ChapterEntity implements Serializable {
     @Column(length = 1024)
     String name;
 
-    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapter", cascade = CascadeType.MERGE)
     @OrderBy("number")
     private List<ChapterPartEntity> parts = new ArrayList<>();
 

@@ -34,15 +34,14 @@ public class AdditionalMaterialsService {
     }
 
 
-    public Optional<AdditionalMaterialsEntity> update(
-            AdditionalMaterialsEntity additionalMaterialEntity) {
-        Optional<AdditionalMaterialsEntity> result = additionalMaterialEntity.getId() == 0
-                ? additionalMaterialsRepository.findByCourseAndNumberAndName(
-                        additionalMaterialEntity.getCourse(), additionalMaterialEntity.getNumber(),
-                        additionalMaterialEntity.getName())
-                : additionalMaterialsRepository.findById(additionalMaterialEntity.getId());
-        additionalMaterialEntity.setId(result.isPresent() ? result.get().getId() : 0);
-        return Optional.ofNullable(additionalMaterialsRepository.save(additionalMaterialEntity));
+    public AdditionalMaterialsEntity createOrUpdate(AdditionalMaterialsEntity newEntity) {
+        AdditionalMaterialsEntity additionalMaterial = additionalMaterialsRepository
+                .findByCourseAndNumber(newEntity.getCourse(), newEntity.getNumber());
+        if (additionalMaterial == null) {
+            additionalMaterialsRepository.save(newEntity);
+        }
+        return additionalMaterial.equals(newEntity) ? additionalMaterial
+                : additionalMaterialsRepository.save(additionalMaterial.update(newEntity));
     }
 
 
@@ -60,22 +59,20 @@ public class AdditionalMaterialsService {
                 }
             }
         }
-        if (n != max) { 
+        if (n != max) {
             return List.of();
         }
         List<AdditionalMaterialsEntity> result = new ArrayList<>(max);
         for (int i = 1; i <= max; i++) {
             String item = prop.getProperty(PropertyUtil.ADDITIONAL_PART + i);
             if (item == null) {
-                break; 
+                break;
             }
             String[] part = item.split(PropertyUtil.NAME_SEPARATOR);
-            Optional<AdditionalMaterialsEntity> additionalMaterial =
-                    update(new AdditionalMaterialsEntity(0, course, i, part[0],
+            AdditionalMaterialsEntity additionalMaterial =
+                    createOrUpdate(new AdditionalMaterialsEntity(0, course, i, part[0],
                             referenceTitleService.getReferenceTitleEntitySet(part)));
-            if (additionalMaterial.isPresent()) {
-                result.add(additionalMaterial.get());
-            }
+            result.add(additionalMaterial);
         }
         return result;
     }

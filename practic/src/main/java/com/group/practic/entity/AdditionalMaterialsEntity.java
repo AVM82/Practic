@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,4 +56,23 @@ public class AdditionalMaterialsEntity implements Serializable {
         this.refs = refs;
     }
 
+    
+    public AdditionalMaterialsEntity update(AdditionalMaterialsEntity entity) {
+        this.name = entity.name;
+        this.number = entity.number;
+        this.refs = entity.refs;
+        return this;
+    }
+    
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        AdditionalMaterialsEntity other = (AdditionalMaterialsEntity) obj;
+        return this == obj || (number == other.number && Objects.equals(name, other.name)
+                && Objects.equals(refs, other.refs)); 
+    }
+    
 }

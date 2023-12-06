@@ -38,18 +38,18 @@ public class ChapterPartEntity implements Serializable {
 
     int number;
 
-    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @OrderBy("number")
     private List<SubChapterEntity> subChapters = new ArrayList<>();
 
     @NotBlank
     String praxisPurpose;
 
-    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @OrderBy("number")
     private List<PraxisEntity> praxis = new ArrayList<>();
 
-    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @OrderBy("number")
     private List<AdditionalEntity> additionals = new ArrayList<>();
 

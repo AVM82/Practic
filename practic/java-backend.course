@@ -242,7 +242,7 @@ https://www.educative.io/blog/what-is-cap-theorem
 https://towardsdatascience.com/datastore-choices-sql-vs-nosql-database-ebec24d56106#3f01 https://www.youtube.com/watch?v=W2Z7fbCLSTw \
 https://naiveskill.com/mongodb-vs-postgresql/ https://kinsta.com/blog/mongodb-vs-postgresql/
 5.prac.=Повторити завдання Розділу №4 практичної на NoSql БД. (На вибір: MongoDb, Firebase, ElasticSearch, Apache Cassandra, Amazon Keyspace)
-5.skills=NoSql
+5.skills=NoSQL
 
 6.=System Design<>System Design
 6.1.=Стартуєм<>https://dou.ua/lenta/articles/java-beginner-guide-2/
