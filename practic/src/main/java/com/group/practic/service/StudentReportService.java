@@ -8,6 +8,7 @@ import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.ReportState;
+import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentReportRepository;
 import com.group.practic.repository.TimeSlotRepository;
 import java.time.LocalDate;
@@ -30,6 +31,8 @@ public class StudentReportService {
 
     private final TimeSlotService timeSlotService;
 
+    private final StudentChapterRepository studentChapterRepository;
+
     static final List<ReportState> ACTUAL_STATES =
             List.of(ReportState.STARTED, ReportState.ANNOUNCED);
 
@@ -38,11 +41,13 @@ public class StudentReportService {
     public StudentReportService(StudentReportRepository studentReportRepository,
                                 CourseService courseService,
                                 TimeSlotRepository timeSlotRepository,
-                                TimeSlotService timeSlotService) {
+                                TimeSlotService timeSlotService,
+                                StudentChapterRepository studentChapterRepository) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
         this.timeSlotRepository = timeSlotRepository;
         this.timeSlotService = timeSlotService;
+        this.studentChapterRepository = studentChapterRepository;
     }
 
 
@@ -69,7 +74,8 @@ public class StudentReportService {
 
     public Optional<StudentReportEntity> createStudentReport(StudentEntity student,
             StudentReportCreationDto studentReportCreationDto) {
-        Optional<StudentChapterEntity> studentChapter = student.getActiveChapter();
+        Optional<StudentChapterEntity> studentChapter = studentChapterRepository
+                .findByStudentAndChapter_Id(student, studentReportCreationDto.chapterId());
         Optional<TimeSlotEntity> timeslot =
                 timeSlotRepository.findById(studentReportCreationDto.timeslotId());
         timeslot.ifPresent(

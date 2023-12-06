@@ -93,9 +93,12 @@ export class ChangingReportDialogComponent {
     }
 
     initTopicsReports() {
-        this.topicReportService.getStudentChapterTopicsReports(this.data.activeStudentChapterId).subscribe({
+        this.topicReportService.getTopicsReportsOnChapter(this.data.studentReport.chapterId).subscribe({
             next: topics => {
-                (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
+                if (topics) {
+                    (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
+                } else
+                    console.warn('No topics for this chapter');
             },
             error: error => {
                 console.error('Помилка при отриманні доступних тем доповіді', error);

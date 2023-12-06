@@ -9,7 +9,7 @@ import {CoursesService} from "../../services/courses.service";
 import {NewReportDialogComponent} from "../../componets/new-report/new-report-dialog.component";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {TimeSlot} from "../../models/time-slot";
-import {TimeSlotService} from "../../services//time-slot.service";
+import {TimeSlotService} from "../../services/time-slot.service";
 import {Level} from "../../models/level";
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatButtonModule} from "@angular/material/button";
@@ -117,7 +117,8 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
                 data: {
                     timeslots: this.timeslots,
                     me: this.me,
-                    activeStudentChapterId: this.activeStudentChapterId
+                    activeStudentChapterId: this.activeStudentChapterId,
+                    chapters: this.chapters.filter(chapter => !chapter.hidden)
                 },
             });
         dialogRef.afterClosed().subscribe(result => {

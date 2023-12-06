@@ -21,7 +21,7 @@ export enum ApiUrls {
   ReportStates = '/api/students/reports/states',
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
-  TopicsReports = '/api/topicsreports',
+  TopicsReports = '/api/topicsreports/',
   StudentChapterTopicsReports = '/api/students/topicsreports/',
 
   Mentors = '/api/mentors/',

@@ -53,7 +53,7 @@ public class StudentReportDto {
         dto.profilePictureUrl = report.getStudentChapter()
                 .getStudent().getPerson().getProfilePictureUrl();
         dto.chapterName = report.getStudentChapter().getChapter().getShortName();
-        dto.chapterId = report.getStudentChapter().getId();
+        dto.chapterId = report.getStudentChapter().getChapter().getId();
         dto.date = report.getTimeSlot().getDate();
         dto.time = report.getTimeSlot().getTime();
         dto.timeslotId = report.getTimeSlot().getId();
