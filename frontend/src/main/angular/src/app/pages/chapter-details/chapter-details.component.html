@@ -41,7 +41,7 @@
 						{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
 					</mat-icon>
 					<div class="sub">{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}</div>
-					<div *ngIf="subchapter.checked">
+					<div *ngIf="subchapter.checked || isMentor" class="skill-part">
 						<div *ngFor="let skill of subchapter.skills" class="skill">{{skill}}</div>
 					</div>
 				</div>
