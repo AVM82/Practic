@@ -225,13 +225,7 @@ button.done-btn:not([disabled]) {
 }
 
 .skill-part {
-    align-items: center;
-    margin-left: 40px;
-    margin-right: 40px;    
-    margin-bottom: 10px;
-    display: flex;
-    padding: 10px;
-    position: relative;
+    display: inline-flex;
 }
 
 .skill {
