@@ -9,7 +9,7 @@ export enum ApiUrls {
   Course = '/api/courses/',
   NewCourse = '/api/courses/NewCourse',
   NewCourseFromProperties = '/api/courses/NewCourseFromProperties',
-  Chapters = '/api/students/chapters',
+  Chapters = '/api/students/chapters/',
 
   Students = '/api/students',
   StudentChapters = '/api/students/chapters/',
@@ -62,6 +62,9 @@ export const getCourseUrl = (slug: string): string =>
 
 export const getReportsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}`;
+
+export const postReportsUrl = (studentChapterId: number): string =>
+    `/api/students/reports/${studentChapterId}`;
 
 export const getLevelsUrl = (slug: string): string =>
     `/api/courses/${slug}/levels`;

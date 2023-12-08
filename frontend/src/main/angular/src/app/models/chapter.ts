@@ -1,5 +1,6 @@
 import {ChapterPart} from "./chapterpart";
 import {STATE_NOT_STARTED} from 'src/app/enums/app-constans';
+import {TopicReport} from "./report";
 
 class BaseChapter {
   id: number;
@@ -9,6 +10,7 @@ class BaseChapter {
   myReports: number; //list
   state: string;
   parts: ChapterPart[];
+  topicReports: TopicReport [] = [];
 
   constructor(
     _id: number,

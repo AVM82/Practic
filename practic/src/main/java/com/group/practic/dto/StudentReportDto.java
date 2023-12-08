@@ -23,6 +23,8 @@ public class StudentReportDto {
 
     private long chapterId;
 
+    private long chapterNumber;
+
     private LocalDate date;
 
     private LocalTime time;
@@ -53,7 +55,8 @@ public class StudentReportDto {
         dto.profilePictureUrl = report.getStudentChapter()
                 .getStudent().getPerson().getProfilePictureUrl();
         dto.chapterName = report.getStudentChapter().getChapter().getShortName();
-        dto.chapterId = report.getStudentChapter().getChapter().getId();
+        dto.chapterId = report.getStudentChapter().getId();
+        dto.chapterNumber = report.getStudentChapter().getChapter().getNumber();
         dto.date = report.getTimeSlot().getDate();
         dto.time = report.getTimeSlot().getTime();
         dto.timeslotId = report.getTimeSlot().getId();

@@ -13,6 +13,7 @@ import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.StudentReportDto;
+import com.group.practic.dto.TopicReportDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentChapterEntity;
@@ -20,7 +21,6 @@ import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
-import com.group.practic.entity.TopicReportEntity;
 import com.group.practic.enumeration.ChapterState;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
@@ -194,16 +194,13 @@ public class StudentController {
     }
 
 
-    @PostMapping("/reports/course/{slug}")
-    public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,
-            Principal principal, @RequestBody  StudentReportCreationDto studentReportCreationDto) {
-        Optional<CourseEntity> course = courseService.get(slug);
-        Optional<StudentEntity> student = studentService
-                .get(personService.get(principal.getName()).get(0), course.get());
-        Optional<StudentReportEntity> reportEntity =
-                studentReportService.createStudentReport(student.get(), studentReportCreationDto);
-        return postResponse(Optional
-                .ofNullable(reportEntity.isEmpty() ? null : Converter.convert(reportEntity.get())));
+    @PostMapping("/reports/{studentChapterId}")
+    public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable long studentChapterId,
+            @RequestBody  StudentReportCreationDto studentReportCreationDto) {
+        return postResponse(studentService.getStudentChapter(studentChapterId)
+                .map(studentChapter -> studentReportService
+                        .createStudentReport(studentChapter, studentReportCreationDto))
+                        .get().map(StudentReportDto::map));
     }
 
 
@@ -279,13 +276,14 @@ public class StudentController {
 
     @GetMapping("/topicsreports/{studentChapterId}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Collection<TopicReportEntity>>
+    public ResponseEntity<Collection<TopicReportDto>>
             getTopicsByChapter(@PathVariable Long studentChapterId) {
 
         Optional<StudentChapterEntity> chapter = studentService.getStudentChapter(studentChapterId);
         return chapter.isEmpty()
                 ? badRequest()
-                : getResponse(reportService.getTopicsByChapter(chapter.get().getChapter()));
+                : getResponse(reportService.getTopicsByChapter(chapter.get().getChapter()).stream()
+                        .map(TopicReportDto::new).toList());
     }
 
 }

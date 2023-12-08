@@ -2,36 +2,31 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable, of} from 'rxjs';
 import {ApiUrls} from "../enums/api-urls";
+import {Chapter} from "../models/chapter";
+import {TopicReport} from "../models/report";
+import {CoursesService} from "./courses.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class TopicReportService {
 
-    constructor(private http: HttpClient) {
-    }
-
-    topicReports: any[][] = [];
-
-
-    getTopicsReportsOnChapter(studentChapterId: number): Observable<any> {
-        console.log(this.topicReports)
-        for (let loadedTopicReports of this.topicReports) {
-            if (loadedTopicReports[0].chapter.id === studentChapterId) {
-                return of(loadedTopicReports);
-            }
-        }
-        return this.http.get<any>(`${ApiUrls.TopicsReports}${studentChapterId}`)
-            .pipe(map(loadedTopicReports => {
-                    this.topicReports.push(loadedTopicReports);
-                    return loadedTopicReports;
-                })
-            );
-    }
+    constructor(
+        private http: HttpClient,
+        private coursesService: CoursesService
+    ) { }
 
 
-    getStudentChapterTopicsReports(studentChapterId: number): Observable<any> {
-        const apiUrl = `${ApiUrls.StudentChapterTopicsReports}${studentChapterId}`;
-        return this.http.get(apiUrl);
+    getTopicsReportsOnChapter(studentChapterId: number): Observable<TopicReport []> {
+
+        const studentChapter = this.coursesService.getShortChapterById(studentChapterId)
+
+        return studentChapter.topicReports ? of(studentChapter.topicReports) :
+            this.http.get<TopicReport []>(`${ApiUrls.StudentChapterTopicsReports}${studentChapter.id}`)
+                .pipe(map(loadedTopicReports => {
+                        studentChapter.topicReports = loadedTopicReports;
+                        return loadedTopicReports;
+                    })
+                );
     }
 }

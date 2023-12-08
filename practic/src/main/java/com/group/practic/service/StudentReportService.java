@@ -4,11 +4,9 @@ import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.StudentChapterEntity;
-import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.ReportState;
-import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentReportRepository;
 import com.group.practic.repository.TimeSlotRepository;
 import java.time.LocalDate;
@@ -31,8 +29,6 @@ public class StudentReportService {
 
     private final TimeSlotService timeSlotService;
 
-    private final StudentChapterRepository studentChapterRepository;
-
     static final List<ReportState> ACTUAL_STATES =
             List.of(ReportState.STARTED, ReportState.ANNOUNCED);
 
@@ -41,13 +37,11 @@ public class StudentReportService {
     public StudentReportService(StudentReportRepository studentReportRepository,
                                 CourseService courseService,
                                 TimeSlotRepository timeSlotRepository,
-                                TimeSlotService timeSlotService,
-                                StudentChapterRepository studentChapterRepository) {
+                                TimeSlotService timeSlotService) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
         this.timeSlotRepository = timeSlotRepository;
         this.timeSlotService = timeSlotService;
-        this.studentChapterRepository = studentChapterRepository;
     }
 
 
@@ -71,19 +65,13 @@ public class StudentReportService {
         return result;
     }
 
-
-    public Optional<StudentReportEntity> createStudentReport(StudentEntity student,
+    public Optional<StudentReportEntity> createStudentReport(StudentChapterEntity studentChapter,
             StudentReportCreationDto studentReportCreationDto) {
-        Optional<StudentChapterEntity> studentChapter = studentChapterRepository
-                .findByStudentAndChapter_Id(student, studentReportCreationDto.chapterId());
-        Optional<TimeSlotEntity> timeslot =
-                timeSlotRepository.findById(studentReportCreationDto.timeslotId());
-        timeslot.ifPresent(
-                timeSlot -> timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), false));
-        return (studentChapter.isPresent() && timeslot.isPresent())
-                ? Optional.ofNullable(studentReportRepository.save(new StudentReportEntity(
-                studentChapter.get(), timeslot.get(), studentReportCreationDto.title())))
-                : Optional.empty();
+        return timeSlotRepository.findById(studentReportCreationDto.timeslotId()).map(timeSlot -> {
+            timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), false);
+            return studentReportRepository.save(new StudentReportEntity(
+                    studentChapter, timeSlot, studentReportCreationDto.title()));
+        });
     }
 
 
