@@ -97,4 +97,9 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
         return this;
     }
 
+
+    public long countApprovedReports() {
+        return reports.stream().filter(StudentReportEntity::isCountable).count();
+    }
+
 }

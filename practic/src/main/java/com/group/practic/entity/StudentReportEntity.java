@@ -12,6 +12,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -22,7 +23,9 @@ import lombok.Setter;
 @Table(name = "student_reports")
 @Getter
 @Setter
-public class StudentReportEntity {
+public class StudentReportEntity implements Serializable {
+
+    private static final long serialVersionUID = -8226341881291241855L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -30,9 +33,9 @@ public class StudentReportEntity {
 
     @ManyToOne
     StudentChapterEntity studentChapter;
- 
 
-    //int number;
+
+    // int number;
 
     @OneToOne
     @NotNull
@@ -44,15 +47,14 @@ public class StudentReportEntity {
     @Enumerated(EnumType.STRING)
     ReportState state = ReportState.ANNOUNCED;
 
-    List<Long> likedPersonsIdList = new ArrayList<>();
+    private List<Long> likedPersonsIdList = new ArrayList<>();
 
 
-    public StudentReportEntity() {
-    }
+    public StudentReportEntity() {}
 
 
     public StudentReportEntity(StudentChapterEntity studentChapter, TimeSlotEntity timeslot,
-                               @NotBlank String title/*, int number*/) {
+            @NotBlank String title/* , int number */) {
         this.studentChapter = studentChapter;
         this.timeSlot = timeslot;
         this.title = title;
@@ -61,6 +63,9 @@ public class StudentReportEntity {
     }
 
 
+    public boolean isCountable() {
+        return state == ReportState.APPROVED;
+    }
 
 }
 
