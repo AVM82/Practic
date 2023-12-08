@@ -1,6 +1,7 @@
 package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.getResponse;
+import static com.group.practic.util.ResponseUtils.postResponse;
 
 import com.group.practic.dto.AuthByEmailDto;
 import com.group.practic.dto.JwtAuthenticationResponse;
@@ -54,7 +55,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<JwtAuthenticationResponse> registerUserByEmail(
             @RequestParam String verificationToken) {
-        return getResponse(authService
+        return postResponse(authService
                 .createJwtResponse(authService.createPersonByVerificationToken(verificationToken)));
     }
 

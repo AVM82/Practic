@@ -116,13 +116,13 @@ public class CourseService {
         courseEntity.setCourseType(prop.getProperty(PropertyUtil.TYPE_KEY, ""));
         courseEntity.setDescription(prop.getProperty(PropertyUtil.DESCRIPTION_KEY, ""));
         Optional<CourseEntity> course = get(slug);
-        courseEntity = course.isEmpty() ? courseRepository.save(courseEntity)
-                : course.get().update(courseEntity);
+        courseEntity = courseRepository.save(course.isEmpty() ? courseEntity
+                : course.get().update(courseEntity));
         courseEntity.setLevels(levelService.getLevelsSet(courseEntity, prop));
         courseEntity.setChapters(chapterService.getChapters(courseEntity, prop));
         courseEntity.setAdditionalMaterials(
                 additionalMaterialsService.getAdditionalMaterials(courseEntity, prop));
-        return Optional.ofNullable(courseRepository.save(courseEntity));
+        return Optional.ofNullable(courseEntity);
     }
 
 

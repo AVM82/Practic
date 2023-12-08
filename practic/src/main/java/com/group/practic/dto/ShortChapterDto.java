@@ -51,6 +51,7 @@ public class ShortChapterDto {
 
     public static ShortChapterDto map(StudentChapterEntity chapter, int reportCount) {
         ShortChapterDto dto = map(chapter.getChapter(), false, reportCount);
+        dto.id = chapter.getId();
         dto.state = chapter.getState().name();
         dto.parts = chapter.getPractices().stream().map(prac -> ChapterPartDto.map(null, prac))
                 .toList();

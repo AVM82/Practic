@@ -11,7 +11,8 @@ public interface ResponseUtils {
     /* GET */
 
     public static <T> ResponseEntity<T> getResponse(T result) {
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return result == null ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
+                : new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
@@ -31,12 +32,18 @@ public interface ResponseUtils {
 
 
     public static <T> ResponseEntity<T> getResponseAllowed(Optional<T> result) {
-        return result.isEmpty() ? new ResponseEntity<>(HttpStatus.FORBIDDEN)
+        return result.isEmpty() ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
                 : new ResponseEntity<>(result.get(), HttpStatus.OK);
     }
 
 
     /* POST */
+
+
+    public static <T> ResponseEntity<T> postResponse(T result) {
+        return result == null ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
+                : new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 
     public static <T> ResponseEntity<T> postResponse(Optional<T> result) {
