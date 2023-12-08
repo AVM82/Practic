@@ -3,11 +3,12 @@ package com.group.practic.service;
 import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
-import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.ReportState;
+import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentReportRepository;
 import com.group.practic.repository.TimeSlotRepository;
 import java.time.LocalDate;
@@ -26,38 +27,34 @@ public class StudentReportService {
 
     private final CourseService courseService;
 
-    private final ChapterService chapterService;
-
     private final TimeSlotRepository timeSlotRepository;
 
     private final TimeSlotService timeSlotService;
 
+    private final StudentChapterRepository studentChapterRepository;
+
     static final List<ReportState> ACTUAL_STATES =
             List.of(ReportState.STARTED, ReportState.ANNOUNCED);
 
-    
+
     @Autowired
     public StudentReportService(StudentReportRepository studentReportRepository,
-            CourseService courseService, ChapterService chapterService,
-            TimeSlotRepository timeSlotRepository, TimeSlotService timeSlotService) {
+                                CourseService courseService,
+                                TimeSlotRepository timeSlotRepository,
+                                TimeSlotService timeSlotService,
+                                StudentChapterRepository studentChapterRepository) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
-        this.chapterService = chapterService;
         this.timeSlotRepository = timeSlotRepository;
         this.timeSlotService = timeSlotService;
+        this.studentChapterRepository = studentChapterRepository;
     }
 
 
     public int getActualReportCount(ChapterEntity chapter) {
-        return (int) studentReportRepository.countByChapterAndStateIn(chapter, ACTUAL_STATES);
+        return (int) studentReportRepository
+                .countByStudentChapterChapterAndStateIn(chapter, ACTUAL_STATES);
     }
-
-
-    public int getActualReportCount(StudentEntity student, ChapterEntity chapter) {
-        return (int) studentReportRepository.countByStudentAndChapterAndStateIn(student, chapter,
-                ACTUAL_STATES);
-    }
-
 
     public List<List<StudentReportEntity>> getAllStudentsActualReports(String slug) {
         setStatesOfFinishedReports();
@@ -67,23 +64,25 @@ public class StudentReportService {
             result = new ArrayList<>();
             for (ChapterEntity chapter : course.get().getChapters()) {
                 result.add(studentReportRepository
-                        .findAllByChapterAndStateInOrderByTimeSlotId(chapter, ACTUAL_STATES));
+                        .findAllByStudentChapterChapterAndStateInOrderByTimeSlotId(
+                                chapter, ACTUAL_STATES));
             }
         }
         return result;
     }
 
 
-    public Optional<StudentReportEntity> createStudentReport(PersonEntity student,
+    public Optional<StudentReportEntity> createStudentReport(StudentEntity student,
             StudentReportCreationDto studentReportCreationDto) {
-        Optional<ChapterEntity> chapter = chapterService.get(studentReportCreationDto.chapterId());
+        Optional<StudentChapterEntity> studentChapter = studentChapterRepository
+                .findByStudentAndChapter_Id(student, studentReportCreationDto.chapterId());
         Optional<TimeSlotEntity> timeslot =
                 timeSlotRepository.findById(studentReportCreationDto.timeslotId());
         timeslot.ifPresent(
                 timeSlot -> timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), false));
-        return (student != null && chapter.isPresent() && timeslot.isPresent())
+        return (studentChapter.isPresent() && timeslot.isPresent())
                 ? Optional.ofNullable(studentReportRepository.save(new StudentReportEntity(
-                        chapter.get(), student, timeslot.get(), studentReportCreationDto.title())))
+                studentChapter.get(), timeslot.get(), studentReportCreationDto.title())))
                 : Optional.empty();
     }
 

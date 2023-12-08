@@ -48,11 +48,12 @@ public class StudentReportDto {
     public static StudentReportDto map(StudentReportEntity report) {
         StudentReportDto dto = new StudentReportDto();
         dto.id = report.getId();
-        dto.personName = report.getStudent().getName();
-        dto.personId = report.getStudent().getId();
-        dto.profilePictureUrl = report.getStudent().getProfilePictureUrl();
-        dto.chapterName = report.getChapter().getShortName();
-        dto.chapterId = report.getChapter().getId();
+        dto.personName = report.getStudentChapter().getStudent().getPerson().getName();
+        dto.personId = report.getStudentChapter().getStudent().getId();
+        dto.profilePictureUrl = report.getStudentChapter()
+                .getStudent().getPerson().getProfilePictureUrl();
+        dto.chapterName = report.getStudentChapter().getChapter().getShortName();
+        dto.chapterId = report.getStudentChapter().getChapter().getId();
         dto.date = report.getTimeSlot().getDate();
         dto.time = report.getTimeSlot().getTime();
         dto.timeslotId = report.getTimeSlot().getId();

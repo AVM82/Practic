@@ -20,6 +20,7 @@ import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
+import com.group.practic.entity.TopicReportEntity;
 import com.group.practic.enumeration.ChapterState;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.enumeration.ReportState;
@@ -29,6 +30,7 @@ import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentReportService;
 import com.group.practic.service.StudentService;
 import com.group.practic.service.TimeSlotService;
+import com.group.practic.service.TopicReportService;
 import com.group.practic.util.Converter;
 import com.group.practic.util.ResponseUtils;
 import java.security.Principal;
@@ -65,19 +67,26 @@ public class StudentController {
 
     private final CourseService courseService;
 
+    private final TopicReportService reportService;
+
     AdditionalMaterialsService additionalMaterialsService;
+
+
 
 
     @Autowired
     public StudentController(StudentService studentService, TimeSlotService timeSlotService,
-            PersonService personService, AdditionalMaterialsService additionalMaterialsService,
-            StudentReportService studentReportService, CourseService courseService) {
+                             PersonService personService,
+                             AdditionalMaterialsService additionalMaterialsService,
+                             StudentReportService studentReportService, CourseService courseService,
+                             TopicReportService reportService) {
         this.studentService = studentService;
         this.personService = personService;
         this.studentReportService = studentReportService;
         this.timeSlotService = timeSlotService;
         this.courseService = courseService;
         this.additionalMaterialsService = additionalMaterialsService;
+        this.reportService = reportService;
     }
 
 
@@ -187,10 +196,12 @@ public class StudentController {
 
     @PostMapping("/reports/course/{slug}")
     public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable String slug,
-            Principal principal, @RequestBody StudentReportCreationDto studentReportCreationDto) {
-        List<PersonEntity> persons = personService.get(principal.getName());
+            Principal principal, @RequestBody  StudentReportCreationDto studentReportCreationDto) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        Optional<StudentEntity> student = studentService
+                .get(personService.get(principal.getName()).get(0), course.get());
         Optional<StudentReportEntity> reportEntity =
-                studentReportService.createStudentReport(persons.get(0), studentReportCreationDto);
+                studentReportService.createStudentReport(student.get(), studentReportCreationDto);
         return postResponse(Optional
                 .ofNullable(reportEntity.isEmpty() ? null : Converter.convert(reportEntity.get())));
     }
@@ -264,6 +275,17 @@ public class StudentController {
                         .map(add -> studentService.changeAdditionalMaterial(student, add, state))
                         .orElse(Optional.of(false))))
                 .orElse(badRequest());
+    }
+
+    @GetMapping("/topicsreports/{studentChapterId}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Collection<TopicReportEntity>>
+            getTopicsByChapter(@PathVariable Long studentChapterId) {
+
+        Optional<StudentChapterEntity> chapter = studentService.getStudentChapter(studentChapterId);
+        return chapter.isEmpty()
+                ? badRequest()
+                : getResponse(reportService.getTopicsByChapter(chapter.get().getChapter()));
     }
 
 }

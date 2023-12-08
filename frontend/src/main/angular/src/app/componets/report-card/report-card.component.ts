@@ -30,6 +30,7 @@ import {StudentReport} from "../../models/report";
 })
 export class ReportCardComponent {
     @Input() currentUserId!: number;
+    @Input()activeStudentChapterId!:number;
     @Input() studentReport!: StudentReport;
     @Input() timeslots!: { timeslots: Map<string, TimeSlot[]> };
 
@@ -68,6 +69,7 @@ export class ReportCardComponent {
                 data: {
                     studentReport: this.studentReport,
                     timeslots: this.timeslots,
+                    activeStudentChapterId: this.activeStudentChapterId
                 },
             });
 

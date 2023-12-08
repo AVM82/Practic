@@ -55,7 +55,7 @@ public class ShortChapterDto {
         dto.state = chapter.getState().name();
         dto.parts = chapter.getPractices().stream().map(prac -> ChapterPartDto.map(null, prac))
                 .toList();
-        dto.myReports = chapter.getReportCount();
+        //dto.myReports = chapter.getReportCount();
         return dto;
     }
 

@@ -6,7 +6,7 @@ class BaseChapter {
   number: number;
   partsCount: number;
   reportCount: number;
-  myReports: number;
+  myReports: number; //list
   state: string;
   parts: ChapterPart[];
 
