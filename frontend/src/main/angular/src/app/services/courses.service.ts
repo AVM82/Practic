@@ -190,6 +190,11 @@ export class CoursesService {
     return this.shortChapters?.find(chapter => chapter.number === number)!;
   }
 
+  getShortChapterById(chapterId:number): Chapter {
+    //do we need retrieve studentChapter from backend?
+    return this.chapters.find(chapter => chapter.id === chapterId)!;
+  }
+
   openStudentChapter(number: number): void {
     let shortChapter = this.getShortChapterByNumber(number);
     shortChapter.hidden = false;

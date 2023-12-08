@@ -13,10 +13,10 @@ import * as _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 import 'moment/locale/uk';
-import {CoursesService} from "../../services/courses.service";
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {TopicReportService} from '../../services/topic-report.service';
 import {Chapter} from "../../models/chapter";
+import {TopicReport} from "../../models/report";
 
 
 const moment = _rollupMoment || _moment;
@@ -76,15 +76,14 @@ export class NewReportDialogComponent implements OnInit {
         Validators.maxLength(100)
     ]));
     dateStr: string = '';
-    topicsReport$: Observable<{ topic: string }[]> = new BehaviorSubject<{ topic: string }[]>([]);
+    topicsReport: TopicReport [] = [];
     openChapters$ = new BehaviorSubject<any[]>([]);
-    activeChapter: number = 0;
+    activeChapterId: number = this.data.chapters[this.data.chapters.length - 1].id;
 
     constructor(
         public dialogRef: MatDialogRef<NewReportDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public newStudentReport: NewStudentReport,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private coursesService: CoursesService,
         private topicReportService: TopicReportService,
     ) {
         const currentYear = new Date().getFullYear();
@@ -97,15 +96,14 @@ export class NewReportDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.getOpenChapters();
-        if (this.data.activeStudentChapterId > 0) {
-            this.activeChapter = this.data.activeStudentChapterId;
+        console.log(this.data.chapters)
+        if (this.activeChapterId > 0) {
             this.initTopicsReports();
         }
-
     }
 
     updateActiveChapter(selectChapter: number) {
-        this.activeChapter = selectChapter;
+        this.activeChapterId = selectChapter;
         this.initTopicsReports();
     }
 
@@ -124,23 +122,24 @@ export class NewReportDialogComponent implements OnInit {
 
 
     initTopicsReports() {
-        this.topicReportService.getTopicsReportsOnChapter(this.activeChapter).subscribe({
+        console.log(this.activeChapterId)
+        this.topicReportService.getTopicsReportsOnChapter(this.activeChapterId).subscribe({
             next: topics => {
                 if (topics) {
-                    (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
-                } else
+                    this.topicsReport = topics;
+                } else {
                     console.warn('No topics for this chapter');
+                }
             },
             error: error => {
                 console.error('Помилка при отриманні доступних тем доповіді', error);
-                (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next([]);
             }
         });
     }
 
 
     getNewStudentReport(): NewStudentReport {
-        this.newStudentReport.chapterId = this.activeChapter;
+        this.newStudentReport.chapterId = this.activeChapterId;
         return this.newStudentReport;
     }
 

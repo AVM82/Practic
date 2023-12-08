@@ -44,7 +44,6 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     timeslots!: Map<string, TimeSlot[]>;
     currentUserId!: any;
     me!:User;
-    activeStudentChapterId: number = 0;
 
     constructor(
         public dialog: MatDialog,
@@ -79,14 +78,13 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     getChapters(chapters: ShortChapter[]) {
         console.log(chapters)
         this.chapters = chapters;
-        let openedChapters = chapters.filter(chapter=>!chapter.hidden);
-        this.activeStudentChapterId = openedChapters[openedChapters.length-1].id;
     }
 
 
     loadReports(slug: string): void {
         this.reportService.getAllActualReports(slug).subscribe(() => {
             this.loadTimeSlots(slug);
+            this.reportService.showReports();
         });
     }
 
@@ -116,9 +114,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
                 width: '50%',
                 data: {
                     timeslots: this.timeslots,
-                    me: this.me,
-                    activeStudentChapterId: this.activeStudentChapterId,
-                    chapters: this.chapters.filter(chapter => !chapter.hidden)
+                    chapters: this.chapters.filter(chapter => !chapter.hidden),
                 },
             });
         dialogRef.afterClosed().subscribe(result => {
@@ -127,7 +123,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
                 console.log('The dialog was closed');
                 console.log("result of creating report dialog: ", result);
                 if (result.timeslotId && result.title && result.chapterId && slug) {
-                    this.reportService.createNewReport(result, slug).subscribe();
+                    this.reportService.createNewReport(result, result.chapterId).subscribe();
                     const startReportDateTime = this.toUnionDate(result.date, result.time);
                     console.log("start report date and time: ", startReportDateTime)
                     const endReportDateTime = moment(startReportDateTime).add(30, 'm').toDate();

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, delay, Observable, of, retry, tap} from "rxjs";
-import {ApiUrls, deleteReportsUrl, getReportsUrl} from "../enums/api-urls";
+import {ApiUrls, deleteReportsUrl, getReportsUrl, postReportsUrl} from "../enums/api-urls";
 import {StudentReport} from "../models/report";
 import {NewStudentReport} from "../models/newStudentReport";
 import {Router} from "@angular/router";
@@ -34,11 +34,11 @@ export class ReportServiceService {
         return this.http.get<any[]>(ApiUrls.ReportStates);
     }
 
-    createNewReport(newReport: NewStudentReport, slug: string): Observable<StudentReport> {
-        return this.http.post<StudentReport>(getReportsUrl(slug), JSON.stringify(newReport), {headers: this.headers})
+    createNewReport(newReport: NewStudentReport, studentChapterId: number): Observable<StudentReport> {
+        return this.http.post<StudentReport>(postReportsUrl(studentChapterId), JSON.stringify(newReport), {headers: this.headers})
             .pipe(
-                tap(report => this.reports[report.chapterId - 1].push(report)),
-                catchError(this.handleError<StudentReport>(`post new student report = ${slug}`)));
+                tap(report => this.reports[report.chapterNumber - 1].push(report)),
+                catchError(this.handleError<StudentReport>(`post new student report = ${studentChapterId}`)));
     }
 
     updateReportLikeList(reportId: number): Observable<any> {
@@ -74,5 +74,8 @@ export class ReportServiceService {
 
             return of(result as T);
         };
+    }
+    showReports(){
+        console.log(this.reports)
     }
 }
