@@ -181,9 +181,10 @@ public class StudentController {
     @PostMapping("/reports/{studentChapterId}")
     public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable long studentChapterId,
             @RequestBody  StudentReportCreationDto studentReportCreationDto) {
-        return postResponse( studentService.getStudentChapter(studentChapterId)
+        return postResponse(studentService.getStudentChapter(studentChapterId)
                 .map(studentChapter -> studentReportService
-                        .createStudentReport(studentChapter, studentReportCreationDto)).get().map(StudentReportDto::map));
+                        .createStudentReport(studentChapter, studentReportCreationDto))
+                        .get().map(StudentReportDto::map));
     }
 
 
@@ -266,7 +267,7 @@ public class StudentController {
         return chapter.isEmpty()
                 ? badRequest()
                 : getResponse(reportService.getTopicsByChapter(chapter.get().getChapter()).stream()
-                        .map(TopicReportDto ::new).toList());
+                        .map(TopicReportDto::new).toList());
     }
 
 }

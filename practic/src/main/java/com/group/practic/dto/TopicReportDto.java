@@ -14,7 +14,7 @@ public class TopicReportDto {
 
     public TopicReportDto(TopicReportEntity topicReportEntity) {
         this.chapterId = topicReportEntity.getId();
-        this.topicReport =topicReportEntity.getTopic();
+        this.topicReport = topicReportEntity.getTopic();
     }
 
     public TopicReportDto() {
