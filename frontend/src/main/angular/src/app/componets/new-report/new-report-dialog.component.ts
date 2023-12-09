@@ -77,8 +77,7 @@ export class NewReportDialogComponent implements OnInit {
     ]));
     dateStr: string = '';
     topicsReport: TopicReport [] = [];
-    openChapters$ = new BehaviorSubject<any[]>([]);
-    activeChapterId: number = this.data.chapters[this.data.chapters.length - 1].id;
+    activeChapter: Chapter = this.data.chapters[this.data.chapters.length - 1];
 
     constructor(
         public dialogRef: MatDialogRef<NewReportDialogComponent>,
@@ -95,35 +94,19 @@ export class NewReportDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.getOpenChapters();
         console.log(this.data.chapters)
-        if (this.activeChapterId > 0) {
-            this.initTopicsReports();
-        }
-    }
-
-    updateActiveChapter(selectChapter: number) {
-        this.activeChapterId = selectChapter;
         this.initTopicsReports();
     }
 
-    getOpenChapters(): void {
-        // @ts-ignore
-        const ids = this.data.chapters.map((chapter: Chapter) => this.extractChapterInfo(chapter)).sort((a, b) => a - b);
-        this.openChapters$.next(ids);
-    }
-
-    extractChapterInfo(chapter: Chapter): { num: number; id: number } {
-        return {
-            num: chapter.number,
-            id: chapter.id,
-        };
+    updateActiveChapter(selectChapter: number) {
+        this.activeChapter = this.data.chapters.find((chapter: { number: number; }) => chapter.number === selectChapter);
+        this.initTopicsReports();
     }
 
 
     initTopicsReports() {
-        console.log(this.activeChapterId)
-        this.topicReportService.getTopicsReportsOnChapter(this.activeChapterId).subscribe({
+        console.log(this.activeChapter)
+        this.topicReportService.getTopicsReportsOfChapter(this.activeChapter).subscribe({
             next: topics => {
                 if (topics) {
                     this.topicsReport = topics;
@@ -139,7 +122,7 @@ export class NewReportDialogComponent implements OnInit {
 
 
     getNewStudentReport(): NewStudentReport {
-        this.newStudentReport.chapterId = this.activeChapterId;
+        this.newStudentReport.chapterId = this.activeChapter.id;
         return this.newStudentReport;
     }
 

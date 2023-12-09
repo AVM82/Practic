@@ -12,16 +12,26 @@ import {Router} from "@angular/router";
 })
 export class ReportServiceService {
 
+    slug: string = '';
+    reports: StudentReport[][] = [];
+
     constructor(private http: HttpClient,
                 private router: Router) {
     }
 
-    reports: StudentReport[][] = [];
+    setCourseSlug(slug: string): void {
+        if (slug !== this.slug) {
+            this.reports = [];
+            this.slug = slug;
+        }
+    }
 
-    headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-    });
+    getAllActualReports(slug: string): void {
+        this.setCourseSlug(slug);
+        this.http.get<StudentReport[][]>(getReportsUrl(slug)).subscribe(reports => this.reports = reports);
+    }
 
+/*    
     getAllActualReports(slug: string): Observable<StudentReport[][]> {
         return this.http.get<StudentReport[][]>(getReportsUrl(slug)).pipe(
             delay(2000),
@@ -29,13 +39,14 @@ export class ReportServiceService {
             tap(reports => this.reports = reports),
             catchError(this.handleError<StudentReport[][]>(`get actual reports = ${slug}`)));
     }
+*/
 
     getReportStates(): Observable<any[]> {
         return this.http.get<any[]>(ApiUrls.ReportStates);
     }
 
     createNewReport(newReport: NewStudentReport, studentChapterId: number): Observable<StudentReport> {
-        return this.http.post<StudentReport>(postReportsUrl(studentChapterId), JSON.stringify(newReport), {headers: this.headers})
+        return this.http.post<StudentReport>(postReportsUrl(studentChapterId), newReport)
             .pipe(
                 tap(report => this.reports[report.chapterNumber - 1].push(report)),
                 catchError(this.handleError<StudentReport>(`post new student report = ${studentChapterId}`)));
@@ -43,17 +54,17 @@ export class ReportServiceService {
 
     updateReportLikeList(reportId: number): Observable<any> {
         console.log("updateReportLikeList")
-        return this.http.put<any>(ApiUrls.ReportLikeList, reportId, {headers: this.headers}).pipe(
+        return this.http.put<any>(ApiUrls.ReportLikeList, reportId).pipe(
             catchError(this.handleError<any>(`update report like list`)));
     }
 
     updateReport(newReport: NewStudentReport): Observable<any> {
-        return this.http.put<NewStudentReport>(ApiUrls.Reports, JSON.stringify(newReport), {headers: this.headers})
+        return this.http.put<NewStudentReport>(ApiUrls.Reports, newReport)
             .pipe(catchError(this.handleError<StudentReport>(`update new student report`)));
     }
 
     deleteReport(reportId: number): Observable<any> {
-        return this.http.delete<NewStudentReport>(deleteReportsUrl(reportId), {headers: this.headers})
+        return this.http.delete<NewStudentReport>(deleteReportsUrl(reportId))
             .pipe(catchError(this.handleError<StudentReport>(`delete new student report `)));
     }
 
