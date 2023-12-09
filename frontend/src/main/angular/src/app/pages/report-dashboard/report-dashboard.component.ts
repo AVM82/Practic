@@ -73,7 +73,6 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
 
     updateData(slug: string): void {
         this.loadLevels(slug);
-        //this.loadReports(slug);
         this.reportService.getAllActualReports(slug);
         this.loadTimeSlots(slug);
         this.createTimeSlots(slug)
@@ -83,13 +82,6 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         console.log(chapters)
         this.chapters = chapters.filter(chapter => !chapter.hidden);
     }
-
-/*
-    loadReports(slug: string): void {
-        this.reportService.getAllActualReports(slug).subscribe(() => {
-        });
-    }
-*/
 
     loadLevels(slug: string): void {
         this.coursesService.getLevels(slug).subscribe(levels => {

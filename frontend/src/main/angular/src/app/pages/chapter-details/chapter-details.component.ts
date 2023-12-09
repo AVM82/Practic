@@ -68,23 +68,26 @@ export class ChapterDetailsComponent implements OnInit {
       const slug = params.get('slug')
       const number = Number(params.get('chapterN')) | 0;
       if (slug && number > 0)
-        this.coursesService.getChapter(slug, number).subscribe(chapterObs => chapterObs.subscribe(chapter =>{
-          this.chapter = chapter;
-          this.slug = slug;
-          this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
-          this.isMentor = this.me.isMentor(slug);
-          this.number = number;
-          this.isActiveChapter = number === this.me.getCourseActiveChapterNumber(slug);
-          this.isStudent = this.coursesService.stateStudent != undefined;
-          if (this.isStudent) {
-            this.studentService.setStudent(this.me.getStudent(slug)!);
-            for(const part of chapter.parts) 
-            for(const sub of part.common!.subChapters)
-              sub.checked = this.isSelected(sub.id);
-          }
-        }));
+        this.coursesService.getChapter(slug, number).subscribe(chapterObs => chapterObs.subscribe(chapter => 
+          this.init(chapter, slug, number)));
 
     });
+  }
+
+  private init(chapter: Chapter, slug: string, number: number) {
+      this.chapter = chapter;
+      this.slug = slug;
+      this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
+      this.isMentor = this.me.isMentor(slug);
+      this.number = number;
+      this.isActiveChapter = number === this.me.getCourseActiveChapterNumber(slug);
+      this.isStudent = this.coursesService.stateStudent != undefined;
+      if (this.isStudent) {
+        this.studentService.setStudent(this.me.getStudent(slug)!);
+        for(const part of chapter.parts) 
+          for(const sub of part.common!.subChapters)
+            sub.checked = this.isSelected(sub.id);
+      }
   }
 
   getTextAccordingState(): string {
@@ -104,7 +107,7 @@ export class ChapterDetailsComponent implements OnInit {
   }
 
   private notAllPracticesHaveBeenApproved(): boolean {
-    return this.chapter!.parts.filter(part => part.practice!.state === STATE_APPROVED).length !== this.chapter!.parts.length;
+    return this.chapter!.parts.some(part => part.practice.state !== STATE_APPROVED);
   }
 
   changeState(event: any) {

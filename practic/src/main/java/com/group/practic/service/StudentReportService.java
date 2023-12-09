@@ -66,13 +66,13 @@ public class StudentReportService {
     }
 
 
-    public Optional<StudentReportEntity> createStudentReport(StudentChapterEntity studentChapter,
+    public StudentReportEntity createStudentReport(StudentChapterEntity studentChapter,
             StudentReportCreationDto studentReportCreationDto) {
         return timeSlotRepository.findById(studentReportCreationDto.timeslotId()).map(timeSlot -> {
             timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), false);
             return studentReportRepository.save(new StudentReportEntity(studentChapter, timeSlot,
                     studentReportCreationDto.title()));
-        });
+        }).orElse(null);
     }
 
 

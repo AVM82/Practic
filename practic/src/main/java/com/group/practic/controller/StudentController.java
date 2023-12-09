@@ -73,13 +73,11 @@ public class StudentController {
 
 
 
-
     @Autowired
     public StudentController(StudentService studentService, TimeSlotService timeSlotService,
-                             PersonService personService,
-                             AdditionalMaterialsService additionalMaterialsService,
-                             StudentReportService studentReportService, CourseService courseService,
-                             TopicReportService reportService) {
+            PersonService personService, AdditionalMaterialsService additionalMaterialsService,
+            StudentReportService studentReportService, CourseService courseService,
+            TopicReportService reportService) {
         this.studentService = studentService;
         this.personService = personService;
         this.studentReportService = studentReportService;
@@ -131,8 +129,7 @@ public class StudentController {
 
     @GetMapping("/chapters/{studentId}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Collection<ChapterDto>> getOpenChapters(
-            @PathVariable long studentId) {
+    public ResponseEntity<Collection<ChapterDto>> getOpenChapters(@PathVariable long studentId) {
         return getResponse(studentService.get(studentId).map(studentService::getChapters));
     }
 
@@ -196,11 +193,11 @@ public class StudentController {
 
     @PostMapping("/reports/{studentChapterId}")
     public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable long studentChapterId,
-            @RequestBody  StudentReportCreationDto studentReportCreationDto) {
-        return postResponse(studentService.getStudentChapter(studentChapterId)
-                .map(studentChapter -> studentReportService
+            @RequestBody StudentReportCreationDto studentReportCreationDto) {
+        return postResponse(studentService
+                .getStudentChapter(studentChapterId).map(studentChapter -> studentReportService
                         .createStudentReport(studentChapter, studentReportCreationDto))
-                        .get().map(StudentReportDto::map));
+                .map(StudentReportDto::map));
     }
 
 
@@ -274,14 +271,14 @@ public class StudentController {
                 .orElse(badRequest());
     }
 
+
     @GetMapping("/topicsreports/{studentChapterId}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Collection<TopicReportDto>>
-            getTopicsByChapter(@PathVariable Long studentChapterId) {
+    public ResponseEntity<Collection<TopicReportDto>> getTopicsByChapter(
+            @PathVariable Long studentChapterId) {
 
         Optional<StudentChapterEntity> chapter = studentService.getStudentChapter(studentChapterId);
-        return chapter.isEmpty()
-                ? badRequest()
+        return chapter.isEmpty() ? badRequest()
                 : getResponse(reportService.getTopicsByChapter(chapter.get().getChapter()).stream()
                         .map(TopicReportDto::new).toList());
     }
