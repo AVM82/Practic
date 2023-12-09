@@ -105,11 +105,9 @@ export class CoursesService {
     this.setCourse(slug);
     return this.getChapters(slug).pipe(map(chapters => {
       let chapter = chapters.find(chapter  => chapter.number === number)!;
-      console.log(chapter);
       return chapter.name ? of(chapter)
         : this.http.get<CompleteChapter>(this.selectChapterEndpoint(slug, number))
           .pipe(map(ext => {
-              console.log(ext);
               Chapter.complete(chapter, ext);
               return chapter;
             }));
