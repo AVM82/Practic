@@ -114,14 +114,23 @@
 .chapter-button{
     display:flex;
 }
-.diagram{
+.diagram-container {
     margin-left: auto;
-}
-.totalPercentage{
+    position: relative;
+    display: inline-block;
+    text-align: center; 
+  }
+  
+  .diagram {
+    display: inline-block;
+    margin-left: auto;
+  }
+  
+  .totalPercentage {
     position: absolute;
-    top: 31%;
-    left: 95.1%;
+    top: 39%;
+    left: 31%;
     font-size: 13px;
-}
-
+    white-space: nowrap;
+  }
 

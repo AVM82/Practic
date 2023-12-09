@@ -36,7 +36,7 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
   isInvolved: boolean = false;
   stateStudent?: StateStudent;
   me!: User;
-  percent: number[] = [0,0,0,0,0,0,0,0,0];
+  percent: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   reportsState: String[] = [];
   @ViewChildren('myCanvas') canvases!: QueryList<ElementRef<HTMLCanvasElement>>;
 
@@ -56,36 +56,19 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    this.reportService.getAllActualReports(this.coursesService.slug).subscribe({
-      next: (response) => {
-        
-        const practice = 0;
-        const tests = 0;
+        const testsPercent = 0;
 
         this.canvases.forEach((canvas, index) => {
-                  const practicState = this.shortChapters[index].parts.length>0?this.shortChapters[index].parts[0].practice.state:'null';
-                console.log(practicState+" state practic, index: "+index);
-                const percentPracticState = this.getPercentPracticState(practicState);
-          console.log('index' + index);
-          const reportState = response[index].length > 0 ? response[index][0].state.toLocaleLowerCase() : 'null';
-          const idState = this.reportsState.indexOf(reportState) + 1;
-          console.log("report state for chapter:"+index+" "+reportState);
-          
-          const reportPercent = this.getPercentReportState(reportState);
-          console.log('state ' + reportState + "index state: " + reportPercent);
-
-          this.percent[index] =Math.floor( (practice + tests + reportPercent) / 3);
-          console.log(this.percent);
-
-         
-           this.zone.run(() => {
+          const practicState = this.shortChapters[index].parts.length > 0 ? this.shortChapters[index].parts[0].practice.state : 'null';
+          const percentPracticState = this.getPercentPracticState(practicState);        
+          const reportPercent = this.shortChapters[index].myReports>0?100:0;
+          this.percent[index] = Math.floor((percentPracticState + testsPercent + reportPercent) / 3);
+          this.zone.run(() => {
             this.cdr.detectChanges();
           });
-          this.createChart([percentPracticState, tests, reportPercent], canvas);
+          this.createChart([percentPracticState, testsPercent, reportPercent], canvas);
         });
-
-      }
-    })
+    
   }
 
 
@@ -129,7 +112,6 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
           datasets: [{
             data: [whiteColorfirst, data[0]],
             backgroundColor: [
-              //  this.percent==100?'': 
               'rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'
             ],
             borderWidth: 0
@@ -138,8 +120,6 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
           }, {
             data: [whiteColorSecond, data[1]],
             backgroundColor: [
-              // this.percent==100?:
-
               'rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'
             ],
 
@@ -150,7 +130,6 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
           {
             data: [whiteColorThirst, data[2]],
             backgroundColor: [
-              // this.percent==100?'rgba(119, 254, 176, 1)':
               'rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'
             ],
 
@@ -180,30 +159,28 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
   }
 
   getPercentReportState(state: string): number {
-    switch (state) {
-      case 'announced':
+    switch (state.toLocaleUpperCase()) {
+      case 'ANNOUNCED':
         return 33;
-      case 'started':
+      case 'STARTED':
         return 66;
-      case 'finished':
+      case 'FINISHED':
         return 100;
       default:
-        return 0; 
+        return 0;
     }
   }
 
-  getPercentPracticState(state: string): number{
+  getPercentPracticState(state: string): number {
     switch (state.toLocaleUpperCase()) {
-      case 'IN_PROCESS'||'PAUSE':
+      case 'IN_PROCESS' || 'PAUSE':
         return 33;
       case 'READY_TO_REVIEW':
         return 66;
       case 'APPROVED':
         return 100;
-      
-      // Добавьте другие кейсы по мере необходимости
       default:
-        return 0; // Любое значение по умолчанию, если статус не соответствует ни одному из кейсов
+        return 0;
     }
   }
 }
