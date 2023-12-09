@@ -5,8 +5,6 @@ import {CoursesComponent} from "./pages/courses/courses.component";
 import {CourseDetailsComponent} from "./pages/course-details/course-details.component";
 import {LoginComponent} from "./pages/login/login.component";
 import {MentorDashboardComponent} from "./pages/mentor-dashboard/mentor-dashboard.component";
-import {DashboardComponent} from "./modules/dashboard/dashboard.component";
-import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
 import {ReportDashboardComponent} from "./pages/report-dashboard/report-dashboard.component";
 import {AdditionalMaterialsComponent} from "./pages/materials/additional-materials.component";
@@ -31,12 +29,7 @@ const routes: Routes = [
   {path: 'ban', component: BannedComponent},
 
   {path: 'users', component: UsersComponent},
-  {path: 'mentor', component: MentorDashboardComponent,
-    children: [
-      {path: 'dashboard', component: DashboardComponent},
-      {path: 'students/practices', component: PracticMetricComponent}
-    ]
-  },
+  {path: 'mentor', component: MentorDashboardComponent},
   {path: 'courses', component: CoursesComponent},
   {path: 'courses/create', component: CreateCourseComponent},
   {path: 'courses/:slug/chapters/:chapterN', component: ChapterDetailsComponent},

@@ -1,9 +1,9 @@
 package com.group.practic.service;
 
 import com.group.practic.PropertyLoader;
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
 import com.group.practic.dto.NewCourseDto;
-import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
@@ -60,11 +60,9 @@ public class CourseService {
     }
 
 
-    public List<ShortChapterDto> getChapters(CourseEntity course, boolean hide) {
-        return Optional.ofNullable(course.getChapters())
-                .map(chapters -> chapters.stream()
-                        .map(chapter -> ShortChapterDto.map(chapter, hide)).toList())
-                .orElse(List.of());
+    public List<ChapterDto> getChapters(CourseEntity course, boolean hide) {
+        return Optional.ofNullable(course.getChapters()).map(chapters -> chapters.stream()
+                .map(chapter -> ChapterDto.map(chapter, hide)).toList()).orElse(List.of());
     }
 
 
@@ -116,13 +114,13 @@ public class CourseService {
         courseEntity.setCourseType(prop.getProperty(PropertyUtil.TYPE_KEY, ""));
         courseEntity.setDescription(prop.getProperty(PropertyUtil.DESCRIPTION_KEY, ""));
         Optional<CourseEntity> course = get(slug);
-        courseEntity = course.isEmpty() ? courseRepository.save(courseEntity)
-                : course.get().update(courseEntity);
+        courseEntity = courseRepository
+                .save(course.isEmpty() ? courseEntity : course.get().update(courseEntity));
         courseEntity.setLevels(levelService.getLevelsSet(courseEntity, prop));
         courseEntity.setChapters(chapterService.getChapters(courseEntity, prop));
         courseEntity.setAdditionalMaterials(
                 additionalMaterialsService.getAdditionalMaterials(courseEntity, prop));
-        return Optional.ofNullable(courseRepository.save(courseEntity));
+        return Optional.ofNullable(courseEntity);
     }
 
 

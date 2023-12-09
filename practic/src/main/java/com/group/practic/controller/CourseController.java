@@ -3,10 +3,10 @@ package com.group.practic.controller;
 import static com.group.practic.util.ResponseUtils.getResponse;
 import static com.group.practic.util.ResponseUtils.postResponse;
 
+import com.group.practic.dto.ChapterCompleteDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.CourseDto;
 import com.group.practic.dto.NewCourseDto;
-import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.LevelEntity;
 import com.group.practic.service.CourseService;
@@ -44,7 +44,7 @@ public class CourseController {
 
 
     @GetMapping("/{slug}/allchapters")
-    public ResponseEntity<Collection<ShortChapterDto>> getChapters(@PathVariable String slug) {
+    public ResponseEntity<Collection<ChapterDto>> getChapters(@PathVariable String slug) {
         return getResponse(courseService.get(slug).map(
                 course -> courseService.getChapters(course, !PersonService.hasAdvancedRole())));
     }
@@ -85,11 +85,10 @@ public class CourseController {
 
     @GetMapping("/{slug}/chapters/{number}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'COMRADE')")
-    public ResponseEntity<ChapterDto> getChapterByNumber(@PathVariable("slug") String slug,
+    public ResponseEntity<ChapterCompleteDto> getChapterByNumber(@PathVariable("slug") String slug,
             @PathVariable int number) {
-        return getResponse(courseService.get(slug)
-                .map(course -> courseService.getChapterByNumber(course, number).map(ChapterDto::map)
-                        .orElse(null)));
+        return getResponse(courseService.get(slug).map(course -> courseService
+                .getChapterByNumber(course, number).map(ChapterCompleteDto::map).orElse(null)));
     }
 
 }

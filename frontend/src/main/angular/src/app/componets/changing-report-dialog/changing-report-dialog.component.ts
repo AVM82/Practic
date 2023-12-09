@@ -13,10 +13,8 @@ import {MY_FORMATS} from "../new-report/new-report-dialog.component";
 import * as _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import 'moment/locale/uk';
-import {CoursesService} from "../../services/courses.service";
 import {TopicReportService} from "../../services/topic-report.service";
-import {BehaviorSubject, Observable} from "rxjs";
-import { StudentService } from 'src/app/services/student.service';
+import {TopicReport} from "../../models/report";
 
 const moment = _rollupMoment || _moment;
 
@@ -55,9 +53,7 @@ export class ChangingReportDialogComponent {
     constructor(
         public dialogRef: MatDialogRef<ChangingReportDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private coursesService: CoursesService,
-        private studentservice: StudentService,
-        private topicReportService: TopicReportService
+        private topicReportService: TopicReportService,
     ) {
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth();
@@ -78,20 +74,11 @@ export class ChangingReportDialogComponent {
         Validators.maxLength(100)
     ]));
     dateStr: string = '';
-    openChapters$ = new BehaviorSubject<number[]>([]);
-    activeChapter: number = 1;
-    topicsReport$: Observable<{ topic: string }[]> = new BehaviorSubject<{ topic: string }[]>([]);
+    topicsReport: TopicReport [] = [];
     previousDate: Date;
 
     ngOnInit(): void {
-        this.getOpenChapters();
-
-        this.openChapters$.subscribe(chapters => {
-            if (chapters.length > 0) {
-                this.activeChapter = chapters[chapters.length - 1];
-                this.initTopicsReports();
-            }
-        });
+        this.initTopicsReports();
     }
 
     onDateChange() {
@@ -101,30 +88,17 @@ export class ChangingReportDialogComponent {
         }
     }
 
-    getOpenChapters(): void {
-
-        this.coursesService.getOpenChapters().subscribe({
-            next: chapters => {
-                const ids = chapters.map(chapter => chapter.id).sort((a, b) => a - b);
-                this.openChapters$.next(ids);
-
-            },
-            error: error => {
-                console.error('Помилка при запиті доступних глав', error);
-                this.openChapters$.next([]);
-            }
-        });
-    }
-
     initTopicsReports() {
-        console.log(this.activeChapter + " new student chapt");
-        this.topicReportService.getTopicsReportsOnChapter(this.activeChapter).subscribe({
+        this.topicReportService.getTopicsReportsOfChapter(this.data.studentReport.chapterId).subscribe({
             next: topics => {
-                (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
+                if (topics) {
+                    this.topicsReport = topics;
+                } else {
+                    console.warn('No topics for this chapter');
+                }
             },
             error: error => {
                 console.error('Помилка при отриманні доступних тем доповіді', error);
-                (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next([]);
             }
         });
     }

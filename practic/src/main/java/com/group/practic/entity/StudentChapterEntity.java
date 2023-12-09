@@ -58,11 +58,13 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @Column(name = "updated_at", nullable = true)
     Timestamp updatedAt;
 
-    int reportCount;
-
     @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
     @OrderBy("number")
     private List<StudentPracticeEntity> practices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
+    @OrderBy("id")
+    private List<StudentReportEntity> reports = new ArrayList<>();
 
     int daysSpent;
 
@@ -93,6 +95,16 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
             subs.remove(subChapterId);
         }
         return this;
+    }
+
+
+    public long countApprovedReports() {
+        return reports.stream().filter(StudentReportEntity::isCountable).count();
+    }
+
+
+    public long countNonCancelledReports() {
+        return reports.stream().filter(StudentReportEntity::isNonCancelled).count();
     }
 
 }

@@ -1,61 +1,61 @@
 <div class="dialog">
 
-  <h1 mat-dialog-title style="text-align: center;font-size: 30px; margin-top: 20px; margin-bottom: -10px;">Запланувати
-  доповідь</h1>
-<div mat-dialog-content style="padding-left: 100px">
-  <div class="date-field">
-    <mat-label>Дата</mat-label>
-    <mat-form-field appearance="outline">
-      <input matInput [min]="minDate"
-             [max]="maxDate"
-             [matDatepicker]="picker"
-             [formControl]="date"
-             [(ngModel)]="newStudentReport.date" >
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-  </div>
-  <div class="date-field">
-    <mat-label>Час</mat-label>
-    <mat-form-field appearance="outline" style="align-items: center">
-      <mat-select [(ngModel)]="newStudentReport.timeslotId"
-                  [formControl]="timeslot">
-      <mat-option *ngFor="let timeslot of getTimeslots(newStudentReport.date);"
-                  [value]="timeslot.id"
-                  (click)="setNewStudentReportTime(timeslot.time)">{{formatTime(timeslot.time)}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+    <h1 mat-dialog-title style="text-align: center;font-size: 30px; margin-top: 20px; margin-bottom: -10px;">Запланувати
+        доповідь</h1>
+    <div mat-dialog-content style="padding-left: 100px">
+        <div class="date-field">
+            <mat-label>Дата</mat-label>
+            <mat-form-field appearance="outline">
+                <input matInput [min]="minDate"
+                       [max]="maxDate"
+                       [matDatepicker]="picker"
+                       [formControl]="date"
+                       [(ngModel)]="newStudentReport.date">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="date-field">
+            <mat-label>Час</mat-label>
+            <mat-form-field appearance="outline" style="align-items: center">
+                <mat-select [(ngModel)]="newStudentReport.timeslotId"
+                            [formControl]="timeslot">
+                    <mat-option *ngFor="let timeslot of getTimeslots(newStudentReport.date);"
+                                [value]="timeslot.id"
+                                (click)="setNewStudentReportTime(timeslot.time)">{{formatTime(timeslot.time)}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
+        <div class="chapter-field">
+            <mat-label>Розділ</mat-label>
+            <mat-form-field appearance="outline" style="width: 100px;">
+                <mat-select [(ngModel)]="activeChapter.number"
+                            [formControl]="chapter" (selectionChange)="updateActiveChapter($event.value)">
+                    <mat-option *ngFor="let chapter of data.chapters" [value]="chapter.number">
+                        {{ chapter.number }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-  <div class="chapter-field">
-    <mat-label>Розділ</mat-label>
-    <mat-form-field appearance="outline" style="width: 100px;">
-      <mat-select [(ngModel)]="activeChapter"
-                  [formControl]="chapter"(selectionChange)="updateActiveChapter($event.value)">
-        <mat-option *ngFor="let chapter of openChapters$ | async; let i = index" [value]="chapter">
-          {{ i + 1 }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+        <div class="title-field">
+            <mat-label>Тема доповіді</mat-label>
+            <mat-form-field appearance="outline" style="width: 640px;">
+                <mat-select [(ngModel)]="newStudentReport.title"
+                            [formControl]="title">
+                    <mat-option *ngFor="let topic of topicsReport"
+                                [value]="topic.topicReport">{{topic.topicReport}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-  <div class="title-field">
-    <mat-label>Тема доповіді</mat-label>
-    <mat-form-field appearance="outline" style="width: 640px;">
-        <mat-select [(ngModel)]="newStudentReport.title"
-                    [formControl]="title">
-            <mat-option *ngFor="let topic of topicsReport$ | async; let i = index"
-                        [value]="topic.topic">{{ topic.topic }}</mat-option>
-        </mat-select>
-    </mat-form-field>
-  </div>
-</div>
-<div mat-dialog-actions class="dialog-actions">
-  <button mat-button class ="cancel-button" (click)="onNoClick()">Відхилити</button>
-  <button mat-button class="ok-button" [mat-dialog-close]="getnewStudentReport()" cdkFocusInitial>
-    Прийняти
-  </button>
-</div>
+    </div>
+    <div mat-dialog-actions class="dialog-actions">
+        <button mat-button class="cancel-button" (click)="onNoClick()">Відхилити</button>
+        <button mat-button class="ok-button" [mat-dialog-close]="getNewStudentReport()" cdkFocusInitial>
+            Прийняти
+        </button>
+    </div>
 
 </div>

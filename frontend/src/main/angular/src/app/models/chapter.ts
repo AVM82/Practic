@@ -1,78 +1,64 @@
 import {ChapterPart} from "./chapterpart";
-import {STATE_NOT_STARTED} from 'src/app/enums/app-constans';
+import {ReportState, STATE_NOT_STARTED} from 'src/app/enums/app-constans';
+import {StudentReport, TopicReport} from "./report";
 
-class BaseChapter {
+export class Chapter {
   id: number;
   number: number;
-  partsCount: number;
+  hidden: boolean;
+  shortName: string;
+  name?: string;
+  parts: ChapterPart[];
+  skills?: string[];
+  state: string;
   reportCount: number;
   myReports: number;
-  state: string;
-  parts: ChapterPart[];
+  reports?: StudentReport[];
+  subs?: number[];
+  topicReports?: TopicReport [];
 
   constructor(
-    _id: number,
-    _number: number,
-    _partsCount: number,
-    _reportCount: number,
-    _myReports: number,
-    _state: string,
-    _parts: ChapterPart[]
-    
+    id: number,
+    number: number,
+    hidden: boolean,
+    shortName: string,
+    parts: ChapterPart[],
+    state: string,
+    reportCount: number,
+    myReports: number
   ) {
-    this.id = _id;
-    this.number = _number;
-    this.partsCount = _partsCount;
-    this.reportCount = _reportCount | 0;
-    this.myReports = _myReports | 0;
-    this.state = _state || STATE_NOT_STARTED;
-    this.parts = _parts || []; 
+    this.id = id;
+    this.number = number;
+    this.hidden = hidden;
+    this.shortName = shortName;
+    this.parts = parts; 
+    this.reportCount = reportCount;
+    this.state = state || STATE_NOT_STARTED;
+    this.myReports = myReports;
   }
 
+  public static complete(chapter: Chapter, ext: CompleteChapter) {
+    chapter.id = ext.id;
+    chapter.name = ext.name;
+    chapter.parts = ext.parts;
+    chapter.skills = ext.skills;
+    chapter.reportCount = ext.reportCount;
+    chapter.reports = ext.reports;
+    chapter.myReports = ext.reports.filter(report => report.state === ReportState.APPROVED).length;
+    chapter.subs = ext.subs;
+    chapter.topicReports = ext.topicReports;
+  }
 }
 
-export class Chapter extends BaseChapter {
+export interface CompleteChapter {
+  id: number;
   name: string;
+  parts: ChapterPart[];
+  skills: string[];
+  reportCount: number;
+  reports: StudentReport[];
   subs: number[];
-
-  constructor(
-    _id: number,
-    _number: number,
-    _partsCount: number,
-    _reportCount: number,
-    _myReports: number,
-    _state: string,
-    _parts: ChapterPart[],
-    _name: string,
-    _subs: number[]
-  ) {
-    super(_id, _number, _partsCount, _reportCount, _myReports, _state, _parts);
-    this.name = _name;
-    this.parts = _parts;
-    this.subs = _subs;
-  }
-}
-
-export class ShortChapter extends BaseChapter {
-  shortName: string;
-  hidden: boolean;
-
-  constructor(
-    _id: number,
-    _number: number,
-    _partsCount: number,
-    _reportCount: number,
-    _myReports: number,
-    _state: string,
-    _parts: ChapterPart[],
-    _shortName: string,
-    _hidden: boolean
-  ) {
-    super(_id, _number, _partsCount, _reportCount, _myReports, _state, _parts);
-    this.shortName = _shortName;
-    this.hidden = _hidden;
-  }
-
+  topicReports: TopicReport [];
 }
 
 export interface NewStateChapter {

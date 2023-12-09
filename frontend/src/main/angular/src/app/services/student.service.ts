@@ -66,9 +66,9 @@ export class StudentService {
         this.http.put<boolean>(ApiUrls.StudentSkills + chapter.id + '/' + event.target.id + '/' + event.target.checked, {})
             .subscribe(ok => {
                 if (ok)
-                    chapter.subs.push(event.target.id)
+                    chapter.subs!.push(event.target.id)
                 else
-                    chapter.subs =  chapter.subs.filter(sub => sub !== event.target.id);
+                    chapter.subs =  chapter.subs!.filter(sub => sub !== event.target.id);
                 subchapter.checked = ok;
                 event.target.checked = ok;
             });

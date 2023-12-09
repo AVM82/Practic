@@ -12,7 +12,7 @@ import {Practice} from "../../models/practice";
 import {TokenStorageService} from "../../services/token-storage.service";
 import {ChaptersService} from "../../services/chapters.service";
 import {StatePipe} from "../../pipes/practice-state.pipe";
-import {ShortChapter} from 'src/app/models/chapter';
+import {Chapter} from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
 import { CoursesService } from 'src/app/services/courses.service';
 import { StateStudent } from 'src/app/models/student';
@@ -26,7 +26,7 @@ import { StateStudent } from 'src/app/models/student';
   styleUrls: ['./course-details.component.css']
 })
 export class CourseDetailsComponent implements OnInit {
-  shortChapters: ShortChapter[] = [];
+  chapters: Chapter[] = [];
   reports: StudentReport[][]=[];
   slug: string='';
   practices: Practice[] = [];
@@ -58,15 +58,15 @@ export class CourseDetailsComponent implements OnInit {
     })
   }
 
-  getChapters(chapters: ShortChapter[]) {
-    this.shortChapters = chapters;
+  getChapters(chapters: Chapter[]) {
+    this.chapters = chapters;
   }
 
   setEditMode(editMode: boolean) {
     this.editMode = editMode;
   }
 
-  editClick(chapter: ShortChapter) {
+  editClick(chapter: Chapter) {
     console.log('edit click on chapter #', chapter.number, '(id=', chapter.id, ')');
   }
 

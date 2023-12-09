@@ -6,7 +6,6 @@ import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {InfoMessagesService} from "../../services/info-messages.service";
 import {EditBtnComponent} from 'src/app/componets/edit-btn/edit-course.component';
 import {MatChipsModule} from "@angular/material/chips";
 import {StatePipe} from "../../pipes/practice-state.pipe";
@@ -16,7 +15,6 @@ import { Practice } from 'src/app/models/practice';
 import { User } from 'src/app/models/user';
 import { CoursesService } from 'src/app/services/courses.service';
 import { StudentService } from 'src/app/services/student.service';
-import { ChaptersService } from 'src/app/services/chapters.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { ReportButtonComponent } from 'src/app/componets/report-button/report-button.component';
 import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START,
@@ -57,9 +55,7 @@ export class ChapterDetailsComponent implements OnInit {
   constructor(
     private coursesService: CoursesService,
     private studentService: StudentService,
-    private chaptersService: ChaptersService,
     private route: ActivatedRoute,
-    private messagesService: InfoMessagesService,
     private tokenStorageService: TokenStorageService,
     private router: Router
   ) {
@@ -72,22 +68,26 @@ export class ChapterDetailsComponent implements OnInit {
       const slug = params.get('slug')
       const number = Number(params.get('chapterN')) | 0;
       if (slug && number > 0)
-        this.coursesService.getChapter(slug, number).subscribe(chapter => {
-          this.chapter = chapter;
-          for(const part of chapter.parts) 
-            for(const sub of part.common!.subChapters)
-              sub.checked = this.isSelected(sub.id);
-          this.slug = slug;
-          this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
-          this.isMentor = this.me.isMentor(slug);
-          this.number = number;
-          this.isActiveChapter = number === this.me.getCourseActiveChapterNumber(slug);
-          this.isStudent = this.coursesService.stateStudent != undefined;
-          if (this.isStudent)
-            this.studentService.setStudent(this.me.getStudent(slug)!);
-        });
+        this.coursesService.getChapter(slug, number).subscribe(chapterObs => chapterObs.subscribe(chapter => 
+          this.init(chapter, slug, number)));
 
     });
+  }
+
+  private init(chapter: Chapter, slug: string, number: number) {
+      this.chapter = chapter;
+      this.slug = slug;
+      this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
+      this.isMentor = this.me.isMentor(slug);
+      this.number = number;
+      this.isActiveChapter = number === this.me.getCourseActiveChapterNumber(slug);
+      this.isStudent = this.coursesService.stateStudent != undefined;
+      if (this.isStudent) {
+        this.studentService.setStudent(this.me.getStudent(slug)!);
+        for(const part of chapter.parts) 
+          for(const sub of part.common!.subChapters)
+            sub.checked = this.isSelected(sub.id);
+      }
   }
 
   getTextAccordingState(): string {
@@ -107,7 +107,7 @@ export class ChapterDetailsComponent implements OnInit {
   }
 
   private notAllPracticesHaveBeenApproved(): boolean {
-    return this.chapter!.parts.filter(part => part.practice.state === STATE_APPROVED).length !== this.chapter!.parts.length;
+    return this.chapter!.parts.some(part => part.practice.state !== STATE_APPROVED);
   }
 
   changeState(event: any) {
@@ -135,7 +135,7 @@ export class ChapterDetailsComponent implements OnInit {
   }
 
   isSelected(subId: number): boolean {
-    return this.chapter!.subs?.some(sub => sub === subId);
+    return this.chapter!.subs!.some(sub => sub === subId);
   }
 
   changeSkills(event: any, subchapter: SubChapter) {

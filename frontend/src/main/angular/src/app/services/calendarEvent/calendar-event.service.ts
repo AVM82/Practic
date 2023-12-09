@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {NewStudentReport} from "../models/newStudentReport";
+import {NewStudentReport} from "../../models/newStudentReport/newStudentReport";
 import {catchError, Observable, of} from "rxjs";
-import { sendCalendarEventEmailNotificationUrl} from "../enums/api-urls";
-import {StudentReport} from "../models/report";
-import {HttpClient} from "@angular/common/http";
+import {ApiUrls} from "../../enums/api-urls";
+import {StudentReport} from "../../models/report/studentReport";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
 
 @Injectable({
@@ -15,9 +15,13 @@ export class CalendarEventService {
   constructor(private http: HttpClient,
               private router: Router) { }
 
-  sendEmailNotification(slug: string, newEvent: any):Observable<any> {
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+  });
+
+  sendEmailNotification(newEvent: any):Observable<any> {
     return this.http.post<NewStudentReport>(
-        sendCalendarEventEmailNotificationUrl(slug), newEvent)
+        ApiUrls.CalendarEventEmailNotification, JSON.stringify(newEvent), { headers: this.headers } )
         .pipe(catchError(this.handleError<StudentReport>(`send notification of creating report = `)));
 
   }
