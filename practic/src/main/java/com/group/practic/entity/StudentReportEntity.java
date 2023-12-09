@@ -34,9 +34,6 @@ public class StudentReportEntity implements Serializable {
     @ManyToOne
     StudentChapterEntity studentChapter;
 
-
-    // int number;
-
     @OneToOne
     @NotNull
     TimeSlotEntity timeSlot;
@@ -54,17 +51,20 @@ public class StudentReportEntity implements Serializable {
 
 
     public StudentReportEntity(StudentChapterEntity studentChapter, TimeSlotEntity timeslot,
-            @NotBlank String title/* , int number */) {
+            @NotBlank String title) {
         this.studentChapter = studentChapter;
         this.timeSlot = timeslot;
         this.title = title;
-        // this.number = number;
-
     }
 
 
     public boolean isCountable() {
         return state == ReportState.APPROVED;
+    }
+
+
+    public boolean isNonCancelled() {
+        return state != ReportState.CANCELLED;
     }
 
 }

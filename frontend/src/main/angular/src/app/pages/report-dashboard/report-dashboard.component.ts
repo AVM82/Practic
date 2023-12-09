@@ -13,7 +13,7 @@ import {TimeSlotService} from "../../services/time-slot.service";
 import {Level} from "../../models/level";
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatButtonModule} from "@angular/material/button";
-import {ShortChapter} from 'src/app/models/chapter';
+import {Chapter} from 'src/app/models/chapter';
 import {CalendarEventService} from "../../services/calendar-event.service";
 import * as _moment from "moment/moment";
 import {default as _rollupMoment} from "moment/moment";
@@ -39,11 +39,12 @@ const moment = _rollupMoment || _moment;
     styleUrls: ['./report-dashboard.component.css']
 })
 export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
-    chapters: ShortChapter[] = [];
+    chapters: Chapter[] = [];
     levels: Level[] = []
     timeslots!: Map<string, TimeSlot[]>;
     currentUserId!: any;
     me!:User;
+    isStudent: boolean = false;
 
     constructor(
         public dialog: MatDialog,
@@ -63,30 +64,32 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
             console.log(slug)
-            if (slug)
-                this.updateData(slug)
+            if (slug) {
+                this.updateData(slug);
+                this.isStudent = this.me.isStudent(slug);
+            }
         });
     }
 
     updateData(slug: string): void {
         this.loadLevels(slug);
-        this.loadReports(slug);
+        //this.loadReports(slug);
+        this.reportService.getAllActualReports(slug);
         this.loadTimeSlots(slug);
         this.createTimeSlots(slug)
     }
 
-    getChapters(chapters: ShortChapter[]) {
+    getChapters(chapters: Chapter[]) {
         console.log(chapters)
-        this.chapters = chapters;
+        this.chapters = chapters.filter(chapter => !chapter.hidden);
     }
 
-
+/*
     loadReports(slug: string): void {
         this.reportService.getAllActualReports(slug).subscribe(() => {
-            this.loadTimeSlots(slug);
-            this.reportService.showReports();
         });
     }
+*/
 
     loadLevels(slug: string): void {
         this.coursesService.getLevels(slug).subscribe(levels => {
@@ -114,7 +117,7 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
                 width: '50%',
                 data: {
                     timeslots: this.timeslots,
-                    chapters: this.chapters.filter(chapter => !chapter.hidden),
+                    chapters: this.chapters
                 },
             });
         dialogRef.afterClosed().subscribe(result => {

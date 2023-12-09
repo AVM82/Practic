@@ -72,8 +72,9 @@ public class StatisticStudentChapterEntity implements Serializable {
         dayCount += studentChapter.daysSpent;
         reportCount += studentChapter.countApprovedReports();
         List<StudentPracticeEntity> practices = studentChapter.getPractices();
-        for (int i = 0; i < practiceDayCount.size(); i++)
+        for (int i = 0; i < practiceDayCount.size(); i++) {
             practiceDayCount.set(i, practiceDayCount.get(i) + practices.get(i).daysSpent);
+        }
         // quiz statistic
     }
 

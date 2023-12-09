@@ -2,11 +2,11 @@ package com.group.practic.service;
 
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
+import com.group.practic.dto.ChapterCompleteDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
 import com.group.practic.dto.PersonStudentDto;
 import com.group.practic.dto.PracticeDto;
-import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentDto;
 import com.group.practic.dto.StudentsForCourseDto;
 import com.group.practic.entity.ApplicantEntity;
@@ -106,8 +106,8 @@ public class MentorService {
     public List<MentorEntity> removeMentors(Collection<MentorEntity> mentors) {
         return mentors.stream().map(this::removeMentor).toList();
     }
-    
-    
+
+
     public List<ApplicantDto> getApplicantsForCourse(CourseEntity course) {
         List<ApplicantDto> applicants = new ArrayList<>();
         applicantService.get(course, false, false)
@@ -123,16 +123,16 @@ public class MentorService {
                         getApplicantsForCourse(mentor.getCourse()))));
         return myApplicants;
     }
-  
+
 
     public List<StudentsForCourseDto> getMyStudents() {
         List<StudentsForCourseDto> myStudents = new ArrayList<>();
-        get(PersonService.me()).forEach(
-                mentor -> myStudents.add(new StudentsForCourseDto(mentor.getCourse(),
+        get(PersonService.me())
+                .forEach(mentor -> myStudents.add(new StudentsForCourseDto(mentor.getCourse(),
                         getStudentsForCourse(mentor.getCourse()))));
         return myStudents;
     }
-  
+
 
     public List<StudentDto> getStudentsForCourse(CourseEntity course) {
         List<StudentDto> students = new ArrayList<>();
@@ -151,39 +151,38 @@ public class MentorService {
 
 
     public ApplicantEntity rejectApplicant(ApplicantEntity applicant) {
-        return applicant.isApplied() ? applicant
-                : applicantService.reject(applicant);
+        return applicant.isApplied() ? applicant : applicantService.reject(applicant);
     }
 
 
-    public List<ShortChapterDto> getChapters(CourseEntity course) {
+    public List<ChapterDto> getChapters(CourseEntity course) {
         return Optional.ofNullable(course.getChapters())
-                        .map(chapters -> chapters.stream()
-                                .map(chapter -> ShortChapterDto.map(chapter,
-                                        reportService.getActualReportCount(chapter)))
-                                .toList())
-                        .orElseGet(List::of);
+                .map(chapters -> chapters.stream()
+                        .map(chapter -> ChapterDto.map(chapter,
+                                reportService.getActualReportCount(chapter)))
+                        .toList())
+                .orElseGet(List::of);
     }
 
 
-    public Optional<ChapterDto> getChapter(CourseEntity course, int number) {
-        return courseService.getChapterByNumber(course, number).map(
-                chapter -> ChapterDto.map(chapter, reportService.getActualReportCount(chapter)));
+    public Optional<ChapterCompleteDto> getChapter(CourseEntity course, int number) {
+        return courseService.getChapterByNumber(course, number).map(chapter -> ChapterCompleteDto
+                .map(chapter, reportService.getActualReportCount(chapter)));
     }
 
-    
+
     public PracticeDto approvePractice(StudentPracticeEntity practice) {
         return studentService.changePracticeState(practice, PracticeState.APPROVED);
     }
-    
+
 
     public PracticeDto rejectPractice(StudentPracticeEntity practice) {
         return studentService.changePracticeState(practice, PracticeState.IN_PROCESS);
     }
-    
-    
+
+
     public PracticeDto cancelApprovedPractice(StudentPracticeEntity practice) {
         return studentService.changePracticeState(practice, PracticeState.READY_TO_REVIEW);
     }
-    
+
 }

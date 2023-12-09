@@ -5,7 +5,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {CoursesService} from "../../services/courses.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatButtonModule} from "@angular/material/button";
-import { ShortChapter } from 'src/app/models/chapter';
+import { Chapter } from 'src/app/models/chapter';
 import { ApplyBtnComponent } from '../apply-btn/apply-btn.component';
 import { EditBtnComponent } from '../edit-btn/edit-course.component';
 import { User } from 'src/app/models/user';
@@ -20,13 +20,13 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 })
 
 export class CourseNavbarComponent implements OnInit {
-  @Output() navchapters: EventEmitter<ShortChapter[]> = new EventEmitter();
+  @Output() navchapters: EventEmitter<Chapter[]> = new EventEmitter();
   @Output() navCourse: EventEmitter<Course> = new EventEmitter();
   @Output() editModeChanged: EventEmitter<boolean> = new EventEmitter();
   @Input() currentChapter: number = 0;
   showAdditionalMaterials: boolean = false;
   showChapters: boolean = false;
-  shortChapters: ShortChapter[] = [];
+  chapters: Chapter[] = [];
   slug: string = '';
   me: User;
 
@@ -47,7 +47,7 @@ export class CourseNavbarComponent implements OnInit {
         this.coursesService.getChapters(this.slug).subscribe(shortChapters =>{
           if (shortChapters) {
             this.showChapters = shortChapters.length > 0;
-            this.shortChapters = shortChapters;
+            this.chapters = shortChapters;
             this.navchapters.emit(shortChapters);
           }
         });

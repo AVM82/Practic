@@ -89,7 +89,7 @@ export class ChangingReportDialogComponent {
     }
 
     initTopicsReports() {
-        this.topicReportService.getTopicsReportsOnChapter(this.data.studentReport.chapterId).subscribe({
+        this.topicReportService.getTopicsReportsOfChapter(this.data.studentReport.chapterId).subscribe({
             next: topics => {
                 if (topics) {
                     this.topicsReport = topics;

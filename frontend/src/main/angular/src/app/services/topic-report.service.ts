@@ -4,7 +4,6 @@ import {map, Observable, of} from 'rxjs';
 import {ApiUrls} from "../enums/api-urls";
 import {Chapter} from "../models/chapter";
 import {TopicReport} from "../models/report";
-import {CoursesService} from "./courses.service";
 
 @Injectable({
     providedIn: 'root'
@@ -12,15 +11,10 @@ import {CoursesService} from "./courses.service";
 export class TopicReportService {
 
     constructor(
-        private http: HttpClient,
-        private coursesService: CoursesService
+        private http: HttpClient
     ) { }
 
-
-    getTopicsReportsOnChapter(studentChapterId: number): Observable<TopicReport []> {
-
-        const studentChapter = this.coursesService.getShortChapterById(studentChapterId)
-
+    getTopicsReportsOfChapter(studentChapter: Chapter): Observable<TopicReport []> {
         return studentChapter.topicReports ? of(studentChapter.topicReports) :
             this.http.get<TopicReport []>(`${ApiUrls.StudentChapterTopicsReports}${studentChapter.id}`)
                 .pipe(map(loadedTopicReports => {
@@ -29,4 +23,5 @@ export class TopicReportService {
                     })
                 );
     }
+
 }

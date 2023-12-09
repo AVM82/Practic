@@ -74,18 +74,18 @@
 	<div *ngIf="chapterPart.common?.praxisPurpose">
 		<div class="chapter-part">
             <div *ngIf="isStudent && chapter?.state === process" class="action-buttons">
-                <button *ngIf="chapterPart.practice.state === not_started 
-								|| chapterPart.practice.state === pause
-								|| chapterPart.practice.state === ready"
+                <button *ngIf="chapterPart.practice!.state === not_started 
+								|| chapterPart.practice!.state === pause
+								|| chapterPart.practice!.state === ready"
 						mat-icon-button
                         (click)="service.changePracticeState(chapter!.number, chapterPart, process)"
-                        matTooltip="{{chapterPart.practice.state === not_started ? 'Почати практичну' : 'Продовжити практичну'}}"
+                        matTooltip="{{chapterPart.practice!.state === not_started ? 'Почати практичну' : 'Продовжити практичну'}}"
                         matTooltipPosition="below"
                         aria-label="Play"
 						[disabled]="chapter?.state === pause">
                     <mat-icon class="action-icon">play_circle_outline</mat-icon>
                 </button>
-                <button *ngIf="chapterPart.practice.state === process"
+                <button *ngIf="chapterPart.practice!.state === process"
 						mat-icon-button
                         (click)="service.changePracticeState(chapter!.number, chapterPart, pause)"
                         matTooltip="Відкласти роботу над практичною"
@@ -94,7 +94,7 @@
 						[disabled]="chapter?.state === pause">
                     <mat-icon class="action-icon">pause_circle_outline</mat-icon>
                 </button>
-				<button *ngIf="chapterPart.practice.state === process"
+				<button *ngIf="chapterPart.practice!.state === process"
 						class="done-btn"
 						(click)="practiceReview(chapterPart)"
 						matTooltip="Практична готова до ревью"
@@ -102,7 +102,7 @@
 						aria-label="Done">
 					<mat-icon class="action-icon">stop_circle_outline</mat-icon>
 				</button>
-				<button *ngIf="chapterPart.practice.state === ready"
+				<button *ngIf="chapterPart.practice!.state === ready"
 						class="done-btn"
 						(click)="checkApproved(chapterPart)"
 						matTooltip="Перевірити стан"
@@ -115,7 +115,7 @@
 				{{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />
 				Мета: {{chapterPart.common?.praxisPurpose}}
 			</div>
-            <div *ngIf="isStudent" class="custom-chip">{{chapterPart.practice.state | StatePipe}}</div>
+            <div *ngIf="isStudent" class="custom-chip">{{chapterPart.practice!.state | StatePipe}}</div>
 		</div>
 		<div *ngIf="chapterPart.common?.praxis?.length" class="chapter-details-container-ext">
 			<div *ngFor="let praxis of chapterPart.common?.praxis" class="row">

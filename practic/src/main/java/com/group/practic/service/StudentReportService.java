@@ -35,9 +35,8 @@ public class StudentReportService {
 
     @Autowired
     public StudentReportService(StudentReportRepository studentReportRepository,
-                                CourseService courseService,
-                                TimeSlotRepository timeSlotRepository,
-                                TimeSlotService timeSlotService) {
+            CourseService courseService, TimeSlotRepository timeSlotRepository,
+            TimeSlotService timeSlotService) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
         this.timeSlotRepository = timeSlotRepository;
@@ -45,10 +44,11 @@ public class StudentReportService {
     }
 
 
-    public int getActualReportCount(ChapterEntity chapter) {
-        return (int) studentReportRepository
-                .countByStudentChapterChapterAndStateIn(chapter, ACTUAL_STATES);
+    public long getActualReportCount(ChapterEntity chapter) {
+        return studentReportRepository.countByStudentChapterChapterAndStateIn(chapter,
+                ACTUAL_STATES);
     }
+
 
     public List<List<StudentReportEntity>> getAllStudentsActualReports(String slug) {
         setStatesOfFinishedReports();
@@ -58,19 +58,20 @@ public class StudentReportService {
             result = new ArrayList<>();
             for (ChapterEntity chapter : course.get().getChapters()) {
                 result.add(studentReportRepository
-                        .findAllByStudentChapterChapterAndStateInOrderByTimeSlotId(
-                                chapter, ACTUAL_STATES));
+                        .findAllByStudentChapterChapterAndStateInOrderByTimeSlotId(chapter,
+                                ACTUAL_STATES));
             }
         }
         return result;
     }
 
+
     public Optional<StudentReportEntity> createStudentReport(StudentChapterEntity studentChapter,
             StudentReportCreationDto studentReportCreationDto) {
         return timeSlotRepository.findById(studentReportCreationDto.timeslotId()).map(timeSlot -> {
             timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), false);
-            return studentReportRepository.save(new StudentReportEntity(
-                    studentChapter, timeSlot, studentReportCreationDto.title()));
+            return studentReportRepository.save(new StudentReportEntity(studentChapter, timeSlot,
+                    studentReportCreationDto.title()));
         });
     }
 

@@ -7,10 +7,10 @@ import static com.group.practic.util.ResponseUtils.postResponse;
 import static com.group.practic.util.ResponseUtils.updateResponse;
 
 import com.group.practic.dto.AdditionalMaterialsDto;
+import com.group.practic.dto.ChapterCompleteDto;
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.NewStateChapterDto;
 import com.group.practic.dto.PracticeDto;
-import com.group.practic.dto.ShortChapterDto;
-import com.group.practic.dto.StudentChapterDto;
 import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.dto.StudentReportDto;
 import com.group.practic.dto.TopicReportDto;
@@ -122,7 +122,7 @@ public class StudentController {
 
     @GetMapping("/chapters/{studentId}/{number}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<StudentChapterDto> getChapter(@PathVariable long studentId,
+    public ResponseEntity<ChapterCompleteDto> getChapter(@PathVariable long studentId,
             @PathVariable int number) {
         return getResponse(studentService.get(studentId)
                 .map(student -> studentService.getOpenedChapter(student, number).orElse(null)));
@@ -131,7 +131,7 @@ public class StudentController {
 
     @GetMapping("/chapters/{studentId}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Collection<ShortChapterDto>> getOpenChapters(
+    public ResponseEntity<Collection<ChapterDto>> getOpenChapters(
             @PathVariable long studentId) {
         return getResponse(studentService.get(studentId).map(studentService::getChapters));
     }

@@ -48,6 +48,9 @@ public class ChapterEntity implements Serializable {
     @OrderBy("number")
     private List<ChapterPartEntity> parts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "chapter", cascade = CascadeType.MERGE)
+    private List<TopicReportEntity> topics = new ArrayList<>();
+
     @OneToOne(mappedBy = "chapter", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     QuizEntity quiz;
 

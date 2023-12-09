@@ -63,7 +63,7 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     private List<StudentPracticeEntity> practices = new ArrayList<>();
 
     @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
-    @OrderBy("number")
+    @OrderBy("id")
     private List<StudentReportEntity> reports = new ArrayList<>();
 
     int daysSpent;
@@ -100,6 +100,11 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
     public long countApprovedReports() {
         return reports.stream().filter(StudentReportEntity::isCountable).count();
+    }
+
+
+    public long countNonCancelledReports() {
+        return reports.stream().filter(StudentReportEntity::isNonCancelled).count();
     }
 
 }
