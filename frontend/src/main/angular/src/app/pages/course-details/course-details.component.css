@@ -112,9 +112,16 @@
     border-radius: 4px;
 }
 .chapter-button{
-    display: flex;
+    display:flex;
 }
-
-
+.diagram{
+    margin-left: auto;
+}
+.totalPercentage{
+    position: absolute;
+    top: 31%;
+    left: 95.1%;
+    font-size: 13px;
+}
 
 
