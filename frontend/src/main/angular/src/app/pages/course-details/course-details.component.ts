@@ -1,6 +1,6 @@
 
-import {Chapter} from 'src/app/models/chapter';
-import { Component, OnInit, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Chapter } from 'src/app/models/chapter';
+import { Component, OnInit, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseNavbarComponent } from "../../componets/course-navbar/course-navbar.component";
 import { ActivatedRoute, RouterLink } from "@angular/router";
@@ -18,7 +18,7 @@ import { User } from 'src/app/models/user';
 import { CoursesService } from 'src/app/services/courses.service';
 import { StateStudent } from 'src/app/models/student';
 import Chart from 'chart.js/auto';
-import { NgZone } from '@angular/core';
+
 @Component({
   selector: 'app-course-details',
   standalone: true,
@@ -27,10 +27,10 @@ import { NgZone } from '@angular/core';
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
-export class CourseDetailsComponent implements OnInit , AfterViewInit{
+export class CourseDetailsComponent implements OnInit, AfterViewInit {
   chapters: Chapter[] = [];
-  reports: StudentReport[][]=[];
-  slug: string='';
+  reports: StudentReport[][] = [];
+  slug: string = '';
   practices: Practice[] = [];
   editMode: boolean = false;
   isStudent: boolean = false;
@@ -56,18 +56,18 @@ export class CourseDetailsComponent implements OnInit , AfterViewInit{
 
 
   ngAfterViewInit() {
-        const tests = 0;
+    const tests = 0;
 
-        this.canvases.forEach((canvas, index) => {
-                  const practicState = this.chapters[index].parts.length>0?this.chapters[index].parts[0].practice.state:'null';
-                const percentPracticState = this.getPercentPracticState(practicState);
-          const reports = this.chapters[index].myReports>0?100:0;
-          this.percent[index] =Math.floor( (percentPracticState + tests + reports) / 3);
-           this.zone.run(() => {
-            this.cdr.detectChanges();
-          });
-          this.createChart([percentPracticState, tests, reports], canvas);
-        });
+    this.canvases.forEach((canvas, index) => {
+      const practicState = this.chapters[index].parts.length > 0 ? this.chapters[index].parts[0].practice.state : 'null';
+      const percentPracticState = this.getPercentPracticState(practicState);
+      const reports = this.chapters[index].myReports > 0 ? 100 : 0;
+      this.percent[index] = Math.floor((percentPracticState + tests + reports) / 3);
+      this.zone.run(() => {
+        this.cdr.detectChanges();
+      });
+      this.createChart([percentPracticState, tests, reports], canvas);
+    });
 
   }
 
@@ -171,12 +171,12 @@ export class CourseDetailsComponent implements OnInit , AfterViewInit{
     }
   }
 
-  getPercentPracticState(state: string): number{
+  getPercentPracticState(state: string): number {
     switch (state.toLocaleUpperCase()) {
       case 'IN_PROCESS':
         return 33;
-        case 'PAUSE':
-          return 33;
+      case 'PAUSE':
+        return 33;
       case 'READY_TO_REVIEW':
         return 66;
       case 'APPROVED':
