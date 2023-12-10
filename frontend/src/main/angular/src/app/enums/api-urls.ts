@@ -9,10 +9,11 @@ export enum ApiUrls {
   Course = '/api/courses/',
   NewCourse = '/api/courses/NewCourse',
   NewCourseFromProperties = '/api/courses/NewCourseFromProperties',
-  Chapters = '/api/chapters',
+  Chapters = '/api/students/chapters/',
 
   Students = '/api/students',
   StudentChapters = '/api/students/chapters/',
+  StudentSkills = '/api/students/skills/',
   StudentChapterStates = '/api/students/chapters/states/',
   StudentAdditionalMaterials = '/api/students/additionalMaterials/',
   Practices = '/api/students/practices/',
@@ -21,7 +22,8 @@ export enum ApiUrls {
   ReportStates = '/api/students/reports/states',
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
-  TopicsReports = '/api/topicsreports',
+  TopicsReports = '/api/topicsreports/',
+  StudentChapterTopicsReports = '/api/students/topicsreports/',
 
   Mentors = '/api/mentors/',
   Applicants = '/api/mentors/applicants',
@@ -31,7 +33,7 @@ export enum ApiUrls {
   EmailPassAuth = 'api/auth',
   EmailPassRegister = 'api/register',
 
-  CalendarEventEmailNotification = '/api/events/sendEvent',
+  CalendarEventEmailNotification = '/api/events/sendEvent/',
   
   SendSecretCode = '/api/password-reset/send-code',
   MatchCode = '/api/password-reset/match-code',
@@ -41,7 +43,8 @@ export enum ApiUrls {
 
 }
 
-
+export const sendCalendarEventEmailNotificationUrl = (slug: string): string =>
+    ApiUrls.CalendarEventEmailNotification + slug ;
 export const getChaptersUrl = (slug: string): string =>
     ApiUrls.Course + slug + `/allchapters`;
 
@@ -59,6 +62,9 @@ export const getCourseUrl = (slug: string): string =>
 
 export const getReportsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}`;
+
+export const postReportsUrl = (studentChapterId: number): string =>
+    `/api/students/reports/${studentChapterId}`;
 
 export const getLevelsUrl = (slug: string): string =>
     `/api/courses/${slug}/levels`;

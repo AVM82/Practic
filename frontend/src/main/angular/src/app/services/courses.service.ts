@@ -6,7 +6,7 @@ import {Router} from "@angular/router";
 import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getChapterUrl, getStudentChapterUrl, getStudentChaptersUrl, getStudentsAllAdditionalMaterialsUrl} from "../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/additional.material';
 import {Level} from "../models/level";
-import { ShortChapter, Chapter } from 'src/app/models/chapter';
+import { Chapter, CompleteChapter } from 'src/app/models/chapter';
 import { StateStudent } from '../models/student';
 import { TokenStorageService } from './token-storage.service';
 import { StateMentor } from '../models/mentor';
@@ -14,6 +14,7 @@ import { SvgIconRegistryService } from 'angular-svg-icon';
 import { User } from '../models/user';
 import { STATE_NOT_STARTED } from '../enums/app-constans';
 import { Practice } from '../models/practice';
+import { ChapterPart } from '../models/chapterpart';
 
 const requestTextResponse: Object = {
   responseType: 'text'
@@ -28,9 +29,7 @@ export class CoursesService {
   slug: string = '';
   selectedCourse?: Course;
   levels?: Level[];
-  shortChapters?: ShortChapter[];
-  lastChapterNumber: number = 0;
-  chapters: Chapter[] = [];
+  chapters?: Chapter[];
   materials?: AdditionalMaterials[];
   stateStudent?: StateStudent;
 
@@ -55,8 +54,7 @@ export class CoursesService {
 
   clearCourse(slug: string): void {
     if (this.slug === slug) {
-      this.chapters = [];
-      this.shortChapters = undefined;
+      this.chapters = undefined;
       this.materials = undefined;
       this.stateStudent = this.tokenStorageService.me!.getStudent(slug);
     }
@@ -65,13 +63,11 @@ export class CoursesService {
   setCourse(slug: string): void {
     if (slug !== this.slug) {
       this.slug = slug;
-      this.chapters = [];
-      this.shortChapters = undefined;
+      this.chapters = undefined;
       this.materials = undefined;
       this.stateStudent = this.tokenStorageService.me!.getStudent(slug);
       this.levels = undefined;
       this.selectedCourse = undefined;
-      this.lastChapterNumber = 0;
     }
   }
 
@@ -88,15 +84,13 @@ export class CoursesService {
             }));
   }
 
-  getChapters(slug: string): Observable<ShortChapter[]> {
+  getChapters(slug: string): Observable<Chapter[]> {
     this.setCourse(slug);
-    return this.shortChapters 
-            ? of(this.shortChapters)
-            : this.http.get<ShortChapter[]>(this.selectChaptersEndpoint(slug)).pipe(map(chapters => {
-                        if (chapters) {
-                          this.shortChapters = chapters;
-                          this.lastChapterNumber = chapters[chapters.length -1].number;
-                        }
+    return this.chapters 
+            ? of(this.chapters)
+            : this.http.get<Chapter[]>(this.selectChaptersEndpoint(slug)).pipe(map(chapters => {
+                        if (chapters)
+                          this.chapters = chapters;
                         return chapters;
                       }));
   }
@@ -107,17 +101,17 @@ export class CoursesService {
     return this.me.isMentor(slug) ? ApiUrls.Mentors + `chapters/` + slug : getChaptersUrl(slug); 
   }
 
-  getChapter(slug: string, number: number): Observable<Chapter> {
+  getChapter(slug: string, number: number): Observable<Observable<Chapter>> {
     this.setCourse(slug);
-    for(let loadedChapter of this.chapters)
-      if (loadedChapter.number === number)
-        return of(loadedChapter);
-    return this.http.get<Chapter>(this.selectChapterEndpoint(slug, number))
-        .pipe(map(loadedChapter => {
-            this.chapters.push(loadedChapter);
-            return loadedChapter;
-          })
-        );
+    return this.getChapters(slug).pipe(map(chapters => {
+      let chapter = chapters.find(chapter  => chapter.number === number)!;
+      return chapter.name ? of(chapter)
+        : this.http.get<CompleteChapter>(this.selectChapterEndpoint(slug, number))
+          .pipe(map(ext => {
+              Chapter.complete(chapter, ext);
+              return chapter;
+            }));
+    }))
   }
 
   selectChapterEndpoint(slug: string, number: number): string {
@@ -186,25 +180,24 @@ export class CoursesService {
     return course;
   }
   
-  private getShortChapterByNumber(number:number): ShortChapter {
-    return this.shortChapters?.find(chapter => chapter.number === number)!;
+  private getChapterByNumber(number:number): Chapter {
+    return this.chapters?.find(chapter => chapter.number === number)!;
   }
 
   openStudentChapter(number: number): void {
-    let shortChapter = this.getShortChapterByNumber(number);
+    let shortChapter = this.getChapterByNumber(number);
     shortChapter.hidden = false;
     shortChapter.state = STATE_NOT_STARTED;
     shortChapter.parts = [];
-    for(let part = 1; part <= shortChapter.partsCount; part++)
-      shortChapter.parts.push({common: undefined, practice: new Practice(0, part, STATE_NOT_STARTED)});
+    shortChapter.parts.push(new ChapterPart(new Practice(0, 0, STATE_NOT_STARTED)));
   }
 
   changeChapterState(number: number, state: string): void {
-    this.getShortChapterByNumber(number).state = state;
+    this.getChapterByNumber(number).state = state;
   }
 
   changePracticeState(chapterN: number, practice: Practice): void {
-    let shortChapter = this.getShortChapterByNumber(chapterN);
+    let shortChapter = this.getChapterByNumber(chapterN);
     shortChapter.parts.find(part => practice.number === part.practice.number)!.practice.state = practice.state;
   }
 
@@ -227,20 +220,5 @@ export class CoursesService {
       return of(result as T);
     };
   }
-
-
-  // temporary  STUB !!!
-  getOpenChapters(): Observable<ShortChapter[]> {
-    return of<ShortChapter[]>();
-  }
-
-  openChapter(studentId: number, chapterId: number): Observable<Chapter> {
-    return of();
-  }
-
-  approvePractice(studentId: number, chapterPartId: number): Observable<any> {
-    return this.http.post(ApiUrls.MentorPractices, {studentId, chapterPartId});
-  }
-
 
 }

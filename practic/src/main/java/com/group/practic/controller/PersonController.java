@@ -12,7 +12,6 @@ import com.group.practic.service.CourseService;
 import com.group.practic.service.MentorService;
 import com.group.practic.service.PersonService;
 import com.group.practic.service.StudentService;
-import jakarta.validation.constraints.Min;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -74,7 +73,7 @@ public class PersonController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-    public ResponseEntity<PersonDto> get(@Min(1) @PathVariable long id) {
+    public ResponseEntity<PersonDto> get(@PathVariable long id) {
         return getResponse(personService.get(id).map(PersonDto::map));
     }
 

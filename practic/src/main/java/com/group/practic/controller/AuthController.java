@@ -1,5 +1,8 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.getResponse;
+import static com.group.practic.util.ResponseUtils.postResponse;
+
 import com.group.practic.dto.AuthByEmailDto;
 import com.group.practic.dto.JwtAuthenticationResponse;
 import com.group.practic.dto.PersonDto;
@@ -10,7 +13,6 @@ import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.PreVerificationUserEntity;
 import com.group.practic.service.AuthService;
 import com.group.practic.service.PersonService;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/api")
@@ -38,40 +41,31 @@ public class AuthController {
 
 
     @PostMapping("/auth")
-    public ResponseEntity<?> authUserByEmail(@RequestBody AuthByEmailDto byEmailDto) {
-        Optional<PersonEntity> optionalPerson = personService.getByEmail(byEmailDto.getEmail());
-        if (optionalPerson.isPresent()) {
-            String token = authService.createAuthenticationToken(byEmailDto.getEmail(),
-                    byEmailDto.getPassword());
-            PersonDto userInfo = PersonDto.map(optionalPerson.get());
-            return ResponseEntity.ok(new JwtAuthenticationResponse(token, userInfo));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User auth failed");
-        }
+    public ResponseEntity<JwtAuthenticationResponse> authUserByEmail(
+            @RequestBody AuthByEmailDto byEmailDto) {
+        return getResponse(
+                personService.getByEmail(byEmailDto.getEmail())
+                        .map(person -> new JwtAuthenticationResponse(
+                                authService.createAuthenticationToken(byEmailDto.getEmail(),
+                                        byEmailDto.getPassword()),
+                                PersonDto.map(person))));
     }
+
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUserByEmail(
+    public ResponseEntity<JwtAuthenticationResponse> registerUserByEmail(
             @RequestParam String verificationToken) {
-
-        if (authService.isMatchVerificationToken(verificationToken)) {
-            PersonEntity person = authService.createPersonByVerificationToken(verificationToken);
-            authService.deletePreVerificationUser(verificationToken);
-            String token = authService.createTokenForPerson(person);
-            PersonDto userInfo = PersonDto.map(person);
-
-            return ResponseEntity.ok(new JwtAuthenticationResponse(token, userInfo));
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User registration failed");
+        return postResponse(authService
+                .createJwtResponse(authService.createPersonByVerificationToken(verificationToken)));
     }
+
 
     @PostMapping("/verification")
     public ResponseEntity<Void> verificationByEmail(
             @RequestBody VerificationByEmailDto byEmailDto) {
         if (authService.isNewPerson(byEmailDto.getEmail())) {
-            String verificationToken = authService.createTokenForPerson(
-                    new PersonEntity(byEmailDto.getName(), "", null));
+            String verificationToken =
+                    authService.createToken(new PersonEntity(byEmailDto.getName(), "", null));
 
             PreVerificationUserEntity preVerificationUser =
                     authService.createPreVerificationUser(byEmailDto, verificationToken);

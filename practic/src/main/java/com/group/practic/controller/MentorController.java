@@ -5,11 +5,11 @@ import static com.group.practic.util.ResponseUtils.getResponse;
 
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.ApplicantsForCourseDto;
+import com.group.practic.dto.ChapterCompleteDto;
 import com.group.practic.dto.ChapterDto;
 import com.group.practic.dto.MentorDto;
 import com.group.practic.dto.PersonStudentDto;
 import com.group.practic.dto.PracticeDto;
-import com.group.practic.dto.ShortChapterDto;
 import com.group.practic.dto.StudentsForCourseDto;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.MentorEntity;
@@ -115,7 +115,7 @@ public class MentorController {
 
     @GetMapping("/chapters/{slug}")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<Collection<ShortChapterDto>> getChapters(@PathVariable String slug) {
+    public ResponseEntity<Collection<ChapterDto>> getChapters(@PathVariable String slug) {
         return getResponse(courseService.get(slug).filter(mentorService::isMyCourse)
                 .map(mentorService::getChapters));
     }
@@ -124,7 +124,7 @@ public class MentorController {
 
     @GetMapping("/chapters/{slug}/{number}")
     @PreAuthorize("hasRole('MENTOR')")
-    public ResponseEntity<ChapterDto> getChapter(@PathVariable String slug,
+    public ResponseEntity<ChapterCompleteDto> getChapter(@PathVariable String slug,
             @Min(1) @PathVariable int number) {
         return getResponse(courseService.get(slug).filter(mentorService::isMyCourse)
                 .map(course -> mentorService.getChapter(course, number).orElseGet(null)));

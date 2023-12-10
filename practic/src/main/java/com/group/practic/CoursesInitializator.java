@@ -40,7 +40,7 @@ public class CoursesInitializator {
     public boolean initCourse(String filename) {
         if (PropertyLoader.isComprehendedString(filename)) {
             PropertyLoader prop = new PropertyLoader(filename);
-            return prop.initialized && courseService.create(prop).isPresent();
+            return prop.initialized && courseService.createOrUpdate(prop).isPresent();
         }
         return false;
     }

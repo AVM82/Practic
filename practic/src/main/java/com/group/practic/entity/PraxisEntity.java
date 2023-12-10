@@ -16,10 +16,14 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "praxis")
+@Getter
+@Setter
 public class PraxisEntity implements Serializable {
 
     private static final long serialVersionUID = 3945289912882778405L;
@@ -34,18 +38,14 @@ public class PraxisEntity implements Serializable {
 
     int number;
 
-    @NotBlank
     @Column(length = 1024)
     String name;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    //@JoinTable(name = "praxises_refs", joinColumns = @JoinColumn(name = "praxise_id"),
-    //    inverseJoinColumns = @JoinColumn(name = "ref_id"))
     private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
 
-    public PraxisEntity() {
-    }
+    public PraxisEntity() {}
 
 
     public PraxisEntity(long id, ChapterPartEntity chapterPart, int number, @NotBlank String name,
@@ -76,53 +76,11 @@ public class PraxisEntity implements Serializable {
     }
 
 
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public ChapterPartEntity getChapterPart() {
-        return chapterPart;
-    }
-
-
-    public void setChapterPart(ChapterPartEntity chapterPart) {
-        this.chapterPart = chapterPart;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public Set<ReferenceTitleEntity> getRefs() {
-        return refs;
-    }
-
-
-    public void setRefs(Set<ReferenceTitleEntity> refs) {
-        this.refs = refs;
+    public PraxisEntity update(PraxisEntity praxis) {
+        this.name = praxis.name;
+        this.number = praxis.number;
+        this.refs = praxis.refs;
+        return this;
     }
 
 }

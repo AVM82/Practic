@@ -24,6 +24,4 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     boolean existsByEmail(String email);
     
-    
-    
 }

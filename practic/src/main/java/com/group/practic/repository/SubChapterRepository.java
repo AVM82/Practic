@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SubChapterRepository extends JpaRepository<SubChapterEntity, Long> {
 
-    SubChapterEntity findByChapterPartAndNumberAndName(ChapterPartEntity chapterPart, int number,
-            String name);
+    SubChapterEntity findByChapterPartAndNumber(ChapterPartEntity chapterPart, int number);
 
 }

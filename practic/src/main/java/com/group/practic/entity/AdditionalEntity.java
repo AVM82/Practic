@@ -16,10 +16,14 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "additionals")
+@Getter
+@Setter
 public class AdditionalEntity implements Serializable {
 
     private static final long serialVersionUID = -9098533325684649496L;
@@ -73,53 +77,10 @@ public class AdditionalEntity implements Serializable {
     }
 
 
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public ChapterPartEntity getChapterPart() {
-        return chapterPart;
-    }
-
-
-    public void setChapterPart(ChapterPartEntity chapterPart) {
-        this.chapterPart = chapterPart;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public Set<ReferenceTitleEntity> getRefs() {
-        return refs;
-    }
-
-
-    public void setRefs(Set<ReferenceTitleEntity> refs) {
-        this.refs = refs;
+    public AdditionalEntity update(AdditionalEntity additional) {
+        name = additional.name;
+        refs = additional.refs;
+        return this;
     }
 
 }

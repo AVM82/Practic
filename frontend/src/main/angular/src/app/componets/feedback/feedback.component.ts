@@ -10,7 +10,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {TokenStorageService} from "../../services/token-storage.service";
 import {User} from 'src/app/models/user';
 import {MatMenuModule} from '@angular/material/menu';
-import {Feedback} from "../../models/feedback";
+import {Feedback, FeedbackPage} from "../../models/feedback";
 
 @Component({
     selector: 'app-feedback',
@@ -22,8 +22,11 @@ import {Feedback} from "../../models/feedback";
 })
 export class FeedbackComponent implements OnInit {
     feedbacks: Feedback[] = [];
-    page = 1;
+    page = 0;
     pageSize = 5;
+    totalPages = 0;
+    totalFeedbacks = 0;
+
     dataSource = new MatTableDataSource<any>(this.feedbacks);
     me?: User;
     myId: number = 0;
@@ -41,34 +44,26 @@ export class FeedbackComponent implements OnInit {
         }
     }
 
-
     ngOnInit(): void {
-        this.feedbackService.getFeedbacks().subscribe(data => {
-            if (data) {
-                this.feedbacks = [];
-                data.forEach(feedback => this.feedbacks.push(new Feedback(feedback, this.myId)));
-                this.dataSource = new MatTableDataSource<any>(this.feedbacks);
-            }
-        });
+        this.getFeedbackPage();
+    }
+
+    private freshPage(page: FeedbackPage) {
+        this.feedbacks = [];
+        page.feedbacksOnPage.forEach((feedback: any) => this.feedbacks.push(new Feedback(feedback, this.myId)));
+        this.dataSource = new MatTableDataSource<any>(this.feedbacks);
+        this.totalPages = page.totalPages;
+        this.totalFeedbacks = page.totalFeedbacks;
+    }
+
+    getFeedbackPage() {
+        this.feedbackService.getFeedbacks(this.page, this.pageSize, this.feedbackSortedState)
+            .subscribe(page => this.freshPage(page))
     }
 
     sortData(sortState: string) {
-        switch (sortState) {
-            case 'RATING_ASCENDING':
-                this.feedbacks.sort((a, b) => b.likes - a.likes);
-                break;
-            case 'RATING_DESCENDING':
-                this.feedbacks.sort((a, b) => a.likes - b.likes);
-                break;
-            case 'DATE_ASCENDING':
-                this.feedbacks.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-                break;
-            case 'DATE_DESCENDING':
-                this.feedbacks.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-                break;
-             default:
-                break;
-        }
+        this.feedbackSortedState = sortState;
+        this.getFeedbackPage();
     }
 
     getDate(date: string): string {
@@ -109,48 +104,36 @@ export class FeedbackComponent implements OnInit {
     }
 
     onPageChange(event: any): void {
-        this.page = event.pageIndex + 1;
+        this.page = event.pageIndex;
         this.pageSize = event.pageSize;
+        this.getFeedbackPage()
     }
 
 
     deleteFeedback(feedback: Feedback) {
-        const id = feedback.id;
-        this.feedbackService.deleteFeedback(id).subscribe({
-            next: () => this.deleteFeedbackById(id),
-            error: (error) => {
-                if (error.status === 404)
-                    this.deleteFeedbackById(id);
-            }
-        })
+        this.feedbackService.deleteFeedback(feedback.id, this.page, this.pageSize, this.feedbackSortedState)
+            .subscribe(page => this.freshPage(page))
     }
 
 
     incrementLike(feedback: Feedback) {
-        this.feedbackService.incrementLikes(feedback).subscribe({
-            next: (response) =>
-                feedback.update(response, this.myId),
-            error: (error) => {
-                if (error.status === 404)
-                    this.deleteFeedbackById(feedback.id);
-            }
+        this.feedbackService.incrementLikes(feedback, this.page, this.pageSize, this.feedbackSortedState).subscribe(response => {
+            if (response.feedback)
+                feedback.update(response.feedback, this.myId)
+            else
+                this.freshPage(response.page);
         })
     }
 
     decrementLike(feedback: Feedback) {
-        this.feedbackService.decrementLikes(feedback).subscribe({
-            next: (response) =>
-                feedback.update(response, this.myId),
-            error: (error) => {
-                if (error.status === 404)
-                    this.deleteFeedbackById(feedback.id);
-            }
+        this.feedbackService.decrementLikes(feedback, this.page, this.pageSize, this.feedbackSortedState).subscribe(response => {
+            if (response.feedback)
+                feedback.update(response.feedback, this.myId)
+            else
+                this.freshPage(response.page);
         })
     }
 
-    private deleteFeedbackById(id: number): void {
-        this.feedbacks = this.feedbacks.filter(feedback => feedback.id != id);
-    }
 
     isAuthorOrAdmin(feedback: Feedback): boolean {
         return feedback.personId == this.myId || this.me!.hasAdminRole();

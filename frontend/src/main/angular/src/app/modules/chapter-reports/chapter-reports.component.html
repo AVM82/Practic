@@ -12,6 +12,7 @@
     <report-card *ngFor="let report of  showReports()"
                  [studentReport] = "report"
                  [currentUserId]="currentUserId"
+                 [activeStudentChapterId]="activeStudentChapterId"
                  [timeslots]="timeslots"></report-card>
   </div>
   <ng-container *ngIf="isReportsLengthMore()">

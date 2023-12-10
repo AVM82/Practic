@@ -1,7 +1,7 @@
 <app-course-navbar (navchapters)="getChapters($event)" (editModeChanged)="setEditMode($event)"></app-course-navbar>
 
 <div class="chapter-card-container">
-  <mat-card *ngFor="let chapter of shortChapters; index as i" class="chapter-card"
+  <mat-card *ngFor="let chapter of chapters; index as i" class="chapter-card"
             [class.locked]="chapter.hidden" [class.edit]="editMode">
     <ng-container *ngIf="!chapter.hidden">
 

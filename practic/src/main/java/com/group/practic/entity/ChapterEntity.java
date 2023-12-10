@@ -18,10 +18,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "chapters")
+@Getter
+@Setter
 public class ChapterEntity implements Serializable {
 
     private static final long serialVersionUID = 5562887404515392104L;
@@ -40,9 +44,12 @@ public class ChapterEntity implements Serializable {
     @Column(length = 1024)
     String name;
 
-    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapter", cascade = CascadeType.MERGE)
     @OrderBy("number")
     private List<ChapterPartEntity> parts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "chapter", cascade = CascadeType.MERGE)
+    private List<TopicReportEntity> topics = new ArrayList<>();
 
     @OneToOne(mappedBy = "chapter", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     QuizEntity quiz;
@@ -50,16 +57,19 @@ public class ChapterEntity implements Serializable {
     @JsonIgnore
     String shortName;
 
+    private List<String> skills = new ArrayList<>();
+
 
     public ChapterEntity() {}
 
 
-    public ChapterEntity(long id, CourseEntity course, int number, String shortName, String name) {
-        this.id = id;
+    public ChapterEntity(CourseEntity course, int number, String shortName, String name,
+            List<String> skills) {
         this.course = course;
         this.number = number;
         this.name = name;
         this.shortName = shortName;
+        this.skills = skills;
     }
 
 
@@ -88,77 +98,16 @@ public class ChapterEntity implements Serializable {
         }
         ChapterEntity other = (ChapterEntity) obj;
         return Objects.equals(name, other.name) && number == other.number
-                && Objects.equals(shortName, other.shortName);
+                && Objects.equals(shortName, other.shortName)
+                && Objects.equals(skills, other.skills);
     }
 
 
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public CourseEntity getCourse() {
-        return course;
-    }
-
-
-    public void setCourse(CourseEntity course) {
-        this.course = course;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public QuizEntity getQuiz() {
-        return quiz;
-    }
-
-
-    public void setQuiz(QuizEntity quiz) {
-        this.quiz = quiz;
-    }
-
-
-    public String getShortName() {
-        return shortName;
-    }
-
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-
-    public List<ChapterPartEntity> getParts() {
-        return parts;
-    }
-
-
-    public void setParts(List<ChapterPartEntity> parts) {
-        this.parts = parts;
+    public ChapterEntity update(ChapterEntity chapter) {
+        name = chapter.name;
+        shortName = chapter.shortName;
+        skills = chapter.skills;
+        return this;
     }
 
 }

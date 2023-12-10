@@ -1,3 +1,18 @@
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
+import {ActivatedRoute, RouterLink} from "@angular/router";
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
+import {ReportServiceService} from "../../services/report-service.service";
+import {StudentReport} from "../../models/studentReport";
+import {Practice} from "../../models/practice";
+import {TokenStorageService} from "../../services/token-storage.service";
+import {ChaptersService} from "../../services/chapters.service";
+import {StatePipe} from "../../pipes/practice-state.pipe";
+import {Chapter} from 'src/app/models/chapter';
 import { Component, OnInit, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseNavbarComponent } from "../../componets/course-navbar/course-navbar.component";
@@ -26,6 +41,10 @@ import { NgZone } from '@angular/core';
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
+export class CourseDetailsComponent implements OnInit {
+  chapters: Chapter[] = [];
+  reports: StudentReport[][]=[];
+  slug: string='';
 export class CourseDetailsComponent implements OnInit, AfterViewInit {
   shortChapters: ShortChapter[] = [];
   reports: StudentReport[][] = [];
@@ -58,7 +77,7 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
 
     this.reportService.getAllActualReports(this.coursesService.slug).subscribe({
       next: (response) => {
-        
+
         const practice = 0;
         const tests = 0;
 
@@ -70,14 +89,14 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
           const reportState = response[index].length > 0 ? response[index][0].state.toLocaleLowerCase() : 'null';
           const idState = this.reportsState.indexOf(reportState) + 1;
           console.log("report state for chapter:"+index+" "+reportState);
-          
+
           const reportPercent = this.getPercentReportState(reportState);
           console.log('state ' + reportState + "index state: " + reportPercent);
 
           this.percent[index] =Math.floor( (practice + tests + reportPercent) / 3);
           console.log(this.percent);
 
-         
+
            this.zone.run(() => {
             this.cdr.detectChanges();
           });
@@ -105,15 +124,15 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
     })
   }
 
-  getChapters(chapters: ShortChapter[]) {
-    this.shortChapters = chapters;
+  getChapters(chapters: Chapter[]) {
+    this.chapters = chapters;
   }
 
   setEditMode(editMode: boolean) {
     this.editMode = editMode;
   }
 
-  editClick(chapter: ShortChapter) {
+  editClick(chapter: Chapter) {
     console.log('edit click on chapter #', chapter.number, '(id=', chapter.id, ')');
   }
 
@@ -129,7 +148,7 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
           datasets: [{
             data: [whiteColorfirst, data[0]],
             backgroundColor: [
-              //  this.percent==100?'': 
+              //  this.percent==100?'':
               'rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'
             ],
             borderWidth: 0
@@ -188,7 +207,7 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
       case 'finished':
         return 100;
       default:
-        return 0; 
+        return 0;
     }
   }
 
@@ -200,7 +219,7 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
         return 66;
       case 'APPROVED':
         return 100;
-      
+
       // Добавьте другие кейсы по мере необходимости
       default:
         return 0; // Любое значение по умолчанию, если статус не соответствует ни одному из кейсов

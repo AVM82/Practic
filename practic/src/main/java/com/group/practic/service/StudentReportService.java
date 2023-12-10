@@ -3,8 +3,7 @@ package com.group.practic.service;
 import com.group.practic.dto.StudentReportCreationDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
-import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.StudentEntity;
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentReportEntity;
 import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.enumeration.ReportState;
@@ -26,8 +25,6 @@ public class StudentReportService {
 
     private final CourseService courseService;
 
-    private final ChapterService chapterService;
-
     private final TimeSlotRepository timeSlotRepository;
 
     private final TimeSlotService timeSlotService;
@@ -35,26 +32,20 @@ public class StudentReportService {
     static final List<ReportState> ACTUAL_STATES =
             List.of(ReportState.STARTED, ReportState.ANNOUNCED);
 
-    
+
     @Autowired
     public StudentReportService(StudentReportRepository studentReportRepository,
-            CourseService courseService, ChapterService chapterService,
-            TimeSlotRepository timeSlotRepository, TimeSlotService timeSlotService) {
+            CourseService courseService, TimeSlotRepository timeSlotRepository,
+            TimeSlotService timeSlotService) {
         this.studentReportRepository = studentReportRepository;
         this.courseService = courseService;
-        this.chapterService = chapterService;
         this.timeSlotRepository = timeSlotRepository;
         this.timeSlotService = timeSlotService;
     }
 
 
-    public int getActualReportCount(ChapterEntity chapter) {
-        return (int) studentReportRepository.countByChapterAndStateIn(chapter, ACTUAL_STATES);
-    }
-
-
-    public int getActualReportCount(StudentEntity student, ChapterEntity chapter) {
-        return (int) studentReportRepository.countByStudentAndChapterAndStateIn(student, chapter,
+    public long getActualReportCount(ChapterEntity chapter) {
+        return studentReportRepository.countByStudentChapterChapterAndStateIn(chapter,
                 ACTUAL_STATES);
     }
 
@@ -67,24 +58,21 @@ public class StudentReportService {
             result = new ArrayList<>();
             for (ChapterEntity chapter : course.get().getChapters()) {
                 result.add(studentReportRepository
-                        .findAllByChapterAndStateInOrderByTimeSlotId(chapter, ACTUAL_STATES));
+                        .findAllByStudentChapterChapterAndStateInOrderByTimeSlotId(chapter,
+                                ACTUAL_STATES));
             }
         }
         return result;
     }
 
 
-    public Optional<StudentReportEntity> createStudentReport(PersonEntity student,
+    public StudentReportEntity createStudentReport(StudentChapterEntity studentChapter,
             StudentReportCreationDto studentReportCreationDto) {
-        Optional<ChapterEntity> chapter = chapterService.get(studentReportCreationDto.chapterId());
-        Optional<TimeSlotEntity> timeslot =
-                timeSlotRepository.findById(studentReportCreationDto.timeslotId());
-        timeslot.ifPresent(
-                timeSlot -> timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), false));
-        return (student != null && chapter.isPresent() && timeslot.isPresent())
-                ? Optional.ofNullable(studentReportRepository.save(new StudentReportEntity(
-                        chapter.get(), student, timeslot.get(), studentReportCreationDto.title())))
-                : Optional.empty();
+        return timeSlotRepository.findById(studentReportCreationDto.timeslotId()).map(timeSlot -> {
+            timeSlotService.updateTimeSlotAvailability(timeSlot.getId(), false);
+            return studentReportRepository.save(new StudentReportEntity(studentChapter, timeSlot,
+                    studentReportCreationDto.title()));
+        }).orElse(null);
     }
 
 

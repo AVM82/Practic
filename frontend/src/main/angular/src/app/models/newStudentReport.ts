@@ -1,5 +1,5 @@
 export interface NewStudentReport {
-  chapter: number
+  chapterId: number
   title: string
   date:string
   time:string

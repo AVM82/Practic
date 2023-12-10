@@ -1,19 +1,19 @@
 <app-course-navbar [currentChapter]="number"></app-course-navbar>
 
 <div class="chapter-header">
-	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
-	<report-button *ngIf="isMentor" 
+	<h3 class="fit-text">Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
+	<report-button *ngIf="isMentor" class="report-button"
 		matTooltip="Всі доповіді розділу"
 		matTooltipPosition="below"
 		[reportsNumber]="chapter!.reportCount">
 	</report-button>
 	<div *ngIf="isStudent">
-		<report-button
+		<report-button class="report-button"
 			matTooltip="Мої доповіді розділу"
             matTooltipPosition="above"
 			[reportsNumber]="chapter!.myReports">
 		</report-button>
-		<button *ngIf="chapter!.state !== done" (click)="changeState($event)">
+		<button *ngIf="chapter?.state !== done" class="chapter-button" (click)="changeState($event)">
 			{{getTextAccordingState()}}
 		</button>
 	</div>
@@ -33,11 +33,20 @@
 							[attr.id]="'accordion-header-' + index"
 							[attr.aria-expanded]="accordionItem.expanded"
 							[attr.aria-controls]="'accordion-body-' + index">
-			<div (click)="accordionItem.toggle()" class="subchapter-header">
-				{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}
-				<mat-icon *ngIf=subchapter.subSubChapters.length||subchapter.refs>
-					{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
-				</mat-icon>
+			<div  class="subchapter-header">
+				<div class="subblock">
+					<mat-icon *ngIf="subchapter.subSubChapters?.length || subchapter.refs" 
+							(click)="accordionItem.toggle()"
+							class="accordion-button">
+						{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+					</mat-icon>
+					<div class="sub">{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}</div>
+					<div *ngIf="subchapter.checked || isMentor" class="skill-part">
+						<div *ngFor="let skill of subchapter.skills" class="skill">{{skill}}</div>
+					</div>
+				</div>
+				<input *ngIf="isActiveChapter && chapter?.state === process" type="checkbox" [id]="subchapter.id" [checked]="isSelected(subchapter.id)" 
+						(change)="changeSkills($event, subchapter)"/>
 			</div>
 			<div *ngIf=accordionItem.expanded
 				role="region" 
@@ -65,18 +74,18 @@
 	<div *ngIf="chapterPart.common?.praxisPurpose">
 		<div class="chapter-part">
             <div *ngIf="isStudent && chapter?.state === process" class="action-buttons">
-                <button *ngIf="chapterPart.practice.state === not_started 
-								|| chapterPart.practice.state === pause
-								|| chapterPart.practice.state === ready"
+                <button *ngIf="chapterPart.practice!.state === not_started 
+								|| chapterPart.practice!.state === pause
+								|| chapterPart.practice!.state === ready"
 						mat-icon-button
                         (click)="service.changePracticeState(chapter!.number, chapterPart, process)"
-                        matTooltip="{{chapterPart.practice.state === not_started ? 'Почати практичну' : 'Продовжити практичну'}}"
+                        matTooltip="{{chapterPart.practice!.state === not_started ? 'Почати практичну' : 'Продовжити практичну'}}"
                         matTooltipPosition="below"
                         aria-label="Play"
 						[disabled]="chapter?.state === pause">
                     <mat-icon class="action-icon">play_circle_outline</mat-icon>
                 </button>
-                <button *ngIf="chapterPart.practice.state === process"
+                <button *ngIf="chapterPart.practice!.state === process"
 						mat-icon-button
                         (click)="service.changePracticeState(chapter!.number, chapterPart, pause)"
                         matTooltip="Відкласти роботу над практичною"
@@ -85,7 +94,7 @@
 						[disabled]="chapter?.state === pause">
                     <mat-icon class="action-icon">pause_circle_outline</mat-icon>
                 </button>
-				<button *ngIf="chapterPart.practice.state === process"
+				<button *ngIf="chapterPart.practice!.state === process"
 						class="done-btn"
 						(click)="practiceReview(chapterPart)"
 						matTooltip="Практична готова до ревью"
@@ -93,7 +102,7 @@
 						aria-label="Done">
 					<mat-icon class="action-icon">stop_circle_outline</mat-icon>
 				</button>
-				<button *ngIf="chapterPart.practice.state === ready"
+				<button *ngIf="chapterPart.practice!.state === ready"
 						class="done-btn"
 						(click)="checkApproved(chapterPart)"
 						matTooltip="Перевірити стан"
@@ -102,9 +111,11 @@
 					<mat-icon class="action-icon">star_half</mat-icon>
 				</button>
 			</div>
-			{{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />
-			Мета: {{chapterPart.common?.praxisPurpose}}
-            <div *ngIf="isStudent" class="custom-chip">{{chapterPart.practice.state | StatePipe}}</div>
+			<div class="fit-text">
+				{{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />
+				Мета: {{chapterPart.common?.praxisPurpose}}
+			</div>
+            <div *ngIf="isStudent" class="custom-chip">{{chapterPart.practice!.state | StatePipe}}</div>
 		</div>
 		<div *ngIf="chapterPart.common?.praxis?.length" class="chapter-details-container-ext">
 			<div *ngFor="let praxis of chapterPart.common?.praxis" class="row">
@@ -138,3 +149,4 @@
 		</div>
 	</div>
 </div>
+

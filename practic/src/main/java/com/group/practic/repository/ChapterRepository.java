@@ -15,7 +15,5 @@ public interface ChapterRepository extends JpaRepository<ChapterEntity, Long> {
 
     Optional<ChapterEntity> findByShortName(String shortName);
 
-    ChapterEntity findByCourseAndShortName(CourseEntity course, String shortname);
-
     Optional<ChapterEntity> findByCourseAndNumber(CourseEntity course, int number);
 }

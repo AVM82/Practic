@@ -27,3 +27,15 @@ export class Feedback{
     }
 
 }
+
+export interface FeedbackPage {
+    feedbacksOnPage: Feedback[];
+    totalFeedbacks: number;
+    totalPages: number;
+
+}
+
+export interface FeedbackLike {
+    page: FeedbackPage;
+    feedback: Feedback;
+}
