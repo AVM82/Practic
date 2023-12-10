@@ -56,27 +56,13 @@ export class CourseDetailsComponent implements OnInit , AfterViewInit{
 
 
   ngAfterViewInit() {
-
-        const practice = 0;
         const tests = 0;
 
         this.canvases.forEach((canvas, index) => {
                   const practicState = this.chapters[index].parts.length>0?this.chapters[index].parts[0].practice.state:'null';
-                // console.log(practicState+" state practic, index: "+index);
                 const percentPracticState = this.getPercentPracticState(practicState);
-          // console.log('index' + index);
           const reports = this.chapters[index].myReports>0?100:0;
-
-          // const idState = this.reportsState.indexOf(reportState) + 1;
-          // console.log("reports count chapter:"+index+" "+reports);
-
-          // const reportPercent = this.getPercentReportState("reportState");
-          // console.log('state ' + reportState + "index state: " + reportPercent);
-
           this.percent[index] =Math.floor( (percentPracticState + tests + reports) / 3);
-          // console.log(this.percent);
-
-
            this.zone.run(() => {
             this.cdr.detectChanges();
           });
@@ -126,7 +112,6 @@ export class CourseDetailsComponent implements OnInit , AfterViewInit{
           datasets: [{
             data: [whiteColorfirst, data[0]],
             backgroundColor: [
-              //  this.percent==100?'':
               'rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'
             ],
             borderWidth: 0
@@ -135,8 +120,6 @@ export class CourseDetailsComponent implements OnInit , AfterViewInit{
           }, {
             data: [whiteColorSecond, data[1]],
             backgroundColor: [
-              // this.percent==100?:
-
               'rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'
             ],
 
@@ -147,7 +130,6 @@ export class CourseDetailsComponent implements OnInit , AfterViewInit{
           {
             data: [whiteColorThirst, data[2]],
             backgroundColor: [
-              // this.percent==100?'rgba(119, 254, 176, 1)':
               'rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'
             ],
 
@@ -191,16 +173,16 @@ export class CourseDetailsComponent implements OnInit , AfterViewInit{
 
   getPercentPracticState(state: string): number{
     switch (state.toLocaleUpperCase()) {
-      case 'IN_PROCESS'||'PAUSE':
+      case 'IN_PROCESS':
         return 33;
+        case 'PAUSE':
+          return 33;
       case 'READY_TO_REVIEW':
         return 66;
       case 'APPROVED':
         return 100;
-
-      // Добавьте другие кейсы по мере необходимости
       default:
-        return 0; // Любое значение по умолчанию, если статус не соответствует ни одному из кейсов
+        return 0;
     }
   }
 }
