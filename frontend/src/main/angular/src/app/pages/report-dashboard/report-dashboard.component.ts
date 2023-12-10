@@ -117,8 +117,8 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
                 const slug = params.get('slug');
                 console.log('The dialog was closed');
                 console.log("result of creating report dialog: ", result);
-                if (result.timeslotId && result.title && result.chapterId && slug) {
-                    this.reportService.createNewReport(result, result.chapterId).subscribe();
+                if (result.timeslotId && result.title && result.chapter && slug) {
+                    this.reportService.createNewReport(result).subscribe();
                     const startReportDateTime = this.toUnionDate(result.date, result.time);
                     console.log("start report date and time: ", startReportDateTime)
                     const endReportDateTime = moment(startReportDateTime).add(30, 'm').toDate();

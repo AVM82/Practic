@@ -13,7 +13,6 @@ import * as _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 import 'moment/locale/uk';
-import {BehaviorSubject} from 'rxjs';
 import {TopicReportService} from '../../services/topic-report.service';
 import {Chapter} from "../../models/chapter";
 import {TopicReport} from "../../models/report";

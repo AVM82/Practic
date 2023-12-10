@@ -97,8 +97,8 @@ export class ChapterDetailsComponent implements OnInit {
       case STATE_IN_PROCESS: 
          if (this.notAllPracticesHaveBeenApproved())
             return BUTTON_PAUSE;
-//          if (this.chapter!.myReports == 0)
-//            return BUTTON_REPORT;
+          if (this.chapter!.myReports == 0)
+            return BUTTON_REPORT;
 //          if (!this.chapter!.testIsPassed)
 //            return 'ТЕСТ';
           return BUTTON_FINISH;

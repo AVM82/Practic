@@ -81,6 +81,7 @@ export class ReportState {
   static readonly FINISHED = STATE_FINISHED;
   static readonly APPROVED = STATE_APPROVED;
   static readonly CANCELLED = STATE_CANCELLED;
+  static readonly isActual = (state: string): boolean => state === this.ANNOUNCED || state === this.STARTED;
 }
 
 export const BUTTON_START = 'ПОЧАТИ';

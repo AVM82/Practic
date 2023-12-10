@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {catchError, delay, Observable, of, retry, tap} from "rxjs";
 import {ApiUrls, deleteReportsUrl, getReportsUrl, postReportsUrl} from "../enums/api-urls";
 import {StudentReport} from "../models/report";
@@ -40,10 +40,6 @@ export class ReportServiceService {
             catchError(this.handleError<StudentReport[][]>(`get actual reports = ${slug}`)));
     }
 */
-
-    getReportStates(): Observable<any[]> {
-        return this.http.get<any[]>(ApiUrls.ReportStates);
-    }
 
     createNewReport(newReport: NewStudentReport, studentChapterId: number): Observable<StudentReport> {
         return this.http.post<StudentReport>(postReportsUrl(studentChapterId), newReport)
@@ -86,6 +82,7 @@ export class ReportServiceService {
             return of(result as T);
         };
     }
+
     showReports(){
         console.log(this.reports)
     }

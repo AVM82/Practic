@@ -276,7 +276,6 @@ public class StudentController {
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<TopicReportDto>> getTopicsByChapter(
             @PathVariable Long studentChapterId) {
-
         Optional<StudentChapterEntity> chapter = studentService.getStudentChapter(studentChapterId);
         return chapter.isEmpty() ? badRequest()
                 : getResponse(reportService.getTopicsByChapter(chapter.get().getChapter()).stream()

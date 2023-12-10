@@ -45,7 +45,7 @@ export class Chapter {
     chapter.reportCount = ext.reportCount;
     chapter.reports = ext.reports;
     if (ext.reports)
-      chapter.myReports = ext.reports.filter(report => report.state === ReportState.APPROVED).length;
+      chapter.myReports = ext.reports.filter(report => ReportState.isActual(report.state)).length;
     chapter.subs = ext.subs;
     chapter.topicReports = ext.topicReports;
   }
