@@ -1,17 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
-import {ActivatedRoute, RouterLink} from "@angular/router";
-import {MatCardModule} from "@angular/material/card";
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
-import {ReportServiceService} from "../../services/report-service.service";
-import {StudentReport} from "../../models/studentReport";
-import {Practice} from "../../models/practice";
-import {TokenStorageService} from "../../services/token-storage.service";
-import {ChaptersService} from "../../services/chapters.service";
-import {StatePipe} from "../../pipes/practice-state.pipe";
+
 import {Chapter} from 'src/app/models/chapter';
 import { Component, OnInit, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -27,7 +14,6 @@ import { Practice } from "../../models/practice";
 import { TokenStorageService } from "../../services/token-storage.service";
 import { ChaptersService } from "../../services/chapters.service";
 import { StatePipe } from "../../pipes/practice-state.pipe";
-import { ShortChapter } from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
 import { CoursesService } from 'src/app/services/courses.service';
 import { StateStudent } from 'src/app/models/student';
@@ -41,21 +27,17 @@ import { NgZone } from '@angular/core';
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
-export class CourseDetailsComponent implements OnInit {
+export class CourseDetailsComponent implements OnInit , AfterViewInit{
   chapters: Chapter[] = [];
   reports: StudentReport[][]=[];
   slug: string='';
-export class CourseDetailsComponent implements OnInit, AfterViewInit {
-  shortChapters: ShortChapter[] = [];
-  reports: StudentReport[][] = [];
-  slug: string = '';
   practices: Practice[] = [];
   editMode: boolean = false;
   isStudent: boolean = false;
   isInvolved: boolean = false;
   stateStudent?: StateStudent;
   me!: User;
-  percent: number[] = [0,0,0,0,0,0,0,0,0];
+  percent: number[] = [];
   reportsState: String[] = [];
   @ViewChildren('myCanvas') canvases!: QueryList<ElementRef<HTMLCanvasElement>>;
 
@@ -75,36 +57,32 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    this.reportService.getAllActualReports(this.coursesService.slug).subscribe({
-      next: (response) => {
-
         const practice = 0;
         const tests = 0;
 
         this.canvases.forEach((canvas, index) => {
-                  const practicState = this.shortChapters[index].parts.length>0?this.shortChapters[index].parts[0].practice.state:'null';
-                console.log(practicState+" state practic, index: "+index);
+                  const practicState = this.chapters[index].parts.length>0?this.chapters[index].parts[0].practice.state:'null';
+                // console.log(practicState+" state practic, index: "+index);
                 const percentPracticState = this.getPercentPracticState(practicState);
-          console.log('index' + index);
-          const reportState = response[index].length > 0 ? response[index][0].state.toLocaleLowerCase() : 'null';
-          const idState = this.reportsState.indexOf(reportState) + 1;
-          console.log("report state for chapter:"+index+" "+reportState);
+          // console.log('index' + index);
+          const reports = this.chapters[index].myReports>0?100:0;
 
-          const reportPercent = this.getPercentReportState(reportState);
-          console.log('state ' + reportState + "index state: " + reportPercent);
+          // const idState = this.reportsState.indexOf(reportState) + 1;
+          // console.log("reports count chapter:"+index+" "+reports);
 
-          this.percent[index] =Math.floor( (practice + tests + reportPercent) / 3);
-          console.log(this.percent);
+          // const reportPercent = this.getPercentReportState("reportState");
+          // console.log('state ' + reportState + "index state: " + reportPercent);
+
+          this.percent[index] =Math.floor( (percentPracticState + tests + reports) / 3);
+          // console.log(this.percent);
 
 
            this.zone.run(() => {
             this.cdr.detectChanges();
           });
-          this.createChart([percentPracticState, tests, reportPercent], canvas);
+          this.createChart([percentPracticState, tests, reports], canvas);
         });
 
-      }
-    })
   }
 
 
