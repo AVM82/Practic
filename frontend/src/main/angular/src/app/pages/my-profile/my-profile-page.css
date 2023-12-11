@@ -6,8 +6,6 @@
     width: 100%;
 }
 
-
-/*body*/
 .main-body {
     position: relative;
     justify-content: center;
@@ -24,7 +22,7 @@
     font-weight: 600;
     color: #4f4f4f;
     font-size: 32px;
-    line-height: 38.4px;
+    line-height: 38px;
     letter-spacing: 0;
     white-space: nowrap;
 }
@@ -121,8 +119,7 @@
     position: relative;
     flex: 0 0 auto;
     border-radius: 8px;
-    border: 1px solid;
-    border-color: #555555;
+    border: 1px solid #555555;
 }
 
 .general-insert-frame-1 {
@@ -147,13 +144,11 @@
     margin-left: 28px;
 }
 
-
 .general-input {
     position: relative;
     flex: 1;
     align-self: stretch;
     width: 100%;
-    flex-grow: 1;
     background-color: #eeeeee;
     border-radius: 8px;
 }
@@ -180,8 +175,7 @@
     justify-content: center;
     position: relative;
     border-radius: 8px;
-    border: 1px solid;
-    border-color: #555555;
+    border: 1px solid #555555;
 }
 
 .main-contact-insert-frame {
@@ -195,7 +189,6 @@
     align-self: stretch;
 }
 
-
 .main-notification {
     height: 113px;
     gap: 32px;
@@ -207,24 +200,14 @@
     justify-content: center;
     position: relative;
     border-radius: 8px;
-    border: 1px solid;
-    border-color: #555555;
+    border: 1px solid #555555;
 }
 
 .frame-notification {
     flex: 1;
-    flex-grow: 1;
     position: relative;
     align-self: stretch;
     width: 100%;
-}
-
-.toggle-off-1 {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    top: -8px;
-    left: 711px;
 }
 
 .text-notification {
@@ -239,15 +222,6 @@
     letter-spacing: 0;
     line-height: 16px;
     white-space: nowrap;
-
-}
-
-.toggle-off-2 {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    top: -16px;
-    left: 711px;
 }
 
 input[type=checkbox] {
@@ -294,7 +268,6 @@ input:checked + label:after {
 label:active:after {
     width: 10px;
 }
-
 
 body {
     display: flex;
