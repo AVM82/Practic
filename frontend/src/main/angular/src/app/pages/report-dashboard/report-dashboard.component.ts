@@ -105,8 +105,8 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
-                height: '60%',
-                width: '50%',
+                height: '430px',
+                width: '800px',
                 data: {
                     timeslots: this.timeslots,
                     chapters: this.chapters
