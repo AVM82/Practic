@@ -5,8 +5,6 @@ import {CoursesComponent} from "./pages/courses/courses.component";
 import {CourseDetailsComponent} from "./pages/course-details/course-details.component";
 import {LoginComponent} from "./pages/login/login.component";
 import {MentorDashboardComponent} from "./pages/mentor-dashboard/mentor-dashboard.component";
-import {DashboardComponent} from "./modules/dashboard/dashboard.component";
-import {PracticMetricComponent} from "./modules/practic-metric/practic-metric.component";
 import {ChapterDetailsComponent} from "./pages/chapter-details/chapter-details.component";
 import {ReportDashboardComponent} from "./pages/report-dashboard/report-dashboard.component";
 import {AdditionalMaterialsComponent} from "./pages/materials/additional-materials.component";
@@ -16,11 +14,11 @@ import {MatNativeDateModule, NativeDateModule} from "@angular/material/core";
 import localeUk from '@angular/common/locales/uk';
 import {registerLocaleData} from "@angular/common";
 import { FeedbackComponent } from './componets/feedback/feedback.component';
-import { MainPageComponent } from './pages/main-page/main-page.component';
 import { StartPanelComponent } from './pages/start-panel/start-panel.component';
 import { UsersComponent } from './pages/users/users.component';
 import { BannedComponent } from './pages/ban/ban.component';
 import { QuizComponent } from './componets/quiz/quiz.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 
 registerLocaleData(localeUk, 'uk');
 
@@ -33,12 +31,7 @@ const routes: Routes = [
   {path: 'quizzes/:quizId', component: QuizComponent},
 
   {path: 'users', component: UsersComponent},
-  {path: 'mentor', component: MentorDashboardComponent,
-    children: [
-      {path: 'dashboard', component: DashboardComponent},
-      {path: 'students/practices', component: PracticMetricComponent}
-    ]
-  },
+  {path: 'mentor', component: MentorDashboardComponent},
   {path: 'courses', component: CoursesComponent},
   {path: 'courses/create', component: CreateCourseComponent},
   {path: 'courses/:slug/chapters/:chapterN', component: ChapterDetailsComponent},

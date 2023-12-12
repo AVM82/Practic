@@ -30,6 +30,8 @@ public class PersonDto {
 
     List<PersonStudentDto> students;
 
+    List<GraduateDto> graduates;
+
     List<PersonMentorDto> mentors;
 
     List<PersonApplicantDto> applicants;
@@ -49,12 +51,15 @@ public class PersonDto {
         dto.profilePictureUrl = entity.getProfilePictureUrl();
         dto.personPageUrl = entity.getPersonPageUrl();
         dto.roles = entity.getRoles().stream().map(RoleEntity::getName).toList();
-        dto.students = entity.getStudents().stream().map(PersonStudentDto::map).toList();
+        dto.students = entity.getStudents().stream()
+                .filter(student -> student.getFinish() == null && !student.isBan())
+                .map(PersonStudentDto::map).toList();
         dto.mentors = entity.getMentors().stream().filter(MentorEntity::isActive)
                 .map(PersonMentorDto::map).toList();
         dto.applicants = entity.getApplicants().stream()
                 .filter(applicant -> !applicant.isApplied() && !applicant.isRejected())
                 .map(PersonApplicantDto::map).toList();
+        dto.graduates = entity.getGraduates().stream().map(GraduateDto::map).toList();
         return dto;
     }
 

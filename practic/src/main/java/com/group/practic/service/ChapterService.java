@@ -19,12 +19,12 @@ public class ChapterService {
     ChapterRepository chapterRepository;
 
     ChapterPartService chapterPartService;
+
     TopicReportService topicReportService;
 
     @Autowired
     public ChapterService(ChapterRepository chapterRepository,
-                          ChapterPartService chapterPartService,
-                          TopicReportService topicReportService) {
+            ChapterPartService chapterPartService, TopicReportService topicReportService) {
         this.chapterRepository = chapterRepository;
         this.chapterPartService = chapterPartService;
         this.topicReportService = topicReportService;
@@ -36,15 +36,23 @@ public class ChapterService {
     }
 
 
+    public Optional<ChapterEntity> get(CourseEntity course, int number) {
+        return chapterRepository.findByCourseAndNumber(course, number);
+    }
+
+
     public List<ChapterEntity> getAll(CourseEntity course) {
         return chapterRepository.findAllByCourseOrderByNumberAsc(course);
     }
 
 
-    public ChapterEntity create(CourseEntity course, int number, String shortname, String name) {
-        ChapterEntity chapter = chapterRepository.findByCourseAndShortName(course, shortname);
-        return chapter != null ? chapter
-                : chapterRepository.save(new ChapterEntity(0, course, number, shortname, name));
+    public ChapterEntity createOrUpdate(ChapterEntity newChapter) {
+        Optional<ChapterEntity> chapter = get(newChapter.getCourse(), newChapter.getNumber());
+        if (chapter.isPresent()) {
+            return chapter.get().equals(newChapter) ? chapter.get()
+                : chapterRepository.save(chapter.get().update(newChapter));
+        }
+        return chapterRepository.save(newChapter); 
     }
 
 
@@ -90,11 +98,6 @@ public class ChapterService {
     }
 
 
-    public Optional<ChapterEntity> getChapterByNumber(CourseEntity course, int number) {
-        return chapterRepository.findByCourseAndNumber(course, number);
-    }
-
-
     public Optional<ChapterEntity> getByShortName(String shortName) {
         return chapterRepository.findByShortName(shortName);
     }
@@ -109,7 +112,9 @@ public class ChapterService {
                     && (n = PropertyUtil.getChapterNumber(1, key)) != 0) {
                 String[] names = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
                 String fullName = names.length > 1 ? names[1] : names[0];
-                ChapterEntity chapter = create(course, n, names[0], fullName);
+                ChapterEntity chapter = createOrUpdate(
+                        new ChapterEntity(course, n, names[0], fullName, 
+                                getSkills(key, prop)));
                 if (chapter != null) {
                     chapterPartService.getChapterPartSet(chapter, prop);
                     topicReportService.getChapterTopics(chapter, prop);
@@ -118,6 +123,17 @@ public class ChapterService {
             }
         }
         return result;
+    }
+
+
+    protected List<String> getSkills(String keyStarts, PropertyLoader prop) {
+        String key = keyStarts + PropertyUtil.SKILL_PART;
+        for (Entry<Object, Object> entry : prop.getEntrySet()) {
+            if (((String) entry.getKey()).equals(key)) {
+                return List.of(((String) entry.getValue()).split(PropertyUtil.SKILL_SEPARATOR));
+            }
+        }
+        return List.of();
     }
 
 }

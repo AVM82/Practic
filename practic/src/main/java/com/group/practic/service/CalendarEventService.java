@@ -3,7 +3,8 @@ package com.group.practic.service;
 import com.group.practic.dto.EventDto;
 import com.group.practic.dto.MessageSendingResultDto;
 import com.group.practic.dto.SendMessageDto;
-import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.StudentEntity;
 import java.text.DateFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CalendarEventService {
 
-    PersonService personService;
+    StudentService studentService;
+
+    EmailSenderService emailSenderService;
 
     @Value("${email.message.body}")
     private String emailMessage;
@@ -30,23 +33,29 @@ public class CalendarEventService {
     @Value("${email.calendar.location}")
     private String calendarLocation;
 
+
     @Autowired
-    CalendarEventService(PersonService personService) {
-        this.personService = personService;
+    CalendarEventService(StudentService studentService, EmailSenderService emailSenderService) {
+        this.studentService = studentService;
+        this.emailSenderService = emailSenderService;
     }
 
-    public MessageSendingResultDto sendEventMessageAllPerson(Sender sender, EventDto eventDto) {
+
+    public MessageSendingResultDto sendEventMessageAllPerson(EventDto eventDto,
+            CourseEntity course) {
         String eventMessage = getEventMessage(eventDto);
-        List<PersonEntity> allPerson = personService.get();
+        List<StudentEntity> allStudentsOfCourse =
+                studentService.getStudentsOfCourse(course, false, false);
         int counter = 0;
-        for (PersonEntity person : allPerson) {
-            if (sender.sendMessage(new SendMessageDto(person.getEmail(), eventMessage,
-                    emailMessageHeader))) {
+        for (StudentEntity student : allStudentsOfCourse) {
+            if (emailSenderService.sendMessage(new SendMessageDto(student.getPerson().getEmail(),
+                    eventMessage, emailMessageHeader))) {
                 counter++;
             }
         }
         return new MessageSendingResultDto(eventMessage, counter);
     }
+
 
     private String getEventMessage(EventDto eventDto) {
         LocalDateTime startLocalDate = eventDto.getStartEvent();
@@ -58,9 +67,10 @@ public class CalendarEventService {
         String startDate = startLocalDate.getDayOfMonth() + " " + month;
         String startTime =
                 String.format("%02d:%02d", startLocalDate.getHour(), startLocalDate.getMinute());
-        return String.format(emailMessage, startDate, startTime,
-                eventDto.getSubjectReport(), linkCalendar);
+        return String.format(emailMessage, startDate, startTime, eventDto.getSubjectReport(),
+                linkCalendar);
     }
+
 
     private String getLink(EventDto eventDto) {
         String headerMessage = String.format(calendarHeader, eventDto.getSubjectReport());
@@ -70,7 +80,10 @@ public class CalendarEventService {
         String endDate = eventDto.getEndEvent().format(formatter);
         String description = eventDto.getDescription().replace(" ", "+");
         String location = calendarLocation.replace(" ", "+");
-        return String.format("https://calendar.google.com/calendar/r/eventedit?text=%s&dates=%s/%s&"
-                + "details=%s&location=%s", header, startDate, endDate, description, location);
+        return String.format(
+                "https://calendar.google.com/calendar/r/eventedit?text=%s&dates=%s/%s&"
+                        + "details=%s&location=%s",
+                header, startDate, endDate, description, location);
     }
+
 }

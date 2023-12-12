@@ -1,11 +1,16 @@
 package com.group.practic.service;
 
-import com.group.practic.dto.RegisterByEmailDto;
+import com.group.practic.dto.AuthUserDto;
+import com.group.practic.dto.JwtAuthenticationResponse;
+import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.ResetPasswordDto;
 import com.group.practic.dto.SecretCodeDto;
 import com.group.practic.dto.SignUpRequestDto;
+import com.group.practic.dto.VerificationByEmailDto;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.PreVerificationUserEntity;
 import com.group.practic.entity.ResetCodeEntity;
+import com.group.practic.repository.PreVerificationUserRepository;
 import com.group.practic.repository.ResetCodeRepository;
 import com.group.practic.security.CustomAuthenticationProvider;
 import com.group.practic.security.jwt.TokenProvider;
@@ -23,6 +28,8 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final ResetCodeRepository codeRepository;
+
+    private final PreVerificationUserRepository verificationUserRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -42,20 +49,36 @@ public class AuthService {
 
     @Value("${email.secretCode.codeValidityMinutes}")
     private long codeValidityMinutes;
-    
+
     Random random = new Random();
 
+    @Value("${email.emailVerification.verificationTokenValidityHours}")
+    private long verificationTokenValidityHours;
+
+    @Value("${email.emailVerification.message}")
+    private String verificationEmailMessage;
+
+
+    @Value("${email.emailVerification.header}")
+    private String verificationEmailHeader;
+
+
+    @Value("${email.emailVerification.linkForVerification}")
+    private String linkForVerification;
 
     @Autowired
     public AuthService(EmailSenderService emailService, ResetCodeRepository codeRepository,
-            PersonService personService, PasswordEncoder passwordEncoder,
-            CustomAuthenticationProvider authenticationProvider, TokenProvider tokenProvider) {
+                       PersonService personService, PasswordEncoder passwordEncoder,
+                       CustomAuthenticationProvider authenticationProvider,
+                       TokenProvider tokenProvider,
+                       PreVerificationUserRepository verificationUserRepository) {
         this.emailService = emailService;
         this.codeRepository = codeRepository;
         this.personService = personService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationProvider = authenticationProvider;
         this.tokenProvider = tokenProvider;
+        this.verificationUserRepository = verificationUserRepository;
     }
 
 
@@ -72,8 +95,8 @@ public class AuthService {
                         : codeEntity.getCode());
         emailService.sendEmail(email, secretCodeEmailHeader,
                 String.format(secretCodeEmailMessage,
-                        resetCode.isPresent() ? resetCode.get() : getNewResetCode(0, email),
-                                codeValidityMinutes));
+                        resetCode.orElseGet(() -> getNewResetCode(0, email)),
+                        codeValidityMinutes));
     }
 
 
@@ -99,20 +122,82 @@ public class AuthService {
     }
 
 
-    public PersonEntity registerNewUserByEmail(RegisterByEmailDto byEmailDto) {
-        Optional<PersonEntity> person = personService.getByEmail(byEmailDto.getEmail());
-        return person.isPresent() ? person.get()
-                : personService.registerNewUser(SignUpRequestDto.builder()
-                        .name(byEmailDto.getName()).email(byEmailDto.getEmail())
-                        .password(passwordEncoder.encode(byEmailDto.getPassword())).build());
+    public String createAuthenticationToken(String email, String password) {
+        Authentication authentication =
+                authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(
+                        email, password));
+        return tokenProvider.createToken(authentication);
+    }
+
+    public boolean isNewPerson(String email) {
+        return personService.getByEmail(email).isEmpty();
+    }
+
+    public PreVerificationUserEntity createPreVerificationUser(VerificationByEmailDto byEmailDto,
+                                                               String verificationToken) {
+        LocalDateTime expiredAt = LocalDateTime.now().plusHours(verificationTokenValidityHours);
+        return new PreVerificationUserEntity(byEmailDto.getName(),
+                byEmailDto.getEmail(),
+                passwordEncoder.encode(byEmailDto.getPassword()),
+                verificationToken, expiredAt);
+    }
+
+    public void savePreVerificationUser(PreVerificationUserEntity preVerificationUser) {
+        verificationUserRepository.save(preVerificationUser);
+    }
+
+    public void sendVerificationToken(String verificationToken, String email) {
+        String link = String.format(linkForVerification, verificationToken);
+        emailService.sendEmail(email, verificationEmailHeader,
+                String.format(verificationEmailMessage, link,
+                        verificationTokenValidityHours));
+    }
+    
+
+    public String createToken(PersonEntity person) {
+        AuthUserDto userDto = AuthUserDto.create(person);
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(userDto, person.getPassword(),
+                person.getAuthorities());
+        return tokenProvider.createToken(authentication);
+    }
+
+    
+    public JwtAuthenticationResponse createJwtResponse(PersonEntity person) {
+        return person == null ? null
+                : new JwtAuthenticationResponse(createToken(person), PersonDto.map(person));
+    }
+    
+    
+    
+    public boolean isMatchVerificationToken(String token) {
+        return verificationUserRepository.findByToken(token)
+                .map(tokenEntity -> tokenEntity.getExpiredAt().isAfter(LocalDateTime.now()))
+                .orElse(false);
+    }
+
+    public PersonEntity createPersonByVerificationToken(String token) {
+        return verificationUserRepository.findByToken(token)
+                .map(preVerificationUser -> {
+                    if (preVerificationUser.getExpiredAt().isAfter(LocalDateTime.now())
+                            && isNewPerson(preVerificationUser.getEmail())) {
+                        SignUpRequestDto signUpRequest = SignUpRequestDto.builder()
+                                .name(preVerificationUser.getName())
+                                .email(preVerificationUser.getEmail())
+                                .password(preVerificationUser.getPassword())
+                                .build();
+                        deletePreVerificationUser(token);
+                        return personService.registerNewUser(signUpRequest);
+                    }
+                    return null;
+                })
+                .orElse(null);
     }
 
 
-    public String createToken(RegisterByEmailDto byEmailDto) {
-        Authentication authentication =
-                authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(
-                        byEmailDto.getEmail(), byEmailDto.getPassword()));
-        return tokenProvider.createToken(authentication);
+    public void deletePreVerificationUser(String token) {
+        verificationUserRepository.findByToken(token)
+                        .ifPresent(verificationUserRepository::delete);
     }
 
 }

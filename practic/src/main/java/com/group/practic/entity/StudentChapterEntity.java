@@ -11,15 +11,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,7 +44,7 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
     int number;
 
-    @OneToOne
+    @ManyToOne
     ChapterEntity chapter;
 
     @Enumerated(EnumType.STRING)
@@ -57,15 +58,19 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @Column(name = "updated_at", nullable = true)
     Timestamp updatedAt;
 
-    int reportCount;
-
     @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
     @OrderBy("number")
     private List<StudentPracticeEntity> practices = new ArrayList<>();
 
+    @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
+    @OrderBy("id")
+    private List<StudentReportEntity> reports = new ArrayList<>();
+
     int daysSpent;
 
     LocalDate startCounting;
+
+    private Set<Long> subs = new HashSet<>();
 
 
     public StudentChapterEntity() {}
@@ -80,6 +85,26 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
     public Optional<StudentPracticeEntity> getPracticeByNumber(int number) {
         return practices.stream().filter(prac -> prac.number == number).findFirst();
+    }
+
+
+    public StudentChapterEntity reSetSub(boolean state, Long subChapterId) {
+        if (state) {
+            subs.add(subChapterId);
+        } else {
+            subs.remove(subChapterId);
+        }
+        return this;
+    }
+
+
+    public long countApprovedReports() {
+        return reports.stream().filter(StudentReportEntity::isCountable).count();
+    }
+
+
+    public long countNonCancelledReports() {
+        return reports.stream().filter(StudentReportEntity::isNonCancelled).count();
     }
 
 }

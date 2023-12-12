@@ -1,4 +1,5 @@
-<h1 mat-dialog-title style="text-align: center;font-size: 30px; margin-top: 20px; margin-bottom: -10px;"> Редагувати доповідь</h1>
+<h1 mat-dialog-title style="text-align: center;font-size: 30px; margin-top: 20px; margin-bottom: -10px;"> Редагувати
+    доповідь</h1>
 <div mat-dialog-content style="padding-left: 100px">
     <div class="changing-date-field">
         <mat-label>Дата</mat-label>
@@ -18,7 +19,8 @@
         <mat-form-field appearance="outline" style="align-items: center">
             <mat-select [(ngModel)]="data.studentReport.timeslotId"
                         [formControl]="timeslotCF">
-                <mat-option [value]="data.studentReport.timeslotId">{{formatTime(data.studentReport.time)}} </mat-option>
+                <mat-option
+                        [value]="data.studentReport.timeslotId">{{formatTime(data.studentReport.time)}} </mat-option>
                 <mat-option *ngFor="let timeslot of getTimeslots(data.studentReport.date);"
                             [value]="timeslot.id">{{formatTime(timeslot.time)}}</mat-option>
             </mat-select>
@@ -29,15 +31,15 @@
         <mat-form-field appearance="outline" style="width: 640px;">
             <mat-select [(ngModel)]="data.studentReport.title"
                         [formControl]="titleCF">
-                <mat-option *ngFor="let topic of topicsReport$ | async; let i = index"
-                            [value]="topic.topic">{{ topic.topic }}</mat-option>
+                <mat-option *ngFor="let topic of topicsReport"
+                            [value]="topic.topicReport">{{ topic.topicReport }}</mat-option>
             </mat-select>
         </mat-form-field>
     </div>
 </div>
 <div mat-dialog-actions class="changing-dialog-buttons">
-    <button mat-button class ="cancel-button" (click)="onNoClick()">Відхилити</button>
-    <button mat-button class="ok-button"  [mat-dialog-close]="data.studentReport"
+    <button mat-button class="cancel-button" (click)="onNoClick()">Відхилити</button>
+    <button mat-button class="ok-button" [mat-dialog-close]="data.studentReport"
             cdkFocusInitial>
         Прийняти
     </button>

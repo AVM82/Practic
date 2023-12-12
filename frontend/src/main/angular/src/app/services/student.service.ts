@@ -8,6 +8,7 @@ import { CoursesService } from "./courses.service";
 import { Practice } from "../models/practice";
 import { ChapterPart } from "../models/chapterpart";
 import { STATE_IN_PROCESS, STATE_PAUSE, STATE_READY_TO_REVIEW } from "../enums/app-constans";
+import { SubChapter } from "../models/subchapter";
 
 @Injectable({
     providedIn: 'root'
@@ -54,6 +55,24 @@ export class StudentService {
         })
     }
 
+    checkPracticeState(chapterN: number, part: ChapterPart): void {
+        this.http.get<Practice>(ApiUrls.Practices + part.practice.id). subscribe(fresh => {
+            part.practice.state = fresh.state;
+            this.coursesService.changePracticeState(chapterN, fresh);
+        })
+    }
+
+    putSubChapterSkills(chapter: Chapter, subchapter: SubChapter, event: any): void {
+        this.http.put<boolean>(ApiUrls.StudentSkills + chapter.id + '/' + event.target.id + '/' + event.target.checked, {})
+            .subscribe(ok => {
+                if (ok)
+                    chapter.subs!.push(event.target.id)
+                else
+                    chapter.subs =  chapter.subs!.filter(sub => sub !== event.target.id);
+                subchapter.checked = ok;
+                event.target.checked = ok;
+            });
+    }
 
 }
 

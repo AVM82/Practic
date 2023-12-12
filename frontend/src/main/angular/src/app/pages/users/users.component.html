@@ -1,11 +1,12 @@
 <h1>HOT CHANGES</h1>
-<table>
+<table *ngIf="me.hasAnyRole(ADMIN, STAFF)">
     <caption>Користувачі</caption>
     <tr class="headers">
         <th *ngIf="!surnameFirst" [matMenuTriggerFor]="sortMenu">Ім'я та призвіще</th>
         <th *ngIf="surnameFirst" [matMenuTriggerFor]="sortMenu">Призвіще та ім'я</th>
         <th>заявки</th>
         <th>студент</th>
+        <th>випускник</th>
         <th>ментор</th>
         <th>ролі</th>
     </tr>
@@ -20,6 +21,11 @@
         <td>
             <div *ngFor="let studentSlug of user.getStudentSlugs()">
                 {{studentSlug}}
+            </div>    
+        </td>
+        <td>
+            <div *ngFor="let graduateSlug of user.getGraduateSlugs()">
+                {{graduateSlug}}
             </div>    
         </td>
         <td [matMenuTriggerFor]="mentorMenu" [matMenuTriggerData]="{u: user}">
@@ -45,7 +51,8 @@
         <div mat-menu-item class="menuitem" (click)="sortBySurname(false)">на прізвище за зростанням</div>
         <div mat-menu-item class="menuitem" (click)="sortBySurname(true)">на прізвище за спаданням</div>
         <br>
-        <div *ngIf="!user.ban" mat-menu-item class="menuitem" [class.ban]="true" (click)="personService.ban(user)">забанити {{user.name}}</div>
+        <div *ngIf="!user.ban" mat-menu-item class="menuitem" [class.ban]="true" (click)="personService.ban(user, true)">забанити {{user.name}}</div>
+        <div *ngIf="user.ban" mat-menu-item class="menuitem" (click)="personService.ban(user, false)">розбанити {{user.name}}</div>
     </ng-template>
 </mat-menu>            
 
@@ -92,7 +99,7 @@
         <div class="menu-header"><b>Ролі</b></div>
         <br>
         <div *ngFor="let role of roles">
-            <div *ngIf="(role !== ADMIN && role !== COLLABORATOR) || me.hasAdminRole()">
+            <div *ngIf="(role !== ADMIN && role !== STAFF) || me.hasAdminRole()">
                 <div mat-menu-item *ngIf="!user.hasAnyRole(role)" class="menuitem" (click)="personService.addRole(user, role)">+ додати {{role}}</div>
                 <div mat-menu-item *ngIf="user.hasAnyRole(role)" class="menuitem" (click)="personService.removeRole(user, role)">- прибрати {{role}}</div>
             </div>    

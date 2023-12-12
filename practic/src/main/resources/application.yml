@@ -1,4 +1,16 @@
 email:
+  emailVerification:
+    header: |
+      Будь ласка підтвердіть свій email
+    message: |+
+      Привіт, підтвердіть свій email для входу на сайт shpp-practic.eu-north-1.elasticbeanstalk.com
+      перейшовши за цим лінком ->
+      %s
+      Цей лінк буде валідним %s годин
+    verificationTokenValidityHours:
+      12
+    linkForVerification:
+      http://shpp-practic.eu-north-1.elasticbeanstalk.com/login?veriftoken=%s
   password:
     header: |
       Пароль для входу в shpp-practic

@@ -69,24 +69,24 @@
 //    @Test
 //    void testAddChapterWhenChapterDoesNotExist() {
 //        long studentId = 1L;
-//        long chapterId = 2L;
+//        long studentChapterId = 2L;
 //
-//        when(chapterService.get(chapterId)).thenReturn(Optional.empty());
+//        when(chapterService.get(studentChapterId)).thenReturn(Optional.empty());
 //
 //        assertThrows(ResourceNotFoundException.class,
-//                () -> studentChapterService.addChapter(studentId, chapterId));
+//                () -> studentChapterService.addChapter(studentId, studentChapterId));
 //    }
 //
 //    @Test
 //    void testAddChapterWhenStudentDoesNotExist() {
 //        long studentId = 1L;
-//        long chapterId = 2L;
+//        long studentChapterId = 2L;
 //
-//        when(chapterService.get(chapterId)).thenReturn(Optional.of(new ChapterEntity()));
+//        when(chapterService.get(studentChapterId)).thenReturn(Optional.of(new ChapterEntity()));
 //        when(studentOnCourseService.get(studentId)).thenReturn(null);
 //
 //        assertThrows(ResourceNotFoundException.class,
-//                () -> studentChapterService.addChapter(studentId, chapterId));
+//                () -> studentChapterService.addChapter(studentId, studentChapterId));
 //    }
 //
 //    @Test
@@ -95,10 +95,11 @@
 //        Set<ChapterPartEntity> chapterParts = new HashSet<>();
 //        chapterParts.add(chapterPart1);
 //
-//        long chapterId = 2L;
-//        when(chapterPartService.getAllPractices(chapterId)).thenReturn(Optional.of(chapterParts));
+//        long studentChapterId = 2L;
+//        when(chapterPartService.getAllPractices(studentChapterId))
+//        .thenReturn(Optional.of(chapterParts));
 //        ChapterEntity chapter = new ChapterEntity();
-//        when(chapterService.get(chapterId)).thenReturn(Optional.of(chapter));
+//        when(chapterService.get(studentChapterId)).thenReturn(Optional.of(chapter));
 //        PersonEntity student = new PersonEntity();
 //        StudentOnCourseEntity studentOnCourse =
 //                new StudentOnCourseEntity(student, new CourseEntity());
@@ -107,7 +108,7 @@
 //        when(studentPracticeService.addPractice(student, chapterPart1, chapter))
 //                .thenReturn(new StudentPracticeEntity());
 //        Set<StudentPracticeEntity> practices =
-//                studentChapterService.addPractices(studentId, chapterId);
+//                studentChapterService.addPractices(studentId, studentChapterId);
 //        assertNotNull(practices);
 //        Assertions.assertEquals(1, practices.size());
 //    }

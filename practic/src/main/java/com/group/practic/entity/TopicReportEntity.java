@@ -1,5 +1,6 @@
 package com.group.practic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,11 +16,14 @@ import java.util.Objects;
 @Table(name = "topic_reports")
 public class TopicReportEntity implements Serializable {
 
+    private static final long serialVersionUID = -5832117767034934071L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @ManyToOne
+    @JsonIgnore
     private ChapterEntity chapter;
 
     @NotBlank

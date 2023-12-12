@@ -1,7 +1,7 @@
 <app-course-navbar (navchapters)="getChapters($event)" (editModeChanged)="setEditMode($event)"></app-course-navbar>
 
 <div class="chapter-card-container">
-  <mat-card *ngFor="let chapter of shortChapters; index as i" class="chapter-card"
+  <mat-card *ngFor="let chapter of chapters; index as i" class="chapter-card"
             [class.locked]="chapter.hidden" [class.edit]="editMode">
     <ng-container *ngIf="!chapter.hidden">
 
@@ -17,6 +17,16 @@
           </mat-card-header>
         </a>
         <report-button *ngIf="isInvolved" [reportsNumber]="chapter.reportCount"></report-button>
+        
+        <div class="diagram-container">
+          <div class="diagram">
+            <canvas #myCanvas width="80" height="80"></canvas>
+          </div>
+          <div class="totalPercentage">
+            {{ (percent[i] < 100) ? ((percent[i] < 10) ? '&nbsp;&nbsp;' : '&nbsp;') + percent[i] + '%' : percent[i] + '%' }}
+          </div>
+        </div>
+
       </div>
 
       <mat-card-footer *ngIf="isStudent">

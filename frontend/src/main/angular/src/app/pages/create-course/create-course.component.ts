@@ -39,7 +39,7 @@ export class CreateCourseComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.capability = this.me.hasAnyRole(Roles.ADMIN, Roles.COLLABORATOR);
+    this.capability = this.me.hasAnyRole(Roles.ADMIN, Roles.STAFF);
     if (this.capability)
       this.coursesService.getAllCourses().subscribe(courses => {
         this.courses = courses;

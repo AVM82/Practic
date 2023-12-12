@@ -4,13 +4,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
 
 @Entity
-@Table(name = "reference_title")
+@Table(name = "reference_title", 
+        indexes = @Index(columnList = "reference", unique = true))
 public class ReferenceTitleEntity implements Serializable {
 
     private static final long serialVersionUID = 6370431962834166445L;
@@ -47,8 +49,7 @@ public class ReferenceTitleEntity implements Serializable {
             return false;
         }
         ReferenceTitleEntity other = (ReferenceTitleEntity) obj;
-        return this == other || (Objects.equals(reference, other.reference)
-                && Objects.equals(title, other.title));
+        return this == other || (Objects.equals(reference, other.reference));
     }
 
 
