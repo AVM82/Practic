@@ -1,0 +1,124 @@
+<div class="test-container" [ngSwitch]="quizState">
+    <div class="test-description" *ngSwitchCase="STATE_NOT_STARTED">
+        <p class="test-title">{{quizName}}</p>
+        <div class="test-welcome">
+            <p>
+                Ласкаво просимо! На вас чекають {{questionsLength}} питань на тему
+                "{{quizName}}"!
+            </p>
+            <p>
+                Ви маєте 1 хвилину на кожне питання. Таймер буде
+                автоматично відлічувати час.
+            </p>
+            <p>
+                Кожне питання має лише один вірний варіант
+                відповіді.
+            </p>
+            <p class="test-wish">Бажаємо успіхів та задоволення від
+                тестування!</p>
+        </div>
+        <button class="test-start" (click)="startTimer()">
+            <span class="test-start-btn">Розпочати тест</span>
+        </button>
+    </div>
+
+    <div class="progress" *ngSwitchCase="STATE_STARTED">
+        <div class="time-bar">
+            <div class="test-progress-bar">
+                <div class="test-progress-time">
+                    <span>Час на відповідь</span>
+                    <span>
+                            <app-timer
+                                    (timerValueChange)="handleTimerValueChange($event)"
+                                    (timerFinished)="handleTimerFinished()"
+                            ></app-timer>
+                        </span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" [style.width]="barLine">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="result-indicate">
+            <ul class="progress-answers-list" *ngFor="let question of quiz.questions; let i = index;">
+                <li (click)="goToQuestion(i)">
+                    <svg *ngIf="ifAnsweredQuestion(question)"
+                         xmlns="http://www.w3.org/2000/svg" width="50"
+                         height="50" viewBox="0 0 50 50" fill="none">
+                        <rect x="0.5" y="0.5" width="49" height="49"
+                              rx="9.5" fill="yellow" stroke="#B7B7B7"/>
+                    </svg>
+                    <svg *ngIf="!ifAnsweredQuestion(question)"
+                         xmlns="http://www.w3.org/2000/svg" width="50"
+                         height="50" viewBox="0 0 50 50" fill="none">
+                        <rect x="0.5" y="0.5" width="49" height="49"
+                              rx="9.5" fill="white" stroke="#B7B7B7"/>
+                    </svg>
+                </li>
+            </ul>
+        </div>
+        <div class="test-body">
+            <h5 class="test-body-count">{{currentIndex + 1}}/{{questionsLength}}</h5>
+            <div class="question">{{quiz.questions[currentIndex].question}}</div>
+            <ul class="variant-answer-list"
+                *ngFor="let answer of quiz.questions[currentIndex].answers; let i = index;">
+                <li class="variant-answer-item"
+                    [class.selected-answer-item]="answer.correct"
+                    (click)="selectedAnswer(currentIndex, answer)">
+                    <h5 class="answer-text">{{answer.answer}}</h5>
+                </li>
+            </ul>
+            <div class="button-block">
+                <button class="btn-back" (click)="previousQuestion()">
+                    <span class="btn-text">Назад</span>
+                </button>
+                <div *ngIf="currentIndex < quiz.questions.length - 1">
+                    <button class="btn-next" (click)="nextQuestion()">
+                        <span class="btn-text">Наступне запитання</span>
+                    </button>
+                </div>
+                <div *ngIf="currentIndex == quiz.questions.length - 1">
+                    <button class="btn-next" (click)="getResult()">
+                        <span class="btn-text">Готово</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-result-description" *ngSwitchCase="STATE_FINISHED">
+        <p class="result">Результат</p>
+        <div class="result-score">{{rightAnswers}} з {{questionsLength}}</div>
+        <div class="result-text" *ngIf="passed">Вітаємо!
+            Ви успішно завершили тест на тему "{{quizName}}". Дякуємо за вашу
+            участь та бажаємо вам продовжувати розвиватися у світі
+            Java-програмування. Нехай ваші знання завжди будуть на
+            вищому рівні!
+        </div>
+        <div class="result-text" *ngIf="!passed">
+            Спробуй ще (((
+        </div>
+        <div class="result-indicate">
+            <ul class="result-list" *ngFor="let result of resultList; let i = index;">
+                <li class="result-item">
+                    <svg *ngIf="result.valueOf()"
+                         xmlns="http://www.w3.org/2000/svg" width="50"
+                         height="50" viewBox="0 0 50 50" fill="none">
+                        <rect x="0.5" y="0.5" width="49" height="49"
+                              rx="9.5" fill="#00C9A5" stroke="#B7B7B7"/>
+                    </svg>
+                    <svg *ngIf="!result.valueOf()"
+                         xmlns="http://www.w3.org/2000/svg" width="50"
+                         height="50" viewBox="0 0 50 50" fill="none">
+                        <rect x="0.5" y="0.5" width="49" height="49"
+                              rx="9.5" fill="red" stroke="#B7B7B7"/>
+                    </svg>
+                </li>
+            </ul>
+        </div>
+        <button class="finish-btn" (click)="redirectFromTest()">
+            <span class="finish-btn-text">Закінчити тест</span>
+        </button>
+    </div>
+</div>

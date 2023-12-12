@@ -20,6 +20,7 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
 import { StartPanelComponent } from './pages/start-panel/start-panel.component';
 import { UsersComponent } from './pages/users/users.component';
 import { BannedComponent } from './pages/ban/ban.component';
+import { QuizComponent } from './componets/quiz/quiz.component';
 
 registerLocaleData(localeUk, 'uk');
 
@@ -29,6 +30,7 @@ const routes: Routes = [
   {path: 'logout', component: LoginComponent},
   {path: 'feedback',component: FeedbackComponent},
   {path: 'ban', component: BannedComponent},
+  {path: 'quizzes/:quizId', component: QuizComponent},
 
   {path: 'users', component: UsersComponent},
   {path: 'mentor', component: MentorDashboardComponent,
