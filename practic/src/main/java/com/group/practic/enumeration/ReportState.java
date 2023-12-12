@@ -9,10 +9,12 @@ public enum ReportState {
     @Order(0)
     CANCELLED(),
     @Order(1)
-    FINISHED(),
+    APPROVED,
     @Order(2)
-    STARTED(FINISHED, CANCELLED),
+    FINISHED(APPROVED, CANCELLED),
     @Order(3)
+    STARTED(FINISHED, CANCELLED),
+    @Order(4)
     ANNOUNCED(STARTED, CANCELLED);
 
 
@@ -25,7 +27,7 @@ public enum ReportState {
 
 
     public boolean changeAllowed(ReportState newState) {
-        return this == newState || allowed.contains(newState);
+        return allowed.contains(newState);
     }
 
     public static ReportState fromString(String value) {

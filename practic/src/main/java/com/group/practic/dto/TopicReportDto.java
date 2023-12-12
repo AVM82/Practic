@@ -1,5 +1,6 @@
 package com.group.practic.dto;
 
+import com.group.practic.entity.TopicReportEntity;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
@@ -11,9 +12,9 @@ public class TopicReportDto {
     @Min(value = 10)
     private String topicReport;
 
-    public TopicReportDto(int chapterId, String topicReport) {
-        this.chapterId = chapterId;
-        this.topicReport = topicReport;
+    public TopicReportDto(TopicReportEntity topicReportEntity) {
+        this.chapterId = topicReportEntity.getId();
+        this.topicReport = topicReportEntity.getTopic();
     }
 
     public TopicReportDto() {

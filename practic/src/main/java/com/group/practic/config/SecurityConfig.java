@@ -47,17 +47,21 @@ public class SecurityConfig {
     @Value("${logout.successRedirectUris}")
     private String logoutRedirectUri;
 
+
     private CustomOidcUserService getCustomOidcUserService() {
         return applicationContext.getBean(CustomOidcUserService.class);
     }
+
 
     private CustomOauth2UserService getCustomOauth2UserService() {
         return applicationContext.getBean(CustomOauth2UserService.class);
     }
 
+
     private Oauth2AuthenticationFailureHandler getOauth2AuthenticationFailureHandler() {
         return applicationContext.getBean(Oauth2AuthenticationFailureHandler.class);
     }
+
 
     private Oauth2AuthenticationSuccessHandler getOauth2AuthenticationSuccessHandler() {
         return applicationContext.getBean(Oauth2AuthenticationSuccessHandler.class);
@@ -71,59 +75,45 @@ public class SecurityConfig {
         auth.userDetailsService(personService).passwordEncoder(passwordEncoder());
     }
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(CsrfConfigurer::disable)
-                .cors(CorsConfigurer::disable)
-                .sessionManagement(httpSecuritySessionManagementConfigurer ->
-                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS)
-                )
-                .formLogin(FormLoginConfigurer::disable)
-                .httpBasic(HttpBasicConfigurer::disable)
+        http.csrf(CsrfConfigurer::disable).cors(CorsConfigurer::disable).sessionManagement(
+                httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin(FormLoginConfigurer::disable).httpBasic(HttpBasicConfigurer::disable)
                 .exceptionHandling(
                         httpSecurityExceptionHandlingConfigurer ->
-                                httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
-                                        new RestAuthenticationEntryPoint()))
-                .authorizeHttpRequests(
-                        request ->
-                                request
-                                        .requestMatchers("/api/courses", "/api/register")
-                                        .permitAll()
-                                        .requestMatchers(
-                                                "/api/**")
-                                        .authenticated()
-                                        .anyRequest()
-                                        .permitAll())
+                                httpSecurityExceptionHandlingConfigurer
+                                        .authenticationEntryPoint(
+                                                new RestAuthenticationEntryPoint()))
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/feedbacks", "/api/register",
+                                "/api/auth",
+                                "/api/password-reset/send-code", "/api/password-reset/match-code",
+                                "/api/password-reset",
+                                "api/verification")
+                        .permitAll().requestMatchers("/api/**").authenticated().anyRequest()
+                        .permitAll())
                 .oauth2Login(oauth -> oauth
-                        .authorizationEndpoint(endpointConfig ->
-                                endpointConfig
-                                        .authorizationRequestRepository(
-                                                new HttpCookieOauth2AuthRequestRepository())
-                        )
-                        .userInfoEndpoint(userInfoConfig ->
-                                userInfoConfig
-                                        .oidcUserService(getCustomOidcUserService())
-                                        .userService(getCustomOauth2UserService()))
-                        .tokenEndpoint(tokenConfig ->
-                                tokenConfig
-                                        .accessTokenResponseClient(
-                                                authorizationCodeTokenResponseClient())
-                        )
+                        .authorizationEndpoint(
+                                endpointConfig -> endpointConfig.authorizationRequestRepository(
+                                        new HttpCookieOauth2AuthRequestRepository()))
+                        .userInfoEndpoint(userInfoConfig -> userInfoConfig
+                                .oidcUserService(getCustomOidcUserService())
+                                .userService(getCustomOauth2UserService()))
+                        .tokenEndpoint(tokenConfig -> tokenConfig
+                                .accessTokenResponseClient(authorizationCodeTokenResponseClient()))
                         .successHandler(getOauth2AuthenticationSuccessHandler())
                         .failureHandler(getOauth2AuthenticationFailureHandler()))
-                .addFilterBefore(
-                        tokenAuthenticationFilter(),
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                .logout(httpSecurityLogoutConfigurer ->
-                        httpSecurityLogoutConfigurer.logoutSuccessUrl(
-                                logoutRedirectUri
-                        ).clearAuthentication(true));
+                .addFilterBefore(tokenAuthenticationFilter(),
+                        UsernamePasswordAuthenticationFilter.class)
+                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
+                        .logoutSuccessUrl(logoutRedirectUri).clearAuthentication(true));
 
         return http.build();
     }
+
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -131,15 +121,14 @@ public class SecurityConfig {
     }
 
     /*
-     * By default, Spring Oauth2 uses
-     * HttpSessionOAuth2AuthorizationRequestRepository to save the authorization
-     * request. But, since our service is stateless, we can't save it in the
-     * session. We'll save the request in a Base64 encoded cookie instead.
+     * By default, Spring Oauth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save the
+     * authorization request. But, since our service is stateless, we can't save it in the session.
+     * We'll save the request in a Base64 encoded cookie instead.
      */
 
 
-    private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest>
-                authorizationCodeTokenResponseClient() {
+    private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> 
+            authorizationCodeTokenResponseClient() {
         OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter =
                 new OAuth2AccessTokenResponseHttpMessageConverter();
         tokenResponseHttpMessageConverter.setAccessTokenResponseConverter(
@@ -158,8 +147,10 @@ public class SecurityConfig {
         return tokenResponseClient;
     }
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
+
 }

@@ -1,30 +1,31 @@
-<app-course-navbar></app-course-navbar>
+<app-course-navbar [currentChapter]="number"></app-course-navbar>
 
 <div class="chapter-header">
-	<h3>Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
-    <div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">
-        <div *ngIf="isStudent" class="done-btn-container">
-            <button class="done-btn"
-                    (click)="doneAction(chapterPart)"
-                    matTooltip="Практична готова до ревью"
-                    matTooltipPosition="below"
-                    aria-label="Done"
-                    [disabled]="(chapterPart.id | practiceBtnVisibility: practices).doneDisabled"
-                    *ngIf="(chapterPart.id | practiceBtnVisibility: practices).doneVisible"
-            >
-                Здати практичну
-            </button>
-        </div>
-    </div>
+	<h3 class="fit-text">Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
+	<report-button *ngIf="isMentor" class="report-button"
+		matTooltip="Всі доповіді розділу"
+		matTooltipPosition="below"
+		[reportsNumber]="chapter!.reportCount">
+	</report-button>
+	<div *ngIf="isStudent">
+		<report-button class="report-button"
+			matTooltip="Мої доповіді розділу"
+            matTooltipPosition="above"
+			[reportsNumber]="chapter!.myReports">
+		</report-button>
+		<button *ngIf="chapter?.state !== done" class="chapter-button" (click)="changeState($event)">
+			{{getTextAccordingState()}}
+		</button>
+	</div>
 </div>
 
-<div *ngFor="let chapterPart of chapter?.parts; let indexPart = index">
+<div *ngFor="let chapterPart of chapter?.parts">
 	<div class="chapter-part">
-		{{ chapter?.number }}. Теоретичний блок {{showPartNumber ? '№'+ (indexPart + 1): ''}}
+		{{ chapter?.number }}. Теоретичний блок {{showPartNumber ? '№'+ chapterPart.common?.number : ''}}
 	</div>
 
 	<cdk-accordion class="chapter-details-container" [multi]="true">
-		<cdk-accordion-item *ngFor="let subchapter of chapterPart.subChapters; let index = index" 
+		<cdk-accordion-item *ngFor="let subchapter of chapterPart.common?.subChapters; let index = index" 
 							#accordionItem="cdkAccordionItem"
 							class="accordion-item"
 							role="button"
@@ -32,11 +33,20 @@
 							[attr.id]="'accordion-header-' + index"
 							[attr.aria-expanded]="accordionItem.expanded"
 							[attr.aria-controls]="'accordion-body-' + index">
-			<div (click)="accordionItem.toggle()" class="subchapter-header">
-				{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}
-				<span *ngIf=subchapter.subSubChapters.length||subchapter.refs>
-					{{accordionItem.expanded ? '-' : '+'}}
-				</span>
+			<div  class="subchapter-header">
+				<div class="subblock">
+					<mat-icon *ngIf="subchapter.subSubChapters?.length || subchapter.refs" 
+							(click)="accordionItem.toggle()"
+							class="accordion-button">
+						{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+					</mat-icon>
+					<div class="sub">{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}</div>
+					<div *ngIf="subchapter.checked || isMentor" class="skill-part">
+						<div *ngFor="let skill of subchapter.skills" class="skill">{{skill}}</div>
+					</div>
+				</div>
+				<input *ngIf="isActiveChapter && chapter?.state === process" type="checkbox" [id]="subchapter.id" [checked]="isSelected(subchapter.id)" 
+						(change)="changeSkills($event, subchapter)"/>
 			</div>
 			<div *ngIf=accordionItem.expanded
 				role="region" 
@@ -61,34 +71,54 @@
 		</cdk-accordion-item>
 	</cdk-accordion>
 
-	<div *ngIf="chapterPart.praxisPurpose">
-		<div class="chapter-part" >
-            <div *ngIf="isStudent" class="action-buttons">
-                <button mat-icon-button
-                        (click)="playAction(chapterPart)"
-                        matTooltip="Почати практичну"
+	<div *ngIf="chapterPart.common?.praxisPurpose">
+		<div class="chapter-part">
+            <div *ngIf="isStudent && chapter?.state === process" class="action-buttons">
+                <button *ngIf="chapterPart.practice!.state === not_started 
+								|| chapterPart.practice!.state === pause
+								|| chapterPart.practice!.state === ready"
+						mat-icon-button
+                        (click)="service.changePracticeState(chapter!.number, chapterPart, process)"
+                        matTooltip="{{chapterPart.practice!.state === not_started ? 'Почати практичну' : 'Продовжити практичну'}}"
                         matTooltipPosition="below"
                         aria-label="Play"
-                        *ngIf="(chapterPart.id | practiceBtnVisibility: practices).playVisible"
-                >
-                    <mat-icon>play_circle_outline</mat-icon>
+						[disabled]="chapter?.state === pause">
+                    <mat-icon class="action-icon">play_circle_outline</mat-icon>
                 </button>
-                <button mat-icon-button
-                        (click)="pauseAction(chapterPart)"
+                <button *ngIf="chapterPart.practice!.state === process"
+						mat-icon-button
+                        (click)="service.changePracticeState(chapter!.number, chapterPart, pause)"
                         matTooltip="Відкласти роботу над практичною"
                         matTooltipPosition="below"
                         aria-label="Pause"
-                        *ngIf="isStudent && (chapterPart.id | practiceBtnVisibility: practices).pauseVisible"
-                >
-                    <mat-icon>pause_circle_outline</mat-icon>
+						[disabled]="chapter?.state === pause">
+                    <mat-icon class="action-icon">pause_circle_outline</mat-icon>
                 </button>
-            </div>
-			{{ chapter?.number }}. Практична робота {{showPartNumber ? '№'+ (indexPart + 1): ''}}<br />
-			Мета: {{chapterPart.praxisPurpose}}
-            <div *ngIf="isStudent" class="custom-chip">{{chapterPart.id | practiceState: practices}}</div>
+				<button *ngIf="chapterPart.practice!.state === process"
+						class="done-btn"
+						(click)="practiceReview(chapterPart)"
+						matTooltip="Практична готова до ревью"
+						matTooltipPosition="below"
+						aria-label="Done">
+					<mat-icon class="action-icon">stop_circle_outline</mat-icon>
+				</button>
+				<button *ngIf="chapterPart.practice!.state === ready"
+						class="done-btn"
+						(click)="checkApproved(chapterPart)"
+						matTooltip="Перевірити стан"
+						matTooltipPosition="below"
+						aria-label="Done">
+					<mat-icon class="action-icon">star_half</mat-icon>
+				</button>
+			</div>
+			<div class="fit-text">
+				{{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />
+				Мета: {{chapterPart.common?.praxisPurpose}}
+			</div>
+            <div *ngIf="isStudent" class="custom-chip">{{chapterPart.practice!.state | StatePipe}}</div>
 		</div>
-		<div *ngIf="chapterPart.praxis?.length" class="chapter-details-container-ext">
-			<div *ngFor="let praxis of chapterPart.praxis" class="row">
+		<div *ngIf="chapterPart.common?.praxis?.length" class="chapter-details-container-ext">
+			<div *ngFor="let praxis of chapterPart.common?.praxis" class="row">
 				<div class="column">{{praxis.number}}. </div>
 				<div class="column">{{praxis.name}}
 					<div *ngIf="praxis.refs">
@@ -101,12 +131,12 @@
 		</div>
 	</div>
 
-	<div *ngIf="chapterPart.additionals?.length">
+	<div *ngIf="chapterPart.common?.additionals?.length">
 		<div class="chapter-part">
-			{{ chapter?.number }}. Додатково {{showPartNumber? '№'+ (indexPart + 1) : ''}}
+			{{ chapter?.number }}. Додатково {{showPartNumber ? '№' + chapterPart.common?.number : ''}}
 		</div>
-		<div *ngIf="chapterPart.additionals?.length" class="chapter-details-container-ext">
-			<div *ngFor="let add of chapterPart.additionals" class="row">
+		<div *ngIf="chapterPart.common?.additionals?.length" class="chapter-details-container-ext">
+			<div *ngFor="let add of chapterPart.common?.additionals" class="row">
 				<div class="column">{{add.number}}. </div>
 				<div class="column">{{add.name}}
 					<div *ngIf="add.refs">
@@ -119,3 +149,4 @@
 		</div>
 	</div>
 </div>
+

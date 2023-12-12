@@ -1,5 +1,5 @@
 <app-course-navbar (navchapters)="getChapters($event)"></app-course-navbar>
-<mat-card class="top-line">
+<mat-card class="top-line" *ngIf="isStudent">
   <mat-card-content class="report-button" (click)="openDialog()" >Додати доповідь</mat-card-content>
 </mat-card>
 <div class="board">
@@ -10,5 +10,3 @@
                  [currentUserId]="currentUserId"
                  [timeslots]="timeslots"></chapter-reports>
 </div>              
-
-

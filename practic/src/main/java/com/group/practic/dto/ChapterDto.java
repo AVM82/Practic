@@ -1,10 +1,11 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.ChapterEntity;
-import java.util.HashSet;
-import java.util.Set;
+import com.group.practic.entity.StudentChapterEntity;
+import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
-import org.springframework.context.annotation.Bean;
+
 
 @Getter
 public class ChapterDto {
@@ -13,31 +14,62 @@ public class ChapterDto {
 
     int number;
 
+    boolean hidden;
+
     String shortName;
 
-    boolean visible;
+    List<ChapterPartDto> parts;
 
-    Set<Long> partsId = new HashSet<>();
+    String state;
+
+    long reportCount;
+
+    long myReports;
 
 
-    public void setVisible(boolean value) {
-        this.visible = value;
-    }
-
-    @Bean
-    public static ChapterDto map(ChapterEntity chapter, boolean visible) {
+    public static ChapterDto map(ChapterEntity chapter, boolean hidden, long reportCount) {
         ChapterDto dto = new ChapterDto();
         dto.id = chapter.getId();
         dto.number = chapter.getNumber();
         dto.shortName = chapter.getShortName();
-        dto.visible = visible;
-        chapter.getParts().forEach(part -> dto.partsId.add(part.getId()));
+        dto.reportCount = reportCount;
+        dto.hidden = hidden;
         return dto;
     }
 
 
-    public static ChapterDto map(ChapterEntity chapter) {
-        return map(chapter, true);
+    public static ChapterDto map(ChapterEntity chapter, long reportCount) {
+        return ChapterDto.map(chapter, false, reportCount);
+    }
+
+
+    public static ChapterDto map(ChapterEntity entity) {
+        return map(entity, 0);
+    }
+
+
+    public static Optional<ChapterDto> map(Optional<ChapterEntity> entity) {
+        return entity.map(ChapterDto::map);
+    }
+
+
+    public static ChapterDto map(ChapterEntity chapter, boolean hidden) {
+        return map(chapter, hidden, 0);
+    }
+
+
+    public static ChapterDto map(StudentChapterEntity studentChapter, long reportCount) {
+        ChapterEntity chapter = studentChapter.getChapter();
+        ChapterDto dto = new ChapterDto();
+        dto.id = studentChapter.getId();
+        dto.number = studentChapter.getNumber();
+        dto.shortName = chapter.getShortName();
+        dto.reportCount = reportCount;
+        dto.state = studentChapter.getState().name();
+        dto.parts = studentChapter.getPractices().stream()
+                .map(prac -> ChapterPartDto.map(null, prac)).toList();
+        dto.myReports = studentChapter.countNonCancelledReports();
+        return dto;
     }
 
 }

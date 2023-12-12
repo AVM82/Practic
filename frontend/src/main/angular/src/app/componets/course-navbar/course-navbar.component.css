@@ -14,6 +14,7 @@
     align-items: center;
     justify-content: center;
     margin-top: 0.5%;
+    cursor: default;
 }
 .progress {
     display: inline-flex;
@@ -54,11 +55,11 @@
     transform: skew(-45deg);
 }
 
-.progress:hover:not(.icon) {
+.progress:not(.icon):hover {
     cursor: pointer;
 }
-.progress:hover:not(.icon):before,
-.progress:hover:not(.icon):after {
+.progress:not(.icon):hover:before,
+.progress:not(.icon):hover:after {
     background: #27AE60;
     cursor: pointer;
 }

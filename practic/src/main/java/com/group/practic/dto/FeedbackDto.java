@@ -1,8 +1,7 @@
 package com.group.practic.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import com.group.practic.entity.FeedbackEntity;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,12 +9,34 @@ import lombok.Setter;
 @Setter
 public class FeedbackDto {
 
-    @NotBlank
-    @Email
-    private String email;
+    private long id;
 
-    @NotBlank
-    @Min(5)
+    private long personId;
+
+    private String name;
+
+    private String profilePictureUrl;
+
+    private String date;
+
     private String feedback;
+
+    private int likes;
+
+    private Set<Long> likedByPerson;
+
+
+    public static FeedbackDto map(FeedbackEntity entity) {
+        FeedbackDto dto = new FeedbackDto();
+        dto.id = entity.getId();
+        dto.likes = entity.getLikes();
+        dto.name = entity.getName();
+        dto.profilePictureUrl = entity.getProfilePictureUrl();
+        dto.feedback = entity.getFeedback();
+        dto.date = entity.getDateTime().toString();
+        dto.personId = entity.getPersonId();
+        dto.likedByPerson = entity.getLikedByPerson();
+        return dto;
+    }
 
 }

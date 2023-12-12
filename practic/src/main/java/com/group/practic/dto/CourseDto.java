@@ -1,42 +1,50 @@
 package com.group.practic.dto;
 
 import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.MentorEntity;
+import java.util.List;
+import java.util.Set;
 import lombok.Getter;
-import lombok.Setter;
+
 
 @Getter
-@Setter
 public class CourseDto {
 
-    private String slug;
+    long id;
 
-    private String name;
+    boolean inactive;
 
-    private String svg;
+    Set<String> authors;
+
+    List<CourseMentorDto> mentors;
+
+    String courseType;
+
+    String name;
+
+    String description;
+
+    String slug;
+
+    String svg;
+
+    boolean additionalMaterialsExist;
 
 
-    public CourseDto() {}
-
-
-    public CourseDto(String name, String svg, String slug) {
-        this.name = name;
-        this.svg = svg;
-        this.slug = slug;
-    }
-
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-
-    public static CourseDto map(CourseEntity course) {
+    public static CourseDto map(CourseEntity entity) {
         CourseDto dto = new CourseDto();
-        dto.slug = course.getSlug();
-        dto.name = course.getName();
-        dto.svg = course.getSvg();
+        dto.id = entity.getId();
+        dto.inactive = entity.isInactive();
+        dto.authors = entity.getAuthors();
+        dto.mentors = entity.getMentors().stream().filter(MentorEntity::isActive)
+                .map(CourseMentorDto::map).toList();
+        dto.courseType = entity.getCourseType();
+        dto.name = entity.getName();
+        dto.description = entity.getDescription();
+        dto.slug = entity.getSlug();
+        dto.svg = entity.getSvg();
+        dto.additionalMaterialsExist = entity.isAdditionalMaterialsExist();
         return dto;
     }
-
 
 }

@@ -3,20 +3,22 @@ import {CommonModule} from '@angular/common';
 import {ActivatedRoute, RouterOutlet} from "@angular/router";
 import {ChapterReportsComponent} from "../../modules/chapter-reports/chapter-reports.component";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
-import {ReportServiceService} from "../../services/report/report-service.service";
+import {ReportServiceService} from "../../services/report-service.service";
 import {MatCardModule} from "@angular/material/card";
-import {CoursesService} from "../../services/courses/courses.service";
+import {CoursesService} from "../../services/courses.service";
 import {NewReportDialogComponent} from "../../componets/new-report/new-report-dialog.component";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
-import {TimeSlot} from "../../models/timeSlot/time-slot";
-import {TimeSlotService} from "../../services/timeSlot/time-slot.service";
-import {Level} from "../../models/level/level";
+import {TimeSlot} from "../../models/time-slot";
+import {TimeSlotService} from "../../services/time-slot.service";
+import {Level} from "../../models/level";
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatButtonModule} from "@angular/material/button";
-import {ShortChapter} from 'src/app/models/course/chapter';
-import {CalendarEventService} from "../../services/calendarEvent/calendar-event.service";
+import {Chapter} from 'src/app/models/chapter';
+import {CalendarEventService} from "../../services/calendar-event.service";
 import * as _moment from "moment/moment";
 import {default as _rollupMoment} from "moment/moment";
+import { TokenStorageService } from 'src/app/services/token-storage.service';
+import {User} from "../../models/user";
 
 const moment = _rollupMoment || _moment;
 
@@ -37,48 +39,48 @@ const moment = _rollupMoment || _moment;
     styleUrls: ['./report-dashboard.component.css']
 })
 export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
-    chapters: ShortChapter[] = [];
+    chapters: Chapter[] = [];
     levels: Level[] = []
     timeslots!: Map<string, TimeSlot[]>;
     currentUserId!: any;
+    me!:User;
+    isStudent: boolean = false;
 
     constructor(
         public dialog: MatDialog,
         private coursesService: CoursesService,
+        private tokenStorageService: TokenStorageService,
         private route: ActivatedRoute,
         public reportService: ReportServiceService,
         private timeSlotService: TimeSlotService,
         private calendarEventService: CalendarEventService
     ) {
+        this.me = tokenStorageService.getMe();
     }
 
 
     ngOnInit(): void {
-        this.currentUserId = this.coursesService.id;
+        this.currentUserId = this.tokenStorageService.getMe().id;
         this.route.paramMap.subscribe(params => {
             const slug = params.get('slug');
             console.log(slug)
-            if (slug)
-                this.updateData(slug)
+            if (slug) {
+                this.updateData(slug);
+                this.isStudent = this.me.isStudent(slug);
+            }
         });
     }
 
     updateData(slug: string): void {
         this.loadLevels(slug);
-        this.loadReports(slug);
+        this.reportService.getAllActualReports(slug);
         this.loadTimeSlots(slug);
         this.createTimeSlots(slug)
     }
 
-    getChapters(chapters: ShortChapter[]) {
-        this.chapters = chapters;
-    }
-
-
-    loadReports(slug: string): void {
-        this.reportService.getAllActualReports(slug).subscribe(() => {
-            this.loadTimeSlots(slug);
-        });
+    getChapters(chapters: Chapter[]) {
+        console.log(chapters)
+        this.chapters = chapters.filter(chapter => !chapter.hidden);
     }
 
     loadLevels(slug: string): void {
@@ -103,32 +105,31 @@ export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
-                height: '60%',
-                width: '50%',
+                height: '430px',
+                width: '800px',
                 data: {
-                    chapters: this.chapters,
-                    timeslots: this.timeslots
+                    timeslots: this.timeslots,
+                    chapters: this.chapters
                 },
             });
-
         dialogRef.afterClosed().subscribe(result => {
             this.route.paramMap.subscribe(params => {
                 const slug = params.get('slug');
                 console.log('The dialog was closed');
                 console.log("result of creating report dialog: ", result);
-                if (result.timeslotId && result.title && result.chapter && slug) {
-                    this.reportService.createNewReport(result, slug).subscribe();
+                if (result.timeslotId && result.title && result.chapterId && slug) {
+                    this.reportService.createNewReport(result, result.chapterId).subscribe();
                     const startReportDateTime = this.toUnionDate(result.date, result.time);
                     console.log("start report date and time: ", startReportDateTime)
                     const endReportDateTime = moment(startReportDateTime).add(30, 'm').toDate();
                     console.log("end report date and time: ", endReportDateTime)
-                      this.calendarEventService.sendEmailNotification({
+                      this.calendarEventService.sendEmailNotification(slug,{
                           "startEvent": startReportDateTime,
                           "endEvent": endReportDateTime,
                           "subjectReport": result.title,
                           "description": "description"
                       }).subscribe()
-                }
+               }
             });
         });
     }

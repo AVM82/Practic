@@ -82,7 +82,9 @@
 }
 
 .check-password{
-    margin-left: 4px;
+    margin-left: 54px;
+    margin-right: 54px;
+    cursor: pointer;
 }
 
 .auth-name{

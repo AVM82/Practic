@@ -92,7 +92,7 @@ public class ReferenceTitleService {
 
 
     public Set<ReferenceTitleEntity> getReferenceTitleEntitySet(String[] part) {
-        return part.length == 1 ? Set.of()
+        return part.length == 1 ? new HashSet<>()
                 : create(Set.of(part[1].split(PropertyUtil.REFERENCE_SEPARATOR)));
     }
 

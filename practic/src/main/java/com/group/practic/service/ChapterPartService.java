@@ -13,7 +13,9 @@ import com.group.practic.repository.PraxisRepository;
 import com.group.practic.repository.SubChapterRepository;
 import com.group.practic.repository.SubSubChapterRepository;
 import com.group.practic.util.PropertyUtil;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -61,60 +63,62 @@ public class ChapterPartService {
     }
 
 
-    public ChapterPartEntity create(ChapterPartEntity chapterPartEntity) {
-        ChapterPartEntity result = chapterPartRepository.findByChapterAndNumber(
-                chapterPartEntity.getChapter(), chapterPartEntity.getNumber());
-        return result != null && result.equals(chapterPartEntity) ? result
-                : chapterPartRepository.save(chapterPartEntity);
-    }
-
-
-    public SubChapterEntity createSub(SubChapterEntity subChapterEntity) {
-        SubChapterEntity result = subChapterRepository.findByChapterPartAndNumberAndName(
-                subChapterEntity.getChapterPart(), subChapterEntity.getNumber(),
-                subChapterEntity.getName());
-        return result != null && result.equals(subChapterEntity) ? result
-                : subChapterRepository.save(subChapterEntity);
-    }
-
-
-    public SubSubChapterEntity createSubSub(SubSubChapterEntity subSubChapterEntity) {
-        SubSubChapterEntity result = subSubChapterRepository.findBySubChapterAndNumberAndName(
-                subSubChapterEntity.getSubChapter(), subSubChapterEntity.getNumber(),
-                subSubChapterEntity.getName());
-        return result != null && result.equals(subSubChapterEntity) ? result
-                : subSubChapterRepository.save(subSubChapterEntity);
-    }
-
-
-    public PraxisEntity createPraxis(PraxisEntity praxisEntity) {
-        PraxisEntity result = praxisRepository.findByChapterPartAndNumberAndName(
-                praxisEntity.getChapterPart(), praxisEntity.getNumber(), praxisEntity.getName());
-        return result != null && result.equals(praxisEntity) ? result
-                : praxisRepository.save(praxisEntity);
-    }
-
-
-    public AdditionalEntity createAdditional(AdditionalEntity additionalEntity) {
-        AdditionalEntity result = additionalRepository
-                .findByNumberAndName(additionalEntity.getNumber(), additionalEntity.getName());
-        return result != null && result.equals(additionalEntity) ? result
-                : additionalRepository.save(additionalEntity);
-    }
-
-
-    boolean partNumberExists(int number, Set<ChapterPartEntity> parts) {
-        for (ChapterPartEntity part : parts) {
-            if (part.getNumber() == number) {
-                return true;
-            }
+    public ChapterPartEntity createOrUpdate(ChapterPartEntity newEntity) {
+        ChapterPartEntity chapterPart = chapterPartRepository
+                .findByChapterAndNumber(newEntity.getChapter(), newEntity.getNumber());
+        if (chapterPart == null) {
+            return chapterPartRepository.save(newEntity);
         }
-        return false;
+        return chapterPart.equals(newEntity) ? chapterPart
+                : chapterPartRepository.save(chapterPart.update(newEntity));
     }
 
 
-    Set<ChapterPartEntity> getChapterPartSet(ChapterEntity chapter, PropertyLoader prop) {
-        Set<ChapterPartEntity> result = new HashSet<>();
+    public SubChapterEntity createOrUpdateSub(SubChapterEntity newEntity) {
+        SubChapterEntity subChapter = subChapterRepository
+                .findByChapterPartAndNumber(newEntity.getChapterPart(), newEntity.getNumber());
+        if (subChapter == null) {
+            return subChapterRepository.save(newEntity);
+        }
+        return subChapter.equals(newEntity) ? subChapter
+                : subChapterRepository.save(subChapter.update(newEntity));
+    }
+
+
+    public SubSubChapterEntity createOrUpdateSubSub(SubSubChapterEntity newEntity) {
+        SubSubChapterEntity subSubChapter = subSubChapterRepository
+                .findBySubChapterAndNumber(newEntity.getSubChapter(), newEntity.getNumber());
+        if (subSubChapter == null) {
+            return subSubChapterRepository.save(newEntity);
+        }
+        return subSubChapter.equals(newEntity) ? subSubChapter
+                : subSubChapterRepository.save(subSubChapter.update(newEntity));
+    }
+
+
+    public PraxisEntity createOrUpdatePraxis(PraxisEntity newEntity) {
+        PraxisEntity praxis = praxisRepository
+                .findByChapterPartAndNumber(newEntity.getChapterPart(), newEntity.getNumber());
+        if (praxis == null) {
+            return praxisRepository.save(newEntity);
+        }
+        return praxis.equals(newEntity) ? praxis : praxisRepository.save(praxis.update(newEntity));
+    }
+
+
+    public AdditionalEntity createOrUpdateAdditional(AdditionalEntity newEntity) {
+        AdditionalEntity additional = additionalRepository
+                .findByChapterPartAndNumber(newEntity.getChapterPart(), newEntity.getNumber());
+        if (additional == null) {
+            return additionalRepository.save(newEntity);
+        }
+        return additional.equals(newEntity) ? additional
+                : additionalRepository.save(additional.update(newEntity));
+    }
+
+
+    List<ChapterPartEntity> getChapterPartSet(ChapterEntity chapter, PropertyLoader prop) {
+        List<ChapterPartEntity> result = new ArrayList<>();
         String keyStarts = PropertyUtil.createKeyStarts(chapter.getNumber(), "");
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
@@ -130,7 +134,7 @@ public class ChapterPartService {
             if (key.startsWith(keyStarts) && PropertyUtil.countDots(key) == 2 && key.endsWith(".")
                     && PropertyUtil.getChapterNumber(2, key) != 0) {
                 int n = getChapterPartNumber(key);
-                if (!partNumberExists(n, result)) {
+                if (result.stream().allMatch(part -> part.getNumber() != n)) {
                     result.add(getChapterPart(chapter, n, prop,
                             key.substring(0, key.indexOf(PropertyUtil.DOT) + 1)));
                     break;
@@ -150,7 +154,7 @@ public class ChapterPartService {
     ChapterPartEntity getChapterPart(ChapterEntity chapter, int number, PropertyLoader prop,
             String keyStarts) {
         String praxisKey = keyStarts + PropertyUtil.PRAXIS_PART;
-        ChapterPartEntity chapterPart = create(
+        ChapterPartEntity chapterPart = createOrUpdate(
                 new ChapterPartEntity(chapter, number, prop.getProperty(praxisKey, "-")));
         if (chapterPart != null) {
             getSubChapterSet(chapterPart, prop, keyStarts);
@@ -161,17 +165,18 @@ public class ChapterPartService {
     }
 
 
-    Set<SubChapterEntity> getSubChapterSet(ChapterPartEntity chapterPart, PropertyLoader prop,
+    List<SubChapterEntity> getSubChapterSet(ChapterPartEntity chapterPart, PropertyLoader prop,
             String keyStarts) {
-        Set<SubChapterEntity> result = new HashSet<>();
+        List<SubChapterEntity> result = new ArrayList<>();
         int n;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
             if (key.startsWith(keyStarts) && PropertyUtil.countDots(key) == 2 && key.endsWith(".")
                     && (n = PropertyUtil.getChapterNumber(2, key)) != 0) {
                 String[] nameRefs = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
-                SubChapterEntity subChapter = createSub(new SubChapterEntity(0, chapterPart, n,
-                        nameRefs[0], referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
+                SubChapterEntity subChapter = createOrUpdateSub(
+                        new SubChapterEntity(chapterPart, n, nameRefs[0], getSkills(key, prop),
+                                referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
                 if (subChapter != null) {
                     subChapter.setSubSubChapters(getSubSubChapterSet(subChapter, prop, key));
                     result.add(subChapter);
@@ -182,17 +187,28 @@ public class ChapterPartService {
     }
 
 
-    Set<SubSubChapterEntity> getSubSubChapterSet(SubChapterEntity subChapter, PropertyLoader prop,
+    protected List<String> getSkills(String keyStarts, PropertyLoader prop) {
+        String key = keyStarts + PropertyUtil.SKILL_PART;
+        for (Entry<Object, Object> entry : prop.getEntrySet()) {
+            if (((String) entry.getKey()).equals(key)) {
+                return List.of(((String) entry.getValue()).split(PropertyUtil.SKILL_SEPARATOR));
+            }
+        }
+        return List.of();
+    }
+
+
+    List<SubSubChapterEntity> getSubSubChapterSet(SubChapterEntity subChapter, PropertyLoader prop,
             String keyStarts) {
-        Set<SubSubChapterEntity> result = new HashSet<>();
+        List<SubSubChapterEntity> result = new ArrayList<>();
         int n;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
             if (key.startsWith(keyStarts) && key.endsWith(".")
                     && (n = PropertyUtil.getChapterNumber(3, key)) != 0) {
                 String[] nameRefs = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
-                SubSubChapterEntity subSubChapter = createSubSub(
-                        new SubSubChapterEntity(0, subChapter, n, nameRefs[0],
+                SubSubChapterEntity subSubChapter =
+                        createOrUpdateSubSub(new SubSubChapterEntity(0, subChapter, n, nameRefs[0],
                                 referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
                 if (subSubChapter != null) {
                     result.add(subSubChapter);
@@ -203,16 +219,16 @@ public class ChapterPartService {
     }
 
 
-    Set<PraxisEntity> getPraxisSet(ChapterPartEntity chapterPart, PropertyLoader prop,
+    List<PraxisEntity> getPraxisSet(ChapterPartEntity chapterPart, PropertyLoader prop,
             String keyStarts) {
-        Set<PraxisEntity> result = new HashSet<>();
+        List<PraxisEntity> result = new ArrayList<>();
         int n;
         for (Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
             if (key.startsWith(keyStarts) && (n = PropertyUtil.getChapterNumber(3, key)) != 0) {
                 String[] nameRefs = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
-                PraxisEntity praxis = createPraxis(new PraxisEntity(0, chapterPart, n, nameRefs[0],
-                        referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
+                PraxisEntity praxis = createOrUpdatePraxis(new PraxisEntity(0, chapterPart, n,
+                        nameRefs[0], referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
                 if (praxis != null) {
                     result.add(praxis);
                 }
@@ -230,7 +246,7 @@ public class ChapterPartService {
             String key = (String) entry.getKey();
             if (key.startsWith(keyStarts) && (n = PropertyUtil.getChapterNumber(3, key)) != 0) {
                 String[] nameRefs = ((String) entry.getValue()).split(PropertyUtil.NAME_SEPARATOR);
-                AdditionalEntity additional = createAdditional(
+                AdditionalEntity additional = createOrUpdateAdditional(
                         new AdditionalEntity(0, chapterPart, n, nameRefs[0],
                                 referenceTitleService.getReferenceTitleEntitySet(nameRefs)));
                 if (additional != null) {
@@ -241,9 +257,11 @@ public class ChapterPartService {
         return result;
     }
 
+
     public Optional<Set<ChapterPartEntity>> getAllPractices(long chapterId) {
         return chapterPartRepository.findAllByChapterId(chapterId);
     }
+
 
     public ChapterPartEntity getChapterPartById(long chapterPartId) {
         return chapterPartRepository.findById(chapterPartId);

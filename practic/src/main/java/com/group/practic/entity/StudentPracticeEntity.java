@@ -10,49 +10,54 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+
 @Entity
-@Table(name = "student_practice")
-@Getter
+@Table(name = "practices")
 @Setter
-public class StudentPracticeEntity {
-    
+@Getter
+public class StudentPracticeEntity implements Serializable, DaysCountable<PracticeState> {
+
+    private static final long serialVersionUID = -4520682618456683847L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    long id;
 
     @ManyToOne
-    ChapterPartEntity chapterPart;
+    StudentChapterEntity studentChapter;
 
-    @ManyToOne
-    PersonEntity student;
-
-    @ManyToOne
-    ChapterEntity chapter;
+    int number;
 
     @Enumerated(EnumType.STRING)
     PracticeState state = PracticeState.NOT_STARTED;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Date createdAt;
+    @Column(name = "created_at", nullable = false)
+    Timestamp createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    @Column(name = "updated_at", nullable = true)
+    Timestamp updatedAt;
 
-    public StudentPracticeEntity(ChapterPartEntity chapter, PersonEntity student,
-                                 PracticeState state) {
-        this.chapterPart = chapter;
-        this.student = student;
-        this.state = state;
+    int daysSpent;
+
+    LocalDate startCounting;
+
+
+    public StudentPracticeEntity(StudentChapterEntity studentChapter, int number) {
+        this.studentChapter = studentChapter;
+        this.number = number;
     }
 
-    public StudentPracticeEntity() {
-    }
+
+    public StudentPracticeEntity() {}
+
 }

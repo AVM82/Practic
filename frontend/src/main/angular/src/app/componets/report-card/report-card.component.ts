@@ -4,13 +4,13 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {RouterLink} from "@angular/router";
-import {ReportServiceService} from "../../services/report/report-service.service";
+import {ReportServiceService} from "../../services/report-service.service";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {ChangingReportDialogComponent} from "../changing-report-dialog/changing-report-dialog.component";
 import {CancelingReportDialogComponent} from "../canceling-report-dialog/canceling-report-dialog.component";
-import {TimeSlot} from "../../models/timeSlot/time-slot";
+import {TimeSlot} from "../../models/time-slot";
 import {ReportDashboardComponent} from "../../pages/report-dashboard/report-dashboard.component";
-import {StudentReport} from "../../models/report/studentReport";
+import {StudentReport} from "../../models/report";
 
 @Component({
     selector: 'report-card',
@@ -30,6 +30,7 @@ import {StudentReport} from "../../models/report/studentReport";
 })
 export class ReportCardComponent {
     @Input() currentUserId!: number;
+    @Input()activeStudentChapterId!:number;
     @Input() studentReport!: StudentReport;
     @Input() timeslots!: { timeslots: Map<string, TimeSlot[]> };
 
@@ -68,6 +69,7 @@ export class ReportCardComponent {
                 data: {
                     studentReport: this.studentReport,
                     timeslots: this.timeslots,
+                    activeStudentChapterId: this.activeStudentChapterId
                 },
             });
 

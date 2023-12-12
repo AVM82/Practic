@@ -41,4 +41,5 @@ public class TimeSlotController {
             @PathVariable String slug) {
         return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
+
 }

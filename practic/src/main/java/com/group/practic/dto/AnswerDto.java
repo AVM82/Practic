@@ -1,5 +1,8 @@
 package com.group.practic.dto;
 
+
+import com.group.practic.entity.AnswerEntity;
+
 public class AnswerDto {
 
     private Long id;
@@ -14,6 +17,11 @@ public class AnswerDto {
         this.answer = answer;
         this.correct = correct;
     }
+
+    public static AnswerDto map(AnswerEntity entity) {
+        return new AnswerDto(entity.getId(), entity.getAnswer(), false);
+    }
+
 
     public Long getId() {
         return id;

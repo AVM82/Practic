@@ -1,4 +1,35 @@
 email:
+  emailVerification:
+    header: |
+      Будь ласка підтвердіть свій email
+    message: |+
+      Привіт, підтвердіть свій email для входу на сайт shpp-practic.eu-north-1.elasticbeanstalk.com
+      перейшовши за цим лінком ->
+      %s
+      Цей лінк буде валідним %s годин
+    verificationTokenValidityHours:
+      12
+    linkForVerification:
+      http://shpp-practic.eu-north-1.elasticbeanstalk.com/login?veriftoken=%s
+  password:
+    header: |
+      Пароль для входу в shpp-practic
+    message: |+
+      Привіт %s, це твій новий пароль для входу до сайту shpp-practic.eu-north-1.elasticbeanstalk.com
+      за допомогою email та пароля ->
+      %s
+      Бажано змінити його на сторінці входу натиснувши на "Забули пароль?"
+      
+  secretCode:
+    codeValidityMinutes: 5
+    header: |
+      Секретний пароль для зміни пароля на сайті shpp-practic
+    message: |+
+      Привіт, якщо це ви вирішили змінити пароль 
+      на сайті shpp-practic.eu-north-1.elasticbeanstalk.com, то введіть цей секретний пароль ->
+      %s
+      він буде дійсний %d хвилин
+
   calendar:
     header: |+
       Доповідь на тему - %s

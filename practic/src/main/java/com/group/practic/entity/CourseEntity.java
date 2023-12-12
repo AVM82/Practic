@@ -1,64 +1,64 @@
 package com.group.practic.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Entity
-@Table(name = "course")
-public class CourseEntity {
+@Table(name = "courses")
+@Getter
+@Setter
+public class CourseEntity implements Serializable {
+
+    private static final long serialVersionUID = -1132517329070397053L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
+    @Column(unique = true)
+    String slug;
+
     boolean inactive;
 
-    Set<String> authors;
+    private Set<String> authors;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    Set<PersonEntity> mentors = new HashSet<>();
+    @OneToMany(mappedBy = "course", cascade = CascadeType.MERGE)
+    private Set<MentorEntity> mentors = new HashSet<>();
 
     String courseType;
 
-    @Min(5)
     String name;
 
-    @NotBlank
     @Column(length = 8192)
     String description;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = CascadeType.MERGE)
     @OrderBy("number")
-    Set<AdditionalMaterialsEntity> additionalMaterials = new HashSet<>();
+    private List<AdditionalMaterialsEntity> additionalMaterials = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = CascadeType.MERGE)
     @OrderBy("number")
-    Set<LevelEntity> levels = new HashSet<>();
+    private List<LevelEntity> levels = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = CascadeType.MERGE)
     @OrderBy("number")
-    Set<ChapterEntity> chapters = new HashSet<>();
-
-    @Column(unique = true)
-    @Min(5)
-    String slug;
+    private List<ChapterEntity> chapters = new ArrayList<>();
 
     @Column(length = 16384)
     String svg;
@@ -76,145 +76,41 @@ public class CourseEntity {
     }
 
 
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public boolean getInactive() {
-        return inactive;
-    }
-
-
-    public void setInactive(boolean inactive) {
-        this.inactive = inactive;
-    }
-
-
-    public Set<String> getAuthors() {
-        return authors;
-    }
-
-
-    public void setAuthors(Set<String> authors) {
-        this.authors = authors;
-    }
-
-
-    public Set<PersonEntity> getMentors() {
-        return mentors;
-    }
-
-
-    public void setMentors(Set<PersonEntity> mentors) {
-        this.mentors = mentors;
-    }
-
-
-    public boolean setMentor(PersonEntity mentor) {
-        return mentors.add(mentor);
-    }
-
-
-    public boolean removeMentor(PersonEntity mentor) {
-        return mentors.remove(mentor);
-    }
-
-
-    public String getCourseType() {
-        return courseType;
-    }
-
-
-    public void setCourseType(String courseType) {
-        this.courseType = courseType;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
-
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-    public Set<AdditionalMaterialsEntity> getAdditionalMaterials() {
-        return additionalMaterials;
-    }
-
-
-    public void setAdditionalMaterials(Set<AdditionalMaterialsEntity> additionalMaterials) {
+    public void setAdditionalMaterials(List<AdditionalMaterialsEntity> additionalMaterials) {
         this.additionalMaterials = additionalMaterials;
         this.additionalMaterialsExist =
                 additionalMaterials != null && !additionalMaterials.isEmpty();
     }
 
 
-    public Set<LevelEntity> getLevels() {
-        return levels;
+    public CourseEntity update(CourseEntity course) {
+        inactive = course.inactive;
+        authors = course.authors;
+        courseType = course.courseType;
+        name = course.name;
+        description = course.description;
+        svg = course.svg;
+        return this;
     }
 
 
-    public void setLevels(Set<LevelEntity> levels) {
-        this.levels = levels;
+    @Override
+    public int hashCode() {
+        return Objects.hash(slug, inactive, authors, mentors, courseType, name, description, svg,
+                levels, chapters, additionalMaterials);
     }
 
 
-    public Set<ChapterEntity> getChapters() {
-        return chapters;
-    }
-
-
-    public void setChapters(Set<ChapterEntity> chapters) {
-        this.chapters = chapters;
-    }
-
-
-    public String getSlug() {
-        return slug;
-    }
-
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-
-    public String getSvg() {
-        return svg;
-    }
-
-
-    public void setSvg(String svg) {
-        this.svg = svg;
-    }
-
-
-    public boolean isAdditionalMaterialsExist() {
-        return additionalMaterialsExist;
-    }
-
-
-    public void setAdditionalMaterialsExist(boolean additionalMaterialsExist) {
-        this.additionalMaterialsExist = additionalMaterialsExist;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        CourseEntity other = (CourseEntity) obj;
+        return this == other || (Objects.equals(slug, other.slug)
+                && Objects.equals(authors, other.authors) && Objects.equals(name, other.name)
+                && Objects.equals(courseType, other.courseType) && Objects.equals(svg, other.svg)
+                && Objects.equals(description, other.description));
     }
 
 }

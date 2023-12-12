@@ -1,12 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {CoursesService} from "../../services/courses/courses.service";
+import {CoursesService} from "../../services/courses.service";
 import {MatCardModule} from '@angular/material/card';
 import {NgForOf, NgIf} from '@angular/common';
-import {Router, RouterLink} from "@angular/router";
+import {RouterLink} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
-import {AngularSvgIconModule, SvgIconRegistryService} from 'angular-svg-icon';
-import { TokenStorageService } from 'src/app/services/auth/token-storage.service';
-import { CourseProp } from 'src/app/models/course/course.prop';
+import {AngularSvgIconModule} from 'angular-svg-icon';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { User } from 'src/app/models/user';
+import { ROLE_ADMIN, ROLE_STAFF } from 'src/app/enums/app-constans';
+import { Course } from 'src/app/models/course';
+
 
 @Component({
     selector: 'app-courses',
@@ -16,53 +19,32 @@ import { CourseProp } from 'src/app/models/course/course.prop';
     imports: [NgForOf, NgIf, MatCardModule, RouterLink, MatIconModule, AngularSvgIconModule]
 })
 export class CoursesComponent implements OnInit{
-  router: Router;
-  coursesProp: CourseProp[] = [];
+  courses: Course[] = [];
   createCapability: boolean = false;
+  me!: User;
 
   constructor(
     private tokenStorageService: TokenStorageService,
-    private coursesService: CoursesService, 
-    private router0: Router,
-    private svg_registry: SvgIconRegistryService
+    private coursesService: CoursesService
   ) { 
-    this.createCapability = this.coursesService.me.hasAnyRole('ADMIN', 'COLLABORATOR');
-    this.router = router0;
+    this.me = this.tokenStorageService.getMe();
+    this.createCapability = this.me.hasAnyRole(ROLE_ADMIN, ROLE_STAFF);
   }
 
   ngOnInit(): void {
-    this.coursesService.getAllCourses().subscribe(courses => {
-      if (courses) {
-        const meId = this.coursesService.me.id;
-        courses.forEach(course => {
-          this.svg_registry.addSvg(course.slug, course.svg);
-            let route;
-            if (this.tokenStorageService.isStudent(course.slug))
-              this.coursesService.getActiveChapterNumber(course.slug).subscribe(number =>
-                this.coursesProp.push(new CourseProp (
-                  course.name,
-                  course.slug,
-                  course.slug + this.activeChapterRoute(number)
-                ))
-              )
-            else 
-              this.coursesProp.push(new CourseProp (
-                course.name,
-                course.slug,
-                course.slug + (course.mentors.some(mentor => mentor.id == meId) ? '' : '/main')
-              ))
-        })
-      }
-    });
-  }
-
-  private activeChapterRoute(number: number): string {
-    if (!number)
-      return '/main';
-    return number === 0x7fffffff ? '' : '/chapters/' + number;
+      this.coursesService.getAllCourses().subscribe(courses => this.courses = courses);
   }
 
   onSelect(slug: string): void {
     this.coursesService.setCourse(slug);
   }
+
+  getRoute(slug: string): string {
+    if (this.me.isStudent(slug)) {
+      let number = this.me.getCourseActiveChapterNumber(slug);
+      return slug + (number != 0 ? '/chapters/' + number : '');
+    }
+    return this.me.isMentor(slug) ? slug : slug + '/main';
+  }
+
 }
