@@ -38,7 +38,7 @@ public class AdditionalMaterialsService {
         AdditionalMaterialsEntity additionalMaterial = additionalMaterialsRepository
                 .findByCourseAndNumber(newEntity.getCourse(), newEntity.getNumber());
         if (additionalMaterial == null) {
-            additionalMaterialsRepository.save(newEntity);
+            return additionalMaterialsRepository.save(newEntity);
         }
         return additionalMaterial.equals(newEntity) ? additionalMaterial
                 : additionalMaterialsRepository.save(additionalMaterial.update(newEntity));
