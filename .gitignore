@@ -44,4 +44,10 @@ build/
 /pom.xml
 /google_checks.xml
 /suppressions.xml
+/frontend/src/main/angular/src/enviroments/enviroment.local.ts
+/frontend/src/main/angular/src/enviroments/enviroment.ts
+/frontend/src/main/angular/proxy.config.json
 /README.md
+
+### practic ###
+/practic/src/main/resources/application.properties
