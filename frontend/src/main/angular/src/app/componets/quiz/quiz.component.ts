@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CORRECT_ANSWERS_PERCENT, STATE_FINISHED, STATE_NOT_STARTED, STATE_STARTED} from "../../enums/app-constans";
 import {Quiz} from "../../models/quiz";
 import {QuizService} from "../../services/quiz.service";
@@ -11,6 +11,7 @@ import {TimerComponent} from "../timer/timer.component";
 import {QuestionComponent} from "../question/question.component";
 import {Question} from "../../models/question";
 import {Answer} from "../../models/answer";
+import {Chapter} from "../../models/chapter";
 
 @Component({
     selector: 'app-quiz',
@@ -24,6 +25,9 @@ import {Answer} from "../../models/answer";
     styleUrls: ['./quiz.component.css']
 })
 export class QuizComponent implements OnInit {
+    @Input() studentChapter!: Chapter;
+    @Output() closeQuiz: EventEmitter<any> = new EventEmitter();
+
     quizState: string = '';
     quiz!: Quiz;
     me!: User;
@@ -55,20 +59,18 @@ export class QuizComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.route.paramMap.subscribe(params => {
-            this.quizId = Number(params.get('quizId'));
-            this.studentChapterId = Number(params.get('studentChapterId'));
-            if (this.quizId > 0 && this.studentChapterId > 0) {
-                this.quizService.getQuiz(this.quizId)
-                    .subscribe(quiz => {
-                            this.quiz = quiz;
-                            this.quizName = this.quiz.quizName;
-                            this.questionsLength = this.quiz.questions.length;
-                        }
-                    );
-                this.quizState = STATE_NOT_STARTED;
-            }
-        });
+        this.quizId = this.studentChapter.quizId;
+        this.studentChapterId = this.studentChapter.id;
+        if (this.quizId > 0 && this.studentChapterId > 0) {
+            this.quizService.getQuiz(this.quizId)
+                .subscribe(quiz => {
+                        this.quiz = quiz;
+                        this.quizName = this.quiz.quizName;
+                        this.questionsLength = this.quiz.questions.length;
+                    }
+                );
+            this.quizState = STATE_NOT_STARTED;
+        }
     }
 
     nextQuestion() {
@@ -131,18 +133,20 @@ export class QuizComponent implements OnInit {
                             if (b.valueOf()) {
                                 this.rightAnswers = this.rightAnswers + 1;
                             }
-                        });
-                        if (((this.rightAnswers * 100) / this.quiz.questions.length) >= CORRECT_ANSWERS_PERCENT) {
-                            this.passed = true;
                         }
-                        this.setQuizState(STATE_FINISHED);
+                    );
+                    if (((this.rightAnswers * 100) / this.quiz.questions.length) >= CORRECT_ANSWERS_PERCENT) {
+                        this.passed = true;
+                        this.studentChapter.isQuizPassed = true;
                     }
+                    this.setQuizState(STATE_FINISHED);
                 }
-            );
+            }
+        );
     }
 
     redirectFromTest() {
-        window.history.back();
+        this.closeQuiz.emit();
     }
 
     handleTimerValueChange(timerValue: { minutes: number, seconds: number }): void {

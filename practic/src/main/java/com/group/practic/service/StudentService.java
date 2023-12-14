@@ -316,6 +316,7 @@ public class StudentService {
     }
 
     public void quizPassed(StudentChapterEntity studentChapter) {
-        // fill method
+        studentChapter.setQuizPassed(true);
+        studentChapterRepository.save(studentChapter);
     }
 }

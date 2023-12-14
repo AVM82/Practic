@@ -89,3 +89,4 @@ export const BUTTON_FINISH = 'ЗАВЕРШИТИ';
 export const BUTTON_PAUSE = 'ПАУЗА';
 export const BUTTON_CONTINUE = 'ПРОДОВЖИТИ';
 export const BUTTON_REPORT = 'ДОПОВІДЬ';
+export const BUTTON_TEST = 'ТЕСТ';

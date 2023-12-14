@@ -26,6 +26,10 @@ public class ChapterDto {
 
     long myReports;
 
+    boolean isQuizPassed;
+
+    long quizId;
+
 
     public static ChapterDto map(ChapterEntity chapter, boolean hidden, long reportCount) {
         ChapterDto dto = new ChapterDto();
@@ -69,6 +73,10 @@ public class ChapterDto {
         dto.parts = studentChapter.getPractices().stream()
                 .map(prac -> ChapterPartDto.map(null, prac)).toList();
         dto.myReports = studentChapter.countNonCancelledReports();
+        dto.isQuizPassed = studentChapter.isQuizPassed();
+        if (chapter.getQuiz() != null) {
+            dto.quizId = chapter.getQuiz().getId();
+        }
         return dto;
     }
 
