@@ -316,5 +316,6 @@ public class StudentService {
     }
 
     public void quizPassed(StudentChapterEntity studentChapter) {
+        // fill method
     }
 }

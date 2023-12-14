@@ -25,7 +25,7 @@ import {Answer} from "../../models/answer";
 })
 export class QuizComponent implements OnInit {
     quizState: string = '';
-    quiz: Quiz | any;
+    quiz: Quiz;
     me!: User;
     quizId!: number;
     timerValue: number = 0;
