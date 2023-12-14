@@ -7,7 +7,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
 import {InfoMessagesService} from "./services/info-messages.service";
 import { CommonModule } from '@angular/common';
-import {TimerComponent} from "./componets/timer/timer.component";
 
 @Component({
     selector: 'app-root',
@@ -19,8 +18,7 @@ import {TimerComponent} from "./componets/timer/timer.component";
         RouterOutlet,
         CourseNavbarComponent,
         FooterComponent,
-        CommonModule,
-        TimerComponent]
+        CommonModule]
 })
 export class AppComponent implements OnDestroy{
   title = 'Practic';
