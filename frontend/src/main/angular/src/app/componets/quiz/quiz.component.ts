@@ -29,7 +29,6 @@ export class QuizComponent implements OnInit {
     me!: User;
     quizId!: number;
     timerValue: number = 0;
-
     quizName: string = '';
     currentIndex: number = 0;
     questionsLength: number = 0;
