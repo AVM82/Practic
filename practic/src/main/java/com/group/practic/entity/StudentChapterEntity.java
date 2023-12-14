@@ -66,6 +66,9 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @OrderBy("id")
     private List<StudentReportEntity> reports = new ArrayList<>();
 
+    @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
+    private List<QuizResultEntity> quizResults = new ArrayList<>();
+
     int daysSpent;
 
     LocalDate startCounting;
@@ -73,7 +76,8 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     private Set<Long> subs = new HashSet<>();
 
 
-    public StudentChapterEntity() {}
+    public StudentChapterEntity() {
+    }
 
 
     public StudentChapterEntity(StudentEntity student, ChapterEntity chapter) {

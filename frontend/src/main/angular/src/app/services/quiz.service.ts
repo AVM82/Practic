@@ -13,13 +13,11 @@ export class QuizService {
     }
 
     getQuiz(quizId: number): Observable<Quiz> {
-        let queryParam = {'quizId': quizId};
-        return this.http.get<Quiz>(
-            ApiUrls.Quizzes + quizId, {params: queryParam});
+        return this.http.get<Quiz>( ApiUrls.Quizzes + quizId);
     }
 
-    getResult(quizId: number, ids: number[]): Observable<boolean[]> {
-        return this.http.post<boolean[]>(ApiUrls.Quizzes + quizId, ids);
+    getResult(quizId: number, quizResultId: number, ids: number[], time: number): Observable<boolean[]> {
+        return this.http.post<boolean[]>(ApiUrls.Quizzes + quizId + '/' + quizResultId + '/' + time, ids);
     }
 
     saveQuiz(quiz: Quiz) {
@@ -29,5 +27,9 @@ export class QuizService {
     getSavedQuiz(): Quiz | undefined {
         const quizJson = window.sessionStorage.getItem('quiz');
         return quizJson ? Quiz.fromJson(JSON.parse(quizJson)) : undefined;
+    }
+
+    getQuizResultId(studentChapterId: number): Observable<number> {
+        return this.http.get<number>(ApiUrls.Quizzes + 'start/' + studentChapterId);
     }
 }

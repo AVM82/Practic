@@ -28,7 +28,7 @@ const routes: Routes = [
   {path: 'logout', component: LoginComponent},
   {path: 'feedback',component: FeedbackComponent},
   {path: 'ban', component: BannedComponent},
-  {path: 'quizzes/:quizId', component: QuizComponent},
+  {path: 'quizzes/:quizId/:studentChapterId', component: QuizComponent},
 
   {path: 'users', component: UsersComponent},
   {path: 'mentor', component: MentorDashboardComponent},

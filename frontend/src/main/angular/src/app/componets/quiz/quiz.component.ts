@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {STATE_FINISHED, STATE_NOT_STARTED, STATE_STARTED} from "../../enums/app-constans";
+import {CORRECT_ANSWERS_PERCENT, STATE_FINISHED, STATE_NOT_STARTED, STATE_STARTED} from "../../enums/app-constans";
 import {Quiz} from "../../models/quiz";
 import {QuizService} from "../../services/quiz.service";
 import {User} from "../../models/user";
@@ -39,6 +39,10 @@ export class QuizComponent implements OnInit {
     currentSum: number = 0;
     barLine: string = '';
 
+    studentChapterId: number = 0;
+    quizResultId: number = 0;
+    time: number = 0;
+
     protected readonly STATE_NOT_STARTED = STATE_NOT_STARTED;
     protected readonly STATE_STARTED = STATE_STARTED;
     protected readonly STATE_FINISHED = STATE_FINISHED;
@@ -54,7 +58,8 @@ export class QuizComponent implements OnInit {
     ngOnInit(): void {
         this.route.paramMap.subscribe(params => {
             this.quizId = Number(params.get('quizId'));
-            if (this.quizId > 0) {
+            this.studentChapterId = Number(params.get('studentChapterId'));
+            if (this.quizId > 0 && this.studentChapterId > 0) {
                 this.quizService.getQuiz(this.quizId)
                     .subscribe(quiz => {
                             this.quiz = quiz;
@@ -79,9 +84,9 @@ export class QuizComponent implements OnInit {
         }
     }
 
-    startTimer(): void {
-        console.log('quiz', this.quiz);
-        console.log('quiz.questions.length', this.quiz.questions.length);
+    startQuiz(): void {
+        this.quizService.getQuizResultId(this.studentChapterId)
+            .subscribe(id => this.quizResultId = id);
         this.timerValue = 60 * this.quiz.questions.length;
         this.timerService.startTimer(this.timerValue);
         this.setQuizState(STATE_STARTED);
@@ -107,7 +112,6 @@ export class QuizComponent implements OnInit {
     }
 
     getResult() {
-        // answer from UI
         const answersFromUI: number[] = [];
         this.quiz.questions.forEach((q: { answers: Answer[]; }) => {
             if (q.answers.some(answer => answer.correct)) {
@@ -120,25 +124,19 @@ export class QuizComponent implements OnInit {
                 answersFromUI.push(0);
             }
         })
-
-        console.log('answersFromUI: ', answersFromUI);
-        // answers from backend
-        this.quizService.getResult(this.quizId, answersFromUI)
+        this.quizService.getResult(this.quizId, this.quizResultId, answersFromUI, this.time)
             .subscribe({
                     next: data => {
                         this.resultList = data;
-                        // init right answers
                         this.resultList.forEach(b => {
                             if (b.valueOf()) {
                                 this.rightAnswers = this.rightAnswers + 1;
                             }
                         });
-                        // init text in finish page Ok or NOT  // it depends on 75% correct answers
-                        if (((this.rightAnswers * 100) / this.quiz.questions.length) >= 75) {
+                        if (((this.rightAnswers * 100) / this.quiz.questions.length) >= CORRECT_ANSWERS_PERCENT) {
                             this.passed = true;
                         }
                         this.setQuizState(STATE_FINISHED);
-                        this.timerService.stopTimer();
                     }
                 }
             );
@@ -153,6 +151,7 @@ export class QuizComponent implements OnInit {
         const mark = 100 / total;
         this.barLine = `${this.currentSum}%`
         this.currentSum += mark;
+        this.time = total - (timerValue.minutes * 60 + timerValue.seconds);
     }
 
     handleTimerFinished() {
