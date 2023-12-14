@@ -17,10 +17,13 @@ import { CoursesService } from 'src/app/services/courses.service';
 import { StudentService } from 'src/app/services/student.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { ReportButtonComponent } from 'src/app/componets/report-button/report-button.component';
-import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START,
-         STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW } from 'src/app/enums/app-constans';
+import {
+  BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START, BUTTON_TEST,
+  STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW
+} from 'src/app/enums/app-constans';
 import { ChapterPart } from 'src/app/models/chapterpart';
 import { SubChapter } from 'src/app/models/subchapter';
+import {QuizComponent} from "../../componets/quiz/quiz.component";
 
 
 
@@ -29,7 +32,7 @@ import { SubChapter } from 'src/app/models/subchapter';
   standalone: true,
   imports: [CommonModule, CourseNavbarComponent,  RouterLink, MatCardModule, MatIconModule, EditBtnComponent,
     CdkAccordionModule, MatTooltipModule, MatChipsModule, StatePipe, PracticeButtonsVisibilityPipe,
-    ReportButtonComponent],
+    ReportButtonComponent, QuizComponent],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
@@ -51,6 +54,7 @@ export class ChapterDetailsComponent implements OnInit {
   readonly ready = STATE_READY_TO_REVIEW;
   readonly approved = STATE_APPROVED;
   service: StudentService;
+  isQuizVisible: boolean = false;
 
   constructor(
     private coursesService: CoursesService,
@@ -99,9 +103,8 @@ export class ChapterDetailsComponent implements OnInit {
             return BUTTON_PAUSE;
 //          if (this.chapter!.myReports == 0)
 //            return BUTTON_REPORT;
-//          if (!this.chapter!.testIsPassed)
-//            return 'ТЕСТ';
-          return BUTTON_FINISH;
+         if (!this.chapter!.isQuizPassed) return BUTTON_TEST;
+         return BUTTON_FINISH;
       default: return '%#&$#^@&%(*&(*(+|}{}*';
     }
   }
@@ -118,6 +121,8 @@ export class ChapterDetailsComponent implements OnInit {
       case BUTTON_PAUSE:  this.studentService.changeChapterState(this.chapter!, STATE_PAUSE); 
                           break;
       case BUTTON_REPORT: this.router.navigate(['/courses', this.slug, 'reports']);
+                          break;
+      case BUTTON_TEST: this.isQuizVisible = true;
                           break;
       case BUTTON_FINISH: this.studentService.changeChapterState(this.chapter!, STATE_DONE);
                           break;
@@ -142,4 +147,7 @@ export class ChapterDetailsComponent implements OnInit {
     this.studentService.putSubChapterSkills(this.chapter!, subchapter, event);
   }
 
+  closeQuiz() {
+    this.isQuizVisible = false;
+  }
 }

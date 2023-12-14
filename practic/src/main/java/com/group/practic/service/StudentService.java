@@ -315,4 +315,8 @@ public class StudentService {
         return false;
     }
 
+    public void quizPassed(StudentChapterEntity studentChapter) {
+        studentChapter.setQuizPassed(true);
+        studentChapterRepository.save(studentChapter);
+    }
 }

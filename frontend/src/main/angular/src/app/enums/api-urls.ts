@@ -5,6 +5,8 @@ export enum ApiUrls {
   
   Feedbacks = '/api/feedbacks',
 
+  Quizzes = '/api/quizzes/',
+
   Courses = '/api/courses',
   Course = '/api/courses/',
   NewCourse = '/api/courses/NewCourse',
