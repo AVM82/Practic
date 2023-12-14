@@ -17,7 +17,6 @@ import { FeedbackComponent } from './componets/feedback/feedback.component';
 import { StartPanelComponent } from './pages/start-panel/start-panel.component';
 import { UsersComponent } from './pages/users/users.component';
 import { BannedComponent } from './pages/ban/ban.component';
-import { QuizComponent } from './componets/quiz/quiz.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 
 registerLocaleData(localeUk, 'uk');
