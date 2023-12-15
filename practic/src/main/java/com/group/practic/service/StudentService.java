@@ -217,7 +217,7 @@ public class StudentService {
                 .stream().filter(practice -> practice.getState() == PracticeState.APPROVED)
                 .count() == chapter.getChapter().getParts().size()
         // && chapter.getReportCount() > 0
-                && chapter.isQuizPassed;
+                && chapter.isQuizPassed();
     }
 
 
