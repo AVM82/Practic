@@ -5,10 +5,10 @@
 export const environment = {
   production: false,
   appApi: '',
-  apiBaseUrl: "http://localhost:5001/",
+  apiBaseUrl: "http://localhost:5000/",
   redirectUrl: "?redirect_uri=http://localhost:4200/login",
   loginBaseUrl: "http://localhost:4200/login",
-  logoutBaseUrl: "http://localhost:5001/"
+  logoutBaseUrl: "http://localhost:5000/"
 };
 
 

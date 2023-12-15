@@ -45,6 +45,3 @@ build/
 /google_checks.xml
 /suppressions.xml
 /README.md
-
-/frontend/src/main/angular/src/enviroments/*
-/practic/src/main/resources/application.properties
