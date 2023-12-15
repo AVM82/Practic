@@ -7,7 +7,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.group.practic.dto.StudentReportCreationDto;
-import com.group.practic.entity.*;
+import com.group.practic.entity.ChapterEntity;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.QuizEntity;
+import com.group.practic.entity.StudentReportEntity;
+import com.group.practic.entity.TimeSlotEntity;
 import com.group.practic.repository.StudentReportRepository;
 import com.group.practic.repository.TimeSlotRepository;
 import java.util.ArrayList;
@@ -119,10 +124,11 @@ class StudentReportServiceTest {
                 studentReportService.getAllStudentsActualReports(courseSlug);
         assertEquals(reportsForChapter2, result.get(0));
     }
+
     @Test
     void testCreateStudentReportWithValidInput() {
         StudentReportCreationDto newStudentReportDto
-                =  new StudentReportCreationDto(1, 1L, "Test Report", 2L);
+                = new StudentReportCreationDto(1, 1L, "Test Report", 2L);
         PersonEntity student = new PersonEntity();
         ChapterEntity chapter = new ChapterEntity();
         TimeSlotEntity timeSlot = new TimeSlotEntity();
