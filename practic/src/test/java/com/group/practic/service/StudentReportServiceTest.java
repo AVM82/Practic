@@ -1,53 +1,87 @@
-//package com.group.practic.service;
+package com.group.practic.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import com.group.practic.dto.StudentReportCreationDto;
+import com.group.practic.entity.*;
+import com.group.practic.repository.StudentReportRepository;
+import com.group.practic.repository.TimeSlotRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@Slf4j
+@ExtendWith(MockitoExtension.class)
+class StudentReportServiceTest {
+    @Mock
+    private StudentReportRepository studentReportRepository;
+    @Mock
+    private CourseService courseService;
+    @Mock
+    private ChapterService chapterService;
+    @Mock
+    private TimeSlotRepository timeSlotRepository;
+    @Mock
+    private TimeSlotService timeSlotService;
+
+    @InjectMocks
+    private StudentReportService studentReportService;
+
+    @BeforeEach
+    void setUp() {
+    }
+
+//    @Test
+//    void testGetAllStudentsActualReports() {
+//        String courseSlug = "example-slug";
 //
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertFalse;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.when;
+//        CourseEntity course = new CourseEntity();
+//        course.setChapters(new ArrayList<>(Arrays.asList(
+//                new ChapterEntity(1, course, 1, "Chapter 1", new QuizEntity()),
+//                new ChapterEntity(2, course, 2, "Chapter 2", new QuizEntity())
+//        )));
 //
-//import com.group.practic.dto.StudentReportCreationDto;
-//import com.group.practic.entity.ChapterEntity;
-//import com.group.practic.entity.CourseEntity;
-//import com.group.practic.entity.PersonEntity;
-//import com.group.practic.entity.StudentReportEntity;
-//import com.group.practic.entity.TimeSlotEntity;
-//import com.group.practic.repository.StudentReportRepository;
-//import com.group.practic.repository.TimeSlotRepository;
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//import java.util.HashSet;
-//import java.util.List;
-//import java.util.Optional;
-//import lombok.extern.slf4j.Slf4j;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//
-//@Slf4j
-//@ExtendWith(MockitoExtension.class)
-//class StudentReportServiceTest {
-//    @Mock
-//    private StudentReportRepository studentReportRepository;
-//    @Mock
-//    private CourseService courseService;
-//    @Mock
-//    private ChapterService chapterService;
-//    @Mock
-//    private TimeSlotRepository timeSlotRepository;
-//    @Mock
-//    private TimeSlotService timeSlotService;
-//
-//    @InjectMocks
-//    private StudentReportService studentReportService;
-//
-//    @BeforeEach
-//    void setUp() {
+//        List<StudentReportEntity> reportsForChapter1 = Arrays.asList(
+//                new StudentReportEntity(course.getChapters().iterator().next(),
+//                        new TimeSlotEntity(), "Report 1"),
+//                new StudentReportEntity(course.getChapters().iterator().next(),
+//                        new TimeSlotEntity(), "Report 2")
+//        );
+
+//        List<StudentReportEntity> reportsForChapter2 = Arrays.asList(
+//                new StudentReportEntity(course.getChapters().iterator().next(),
+//                        new PersonEntity(), new TimeSlotEntity(), "Report 3"),
+//                new StudentReportEntity(course.getChapters().iterator().next(),
+//                        new PersonEntity(), new TimeSlotEntity(), "Report 4")
+//        );
+
+//        when(courseService.get(courseSlug)).thenReturn(Optional.of((course)));
+//        when(studentReportRepository.findAllByStudentChapterChapterAndStateInOrderByTimeSlotId(
+//                course.getChapters().iterator().next(), StudentReportService.ACTUAL_STATES))
+//                .thenReturn(reportsForChapter1);
+//        when(studentReportRepository
+//                .findAllByChapterAndStateInOrderByTimeSlotId(course.getChapters()
+//                        .iterator().next(), StudentReportService.ACTUAL_STATES))
+//                .thenReturn(reportsForChapter2);
+
+//        List<List<StudentReportEntity>> result =
+//                studentReportService.getAllStudentsActualReports(courseSlug);
+//        assertEquals(reportsForChapter1, result.get(0));
 //    }
-//
+
 //    @Test
 //    void testGetAllStudentsActualReports() {
 //        String courseSlug = "example-slug";
@@ -85,7 +119,6 @@
 //                studentReportService.getAllStudentsActualReports(courseSlug);
 //        assertEquals(reportsForChapter2, result.get(0));
 //    }
-//
 //    @Test
 //    void testCreateStudentReportWithValidInput() {
 //        StudentReportCreationDto newStudentReportDto
@@ -151,4 +184,4 @@
 //        updatedLikedPersonsIdList = updatedReport.getLikedPersonsIdList();
 //        assertTrue(updatedLikedPersonsIdList.contains(studentId));
 //    }
-//}
+}
