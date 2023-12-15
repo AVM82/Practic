@@ -47,9 +47,6 @@ class StudentServiceTest {
     private CourseService courseService;
 
     @Mock
-    private PersonService personService;
-
-    @Mock
     EmailSenderService emailSenderService;
 
     @Mock
@@ -122,6 +119,8 @@ class StudentServiceTest {
         setPractices(studentChapter, 4, 3);
         assertFalse(studentService.allowToCloseChapter(studentChapter));
         setPractices(studentChapter, 4, 4);
+        assertFalse(studentService.allowToCloseChapter(studentChapter));
+        studentChapter.setQuizPassed(true);
         assertTrue(studentService.allowToCloseChapter(studentChapter));
     }
 
@@ -166,7 +165,8 @@ class StudentServiceTest {
         studentChapter.setState(ChapterState.IN_PROCESS);
         studentChapter.setStartCounting(LocalDate.now());
 
-        when(studentChapterRepository.save(studentChapter)).thenReturn(studentChapter);
+        when(studentChapterRepository.save(any(StudentChapterEntity.class)))
+                .thenReturn(studentChapter);
 
         assertEquals(ChapterState.IN_PROCESS, studentService
                 .changeChapterState(studentChapter, ChapterState.NOT_STARTED).getState());
@@ -191,8 +191,10 @@ class StudentServiceTest {
                 studentService.changeChapterState(studentChapter, ChapterState.DONE).getState());
 
         setPractices(studentChapter, 4, 4);
+        when(studentRepository.save(any(StudentEntity.class))).thenReturn(new StudentEntity());
         when(studentEntity.getFinish()).thenReturn(LocalDate.of(2023, 12, 31));
         when(studentEntity.getStart()).thenReturn(LocalDate.of(2023, 1, 1));
+        studentChapter.setQuizPassed(true);
         assertEquals(ChapterState.DONE,
                 studentService.changeChapterState(studentChapter, ChapterState.DONE).getState());
     }
@@ -228,6 +230,7 @@ class StudentServiceTest {
     void testFinish() {
         StudentChapterEntity studentChapter =
                 new StudentChapterEntity(studentEntity, chapterEntity);
+        studentChapter.setQuizPassed(true);
         studentChapter.setState(ChapterState.IN_PROCESS);
         studentChapter.setStartCounting(LocalDate.of(2023, 11, 1));
         setPractices(studentChapter, 4, 4);

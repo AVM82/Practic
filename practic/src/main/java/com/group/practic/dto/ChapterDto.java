@@ -4,10 +4,12 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import java.util.List;
 import java.util.Optional;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 
 @Getter
+@EqualsAndHashCode
 public class ChapterDto {
 
     long id;
