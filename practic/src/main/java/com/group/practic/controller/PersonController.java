@@ -124,4 +124,13 @@ public class PersonController {
         return postResponse(courseService.get(slug).map(personService::createApplication));
     }
 
+//
+//    @GetMapping("/profile")
+// PersonService.me()--->getProfileEntity
+    //dto--> combainTosingleDTO(person+profil)
+    // new profilEntity
+//
+//    @PutMapping("/profile")
+
+
 }
