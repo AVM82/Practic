@@ -215,9 +215,9 @@ public class StudentService {
         // --> complete the test immediately
         return chapter.getState().changeAllowed(ChapterState.DONE) && chapter.getPractices()
                 .stream().filter(practice -> practice.getState() == PracticeState.APPROVED)
-                .count() == chapter.getChapter().getParts().size();
+                .count() == chapter.getChapter().getParts().size()
         // && chapter.getReportCount() > 0
-        // && chapter.quizResultIsSatisfactory
+                && chapter.isQuizPassed;
     }
 
 
