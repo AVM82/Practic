@@ -23,6 +23,7 @@ export class CreateMethod {
   static readonly FROM_PROPERTIES = 'FromProperties';
 }
 
+export const CORRECT_ANSWERS_PERCENT = 75;
 
 export const ROLE_ADMIN = 'ADMIN';
 export const ROLE_STAFF = 'STAFF';
@@ -88,3 +89,4 @@ export const BUTTON_FINISH = 'ЗАВЕРШИТИ';
 export const BUTTON_PAUSE = 'ПАУЗА';
 export const BUTTON_CONTINUE = 'ПРОДОВЖИТИ';
 export const BUTTON_REPORT = 'ДОПОВІДЬ';
+export const BUTTON_TEST = 'ТЕСТ';

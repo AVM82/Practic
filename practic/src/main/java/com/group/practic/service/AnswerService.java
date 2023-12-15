@@ -16,7 +16,7 @@ public class AnswerService {
     }
 
     public List<Boolean> getAllById(List<Long> ids) {
-        return ids.stream().sequential()
+        return ids.stream()
                 .map(id -> id != 0 && answerRepository.findById(id).get().isCorrect()).toList();
     }
 }

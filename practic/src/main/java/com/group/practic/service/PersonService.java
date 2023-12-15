@@ -367,9 +367,7 @@ public class PersonService implements UserDetailsService {
 
 
     public void addStudentRole(PersonEntity person) {
-        if (person.getStudents().size() == 1) {
-            addRole(person, roleStudent);
-        }
+        addRole(person, roleStudent);
     }
 
 
