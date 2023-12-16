@@ -1,28 +1,19 @@
 package com.group.practic.controller;
 
-import static com.group.practic.util.ResponseUtils.badRequest;
-import static com.group.practic.util.ResponseUtils.getResponse;
-import static com.group.practic.util.ResponseUtils.postResponse;
-
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.PersonDto;
+import com.group.practic.dto.ProfileDto;
 import com.group.practic.entity.RoleEntity;
-import com.group.practic.service.ApplicantService;
-import com.group.practic.service.CourseService;
-import com.group.practic.service.MentorService;
-import com.group.practic.service.PersonService;
-import com.group.practic.service.StudentService;
+import com.group.practic.service.*;
+
 import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.group.practic.util.ResponseUtils.*;
 
 
 @RestController
@@ -39,16 +30,18 @@ public class PersonController {
 
     CourseService courseService;
 
+    ProfileService profileService;
 
     @Autowired
     public PersonController(PersonService personService, CourseService courseService,
-            ApplicantService applicantService, MentorService mentorService,
-            StudentService studentService) {
+                            ApplicantService applicantService, MentorService mentorService,
+                            StudentService studentService, ProfileService profileService) {
         this.personService = personService;
         this.courseService = courseService;
         this.applicantService = applicantService;
         this.mentorService = mentorService;
         this.studentService = studentService;
+        this.profileService = profileService;
     }
 
 
@@ -62,8 +55,8 @@ public class PersonController {
     @GetMapping("/")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<Collection<PersonDto>> get(@RequestParam(required = false) String name,
-            @RequestParam(required = false) boolean inactive,
-            @RequestParam(required = false) boolean ban) {
+                                                     @RequestParam(required = false) boolean inactive,
+                                                     @RequestParam(required = false) boolean ban) {
         if (name == null) {
             return getResponse(PersonDto.map(personService.get(inactive, ban)));
         }
@@ -92,18 +85,18 @@ public class PersonController {
         RoleEntity role = personService.getRole(newRole);
         return role == null ? badRequest()
                 : postResponse(personService.get(id)
-                        .map(person -> PersonDto.map(personService.addRole(person, role))));
+                .map(person -> PersonDto.map(personService.addRole(person, role))));
     }
 
 
     @PostMapping("/{id}/remove/{newRole}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<PersonDto> removeRole(@PathVariable long id,
-            @PathVariable String newRole) {
+                                                @PathVariable String newRole) {
         RoleEntity role = personService.getRole(newRole);
         return role == null ? badRequest()
                 : postResponse(personService.get(id)
-                        .map(person -> PersonDto.map(personService.removeRole(person, role))));
+                .map(person -> PersonDto.map(personService.removeRole(person, role))));
     }
 
 
@@ -124,13 +117,17 @@ public class PersonController {
         return postResponse(courseService.get(slug).map(personService::createApplication));
     }
 
-//
-//    @GetMapping("/profile")
-// PersonService.me()--->getProfileEntity
-    //dto--> combainTosingleDTO(person+profil)
-    // new profilEntity
-//
-//    @PutMapping("/profile")
+    @GetMapping("/profile")
+    public ResponseEntity<ProfileDto> getProfile() {
+
+        return getResponse(profileService.getProfile(PersonService.me()));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ProfileDto> putProfile(@RequestBody ProfileDto profileDto) {
+
+        return updateResponse(profileService.updateProfile(profileDto));
+    }
 
 
 }

@@ -8,22 +8,33 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProfileDto {
-    private long id;
+    private long profileId;
+    private long personId;
     private String name;
     private String surname;
-    private String profileCountry;
-    private String profileCity;
-    private String profileEmail;
-    private String profileDiscord;
-    private String profileLinkidIn;
+    private String country;
+    private String city;
+    private String email;
+    private String discord;
+    private String personUrl;
 
 
     private boolean isNotificationEmail;
     private boolean isNotificationDiscord;
 
-    public ProfileDto map(ProfileEntity profileEntity, PersonEntity personEntity) {
+    public static ProfileDto map(ProfileEntity profileEntity, PersonEntity personEntity) {
         ProfileDto dto = new ProfileDto();
-        dto.id = profileEntity.getId();
+        dto.profileId = profileEntity.getId();
+        dto.country = profileEntity.getCountry();
+        dto.city = profileEntity.getCity();
+        dto.isNotificationDiscord = profileEntity.isNotificationDiscord();
+        dto.isNotificationEmail = profileEntity.isNotificationEmail();
+
+
+        dto.email = personEntity.getEmail();
+        dto.discord = personEntity.getDiscord();
+        dto.personUrl = personEntity.getPersonPageUrl();
+
         String[] nameParts = personEntity.getName().split("\\s+");
         dto.name = nameParts[0];
         if (nameParts.length > 1) {
@@ -31,15 +42,6 @@ public class ProfileDto {
         } else {
             dto.surname = nameParts[0];
         }
-
-        dto.profileCountry = profileEntity.getProfileCountry();
-        dto.profileCity = profileEntity.getProfileCity();
-        dto.profileEmail = personEntity.getEmail();
-        dto.profileDiscord = profileEntity.getProfileDiscord();
-        dto.profileLinkidIn = profileEntity.getProfileLinkidIn();
-        dto.isNotificationDiscord = profileEntity.isNotificationDiscord();
-        dto.isNotificationEmail = profileEntity.isNotificationEmail();
-
 
         return dto;
     }
