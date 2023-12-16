@@ -13,7 +13,7 @@ export class CertificateService {
       public http: HttpClient,
       public tokenStorageService: TokenStorageService) { }
 
-  getCertificateInfo(): Observable<CertificateInfo> {
+  getCertificateInfo(studentId: number): Observable<CertificateInfo> {
     return this.http.get<CertificateInfo>(ApiUrls.Certification);
   }
 }

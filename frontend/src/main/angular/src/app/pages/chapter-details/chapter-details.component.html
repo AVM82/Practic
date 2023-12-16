@@ -152,6 +152,9 @@
             </div>
         </div>
     </div>
+
+    <app-certificate-request *ngIf="isStudent" [student]="coursesService.stateStudent!"></app-certificate-request>
+
 </section>
 <app-quiz *ngIf="isQuizVisible"
           [studentChapter]="chapter!"

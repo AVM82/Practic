@@ -4,14 +4,13 @@ import { User } from 'src/app/models/user';
 import { PersonService } from 'src/app/services/person.service';
 import { StateApplicant } from 'src/app/models/applicant';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
-import { CertificateRequestComponent } from '../certificate-request/certificate-request.component';
 
 const allowedUpdatePeriodMs = 5000;
 
 @Component({
   selector: 'app-apply-btn',
   standalone: true,
-  imports: [CommonModule, CertificateRequestComponent],
+  imports: [CommonModule],
   templateUrl: './apply-btn.component.html',
   styleUrls: ['./apply-btn.component.css']
 })
