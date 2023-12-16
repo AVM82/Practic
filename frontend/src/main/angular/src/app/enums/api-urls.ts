@@ -2,6 +2,8 @@ export enum ApiUrls {
   Me = '/api/persons/me',
   Persons = '/api/persons',
   Application = '/api/persons/application/',
+
+  Certification = '/api/certification',
   
   Feedbacks = '/api/feedbacks',
 
