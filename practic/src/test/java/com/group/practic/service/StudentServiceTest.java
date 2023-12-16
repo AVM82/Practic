@@ -1,4 +1,4 @@
-package com.group.practic.service; 
+package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.group.practic.entity.ChapterEntity;
+import com.group.practic.entity.ChapterPartEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
 import com.group.practic.entity.StudentChapterEntity;
@@ -18,6 +19,7 @@ import com.group.practic.enumeration.ChapterState;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +47,6 @@ class StudentServiceTest {
     private CourseService courseService;
 
     @Mock
-    private PersonService personService;
-
-    @Mock
     EmailSenderService emailSenderService;
 
     @Mock
@@ -71,19 +70,25 @@ class StudentServiceTest {
     }
 
 
-    private <T> List<T> getSpecificSizeList(int size) {
+    private <T> List<T> getSpecificSizeList(Class<T> type, int size) {
         List<T> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            result.add(null);
+            try {
+                result.add(type.getDeclaredConstructor().newInstance());
+            } catch (NoSuchMethodException | InstantiationException
+                     | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
 
 
-    private void setPractices(StudentChapterEntity studentChapter, 
-            int totalCount, int approvedCount) {
-        when(chapterEntity.getParts()).thenReturn(getSpecificSizeList(totalCount));
-        List<StudentPracticeEntity> generatedPractices = new ArrayList<StudentPracticeEntity>();
+    private void setPractices(StudentChapterEntity studentChapter,
+                              int totalCount, int approvedCount) {
+        when(chapterEntity.getParts())
+                .thenReturn(getSpecificSizeList(ChapterPartEntity.class, totalCount));
+        List<StudentPracticeEntity> generatedPractices = new ArrayList<>();
         for (int i = 1; i <= totalCount; i++, approvedCount--) {
             StudentPracticeEntity practice = new StudentPracticeEntity(studentChapter, i);
             if (approvedCount > 0) {
@@ -114,6 +119,8 @@ class StudentServiceTest {
         setPractices(studentChapter, 4, 3);
         assertFalse(studentService.allowToCloseChapter(studentChapter));
         setPractices(studentChapter, 4, 4);
+        assertFalse(studentService.allowToCloseChapter(studentChapter));
+        studentChapter.setQuizPassed(true);
         assertTrue(studentService.allowToCloseChapter(studentChapter));
     }
 
@@ -157,7 +164,9 @@ class StudentServiceTest {
                 new StudentChapterEntity(studentEntity, chapterEntity);
         studentChapter.setState(ChapterState.IN_PROCESS);
         studentChapter.setStartCounting(LocalDate.now());
-        when(studentChapterRepository.save(studentChapter)).thenReturn(studentChapter);
+
+        when(studentChapterRepository.save(any(StudentChapterEntity.class)))
+                .thenReturn(studentChapter);
 
         assertEquals(ChapterState.IN_PROCESS, studentService
                 .changeChapterState(studentChapter, ChapterState.NOT_STARTED).getState());
@@ -182,8 +191,10 @@ class StudentServiceTest {
                 studentService.changeChapterState(studentChapter, ChapterState.DONE).getState());
 
         setPractices(studentChapter, 4, 4);
+        when(studentRepository.save(any(StudentEntity.class))).thenReturn(new StudentEntity());
         when(studentEntity.getFinish()).thenReturn(LocalDate.of(2023, 12, 31));
         when(studentEntity.getStart()).thenReturn(LocalDate.of(2023, 1, 1));
+        studentChapter.setQuizPassed(true);
         assertEquals(ChapterState.DONE,
                 studentService.changeChapterState(studentChapter, ChapterState.DONE).getState());
     }
@@ -219,6 +230,7 @@ class StudentServiceTest {
     void testFinish() {
         StudentChapterEntity studentChapter =
                 new StudentChapterEntity(studentEntity, chapterEntity);
+        studentChapter.setQuizPassed(true);
         studentChapter.setState(ChapterState.IN_PROCESS);
         studentChapter.setStartCounting(LocalDate.of(2023, 11, 1));
         setPractices(studentChapter, 4, 4);
@@ -229,7 +241,6 @@ class StudentServiceTest {
         assertEquals(ChapterState.DONE,
                 studentService.changeChapterState(studentChapter, ChapterState.DONE).getState());
         verify(studentEntity).setFinish(any());
-        verify(studentEntity).setInactive(true);
         verify(studentEntity).setActiveChapterNumber(0);
         verify(studentEntity).setWeeks(52);
         verify(studentEntity).setDaysSpent(0);

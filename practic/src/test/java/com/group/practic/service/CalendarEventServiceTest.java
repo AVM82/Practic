@@ -1,6 +1,8 @@
 package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import com.group.practic.dto.EventDto;
 import com.group.practic.dto.MessageSendingResultDto;
@@ -15,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -25,12 +26,10 @@ class CalendarEventServiceTest {
     private CalendarEventService calendarEventService;
 
     @Mock
-    private PersonService personService;
-    @Mock
     private StudentService studentService;
 
     @Mock
-    private Sender sender;
+    private EmailSenderService emailSenderService;
 
     @BeforeEach
     public void setUp() {
@@ -63,11 +62,11 @@ class CalendarEventServiceTest {
         CourseEntity course = new CourseEntity("java-dev-tools", "java mentoring course", "svg");
         StudentEntity student1 = new StudentEntity(person1, course);
         studentEntities.add(student1);
-        Mockito.when(studentService.getStudentsOfCourse(course, false, false))
+        when(studentService.getStudentsOfCourse(course, false, false))
                 .thenReturn(studentEntities);
-        Mockito.when(sender.sendMessage(Mockito.any(SendMessageDto.class))).thenReturn(true);
+        when(emailSenderService.sendMessage(any(SendMessageDto.class))).thenReturn(true);
         MessageSendingResultDto result =
-                calendarEventService.sendEventMessageAllPerson(sender, eventDto, course);
+                calendarEventService.sendEventMessageAllPerson(eventDto, course);
 
         assertEquals(1, result.getSuccessfulDeliveries());
     }
