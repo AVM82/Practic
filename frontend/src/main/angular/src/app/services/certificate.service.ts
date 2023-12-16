@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
-export class CertificateServiceService {
+export class CertificateService {
   constructor(
       public http: HttpClient,
       public tokenStorageService: TokenStorageService) { }

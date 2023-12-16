@@ -3,8 +3,11 @@
             class="apply-button"
             (click)="onApplyClick()"
     >Записатись на курс</button>
+
     <button *ngIf="me.isApplicant(slug)"
-            class="wait-button"
-            (click)="checkApplied()"
+    class="wait-button"
+    (click)="checkApplied()"
     >Очікуйте підтвердження на e-mail: {{this.me.email}}</button>
+
+    <app-certificate-request></app-certificate-request>
 </div>
