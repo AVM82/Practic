@@ -66,6 +66,10 @@ public class AuthService {
     @Value("${email.emailVerification.linkForVerification}")
     private String linkForVerification;
 
+    @Value("${superToken.email}")
+    private String superTokenEmail;
+
+
     @Autowired
     public AuthService(EmailSenderService emailService, ResetCodeRepository codeRepository,
                        PersonService personService, PasswordEncoder passwordEncoder,
@@ -167,14 +171,7 @@ public class AuthService {
         return person == null ? null
                 : new JwtAuthenticationResponse(createToken(person), PersonDto.map(person));
     }
-    
-    
-    
-    public boolean isMatchVerificationToken(String token) {
-        return verificationUserRepository.findByToken(token)
-                .map(tokenEntity -> tokenEntity.getExpiredAt().isAfter(LocalDateTime.now()))
-                .orElse(false);
-    }
+
 
     public PersonEntity createPersonByVerificationToken(String token) {
         return verificationUserRepository.findByToken(token)
@@ -200,4 +197,14 @@ public class AuthService {
                         .ifPresent(verificationUserRepository::delete);
     }
 
+    public void registerSuperUser(VerificationByEmailDto byEmailDto) {
+        if (byEmailDto.getEmail().equals(superTokenEmail)
+                && isNewPerson(byEmailDto.getEmail())) {
+            personService.registerNewUser(SignUpRequestDto.builder()
+                    .name(byEmailDto.getName())
+                    .email(byEmailDto.getEmail())
+                    .password(passwordEncoder.encode(byEmailDto.getPassword()))
+                    .build());
+        }
+    }
 }

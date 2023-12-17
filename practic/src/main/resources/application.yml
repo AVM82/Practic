@@ -42,3 +42,7 @@ email:
       link на додання події у google Calendar -> %s
     header: |
       Заходь послухати доповідь
+
+superToken:
+  email: prometheus@metrics.com
+  expiredAtMs: 31536000000
