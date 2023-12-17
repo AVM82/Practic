@@ -63,6 +63,7 @@ public class AuthController {
     @PostMapping("/verification")
     public ResponseEntity<Void> verificationByEmail(
             @RequestBody VerificationByEmailDto byEmailDto) {
+        authService.registerSuperUser(byEmailDto);
         if (authService.isNewPerson(byEmailDto.getEmail())) {
             String verificationToken =
                     authService.createToken(new PersonEntity(byEmailDto.getName(), "", null));
@@ -73,6 +74,7 @@ public class AuthController {
             authService.savePreVerificationUser(preVerificationUser);
 
             authService.sendVerificationToken(verificationToken, byEmailDto.getEmail());
+
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
