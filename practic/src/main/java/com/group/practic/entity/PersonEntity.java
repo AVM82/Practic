@@ -111,7 +111,6 @@ public class PersonEntity implements UserDetails {
         this.roles.add(guestRole);
     }
 
-
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
