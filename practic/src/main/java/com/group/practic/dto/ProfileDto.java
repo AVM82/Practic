@@ -30,7 +30,6 @@ public class ProfileDto {
         dto.isNotificationDiscord = profileEntity.isNotificationDiscord();
         dto.isNotificationEmail = profileEntity.isNotificationEmail();
 
-
         dto.email = personEntity.getEmail();
         dto.discord = personEntity.getDiscord();
         dto.personUrl = personEntity.getPersonPageUrl();

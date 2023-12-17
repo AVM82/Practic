@@ -1,19 +1,33 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.badRequest;
+import static com.group.practic.util.ResponseUtils.getResponse;
+import static com.group.practic.util.ResponseUtils.postResponse;
+import static com.group.practic.util.ResponseUtils.updateResponse;
+
 import com.group.practic.dto.ApplicantDto;
 import com.group.practic.dto.PersonDto;
 import com.group.practic.dto.ProfileDto;
 import com.group.practic.entity.RoleEntity;
-import com.group.practic.service.*;
-
+import com.group.practic.service.ApplicantService;
+import com.group.practic.service.CourseService;
+import com.group.practic.service.MentorService;
+import com.group.practic.service.PersonService;
+import com.group.practic.service.ProfileService;
+import com.group.practic.service.StudentService;
 import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import static com.group.practic.util.ResponseUtils.*;
 
 
 @RestController
@@ -55,8 +69,8 @@ public class PersonController {
     @GetMapping("/")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<Collection<PersonDto>> get(@RequestParam(required = false) String name,
-                                                     @RequestParam(required = false) boolean inactive,
-                                                     @RequestParam(required = false) boolean ban) {
+                     @RequestParam(required = false) Boolean inactive,
+                     @RequestParam(required = false) Boolean ban) {
         if (name == null) {
             return getResponse(PersonDto.map(personService.get(inactive, ban)));
         }
