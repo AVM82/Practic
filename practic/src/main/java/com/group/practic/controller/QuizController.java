@@ -52,7 +52,7 @@ public class QuizController {
             @Min(1) @PathVariable(value = "quizId") Long quizId,
             @PathVariable(value = "quizResultId") Long quizResultId,
             @PathVariable(value = "time") Long time,
-            @RequestBody List<Long> ids) {
+            @RequestBody List<List<Long>> ids) {
         Optional<QuizEntity> quiz = quizService.get(quizId);
         Optional<QuizResultEntity> quizResult = quizService.getQuizResult(quizResultId);
         return quiz.isEmpty() || quizResult.isEmpty() ? badRequest()
