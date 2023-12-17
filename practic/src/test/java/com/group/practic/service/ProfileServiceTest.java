@@ -33,8 +33,7 @@ class ProfileServiceTest {
 
     @InjectMocks
     private ProfileService profileService;
-    @Mock
-    private PersonService personService;
+
     long profileId = 1L;
     long personId = 2L;
     String country = "Country";
