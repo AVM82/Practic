@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CertificateDataComponent } from './certificate-data/certificate-data.component';
 import { StateStudent } from 'src/app/models/student';
+import {Course} from "../../models/course";
 
 @Component({
   selector: 'app-certificate-request',
@@ -17,10 +18,8 @@ export class CertificateRequestComponent {
 
   openDialog() {
     this.dialog.open(CertificateDataComponent, {
-      position: { top: '10px' },
       width: "50%",
       data: {student: this.student}
     })
-    console.log('kjsfadlkajflkdsjflsd')
   }
 }

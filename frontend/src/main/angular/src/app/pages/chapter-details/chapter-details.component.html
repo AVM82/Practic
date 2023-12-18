@@ -17,6 +17,7 @@
             <button *ngIf="chapter?.state !== done" class="chapter-button" (click)="changeState($event)">
                 {{getTextAccordingState()}}
             </button>
+            <app-certificate-request *ngIf="isStudent" [student]="coursesService.stateStudent!"></app-certificate-request>
         </div>
     </div>
 
@@ -152,8 +153,6 @@
             </div>
         </div>
     </div>
-
-    <app-certificate-request *ngIf="isStudent" [student]="coursesService.stateStudent!"></app-certificate-request>
 
 </section>
 <app-quiz *ngIf="isQuizVisible"
