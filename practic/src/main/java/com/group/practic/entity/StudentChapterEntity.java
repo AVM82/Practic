@@ -71,6 +71,7 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
     private List<QuizResultEntity> quizResults = new ArrayList<>();
 
+    @Column(name = "is_quiz_passed")
     boolean isQuizPassed = false;
 
     int daysSpent;
@@ -115,4 +116,11 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
         return reports.stream().filter(StudentReportEntity::isNonCancelled).count();
     }
 
+    public boolean isQuizPassed() {
+        return isQuizPassed;
+    }
+
+    public void setQuizPassed(boolean quizPassed) {
+        isQuizPassed = quizPassed;
+    }
 }
