@@ -16,6 +16,7 @@ import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
 import com.group.practic.util.PasswordGenerator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -211,7 +212,7 @@ public class PersonService implements UserDetailsService {
 
 
     public PersonEntity addRole(PersonEntity person, RoleEntity role) {
-        Set<RoleEntity> personRoles = person.getRoles();
+        Set<RoleEntity> personRoles = new HashSet<>(person.getRoles());
         personRoles.add(role);
         excludeGuestRole(personRoles);
         return personRepository.save(person);
@@ -219,7 +220,7 @@ public class PersonService implements UserDetailsService {
 
 
     public PersonEntity addRoles(PersonEntity person, Set<RoleEntity> newRoles) {
-        Set<RoleEntity> personRoles = person.getRoles();
+        Set<RoleEntity> personRoles = new HashSet<>(person.getRoles());
         personRoles.addAll(newRoles);
         excludeGuestRole(personRoles);
         return personRepository.save(person);
