@@ -24,6 +24,7 @@ import {
 import { ChapterPart } from 'src/app/models/chapterpart';
 import { SubChapter } from 'src/app/models/subchapter';
 import {QuizComponent} from "../../componets/quiz/quiz.component";
+import {CertificateRequestComponent} from "../../componets/certificate-request-dialog/certificate-request.component";
 
 
 
@@ -32,7 +33,7 @@ import {QuizComponent} from "../../componets/quiz/quiz.component";
   standalone: true,
   imports: [CommonModule, CourseNavbarComponent,  RouterLink, MatCardModule, MatIconModule, EditBtnComponent,
     CdkAccordionModule, MatTooltipModule, MatChipsModule, StatePipe, PracticeButtonsVisibilityPipe,
-    ReportButtonComponent, QuizComponent],
+    ReportButtonComponent, QuizComponent, CertificateRequestComponent],
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
@@ -57,7 +58,7 @@ export class ChapterDetailsComponent implements OnInit {
   isQuizVisible: boolean = false;
 
   constructor(
-    private coursesService: CoursesService,
+    public coursesService: CoursesService,
     private studentService: StudentService,
     private route: ActivatedRoute,
     private tokenStorageService: TokenStorageService,
@@ -72,7 +73,7 @@ export class ChapterDetailsComponent implements OnInit {
       const slug = params.get('slug')
       const number = Number(params.get('chapterN')) | 0;
       if (slug && number > 0)
-        this.coursesService.getChapter(slug, number).subscribe(chapterObs => chapterObs.subscribe(chapter => 
+        this.coursesService.getChapter(slug, number).subscribe(chapterObs => chapterObs.subscribe(chapter =>
           this.init(chapter, slug, number)));
 
     });
@@ -88,7 +89,7 @@ export class ChapterDetailsComponent implements OnInit {
       this.isStudent = this.coursesService.stateStudent != undefined;
       if (this.isStudent) {
         this.studentService.setStudent(this.me.getStudent(slug)!);
-        for(const part of chapter.parts) 
+        for(const part of chapter.parts)
           for(const sub of part.common!.subChapters)
             sub.checked = this.isSelected(sub.id);
       }
