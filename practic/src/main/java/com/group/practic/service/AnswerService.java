@@ -15,8 +15,7 @@ public class AnswerService {
         this.answerRepository = answerRepository;
     }
 
-    public List<Boolean> getAllById(List<Long> ids) {
-        return ids.stream()
-                .map(id -> id != 0 && answerRepository.findById(id).get().isCorrect()).toList();
+    public List<Long> getAllCorrectByQuiz(long quizId) {
+        return answerRepository.findAllCorrectByQuiz(quizId);
     }
 }

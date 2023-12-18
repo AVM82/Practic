@@ -16,7 +16,7 @@ export class QuizService {
         return this.http.get<Quiz>( ApiUrls.Quizzes + quizId);
     }
 
-    getResult(quizId: number, quizResultId: number, ids: number[], time: number): Observable<boolean[]> {
+    getResult(quizId: number, quizResultId: number, ids: number[][], time: number): Observable<boolean[]> {
         return this.http.post<boolean[]>(ApiUrls.Quizzes + quizId + '/' + quizResultId + '/' + time, ids);
     }
 

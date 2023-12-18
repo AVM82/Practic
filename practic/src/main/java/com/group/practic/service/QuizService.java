@@ -35,16 +35,24 @@ public class QuizService {
 
     public List<Boolean> getResult(
             QuizEntity quiz, QuizResultEntity quizResult,
-            List<Long> ids, long time) {
-        List<Boolean> result = answerService.getAllById(ids);
-        checkQuiz(quiz, quizResult, ids, result, time);
+            List<List<Long>> ids, long time) {
+        List<Long> fromDb = answerService.getAllCorrectByQuiz(quiz.getId());
+        List<Boolean> result = checkQuiz(ids, fromDb);
+
+        saveResult(result, quiz, quizResult, ids, time);
+
         return result;
     }
 
-    private void checkQuiz(QuizEntity quiz, QuizResultEntity quizResult,
-                           List<Long> ids, List<Boolean> result, long time) {
+    private void saveResult(List<Boolean> result, QuizEntity quiz,
+                            QuizResultEntity quizResult,
+                            List<List<Long>> ids, long time) {
         quizResult.setQuestionCount(quiz.getQuestions().size());
-        quizResult.setAnsweredCount((int) ids.stream().filter(id -> id != 0).count());
+        int countOfNotZeros = (int) ids.stream()
+                .flatMap(List::stream)
+                .filter(i -> i != 0L)
+                .count();
+        quizResult.setAnsweredCount(countOfNotZeros);
         int correctAnswers = (int) result.stream().filter(b -> b).count();
         quizResult.setCorrectAnsweredCount(correctAnswers);
         boolean passedTest = (
@@ -52,7 +60,6 @@ public class QuizService {
         quizResult.setPassed(passedTest);
         quizResult.setSecondSpent(time);
         resultRepository.save(quizResult);
-
         if (passedTest) {
             studentService.quizPassed(quizResult.getStudentChapter());
         }
@@ -64,5 +71,11 @@ public class QuizService {
 
     public Optional<QuizResultEntity> getQuizResult(Long quizResultId) {
         return resultRepository.findById(quizResultId);
+    }
+
+    private List<Boolean> checkQuiz(List<List<Long>> fromUi, List<Long> fromDb) {
+        return fromUi.stream()
+                .map(fromDb::containsAll)
+                .toList();
     }
 }

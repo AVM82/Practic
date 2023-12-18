@@ -98,10 +98,7 @@ export class QuizComponent implements OnInit {
     }
 
     selectedAnswer(questionIndex: number, answer: Answer) {
-        this.quiz.questions[questionIndex].answers.forEach(
-            (a: Answer) => a.correct = false
-        );
-        answer.correct = true;
+        answer.correct = !answer.correct;
     }
 
     goToQuestion(index: number) {
@@ -113,18 +110,23 @@ export class QuizComponent implements OnInit {
     }
 
     getResult() {
-        const answersFromUI: number[] = [];
+        const answersFromUI: number[][] = [];
         this.quiz.questions.forEach((q: { answers: Answer[]; }) => {
             if (q.answers.some(answer => answer.correct)) {
+                let list: number[] = [];
                 q.answers.forEach(a => {
                     if (a.correct) {
-                        answersFromUI.push(a.id);
+                        list.push(a.id)
                     }
                 })
+                answersFromUI.push(list);
+                list = [];
             } else {
-                answersFromUI.push(0);
+                let list: number[] = [0];
+                answersFromUI.push(list);
             }
         })
+
         this.quizService.getResult(this.quizId, this.quizResultId, answersFromUI, this.time)
             .subscribe({
                     next: data => {
