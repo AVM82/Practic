@@ -115,4 +115,11 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
         return reports.stream().filter(StudentReportEntity::isNonCancelled).count();
     }
 
+    public boolean isQuizPassed() {
+        return isQuizPassed;
+    }
+
+    public void setQuizPassed(boolean quizPassed) {
+        isQuizPassed = quizPassed;
+    }
 }
