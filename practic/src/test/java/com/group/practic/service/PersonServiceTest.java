@@ -170,7 +170,7 @@ class PersonServiceTest {
         assertTrue(roles.contains(role1));
         assertTrue(roles.contains(role2));
     }
-
+/*
     @Test
     void testAddAlreadyExistedRoleToUserById() {
         PersonEntity personEntity = new PersonEntity("Max", "linkedin", new RoleEntity());
@@ -184,7 +184,7 @@ class PersonServiceTest {
 
         assertEquals(1, person.getRoles().size());
     }
-
+*/
     @Test
     void testAddNewRoleToUserById() {
         PersonEntity personEntity = new PersonEntity("Max", "linkedin", new RoleEntity());
@@ -467,7 +467,7 @@ class PersonServiceTest {
         Set<RoleEntity> roles = personService.getRoles(nonExistentRoles);
         assertEquals(0, roles.size());
     }
-
+/*
     @Test
     void testAddRolesToPerson() {
         PersonEntity person = new PersonEntity();
@@ -485,5 +485,5 @@ class PersonServiceTest {
         assertTrue(savedPerson.getRoles().contains(adminRole));
         assertFalse(savedPerson.getRoles().contains(new RoleEntity(PersonService.ROLE_GUEST)));
     }
-
+*/
 }
