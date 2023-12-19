@@ -4,7 +4,6 @@ import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.CourseSettingsEntity;
 import com.group.practic.repository.CourseSettingsRepository;
 import java.util.Optional;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
