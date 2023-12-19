@@ -212,7 +212,7 @@ public class PersonService implements UserDetailsService {
 
 
     public PersonEntity addRole(PersonEntity person, RoleEntity role) {
-        Set<RoleEntity> personRoles = new HashSet<>(person.getRoles());
+        Set<RoleEntity> personRoles = person.getRoles();
         personRoles.add(role);
         excludeGuestRole(personRoles);
         return personRepository.save(person);
@@ -220,7 +220,7 @@ public class PersonService implements UserDetailsService {
 
 
     public PersonEntity addRoles(PersonEntity person, Set<RoleEntity> newRoles) {
-        Set<RoleEntity> personRoles = new HashSet<>(person.getRoles());
+        Set<RoleEntity> personRoles = person.getRoles();
         personRoles.addAll(newRoles);
         excludeGuestRole(personRoles);
         return personRepository.save(person);
