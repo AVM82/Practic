@@ -1,9 +1,9 @@
 package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.getResponse;
+
 import com.group.practic.dto.CertificateDto;
 import com.group.practic.service.CertificateService;
-import com.group.practic.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
