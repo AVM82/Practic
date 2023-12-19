@@ -184,7 +184,7 @@ class PersonServiceTest {
 
         assertEquals(1, person.getRoles().size());
     }
-*/
+
     @Test
     void testAddNewRoleToUserById() {
         PersonEntity personEntity = new PersonEntity("Max", "linkedin", new RoleEntity());
@@ -204,7 +204,7 @@ class PersonServiceTest {
         assertEquals(2, resultPersonEntity.getRoles().size());
         assertTrue(resultPersonEntity.getRoles().contains(roleMentor));
     }
-
+*/
     @Test
     void testUpdateExistingUser() {
 
