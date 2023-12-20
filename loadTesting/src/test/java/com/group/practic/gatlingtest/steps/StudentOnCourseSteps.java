@@ -4,25 +4,38 @@ import static io.gatling.javaapi.core.CoreDsl.StringBody;
 import static io.gatling.javaapi.core.CoreDsl.exec;
 
 import com.group.practic.gatlingtest.Feeders;
+import io.gatling.javaapi.core.Body;
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.CoreDsl;
 import io.gatling.javaapi.http.HttpDsl;
 
 public class StudentOnCourseSteps {
+    private static final Body.WithString USER_BODY = StringBody("""
+            {
+            "email": "gatling@shpp.org",
+            "password": "gatling"
+            }
+            """);
 
-    public ChainBuilder authUserByEmail(){
+    public ChainBuilder authUserByEmail() {
         return CoreDsl
                 .exec(
                         HttpDsl
-                                .http("login")
+                                .http("POST/api/login")
                                 .post("/api/auth")
-                                .body(StringBody("""
-                                        {
-                                        "email": "gatling@shpp.org",
-                                        "password": "gatling"
-                                        }
-                                        """))
+                                .body(USER_BODY)
                                 .asJson()
+                                .check(HttpDsl.status().in(200))
+                )
+                .pause(2);
+    }
+
+    public ChainBuilder getCourses() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("GET/api/courses")
+                                .get("/api/courses")
                                 .check(HttpDsl.status().in(200))
                 )
                 .pause(2);

@@ -14,7 +14,8 @@ public class Scenario {
     private static final PersonSteps personSteps = new PersonSteps();
 
     public static ScenarioBuilder userScenario = CoreDsl.scenario("user running site")
-            .exec(studentSteps.authUserByEmail());
+            .exec(studentSteps.authUserByEmail())
+            .exec(studentSteps.getCourses());
 //            .exec(steps.getFirstPage())
 //            .exec(coursesSteps.getCourseBySlug())
 //            .exec(coursesSteps.getCoursesAdditional())
