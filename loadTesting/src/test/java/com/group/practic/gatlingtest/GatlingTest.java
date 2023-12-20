@@ -34,16 +34,16 @@ public class GatlingTest extends Simulation {
         this.setUp(Scenario.userScenario.injectOpen(
                 CoreDsl.constantUsersPerSec(Integer.parseInt(properties.getProperty("users")))
                         .during(Integer
-                                .parseInt(properties.getProperty("during")))),
+                                .parseInt(properties.getProperty("during"))))
 
-                Scenario.adminScenario.injectOpen(
-                        rampUsers(Integer.parseInt(properties.getProperty("admins")))
-                                .during(Integer.parseInt(properties.getProperty("during")))
-                ),
-
-                Scenario.visitorsScenario.injectOpen(
-                        atOnceUsers(Integer.parseInt(properties.getProperty("visitors")))
-                )
+//                Scenario.adminScenario.injectOpen(
+//                        rampUsers(Integer.parseInt(properties.getProperty("admins")))
+//                                .during(Integer.parseInt(properties.getProperty("during")))
+//                ),
+//
+//                Scenario.visitorsScenario.injectOpen(
+//                        atOnceUsers(Integer.parseInt(properties.getProperty("visitors")))
+//                )
         ).protocols(httpProtocol);
     }
 

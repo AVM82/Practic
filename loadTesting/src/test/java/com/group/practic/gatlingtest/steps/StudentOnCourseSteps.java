@@ -1,5 +1,6 @@
 package com.group.practic.gatlingtest.steps;
 
+import static io.gatling.javaapi.core.CoreDsl.StringBody;
 import static io.gatling.javaapi.core.CoreDsl.exec;
 
 import com.group.practic.gatlingtest.Feeders;
@@ -8,6 +9,25 @@ import io.gatling.javaapi.core.CoreDsl;
 import io.gatling.javaapi.http.HttpDsl;
 
 public class StudentOnCourseSteps {
+
+    public ChainBuilder authUserByEmail(){
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("login")
+                                .post("/api/auth")
+                                .body(StringBody("""
+                                        {
+                                        "email": "gatling@shpp.org",
+                                        "password": "gatling"
+                                        }
+                                        """))
+                                .asJson()
+                                .check(HttpDsl.status().in(200))
+                )
+                .pause(2);
+    }
+
     public ChainBuilder getStudentsReportsCourseSlugTimeslots() {
         return CoreDsl
                 .feed(Feeders.slugs)
