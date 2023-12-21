@@ -15,7 +15,10 @@ public class Scenario {
 
     public static ScenarioBuilder userScenario = CoreDsl.scenario("user running site")
             .exec(studentSteps.authUserByEmail())
-            .exec(studentSteps.getCourses());
+            .exec(studentSteps.getCourses())
+            .exec(studentSteps.getCoursesBySlug())
+            .exec(studentSteps.postFeedback())
+            .exec(studentSteps.deleteFeedbackById());
 //            .exec(steps.getFirstPage())
 //            .exec(coursesSteps.getCourseBySlug())
 //            .exec(coursesSteps.getCoursesAdditional())
