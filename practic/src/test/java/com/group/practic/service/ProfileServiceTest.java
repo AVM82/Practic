@@ -109,7 +109,7 @@ class ProfileServiceTest {
         assertEquals(email, personEntity.getEmail());
         assertEquals(discord, personEntity.getDiscord());
         assertEquals(personUrl, personEntity.getPersonPageUrl());
-        assertEquals(name + " " +surname, personEntity.getName());
+        assertEquals(name + " " + surname, personEntity.getName());
     }
 
     @Test
