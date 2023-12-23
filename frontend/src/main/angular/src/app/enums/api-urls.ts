@@ -43,7 +43,8 @@ export enum ApiUrls {
   MatchCode = '/api/password-reset/match-code',
   ResetPassword = '/api/password-reset',
   VerificateByEmail = 'api/verification',
-  MatchTokenForVerificateByEmail = 'api/verification/match-token'
+  MatchTokenForVerificateByEmail = 'api/verification/match-token',
+  Profile ='api/persons/profile'
 
 }
 
