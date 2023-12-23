@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PersonService implements UserDetailsService {
+    public static final boolean DENY_TO_CHANGE_USERNAME = false;
 
     public static final String ROLE_ADMIN = "ADMIN";
 
@@ -92,8 +93,8 @@ public class PersonService implements UserDetailsService {
 
     @Autowired
     public PersonService(PersonRepository personRepository, RoleRepository roleRepository,
-            ApplicantService applicantService, CourseService courseService,
-            EmailSenderService emailSenderService, PasswordEncoder passwordEncoder) {
+                         ApplicantService applicantService, CourseService courseService,
+                         EmailSenderService emailSenderService, PasswordEncoder passwordEncoder) {
         this.courseService = courseService;
         this.applicantService = applicantService;
         this.emailSenderService = emailSenderService;
@@ -272,14 +273,14 @@ public class PersonService implements UserDetailsService {
         String linkedinId = authorizationAttributes.get("id").toString();
         return personRepository.findByLinkedin(linkedinId).isPresent() ? null
                 : personRepository.save(new PersonEntity(
-                        authorizationAttributes.get("localizedFirstName") + " "
-                                + authorizationAttributes.get("localizedLastName"),
-                        linkedinId, roleGuest));
+                authorizationAttributes.get("localizedFirstName") + " "
+                        + authorizationAttributes.get("localizedLastName"),
+                linkedinId, roleGuest));
     }
 
 
     public AuthUserDto processUserRegistration(Map<String, Object> attributes, OidcIdToken idToken,
-            OidcUserInfo userInfo) {
+                                               OidcUserInfo userInfo) {
         Oauth2UserInfo oauth2UserInfo = new LinkedinOauth2UserInfo(attributes);
         Optional<PersonEntity> user = personRepository.findByEmail(oauth2UserInfo.getEmail());
         PersonEntity person =
@@ -290,10 +291,12 @@ public class PersonService implements UserDetailsService {
 
 
     public PersonEntity updateExistingUser(PersonEntity existingUser,
-            Oauth2UserInfo oauth2UserInfo) {
-        if (!oauth2UserInfo.getName().equals(existingUser.getName())
+                                           Oauth2UserInfo oauth2UserInfo) {
+        if (DENY_TO_CHANGE_USERNAME
+                && (!oauth2UserInfo.getName().equals(existingUser.getName())
                 || !existingUser.getLinkedin().equals(oauth2UserInfo.getId())
-                || !existingUser.getProfilePictureUrl().equals(oauth2UserInfo.getImageUrl())) {
+                || !existingUser.getProfilePictureUrl().equals(oauth2UserInfo.getImageUrl()))
+        ) {
             existingUser.setName(oauth2UserInfo.getName());
             existingUser.setLinkedin(oauth2UserInfo.getId());
             existingUser.setProfilePictureUrl(oauth2UserInfo.getImageUrl());

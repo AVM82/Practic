@@ -57,10 +57,11 @@ public class ProfileService {
     }
 
     public static void setPersonEntity(ProfileDto profileDto, PersonEntity person) {
+        String space = " ";
         person.setEmail(profileDto.getEmail());
         person.setDiscord(profileDto.getDiscord());
         person.setPersonPageUrl(profileDto.getPersonUrl());
-        person.setName(profileDto.getName() + profileDto.getSurname());
+        person.setName(profileDto.getName() + space + profileDto.getSurname());
     }
 
     public static void setProfileEntity(ProfileDto profileDto, ProfileEntity profileEntity) {

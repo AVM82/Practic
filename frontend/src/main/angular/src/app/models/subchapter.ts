@@ -8,7 +8,7 @@ export class SubChapter {
   refs?: ReferenceTitle[];
   subSubChapters? : SubSubChapter[];
   skills: string[];
-  checked: boolean = false;;
+  checked: boolean = false;
 
   constructor(
     id: number,
