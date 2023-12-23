@@ -1,0 +1,9 @@
+.apply-button {
+    margin-top: 10px;
+    position: relative;
+    bottom: 0;
+    right: 0; /* Змінюємо 'left' на 'right' для розміщення зправа */
+    display: flex;
+    align-items: center;
+    min-height: 30px;
+}

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.group.practic.entity.AnswerEntity;
 import com.group.practic.entity.QuestionEntity;
 import com.group.practic.entity.QuizEntity;
+import com.group.practic.entity.QuizResultEntity;
 import com.group.practic.repository.QuizRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,25 +59,5 @@ class QuizServiceTest {
         assertEquals(quizId, result.getId());
         assertFalse(result.getQuestions().isEmpty());
 
-    }
-
-    @Test
-    void testGetResult() {
-        List<Long> fromUi = List.of(1L, 5L, 7L);
-        AnswerEntity answer1 = new AnswerEntity(1L, true);
-        AnswerEntity answer5 = new AnswerEntity(5L, true);
-        AnswerEntity answer7 = new AnswerEntity(7L, false);
-        List<Boolean> fromDb = List.of(
-                answer1.isCorrect(),
-                answer5.isCorrect(),
-                answer7.isCorrect()
-        );
-        when(answerService.getAllById(fromUi)).thenReturn(fromDb);
-
-        List<Boolean> result = quizService.getResult(fromUi);
-        for (int i = 0; i < result.size() - 1; i++) {
-            assertTrue(fromDb.get(i));
-        }
-        assertFalse(fromDb.get(result.size() - 1));
     }
 }

@@ -4,10 +4,12 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import java.util.List;
 import java.util.Optional;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 
 @Getter
+@EqualsAndHashCode
 public class ChapterDto {
 
     long id;
@@ -25,6 +27,10 @@ public class ChapterDto {
     long reportCount;
 
     long myReports;
+
+    boolean isQuizPassed;
+
+    long quizId;
 
 
     public static ChapterDto map(ChapterEntity chapter, boolean hidden, long reportCount) {
@@ -69,6 +75,10 @@ public class ChapterDto {
         dto.parts = studentChapter.getPractices().stream()
                 .map(prac -> ChapterPartDto.map(null, prac)).toList();
         dto.myReports = studentChapter.countNonCancelledReports();
+        dto.isQuizPassed = studentChapter.isQuizPassed();
+        if (chapter.getQuiz() != null) {
+            dto.quizId = chapter.getQuiz().getId();
+        }
         return dto;
     }
 

@@ -16,6 +16,7 @@ import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
 import com.group.practic.util.PasswordGenerator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -370,9 +371,7 @@ public class PersonService implements UserDetailsService {
 
 
     public void addStudentRole(PersonEntity person) {
-        if (person.getStudents().size() == 1) {
-            addRole(person, roleStudent);
-        }
+        addRole(person, roleStudent);
     }
 
 

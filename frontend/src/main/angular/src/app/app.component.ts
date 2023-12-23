@@ -6,13 +6,19 @@ import { FooterComponent } from './componets/footer/footer.component';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
 import {InfoMessagesService} from "./services/info-messages.service";
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
     standalone: true,
-    imports: [HeaderComponent, RouterOutlet, CourseNavbarComponent, FooterComponent]
+    imports: [
+        HeaderComponent,
+        RouterOutlet,
+        CourseNavbarComponent,
+        FooterComponent,
+        CommonModule]
 })
 export class AppComponent implements OnDestroy{
   title = 'Practic';
