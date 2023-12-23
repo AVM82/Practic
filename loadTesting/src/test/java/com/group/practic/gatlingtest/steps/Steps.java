@@ -33,7 +33,7 @@ public class Steps {
                         exec(
                                 HttpDsl
                                         .http("GET/Main page")
-                                        .get("/}")
+                                        .get("/")
                                         .check(HttpDsl.status().in(200, 204)))
                                 .pause(1, 4)
                 ).exitHereIfFailed();

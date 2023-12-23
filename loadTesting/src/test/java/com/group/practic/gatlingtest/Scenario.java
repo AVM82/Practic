@@ -14,33 +14,25 @@ public class Scenario {
     private static final PersonSteps personSteps = new PersonSteps();
 
     public static ScenarioBuilder userScenario = CoreDsl.scenario("user running site")
+            .exec(steps.getFirstPage())
             .exec(studentSteps.authUserByEmail())
             .exec(studentSteps.getCourses())
             .exec(studentSteps.getCoursesBySlug())
+            .exec(studentSteps.applicationForCourse())
+            .exec(studentSteps.getStudentsChapters())
+            .exec(studentSteps.getChapter())
+            .exec(studentSteps.stateChapter())
+            .exec(studentSteps.statePractice())
             .exec(studentSteps.postFeedback())
-            .exec(studentSteps.deleteFeedbackById());
-//            .exec(steps.getFirstPage())
-//            .exec(coursesSteps.getCourseBySlug())
-//            .exec(coursesSteps.getCoursesAdditional())
-//            .exec(coursesSteps.getCourseBySlug())
-//            .exec(coursesSteps.getCourseByChapterById())
-//            .exec(coursesSteps.getCourseByChapterById())
-//            .exec(coursesSteps.getCourseBySlug())
-//            .exec(coursesSteps.getCoursesAdditional())
-//            .exec(coursesSteps.getCourseByChapterById())
-//            .exec(coursesSteps.getCourseByChapterById())
-//            .exec(coursesSteps.getCourseBySlug())
-//            .exec(coursesSteps.getCourseByChapterById())
-//            .exec(coursesSteps.getCourseByChapterById())
-//            .exec(coursesSteps.getCourseBySlug())
-//            .exec(coursesSteps.getCoursesAdditional())
-//            .exec(coursesSteps.getCourseByChapterById())
-//            .exec(coursesSteps.getCourseBySlug())
-//            .exec(steps.getFeedback())
-//            .exec(steps.postFeedback())
-//            .exec(steps.getFirstPage())
-//            .exec(coursesSteps.getCourseBySlug())
-//            .exec(steps.getFirstPage());
+            .exec(studentSteps.deleteFeedbackById())
+            .exec(studentSteps.getCertificateInfo())
+            .exec(studentSteps.sendCertificateRequest())
+            .exec(studentSteps.createTimeslots())
+            .exec(studentSteps.getStudentsReports())
+            .exec(studentSteps.getStudentsReportsCourseSlugTimeslots())
+
+            .exec(coursesSteps.getCoursesAdditional())
+            .exec(coursesSteps.getCourseBySlug());
 
 
     public static ScenarioBuilder adminScenario = CoreDsl.scenario("admin running site")
@@ -68,7 +60,7 @@ public class Scenario {
 
             .exec(studentSteps.getStudentsReportsCourseSlugTimeslots())
             //.exec(studentSteps.getStudentOnCourse())
-            .exec(studentSteps.getStudentsReportsCourse())
+            .exec(studentSteps.getStudentsReports())
             .exec(studentSteps.getStudentsChapters())
             //.exec(studentSteps.getStudentById())
             .exec(studentSteps.getStudentsStates())

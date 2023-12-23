@@ -19,20 +19,39 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class StudentOnCourseSteps {
-    private final Iterator<Map<String, Object>> feedbackMap;
     private static final Body.WithString USER_BODY = StringBody("""
             {
             "email": "gatling@shpp.org",
             "password": "gatling"
             }
             """);
+    private static final Body.WithString CERTIFICATE_DTO = StringBody("""
+            {
+            "studentName": "Gatling",
+            "courseName": "Java",
+            "skills": [],
+            "start": "2000-10-10"
+            }
+            """);
     private static final Body.WithString FEEDBACK_BODY = StringBody("#{feedback}");
+    private static final Body STUDENT_REPORT = StringBody("""
+            {
+            "timeslotId": 196,
+            "title": "test"
+            }
+            """);
+    private final Iterator<Map<String, Object>> feedbackMap;
     private final String slug;
-
+    private final String studentId;
+    private final String studentChapterId;
+    private String chapterId;
 
     public StudentOnCourseSteps() {
         Properties properties = new PropertyLoader().getProperties();
         slug = properties.getProperty("slug");
+        studentId = properties.getProperty("student-id");
+        chapterId = "102";
+        studentChapterId = "202";
         feedbackMap = feedbackMap();
     }
 
@@ -46,7 +65,7 @@ public class StudentOnCourseSteps {
         return CoreDsl
                 .exec(
                         HttpDsl
-                                .http("POST/api/login")
+                                .http("POST /api/login")
                                 .post("/api/auth")
                                 .body(USER_BODY)
                                 .asJson()
@@ -55,11 +74,25 @@ public class StudentOnCourseSteps {
                 .pause(2);
     }
 
+    public ChainBuilder applicationForCourse() {
+        return CoreDsl
+                .feed(Feeders.slugs)
+                .exec(
+                        HttpDsl
+                                .http("POST /api/persons/application/{slug}")
+                                .post("/api/persons/application/#{slug}")
+                                .body(USER_BODY)
+                                .asJson()
+                                .check(HttpDsl.status().in(201))
+                )
+                .pause(2);
+    }
+
     public ChainBuilder getCourses() {
         return CoreDsl
                 .exec(
                         HttpDsl
-                                .http("GET/api/courses")
+                                .http("GET /api/courses")
                                 .get("/api/courses")
                                 .check(HttpDsl.status().in(200))
                 )
@@ -68,13 +101,71 @@ public class StudentOnCourseSteps {
 
     public ChainBuilder getCoursesBySlug() {
         return CoreDsl
+                .feed(Feeders.slugs)
                 .exec(
                         HttpDsl
-                                .http("GET/api/courses/" + slug)
-                                .get("/api/courses/" + slug)
+                                .http("GET /api/courses/{slug}")
+                                .get("/api/courses/#{slug}")
                                 .check(HttpDsl.status().in(200))
                 )
                 .pause(2);
+    }
+
+    public ChainBuilder getStudentsChapters() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("GET /students/chapters")
+                                .get("/api/students/chapters/" + studentId)
+                                .check(HttpDsl.status().in(200, 204)))
+                .pause(1, 4);
+    }
+
+    public ChainBuilder getChapter() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("GET /students/chapters/{studentId}/{chapterId}")
+                                .get("/api/students/chapters/" + studentId + "/1")
+                                .check(HttpDsl.status().in(200, 204)))
+                .pause(1, 4);
+    }
+
+    public ChainBuilder stateChapter() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("PUT /api/students/chapters/states/{studentChapterId}/{newStateString}")
+                                .put("/api/students/chapters/states/" + studentChapterId +
+                                        "/IN_PROCESS")
+                                .check(HttpDsl.status().in(200, 204)))
+                .pause(1, 4)
+                .exec(HttpDsl
+                        .http("PUT /api/students/chapters/states/{studentChapterId}/{newStateString}")
+                        .put("/api/students/chapters/states/" + studentChapterId + "/PAUSE")
+                        .check(HttpDsl.status().in(200, 204)))
+                .pause(1, 4);
+    }
+
+    public ChainBuilder statePractice() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("PUT /api/students/practices/states/{studentChapterId}/{newStateString}")
+                                .put("/api/students/practices/states/" + studentChapterId +
+                                        "/IN_PROCESS")
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 4)
+                .exec(HttpDsl
+                        .http("PUT /api/students/practices/states/{studentChapterId}/{newStateString}")
+                        .put("/api/students/practices/states/" + studentChapterId + "/PAUSE")
+                        .check(HttpDsl.status().in(200)))
+                .pause(1, 4)
+                .exec(HttpDsl
+                        .http("PUT /api/students/practices/states/{studentChapterId}/{newStateString}")
+                        .put("/api/students/practices/states/" + studentChapterId + "/READY_TO_REVIEW")
+                        .check(HttpDsl.status().in(200)))
+                .pause(1, 4);
     }
 
     public ChainBuilder postFeedback() {
@@ -82,7 +173,7 @@ public class StudentOnCourseSteps {
                 .feed(feedbackMap)
                 .exec(
                         HttpDsl
-                                .http("POST/api/feedbacks/")
+                                .http("POST /api/feedbacks/")
                                 .post("/api/feedbacks/")
                                 .body(FEEDBACK_BODY)
                                 .asJson()
@@ -103,6 +194,40 @@ public class StudentOnCourseSteps {
         );
     }
 
+    public ChainBuilder getCertificateInfo() {
+        return CoreDsl.exec(
+                HttpDsl
+                        .http("GET /api/certification/{studentId}")
+                        .get("/api/certification/" + studentId)
+                        .asJson()
+                        .check(HttpDsl.status().is(200))
+        );
+    }
+
+    public ChainBuilder sendCertificateRequest() {
+        return CoreDsl.exec(
+                HttpDsl
+                        .http("POST /api/certification/request/{studentId}")
+                        .post("/api/certification/request/" + studentId)
+                        .body(CERTIFICATE_DTO)
+                        .asJson()
+                        .check(HttpDsl.status().is(200))
+        );
+    }
+
+    public ChainBuilder getStudentsReports() {
+        return CoreDsl
+                .feed(Feeders.slugs)
+                .tryMax(5)
+                .on(
+                        exec(
+                                HttpDsl
+                                        .http("GET/api/students/reports/course/{slug}")
+                                        .get("/api/students/reports/course/#{slug}")
+                                        .check(HttpDsl.status().in(200)))
+                                .pause(3, 7)
+                ).exitHereIfFailed();
+    }
 
     public ChainBuilder getStudentsReportsCourseSlugTimeslots() {
         return CoreDsl
@@ -111,51 +236,24 @@ public class StudentOnCourseSteps {
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("GET/students/reports/course/{slug}/timeslots")
+                                        .http("GET /api/students/reports/course/{slug}/timeslots")
                                         .get("/api/students/reports/course/#{slug}/timeslots")
                                         .check(HttpDsl.status().in(200, 204)))
                                 .pause(1, 4)
                 ).exitHereIfFailed();
     }
 
-    public ChainBuilder getStudentOnCourse() {
-        return CoreDsl
-                .feed(Feeders.courses)
-                .feed(Feeders.persons)
-                .tryMax(5)
-                .on(exec(HttpDsl.http("GET/students?courseId=Id&studentId=Id")
-                        .get("/api/students?courseId=#{courseId}&studentId=#{personId}")
-                        .check(HttpDsl.status()
-                                .in(200, 204)))
-                        .pause(1, 4)
-                )
-                .exitHereIfFailed();
-    }
-
-    public ChainBuilder getStudentsReportsCourse() {
+    public ChainBuilder createTimeslots() {
         return CoreDsl
                 .feed(Feeders.slugs)
                 .tryMax(5)
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("GET/students/reports/course/{slug}")
-                                        .get("/api/students/reports/course/#{slug}")
-                                        .check(HttpDsl.status().in(200, 204)))
+                                        .http("POST/students/reports/course/{slug}/timeslots")
+                                        .post("/api/students/reports/course/#{slug}/timeslots")
+                                        .check(HttpDsl.status().in(201)))
                                 .pause(3, 7)
-                ).exitHereIfFailed();
-    }
-
-    public ChainBuilder getStudentsChapters() {
-        return CoreDsl
-                .tryMax(5)
-                .on(
-                        exec(
-                                HttpDsl
-                                        .http("GET/students/chapters")
-                                        .get("/api/students/chapters")
-                                        .check(HttpDsl.status().in(200, 204)))
-                                .pause(1, 4)
                 ).exitHereIfFailed();
     }
 
@@ -224,5 +322,20 @@ public class StudentOnCourseSteps {
                                         .check(HttpDsl.status().in(200, 204)))
                                 .pause(1, 5)
                 ).exitHereIfFailed();
+    }
+
+
+    public ChainBuilder getStudentOnCourse() {
+        return CoreDsl
+                .feed(Feeders.courses)
+                .feed(Feeders.persons)
+                .tryMax(5)
+                .on(exec(HttpDsl.http("GET/students?courseId=Id&studentId=Id")
+                        .get("/api/students?courseId=#{courseId}&studentId=#{personId}")
+                        .check(HttpDsl.status()
+                                .in(200, 204)))
+                        .pause(1, 4)
+                )
+                .exitHereIfFailed();
     }
 }

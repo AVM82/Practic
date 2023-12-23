@@ -45,6 +45,7 @@ public class GatlingTest extends Simulation {
 //                        atOnceUsers(Integer.parseInt(properties.getProperty("visitors")))
 //                )
         ).protocols(httpProtocol);
+
     }
 
 }
