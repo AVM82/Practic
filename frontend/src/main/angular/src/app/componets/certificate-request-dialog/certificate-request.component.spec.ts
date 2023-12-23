@@ -1,21 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CertificateRequestComponent } from './certificate-request.component';
+import {CertificateRequestComponent} from './certificate-request.component';
 
 describe('CertificateRequestComponent', () => {
-  let component: CertificateRequestComponent;
-  let fixture: ComponentFixture<CertificateRequestComponent>;
+    let component: CertificateRequestComponent;
+    let fixture: ComponentFixture<CertificateRequestComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [CertificateRequestComponent]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            declarations: [CertificateRequestComponent]
+        });
+        fixture = TestBed.createComponent(CertificateRequestComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     });
-    fixture = TestBed.createComponent(CertificateRequestComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

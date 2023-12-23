@@ -2,7 +2,6 @@ package com.group.practic.repository;
 
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.CourseSettingsEntity;
-import com.group.practic.entity.MentorEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
