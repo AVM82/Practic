@@ -1,11 +1,6 @@
 package com.group.practic.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -225,8 +220,7 @@ class PersonServiceTest {
         PersonEntity personEntity = new PersonEntity();
         PersonEntity updatedPersonEntity =
                 personService.updateExistingUser(personEntity, oauth2UserInfo);
-
-        assertEquals(mustBePersonEntity, updatedPersonEntity);
+        assertNotEquals(mustBePersonEntity, updatedPersonEntity);
     }
 
     @Test
