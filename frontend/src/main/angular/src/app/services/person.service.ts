@@ -7,9 +7,8 @@ import { Applicant } from "src/app/models/applicant";
 import { InfoMessagesService } from "./info-messages.service";
 import { CoursesService } from "./courses.service";
 import { Roles } from "../enums/app-constans";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {Profile} from "../models/profile";
-import {MyProfilePage} from "../pages/my-profile/my-profile-page";
 
 @Injectable({
     providedIn: 'root'
