@@ -7,12 +7,15 @@ import { Applicant } from "src/app/models/applicant";
 import { InfoMessagesService } from "./info-messages.service";
 import { CoursesService } from "./courses.service";
 import { Roles } from "../enums/app-constans";
+import {Observable} from "rxjs";
+import {Profile} from "../models/profile";
 
 @Injectable({
     providedIn: 'root'
   })
 export class PersonService {
     me: User;
+    profile?:Profile;
 
     constructor(
         private http: HttpClient,
@@ -90,5 +93,10 @@ export class PersonService {
             this.http.put<User>(ApiUrls.Persons + '/ban/' + user.id + '/' + ban, {}).subscribe(fresh => 
                 user.update(fresh));
     }
-
+    loadProfile(): Observable<Profile> {
+        return this.http.get<Profile>(ApiUrls.Profile);
+    }
+    saveProfile(profile: Profile): Observable<Profile> {
+        return this.http.put<Profile>(ApiUrls.Profile, profile);
+    }
 }

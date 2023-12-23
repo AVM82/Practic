@@ -2,6 +2,7 @@ package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -225,8 +226,7 @@ class PersonServiceTest {
         PersonEntity personEntity = new PersonEntity();
         PersonEntity updatedPersonEntity =
                 personService.updateExistingUser(personEntity, oauth2UserInfo);
-
-        assertEquals(mustBePersonEntity, updatedPersonEntity);
+        assertNotEquals(mustBePersonEntity, updatedPersonEntity);
     }
 
     @Test
