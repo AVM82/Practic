@@ -52,27 +52,6 @@
               ],
               "outputHashing": "all"
             },
-            "develop": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "3mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kb",
-                  "maximumError": "8kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/enviroments/enviroment.ts",
-                  "with": "src/enviroments/enviroment.develop.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
             "production": {
               "budgets": [
                 {
