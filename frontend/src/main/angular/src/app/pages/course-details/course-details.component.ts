@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {ActivatedRoute, RouterLink} from "@angular/router";
@@ -10,12 +10,12 @@ import {ReportServiceService} from "../../services/report-service.service";
 import {StudentReport} from "../../models/studentReport";
 import {Practice} from "../../models/practice";
 import {TokenStorageService} from "../../services/token-storage.service";
-import {ChaptersService} from "../../services/chapters.service";
 import {StatePipe} from "../../pipes/practice-state.pipe";
 import {Chapter} from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
-import { CoursesService } from 'src/app/services/courses.service';
+import { Report } from 'src/app/models/report';
 import { StateStudent } from 'src/app/models/student';
+import { ReportState } from 'src/app/enums/app-constans';
 
 @Component({
   selector: 'app-course-details',
@@ -25,7 +25,7 @@ import { StateStudent } from 'src/app/models/student';
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
-export class CourseDetailsComponent implements OnInit {
+export class CourseDetailsComponent {
   chapters: Chapter[] = [];
   reports: StudentReport[][]=[];
   slug: string='';
@@ -35,30 +35,23 @@ export class CourseDetailsComponent implements OnInit {
   isInvolved: boolean = false;
   stateStudent?: StateStudent;
   me!: User;
-
+  
   constructor(
       private route: ActivatedRoute,
-      private reportService: ReportServiceService,
-      private coursesService: CoursesService,
-      private chaptersService: ChaptersService,
+      public reportService: ReportServiceService,
       private tokenStorageService: TokenStorageService
   ) {
     this.me = this.tokenStorageService.getMe();
   }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug');
-     if(slug) {
-        this.slug = slug;
-        this.stateStudent = this.me.getStudent(slug);
-        this.isStudent = this.stateStudent != undefined;
-        this.isInvolved = this.isStudent || this.me.isMentor(slug) || this.me.isGraduate(slug);
-      }
-    })
+  getSlug(slug: string) {
+    this.slug = slug;
+    this.stateStudent = this.me.getStudent(slug);
+    this.isStudent = this.stateStudent != undefined;
+    this.isInvolved = this.isStudent || this.me.isMentor(slug) || this.me.isGraduate(slug);
   }
 
-  getChapters(chapters: Chapter[]) {
+getChapters(chapters: Chapter[]) {
     this.chapters = chapters;
   }
 
@@ -70,4 +63,10 @@ export class CourseDetailsComponent implements OnInit {
     console.log('edit click on chapter #', chapter.number, '(id=', chapter.id, ')');
   }
 
+  getReports(myReports: Report[]): string {
+    let number = myReports.filter(report => report.state === ReportState.APPROVED).length;
+    return number === 1 ? '1 проведена' 
+            : ((number === 0 ? 'не' : number) + ' проведено');
+  }
+  
 }

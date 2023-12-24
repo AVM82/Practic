@@ -244,3 +244,23 @@ button.done-btn:not([disabled]) {
     font-size: 10px;
     border-radius: 8px;
 }
+
+.report-row {
+    margin: 10px 40px;
+}
+
+.report-announced {
+    background-color:lightcoral;
+}
+
+.report-started {
+    background-color:orange;
+}
+
+.report-finished {
+    background-color:gold;
+}
+
+.report-approved {
+    background-color:lightgreen;
+}

@@ -9,7 +9,7 @@
     </div>
     <div *ngFor="let chapter of chapters" class="progress"
         [class.icon]="chapter.hidden"
-        [class.active]="chapter.number === currentChapter"
+        [class.active]="chapter.number === currentNumber"
         [routerLink]="chapter.hidden ? [] : ['/courses', slug, 'chapters',chapter.number]"
         routerLinkActive="app-chapter-details">
             <span *ngIf="!chapter.hidden">{{ chapter.number }}</span>
@@ -20,5 +20,5 @@
     </div>
 </div>
 
-<app-edit-btn *ngIf="me.isMentor(this.slug)" (editModeChanged)="setEditMode($event)"></app-edit-btn>
+<app-edit-btn *ngIf="showEditButton" (editModeChanged)="setEditMode($event)"></app-edit-btn>
 <app-apply-btn *ngIf="showChapters && !this.me.isStudent(this.slug) && !me.isMentor(this.slug)" [slug]="slug"></app-apply-btn>

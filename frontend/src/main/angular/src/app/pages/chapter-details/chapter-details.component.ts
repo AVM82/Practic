@@ -18,9 +18,12 @@ import { StudentService } from 'src/app/services/student.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { ReportButtonComponent } from 'src/app/componets/report-button/report-button.component';
 import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START,
-         STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW } from 'src/app/enums/app-constans';
+         ReportState,
+         STATE_ANNOUNCED,
+         STATE_APPROVED, STATE_DONE, STATE_FINISHED, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW, STATE_STARTED } from 'src/app/enums/app-constans';
 import { ChapterPart } from 'src/app/models/chapterpart';
 import { SubChapter } from 'src/app/models/subchapter';
+import { ReportService } from 'src/app/services/report.service';
 
 
 
@@ -33,61 +36,52 @@ import { SubChapter } from 'src/app/models/subchapter';
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
-export class ChapterDetailsComponent implements OnInit {
+export class ChapterDetailsComponent {
 
   practices: Practice[] = [];
   isStudent: boolean = false;
   isMentor: boolean = false;
   chapter?: Chapter;
-  isActiveChapter: boolean = false;
+  activeNumber: number = 0;
   showPartNumber: boolean = false;
   number: number = 0;
   slug: string = '';
   me!: User;
-  readonly not_started = STATE_NOT_STARTED;
-  readonly done = STATE_DONE;
-  readonly process = STATE_IN_PROCESS;
-  readonly pause = STATE_PAUSE;
-  readonly ready = STATE_READY_TO_REVIEW;
-  readonly approved = STATE_APPROVED;
-  service: StudentService;
+  readonly STATE_NOT_STARTED = STATE_NOT_STARTED;
+  readonly STATE_DONE = STATE_DONE;
+  readonly STATE_IN_PROCESS = STATE_IN_PROCESS;
+  readonly STATE_PAUSE = STATE_PAUSE;
+  readonly STATE_READY_TO_REVIEW = STATE_READY_TO_REVIEW;
+  readonly STATE_APPROVED = STATE_APPROVED;
+  readonly STATE_ANNOUNCED = STATE_ANNOUNCED;
+  readonly STATE_STARTED = STATE_STARTED;
+  readonly STATE_FINISHED = STATE_FINISHED;
 
   constructor(
     private coursesService: CoursesService,
-    private studentService: StudentService,
+    public studentService: StudentService,
     private route: ActivatedRoute,
+    private reportService: ReportService,
     private tokenStorageService: TokenStorageService,
     private router: Router
   ) {
     this.me = this.tokenStorageService.getMe();
-    this.service = this.studentService;
   }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug')
-      const number = Number(params.get('chapterN')) | 0;
-      if (slug && number > 0)
-        this.coursesService.getChapter(slug, number).subscribe(chapterObs => chapterObs.subscribe(chapter => 
-          this.init(chapter, slug, number)));
-
-    });
+  getSlug(slug: string) {
+    this.slug = slug;
+    this.isMentor = this.me.isMentor(slug);
+    this.isStudent = this.me.isStudent(slug);
+    this.activeNumber = this.isStudent ? this.me.getCourseActiveChapterNumber(slug) : 0;
   }
 
-  private init(chapter: Chapter, slug: string, number: number) {
-      this.chapter = chapter;
-      this.slug = slug;
-      this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
-      this.isMentor = this.me.isMentor(slug);
-      this.number = number;
-      this.isActiveChapter = number === this.me.getCourseActiveChapterNumber(slug);
-      this.isStudent = this.coursesService.stateStudent != undefined;
-      if (this.isStudent) {
-        this.studentService.setStudent(this.me.getStudent(slug)!);
+  getChapter(chapter: Chapter) {
+      this.showPartNumber = chapter && chapter.parts.length > 1;
+      if (this.coursesService.stateStudent != undefined)
         for(const part of chapter.parts) 
           for(const sub of part.common!.subChapters)
-            sub.checked = this.isSelected(sub.id);
-      }
+            sub.checked = chapter.subs!.some(id => id === sub.id)
+      this.chapter = chapter;
   }
 
   getTextAccordingState(): string {
@@ -97,10 +91,10 @@ export class ChapterDetailsComponent implements OnInit {
       case STATE_IN_PROCESS: 
          if (this.notAllPracticesHaveBeenApproved())
             return BUTTON_PAUSE;
-          if (this.chapter!.myReports == 0)
+          if (!this.reportService.reportsSubmitted(this.chapter!.myReports))
             return BUTTON_REPORT;
-//          if (!this.chapter!.testIsPassed)
-//            return 'ТЕСТ';
+          if (!this.chapter!.isQuizPassed)
+            return 'ТЕСТ';
           return BUTTON_FINISH;
       default: return '%#&$#^@&%(*&(*(+|}{}*';
     }
@@ -127,7 +121,7 @@ export class ChapterDetailsComponent implements OnInit {
 
   practiceReview(chapterPart: ChapterPart) {
     if (confirm('Всі вимоги практичної роботи виконані ?'))
-      this.studentService.changePracticeState(this.chapter!.number, chapterPart, this.ready)
+      this.studentService.changePracticeState(this.chapter!.number, chapterPart, STATE_READY_TO_REVIEW)
   }
 
   checkApproved(chapterPart: ChapterPart) {

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface StudentReportRepository extends JpaRepository<StudentReportEntity, Long> {
+    
     List<StudentReportEntity> findAllByStudentChapterChapterAndStateInOrderByTimeSlotId(
             ChapterEntity chapter, List<ReportState> states);
 

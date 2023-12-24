@@ -33,9 +33,6 @@ public class QuizResultEntity implements Serializable {
     @CreationTimestamp
     Timestamp startedAt;
     
-    @CreationTimestamp
-    Timestamp finishedAt;
-
     int questionCount;
     
     int answeredCount;

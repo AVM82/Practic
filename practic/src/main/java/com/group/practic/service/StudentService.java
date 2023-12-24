@@ -13,6 +13,7 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.DaysCountable;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.ReportEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
@@ -37,6 +38,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class StudentService {
 
+    public static long MIN_REPORT_COUNT_PER_CHAPTER = 1;
+
     StudentRepository studentRepository;
 
     StudentChapterRepository studentChapterRepository;
@@ -47,7 +50,7 @@ public class StudentService {
 
     CourseService courseService;
 
-    StudentReportService reportService;
+    ReportService reportService;
 
     EmailSenderService emailSenderService;
 
@@ -56,7 +59,7 @@ public class StudentService {
     public StudentService(StudentRepository studentRepository, CourseService courseService,
             PersonService personService, ChapterService chapterService,
             StudentChapterRepository studentChapterRepository,
-            EmailSenderService emailSenderService, StudentReportService reportService,
+            EmailSenderService emailSenderService, ReportService reportService,
             StudentPracticeRepository studentPracticeRepository) {
         this.studentRepository = studentRepository;
         this.courseService = courseService;
@@ -188,36 +191,41 @@ public class StudentService {
 
     public List<ChapterDto> getChapters(StudentEntity student) {
         int visibleMaxNumber = student.getActiveChapterNumber();
+        List<ReportEntity> allReports =
+                reportService.getActual(student.getCourse(), LocalDate.now());
         List<ChapterDto> result = new ArrayList<>();
-        result.addAll(
-                nonNullList(student.getStudentChapters()).stream()
-                        .map(chapter -> ChapterDto.map(chapter,
-                                reportService.getActualReportCount(chapter.getChapter())))
-                        .toList());
+        result.addAll(ChapterDto.map(student.getStudentChapters(), allReports));
         if (visibleMaxNumber > 0) {
             result.addAll(nonNullList(student.getCourse().getChapters()).stream()
                     .filter(chapter -> chapter.getNumber() > visibleMaxNumber)
-                    .map(chapter -> ChapterDto.map(chapter, true)).toList());
+                    .map(chapter -> ChapterDto.map(chapter, true, allReports)).toList());
         }
         return result;
+    }
+
+
+    public Optional<ChapterCompleteDto> getOpenedChapter(StudentChapterEntity chapter) {
+        return Optional.of(ChapterCompleteDto.map(chapter, reportService.getChapterActual(
+                chapter.getStudent().getCourse(), LocalDate.now(), chapter.getNumber())));
     }
 
 
     public Optional<ChapterCompleteDto> getOpenedChapter(StudentEntity student, int number) {
         return student.getStudentChapters().stream()
                 .filter(chapter -> chapter.getChapter().getNumber() == number).findFirst()
-                .map(chapter -> ChapterCompleteDto.map(chapter,
-                        reportService.getActualReportCount(chapter.getChapter())));
+                .map(chapter -> ChapterCompleteDto.map(chapter, reportService
+                        .getChapterActual(student.getCourse(), LocalDate.now(), number)));
     }
 
 
     protected boolean allowToCloseChapter(StudentChapterEntity chapter) {
         // --> complete the test immediately
-        return chapter.getState().changeAllowed(ChapterState.DONE) && chapter.getPractices()
-                .stream().filter(practice -> practice.getState() == PracticeState.APPROVED)
-                .count() == chapter.getChapter().getParts().size();
-        // && chapter.getReportCount() > 0
-        // && chapter.quizResultIsSatisfactory
+        return chapter.getState().changeAllowed(ChapterState.DONE)
+                && chapter.getPractices().stream()
+                        .filter(practice -> practice.getState() == PracticeState.APPROVED)
+                        .count() == chapter.getChapter().getParts().size()
+                && chapter.countApprovedReports() >= MIN_REPORT_COUNT_PER_CHAPTER
+                && chapter.isQuizPassed();
     }
 
 
@@ -313,6 +321,13 @@ public class StudentService {
             return state;
         }
         return false;
+    }
+
+
+    public boolean isCorrectStudentChapter(StudentChapterEntity studentChapter, CourseEntity course,
+            PersonEntity person) {
+        StudentEntity student = studentChapter.getStudent();
+        return student.getCourse().equals(course) && student.getPerson().equals(person);
     }
 
 }
