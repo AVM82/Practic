@@ -3,8 +3,7 @@ name: Java Build & Deploy to Elastic Beanstalk
 on:
   push:
     branches:
-      - Light_Way # здесь можно указать имя вашей основной ветки, например, master
-
+      - master # здесь можно указать имя вашей основной ветки, например, master
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -20,7 +19,7 @@ jobs:
           distribution: 'temurin' # Укажите дистрибутив JDK, например, 'adopt', 'temurin', 'graalvm'
 
       - name: Build with Maven
-        run: mvn clean package -Dmaven.test.skip
+        run: mvn clean package -DskipTests
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v17

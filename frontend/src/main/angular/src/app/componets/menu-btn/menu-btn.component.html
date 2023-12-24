@@ -9,8 +9,12 @@
 
 <mat-menu #menu="matMenu" xPosition="after">
    <button mat-menu-item (click)="onMenuItemClick('person')">
-        <mat-icon>person</mat-icon>
-        <span>Оновити профіль</span>
+        <mat-icon>update</mat-icon>
+        <span>Оновити</span>
+    </button>
+    <button mat-menu-item (click)="onMenuItemClick('profile')">
+        <mat-icon>settings</mat-icon>
+        <span>Профіль</span>
     </button>
     <button mat-menu-item (click)="onMenuItemClick('admin')"
     *ngIf="isAdmin">

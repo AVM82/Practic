@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8"/>
+    <link rel="api" href="http://shpp-practic.eu-north-1.elasticbeanstalk.com">
+    <link rel="stylesheet" href="my-profile-page.css"/>
+    <title>Налаштування профіля</title>
+</head>
+<body>
+<div class="my-profile" *ngIf="profile">
+    <div class="main-body">
+        <div class="main-body-middle">
+            <div class="main-text">Налаштування профіля</div>
+            <div class="main-body-information">
+                <img class="main-photo" src="{{profile.pictureUrl}}" alt="my photo"/>
+                <div class="main-information">
+                    <div class="main-name">{{profile.name}}  {{profile.surname}}</div>
+                    <div class="main-country">{{profile.country}}, {{profile.city}}</div>
+                </div>
+            </div>
+            <!--                general info-->
+
+            <div class="main-body-general">
+                <div class="general-text">Загальна інформація</div>
+
+                <div class="general-border">
+                    <div class="general-insert-frame-1">
+                        <div class="general-text-in-border">Імя *</div>
+                        <input class="general-input"  [(ngModel)]="profile.name">
+                    </div>
+                    <div class="general-insert-frame-1">
+                        <div  class="general-text-in-border">Прізвище*</div>
+                        <input class="general-input"  [(ngModel)]="profile.surname">
+                    </div>
+                    <div class="general-insert-frame-1">
+                        <div  class="general-text-in-border">Країна проживання</div>
+                        <input class="general-input"  [(ngModel)]="profile.country">
+                    </div>
+                    <div class="general-insert-frame-1">
+                        <div  class="general-text-in-border">Місто</div>
+                        <input class="general-input" [(ngModel)]="profile.city" >
+                    </div>
+                </div>
+            </div>
+            <div class="main-contact-info">
+                <div class="general-text">Контактна інформація</div>
+                <div class="main-contact-frame">
+                    <div class="main-contact-insert-frame">
+                        <div class="general-text-in-border">Email</div>
+                        <input   class="general-input"  [(ngModel)]="profile.email" readonly>
+                    </div>
+                    <div class="main-contact-insert-frame">
+                        <div class="general-text-in-border">Discord</div>
+                        <input class="general-input"  [(ngModel)]="profile.discord">
+                    </div>
+                    <div class="main-contact-insert-frame">
+                        <div class="general-text-in-border">Personal page</div>
+                        <input class="general-input"  [(ngModel)]="profile.personUrl">
+                    </div>
+                </div>
+            </div>
+            <div class="main-notification">
+                <div class="frame-notification">
+                    <div class="text-notification">Сповіщення на email</div>
+                    <input type="checkbox" id="switch" name="isNotificationEmail" [(ngModel)]="profile.notificationEmail"/><label for="switch">Toggle</label>
+                </div>
+                <div class="frame-notification">
+                    <div class="text-notification">Сповіщення в Discord</div>
+                    <input type="checkbox" id="switch1"  name="isNotificationDiscord" [(ngModel)]="profile.notificationDiscord"/><label for="switch1" >Toggle</label>
+                </div>
+            </div>
+
+                <div class="main-button-frame">
+                    <div class="button-container">
+                        <button class="save-button"(click)="saveChanges()">Зберегти</button>
+                    </div>
+                    <div class="button-container">
+                        <button class="cancel-button" (click)="cancelChanges()">Відмінити</button>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+</body>
+

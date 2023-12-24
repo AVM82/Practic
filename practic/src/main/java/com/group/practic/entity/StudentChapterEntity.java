@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 public class StudentChapterEntity implements Serializable, DaysCountable<ChapterState> {
 
+    @Serial
     private static final long serialVersionUID = 7733498302034511375L;
 
     @Id
@@ -78,7 +80,8 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     private Set<Long> subs = new HashSet<>();
 
 
-    public StudentChapterEntity() {}
+    public StudentChapterEntity() {
+    }
 
 
     public StudentChapterEntity(StudentEntity student, ChapterEntity chapter) {
@@ -112,4 +115,14 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
         return reports.stream().filter(ReportEntity::isNonCancelled).count();
     }
 
+    
+    public boolean isQuizPassed() {
+        return isQuizPassed;
+    }
+
+    
+    public void setQuizPassed(boolean quizPassed) {
+        isQuizPassed = quizPassed;
+    }
+    
 }

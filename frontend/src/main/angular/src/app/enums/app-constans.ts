@@ -23,6 +23,7 @@ export class CreateMethod {
   static readonly FROM_PROPERTIES = 'FromProperties';
 }
 
+export const CORRECT_ANSWERS_PERCENT = 75;
 
 export const ROLE_ADMIN = 'ADMIN';
 export const ROLE_STAFF = 'STAFF';
@@ -89,9 +90,11 @@ export const BUTTON_FINISH = 'ЗАВЕРШИТИ';
 export const BUTTON_PAUSE = 'ПАУЗА';
 export const BUTTON_CONTINUE = 'ПРОДОВЖИТИ';
 export const BUTTON_REPORT = 'ДОПОВІДЬ';
+export const BUTTON_TEST = 'ТЕСТ';
 
 export const LEVEL_COLORS = ['#84C984', '#D86D6D', '#CED069', '#6565A3']
 
 export const REQUIRED_REPORT_COUNT: number = 1;
 export const DAYS_AHEAD_REPORT_ANNOUNCE = 7;
 export const MAX_REPORT_COUNT_PER_DAY = 3;
+

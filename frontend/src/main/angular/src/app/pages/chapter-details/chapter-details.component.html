@@ -3,6 +3,8 @@
 	(navSlug)="getSlug($event)">
 </app-course-navbar>
 
+<section *ngIf="!isQuizVisible">
+
 <div *ngIf="chapter">
 	<div class="chapter-header">
 		<h3 class="fit-text">Розділ {{ chapter.number }}: {{chapter.name}}</h3>
@@ -16,6 +18,7 @@
 			<button *ngIf="isStudent && chapter.state !== STATE_DONE" class="chapter-button" (click)="changeState($event)">
 				{{getTextAccordingState()}}
 			</button>
+            <app-certificate-request *ngIf="isStudent" [student]="coursesService.stateStudent!"></app-certificate-request>
 		</div>
 	</div>
 
@@ -163,3 +166,9 @@
 		</div>
 	</div>
 </div>
+
+</section>
+<app-quiz *ngIf="isQuizVisible"
+          [studentChapter]="chapter!"
+          (closeQuiz)="closeQuiz()">
+</app-quiz>

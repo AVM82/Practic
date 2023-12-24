@@ -17,7 +17,9 @@ export class Chapter {
   subs?: number[];
   topicReports?: TopicReport [];
   isQuizPassed: boolean = false;
-
+  isQuizPassed: boolean;
+  quizId: number;
+  
   constructor(
     id: number,
     number: number,

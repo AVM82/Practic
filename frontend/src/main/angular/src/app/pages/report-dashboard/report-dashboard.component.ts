@@ -58,9 +58,18 @@ export class ReportDashboardComponent {
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
+<<<<<<< HEAD
                 height: '50%', width: '60%',
                 data: { chapters: this.openedChapters,
                         slug: this.slug }
+=======
+                height: '430px',
+                width: '800px',
+                data: {
+                    timeslots: this.timeslots,
+                    chapters: this.chapters
+                },
+>>>>>>> refs/remotes/origin/Light_Way
             });
         dialogRef.afterClosed().subscribe(result => {
             console.log("result of creating report dialog: ", result);

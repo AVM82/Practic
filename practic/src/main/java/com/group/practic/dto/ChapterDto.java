@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 
 @Getter
+@EqualsAndHashCode
 public class ChapterDto {
 
     long id;
@@ -31,6 +33,10 @@ public class ChapterDto {
     List<TopicReportEntity> topicReports;
 
     List<ReportDto> myReports;
+
+    boolean isQuizPassed;
+
+    long quizId;
 
 
     public static ChapterDto map(ChapterEntity chapter, boolean hidden,
@@ -99,6 +105,10 @@ public class ChapterDto {
         dto.topicReports = chapter.getTopics();
         dto.parts = studentChapter.getPractices().stream()
                 .map(prac -> ChapterPartDto.map(null, prac)).toList();
+        dto.isQuizPassed = studentChapter.isQuizPassed();
+        if (chapter.getQuiz() != null) {
+            dto.quizId = chapter.getQuiz().getId();
+        }
         return dto;
     }
 

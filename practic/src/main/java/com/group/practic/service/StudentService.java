@@ -330,4 +330,10 @@ public class StudentService {
         return student.getCourse().equals(course) && student.getPerson().equals(person);
     }
 
+    
+    public void quizPassed(StudentChapterEntity studentChapter) {
+        studentChapter.setQuizPassed(true);
+        studentChapterRepository.save(studentChapter);
+    }
+    
 }
