@@ -29,18 +29,10 @@
 
         <div class="title-field">
             <mat-label>Тема доповіді</mat-label>
-<<<<<<< HEAD
             <mat-form-field appearance="outline" style="width: 640px;">
                 <mat-select [formControl]="topicForm">
                     <mat-option *ngFor="let topic of chapterForm.value.topicReports"
                                 [value]="topic">{{topic.topic}}</mat-option>
-=======
-            <mat-form-field appearance="outline" style="width: 618px;">
-                <mat-select [(ngModel)]="newStudentReport.title"
-                            [formControl]="title">
-                    <mat-option *ngFor="let topic of topicsReport"
-                                [value]="topic.topicReport">{{topic.topicReport}}</mat-option>
->>>>>>> refs/remotes/origin/Light_Way
                 </mat-select>
             </mat-form-field>
         </div>

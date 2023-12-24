@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ActivatedRoute} from "@angular/router";
 import {ChapterReportsComponent} from "../../componets/chapter-reports/chapter-reports.component";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
 import {MatCardModule} from "@angular/material/card";
@@ -14,7 +13,6 @@ import {Chapter} from 'src/app/models/chapter';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import {User} from "../../models/user";
 import { ReportService } from 'src/app/services/report.service';
-import {Report, FrontReport} from 'src/app/models/report';
 
 @Component({
     selector: 'report-dashboard',
@@ -58,18 +56,9 @@ export class ReportDashboardComponent {
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
-<<<<<<< HEAD
                 height: '50%', width: '60%',
                 data: { chapters: this.openedChapters,
                         slug: this.slug }
-=======
-                height: '430px',
-                width: '800px',
-                data: {
-                    timeslots: this.timeslots,
-                    chapters: this.chapters
-                },
->>>>>>> refs/remotes/origin/Light_Way
             });
         dialogRef.afterClosed().subscribe(result => {
             console.log("result of creating report dialog: ", result);

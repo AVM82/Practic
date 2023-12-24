@@ -24,16 +24,14 @@
                 [slug]="slug"
                 [reports]="chapter.reports">
         </report-button>
-        
         <div class="diagram-container">
           <div class="diagram">
             <canvas #myCanvas width="80" height="80"></canvas>
           </div>
           <div class="totalPercentage">
-            {{ (percent[i] < 100) ? ((percent[i] < 10) ? '&nbsp;&nbsp;' : '&nbsp;') + percent[i] + '%' : percent[i] + '%' }}
+            {{ percent[i] < 100 ? ((percent[i] < 10) ? '&nbsp;&nbsp;' : '&nbsp;') + percent[i] + '%' : percent[i] + '%' }}
           </div>
         </div>
-
       </div>
 
       <mat-card-footer *ngIf="isStudent">

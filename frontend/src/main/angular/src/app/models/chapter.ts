@@ -16,8 +16,7 @@ export class Chapter {
   myReports:  Report[];
   subs?: number[];
   topicReports?: TopicReport [];
-  isQuizPassed: boolean = false;
-  isQuizPassed: boolean;
+  quizPassed: boolean;
   quizId: number;
   
   constructor(
@@ -29,7 +28,9 @@ export class Chapter {
     state: string,
     myReports:  Report[],
     reports: Report[],
-    topicReports: TopicReport []
+    topicReports: TopicReport [],
+    quizPassed: boolean,
+    quizId: number
   ) {
     this.id = id;
     this.number = number;
@@ -40,6 +41,8 @@ export class Chapter {
     this.reports = reports;
     this.myReports = myReports;
     this.topicReports = topicReports;
+    this.quizPassed = quizPassed;
+    this.quizId = quizId;
   }
 
   public static complete(chapter: Chapter, ext: CompleteChapter) {

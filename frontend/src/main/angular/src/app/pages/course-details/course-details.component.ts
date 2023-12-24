@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, QueryList, ViewChildren} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {ActivatedRoute, RouterLink} from "@angular/router";
@@ -14,7 +14,7 @@ import {Chapter} from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
 import { Report } from 'src/app/models/report';
 import { StateStudent } from 'src/app/models/student';
-import { ReportState } from 'src/app/enums/app-constans';
+import { ReportState, STATE_APPROVED } from 'src/app/enums/app-constans';
 import Chart from 'chart.js/auto';
 
 @Component({
@@ -25,7 +25,7 @@ import Chart from 'chart.js/auto';
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
-export class CourseDetailsComponent implements AfterViewInit {
+export class CourseDetailsComponent implements  AfterViewInit {
   chapters: Chapter[] = [];
   reports: StudentReport[][] = [];
   slug: string = '';
@@ -48,22 +48,19 @@ export class CourseDetailsComponent implements AfterViewInit {
     this.me = this.tokenStorageService.getMe();
   }
 
-
   ngAfterViewInit() {
     const tests = 0;
     this.canvases.forEach((canvas, index) => {
       const practicState = this.chapters[index].parts.length > 0 ? this.chapters[index].parts[0].practice.state : 'null';
       const percentPracticState = this.getPercentPracticState(practicState);
-      const reports = this.chapters[index].myReports > 0 ? 100 : 0;
+      const reports = this.chapters[index].myReports.filter(report => report.state === STATE_APPROVED).length > 0 ? 100 : 0;
       this.percent[index] = Math.floor((percentPracticState + tests + reports) / 3);
       this.zone.run(() => {
         this.cdr.detectChanges();
       });
       this.createChart([percentPracticState, tests, reports], canvas);
     });
-
   }
-
 
   getSlug(slug: string) {
     this.slug = slug;
@@ -93,8 +90,8 @@ getChapters(chapters: Chapter[]) {
             : ((number === 0 ? 'не' : number) + ' проведено');
   }
   
-}
   createChart(data: number[], canvas: ElementRef<HTMLCanvasElement>) {
+    console.log(data)
     const ctx = canvas.nativeElement.getContext('2d');
     const whiteColorfirst = 100 - data[0];
     const whiteColorSecond = 100 - data[1];
@@ -103,30 +100,22 @@ getChapters(chapters: Chapter[]) {
       const myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          datasets: [{
+          datasets: [
+          {
             data: [whiteColorfirst, data[0]],
-            backgroundColor: [
-              'rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'
-            ],
-            borderWidth: 0
-            ,
+            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'],
+            borderWidth: 0,
             label: "практична"
-          }, {
+          }, 
+          {
             data: [whiteColorSecond, data[1]],
-            backgroundColor: [
-              'rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'
-            ],
-
+            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'],
             borderWidth: 0,
             label: "тести"
           },
-
           {
             data: [whiteColorThirst, data[2]],
-            backgroundColor: [
-              'rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'
-            ],
-
+            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'],
             borderWidth: 0,
             label: "доповiдь"
           }]
@@ -142,10 +131,7 @@ getChapters(chapters: Chapter[]) {
                 }
               }
             },
-            legend: {
-              position: 'center'
-            }
-
+            legend: { position: 'center' }
           }
         }
       });
@@ -179,4 +165,5 @@ getChapters(chapters: Chapter[]) {
         return 0;
     }
   }
+
 }

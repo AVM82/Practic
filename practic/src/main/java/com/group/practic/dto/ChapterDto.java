@@ -34,7 +34,7 @@ public class ChapterDto {
 
     List<ReportDto> myReports;
 
-    boolean isQuizPassed;
+    boolean quizPassed;
 
     long quizId;
 
@@ -105,7 +105,7 @@ public class ChapterDto {
         dto.topicReports = chapter.getTopics();
         dto.parts = studentChapter.getPractices().stream()
                 .map(prac -> ChapterPartDto.map(null, prac)).toList();
-        dto.isQuizPassed = studentChapter.isQuizPassed();
+        dto.quizPassed = studentChapter.isQuizPassed();
         if (chapter.getQuiz() != null) {
             dto.quizId = chapter.getQuiz().getId();
         }
