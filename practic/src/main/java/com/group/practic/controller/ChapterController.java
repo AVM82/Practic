@@ -2,8 +2,10 @@ package com.group.practic.controller;
 
 import static com.group.practic.util.ResponseUtils.getResponse;
 
+import com.group.practic.dto.ChapterDto;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.service.ChapterService;
+import com.group.practic.service.PersonService;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,9 @@ public class ChapterController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ChapterEntity> get(@Min(1) @PathVariable long id) {
-        return getResponse(chapterService.get(id));
+    public ResponseEntity<ChapterDto> get(@Min(1) @PathVariable long id) {
+        return getResponse(chapterService.get(id)
+                .map(chapter -> ChapterDto.map(chapter, !PersonService.hasAdvancedRole())));
     }
 
 

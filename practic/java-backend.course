@@ -62,7 +62,7 @@ description=Програма-мінімум на позицію backend Junior J
 level1=1,2
 level2=3
 level3=4,5
-level4=6,7,8
+level4=6,7,8,9
 
 1.=Запуск java-застосунку<>Запуск java-застосунку з використанням сторонніх бібліотек поза IDE (або демо ключової ідеї java "Write once, run anywhere")
 1.1.=Збірка java-проєктів

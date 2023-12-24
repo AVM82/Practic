@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {catchError, delay, Observable, of, retry, tap} from "rxjs";
 import {ApiUrls, deleteReportsUrl, getReportsUrl, postReportsUrl} from "../enums/api-urls";
-import {StudentReport} from "../models/report";
+import {Report} from "../models/report";
 import {NewStudentReport} from "../models/newStudentReport";
 import {Router} from "@angular/router";
+import { ReportState } from '../enums/app-constans';
 
 
 @Injectable({
@@ -13,7 +14,7 @@ import {Router} from "@angular/router";
 export class ReportServiceService {
 
     slug: string = '';
-    reports: StudentReport[][] = [];
+    reports: Report[][] = [] ;
 
     constructor(private http: HttpClient,
                 private router: Router) {
@@ -28,7 +29,7 @@ export class ReportServiceService {
 
     getAllActualReports(slug: string): void {
         this.setCourseSlug(slug);
-        this.http.get<StudentReport[][]>(getReportsUrl(slug)).subscribe(reports => this.reports = reports);
+        this.http.get<Report[][]>(getReportsUrl(slug)).subscribe(reports => this.reports = reports);
     }
 
 /*    
@@ -41,15 +42,11 @@ export class ReportServiceService {
     }
 */
 
-    getReportStates(): Observable<any[]> {
-        return this.http.get<any[]>(ApiUrls.ReportStates);
-    }
-
-    createNewReport(newReport: NewStudentReport, studentChapterId: number): Observable<StudentReport> {
-        return this.http.post<StudentReport>(postReportsUrl(studentChapterId), newReport)
+    createNewReport(newReport: NewStudentReport): Observable<Report> {
+        return this.http.post<Report>(postReportsUrl(newReport.chapterId), newReport)
             .pipe(
                 tap(report => this.reports[report.chapterNumber - 1].push(report)),
-                catchError(this.handleError<StudentReport>(`post new student report = ${studentChapterId}`)));
+                catchError(this.handleError<Report>(`post new student report = ${newReport.chapterId}`)));
     }
 
     updateReportLikeList(reportId: number): Observable<any> {
@@ -60,13 +57,18 @@ export class ReportServiceService {
 
     updateReport(newReport: NewStudentReport): Observable<any> {
         return this.http.put<NewStudentReport>(ApiUrls.Reports, newReport)
-            .pipe(catchError(this.handleError<StudentReport>(`update new student report`)));
+            .pipe(catchError(this.handleError<Report>(`update new student report`)));
     }
 
     deleteReport(reportId: number): Observable<any> {
         return this.http.delete<NewStudentReport>(deleteReportsUrl(reportId))
-            .pipe(catchError(this.handleError<StudentReport>(`delete new student report `)));
+            .pipe(catchError(this.handleError<Report>(`delete new student report `)));
     }
+
+    reportsSubmitted(reports: Report[] | undefined): boolean {
+        return reports != undefined && reports?.some(report => report.state === ReportState.APPROVED);
+    }
+
 
     /**
      * Handle Http operation that failed.
@@ -86,6 +88,7 @@ export class ReportServiceService {
             return of(result as T);
         };
     }
+
     showReports(){
         console.log(this.reports)
     }

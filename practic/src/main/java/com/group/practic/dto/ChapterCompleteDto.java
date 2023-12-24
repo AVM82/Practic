@@ -2,9 +2,9 @@ package com.group.practic.dto;
 
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
+import com.group.practic.entity.ReportEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentPracticeEntity;
-import com.group.practic.entity.TopicReportEntity;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -22,13 +22,11 @@ public class ChapterCompleteDto {
 
     List<String> skills;
 
-    long reportCount;
+    List<ReportDto> reports;
 
-    List<StudentReportDto> reports;
-
+    List<ReportDto> myReports;
+    
     Set<Long> subs;
-
-    List<String> topicReports;
 
 
     public static ChapterCompleteDto map(ChapterEntity entity) {
@@ -40,16 +38,15 @@ public class ChapterCompleteDto {
     }
 
 
-    public static ChapterCompleteDto map(ChapterEntity entity, long reportCount) {
+    public static ChapterCompleteDto map(ChapterEntity entity, List<ReportEntity> reports) {
         ChapterCompleteDto dto = ChapterCompleteDto.map(entity);
-        dto.reportCount = reportCount;
         dto.skills = entity.getSkills();
-        dto.topicReports = entity.getTopics().stream().map(TopicReportEntity::getTopic).toList();
+        dto.reports = reports.stream().map(ReportDto::map).toList();
         return dto;
     }
 
 
-    public static ChapterCompleteDto map(StudentChapterEntity entity, long reportCount) {
+    public static ChapterCompleteDto map(StudentChapterEntity entity, List<ReportEntity> reports) {
         ChapterEntity chapter = entity.getChapter();
         ChapterCompleteDto dto = new ChapterCompleteDto();
         dto.id = entity.getId();
@@ -60,10 +57,9 @@ public class ChapterCompleteDto {
                 .mapToObj(index -> ChapterPartDto.map(parts.get(index), practices.get(index)))
                 .toList();
         dto.skills = chapter.getSkills();
-        dto.reportCount = reportCount;
-        dto.reports = entity.getReports().stream().map(StudentReportDto::map).toList();
+        dto.myReports = entity.getReports().stream().map(ReportDto::map).toList();
+        dto.reports = reports.stream().map(ReportDto::map).toList();
         dto.subs = entity.getSubs();
-        dto.topicReports = chapter.getTopics().stream().map(TopicReportEntity::getTopic).toList();
         return dto;
     }
 

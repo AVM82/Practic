@@ -139,7 +139,7 @@ export class QuizComponent implements OnInit {
                     );
                     if (((this.rightAnswers * 100) / this.quiz.questions.length) >= CORRECT_ANSWERS_PERCENT) {
                         this.passed = true;
-                        this.studentChapter.isQuizPassed = true;
+                        this.studentChapter.quizPassed = true;
                     }
                     this.setQuizState(STATE_FINISHED);
                 }

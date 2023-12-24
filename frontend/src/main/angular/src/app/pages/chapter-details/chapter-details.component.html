@@ -1,158 +1,171 @@
+<app-course-navbar 
+	(currentChapter)="getChapter($event)"
+	(navSlug)="getSlug($event)">
+</app-course-navbar>
+
 <section *ngIf="!isQuizVisible">
-    <app-course-navbar [currentChapter]="number"></app-course-navbar>
 
-    <div class="chapter-header">
-        <h3 class="fit-text">Розділ {{ chapter?.number }}: {{chapter?.name}}</h3>
-        <report-button *ngIf="isMentor" class="report-button"
-                       matTooltip="Всі доповіді розділу"
-                       matTooltipPosition="below"
-                       [reportsNumber]="chapter!.reportCount">
-        </report-button>
-        <div *ngIf="isStudent">
-            <report-button class="report-button"
-                           matTooltip="Мої доповіді розділу"
-                           matTooltipPosition="above"
-                           [reportsNumber]="chapter!.myReports">
-            </report-button>
-            <button *ngIf="chapter?.state !== done" class="chapter-button" (click)="changeState($event)">
-                {{getTextAccordingState()}}
-            </button>
+<div *ngIf="chapter">
+	<div class="chapter-header">
+		<h3 class="fit-text">Розділ {{ chapter.number }}: {{chapter.name}}</h3>
+		<div *ngIf="isStudent || isMentor">
+			<report-button class="report-button"
+				matTooltip="Доповіді розділу"
+				matTooltipPosition="above"
+				[slug]="slug"
+				[reports]="chapter.reports">
+			</report-button>
+			<button *ngIf="isStudent && chapter.state !== STATE_DONE" class="chapter-button" (click)="changeState($event)">
+				{{getTextAccordingState()}}
+			</button>
             <app-certificate-request *ngIf="isStudent" [student]="coursesService.stateStudent!"></app-certificate-request>
-        </div>
-    </div>
+		</div>
+	</div>
 
-    <div *ngFor="let chapterPart of chapter?.parts">
-        <div class="chapter-part">
-            {{ chapter?.number }}. Теоретичний блок {{showPartNumber ? '№' + chapterPart.common?.number : ''}}
-        </div>
+	<div *ngFor="let chapterPart of chapter.parts">
+		<div class="chapter-part">
+			{{ chapter.number }}. Теоретичний блок {{showPartNumber ? '№'+ chapterPart.common?.number : ''}}
+		</div>
 
-        <cdk-accordion class="chapter-details-container" [multi]="true">
-            <cdk-accordion-item *ngFor="let subchapter of chapterPart.common?.subChapters; let index = index"
-                                #accordionItem="cdkAccordionItem"
-                                class="accordion-item"
-                                role="button"
-                                tabindex="0"
-                                [attr.id]="'accordion-header-' + index"
-                                [attr.aria-expanded]="accordionItem.expanded"
-                                [attr.aria-controls]="'accordion-body-' + index">
-                <div class="subchapter-header">
-                    <div class="subblock">
-                        <mat-icon *ngIf="subchapter.subSubChapters?.length || subchapter.refs"
-                                  (click)="accordionItem.toggle()"
-                                  class="accordion-button">
-                            {{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
-                        </mat-icon>
-                        <div class="sub">{{chapter?.number}}.{{subchapter.number}}. {{subchapter.name}}</div>
-                        <div *ngIf="subchapter.checked || isMentor" class="skill-part">
-                            <div *ngFor="let skill of subchapter.skills" class="skill">{{skill}}</div>
-                        </div>
-                    </div>
-                    <input *ngIf="isActiveChapter && chapter?.state === process" type="checkbox" [id]="subchapter.id"
-                           [checked]="isSelected(subchapter.id)"
-                           (change)="changeSkills($event, subchapter)"/>
-                </div>
-                <div *ngIf=accordionItem.expanded
-                     role="region"
-                     [style.display]="accordionItem.expanded ? '' : 'none'">
-                    <hr class="horizontal-line">
-                    <div *ngIf=subchapter.refs>
-                        <div *ngFor="let ref of subchapter.refs">
-                            <a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br/></a>
-                        </div>
-                    </div>
-                    <div *ngFor="let subsubchapter of subchapter.subSubChapters" class="row">
-                        <div class="column">{{chapter?.number}}.{{subchapter.number}}.{{subsubchapter.number}}.</div>
-                        <div class="column">{{subsubchapter.name}}
-                            <div *ngIf="subsubchapter.refs">
-                                <div *ngFor="let ref of subsubchapter.refs">
-                                    <a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br/></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </cdk-accordion-item>
-        </cdk-accordion>
+		<cdk-accordion class="chapter-details-container" [multi]="true">
+			<cdk-accordion-item *ngFor="let subchapter of chapterPart.common?.subChapters; let index = index" 
+								#accordionItem="cdkAccordionItem"
+								class="accordion-item"
+								role="button"
+								tabindex="0"
+								[attr.id]="'accordion-header-' + index"
+								[attr.aria-expanded]="accordionItem.expanded"
+								[attr.aria-controls]="'accordion-body-' + index">
+				<div  class="subchapter-header">
+					<div class="subblock">
+						<mat-icon *ngIf="subchapter.subSubChapters?.length || subchapter.refs" 
+								(click)="accordionItem.toggle()"
+								class="accordion-button">
+							{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+						</mat-icon>
+						<div class="sub">{{chapter.number}}.{{subchapter.number}}. {{subchapter.name}}</div>
+						<div *ngIf="subchapter.checked || isMentor" class="skill-part">
+							<div *ngFor="let skill of subchapter.skills" class="skill">{{skill}}</div>
+						</div>
+					</div>
+					<input *ngIf="chapter.number === activeNumber && chapter.state === STATE_IN_PROCESS" 
+							type="checkbox"
+							[id]="subchapter.id" 
+							[checked]="isSelected(subchapter.id)" 
+							(change)="changeSkills($event, subchapter)"/>
+				</div>
+				<div *ngIf=accordionItem.expanded
+					role="region" 
+					[style.display]="accordionItem.expanded ? '' : 'none'">
+					<hr class="horizontal-line">
+					<div *ngIf=subchapter.refs>
+						<div *ngFor="let ref of subchapter.refs">
+							<a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+						</div>
+					</div >
+					<div *ngFor="let subsubchapter of subchapter.subSubChapters" class="row">
+						<div class="column">{{chapter.number}}.{{subchapter.number}}.{{subsubchapter.number}}. </div>
+						<div class="column">{{subsubchapter.name}}
+							<div *ngIf="subsubchapter.refs">
+								<div *ngFor="let ref of subsubchapter.refs">
+									<a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</cdk-accordion-item>
+		</cdk-accordion>
 
-        <div *ngIf="chapterPart.common?.praxisPurpose">
-            <div class="chapter-part">
-                <div *ngIf="isStudent && chapter?.state === process" class="action-buttons">
-                    <button *ngIf="chapterPart.practice!.state === not_started
-								|| chapterPart.practice!.state === pause
-								|| chapterPart.practice!.state === ready"
-                            mat-icon-button
-                            (click)="service.changePracticeState(chapter!.number, chapterPart, process)"
-                            matTooltip="{{chapterPart.practice!.state === not_started ? 'Почати практичну' : 'Продовжити практичну'}}"
-                            matTooltipPosition="below"
-                            aria-label="Play"
-                            [disabled]="chapter?.state === pause">
-                        <mat-icon class="action-icon">play_circle_outline</mat-icon>
-                    </button>
-                    <button *ngIf="chapterPart.practice!.state === process"
-                            mat-icon-button
-                            (click)="service.changePracticeState(chapter!.number, chapterPart, pause)"
-                            matTooltip="Відкласти роботу над практичною"
-                            matTooltipPosition="below"
-                            aria-label="Pause"
-                            [disabled]="chapter?.state === pause">
-                        <mat-icon class="action-icon">pause_circle_outline</mat-icon>
-                    </button>
-                    <button *ngIf="chapterPart.practice!.state === process"
-                            class="done-btn"
-                            (click)="practiceReview(chapterPart)"
-                            matTooltip="Практична готова до ревью"
-                            matTooltipPosition="below"
-                            aria-label="Done">
-                        <mat-icon class="action-icon">stop_circle_outline</mat-icon>
-                    </button>
-                    <button *ngIf="chapterPart.practice!.state === ready"
-                            class="done-btn"
-                            (click)="checkApproved(chapterPart)"
-                            matTooltip="Перевірити стан"
-                            matTooltipPosition="below"
-                            aria-label="Done">
-                        <mat-icon class="action-icon">star_half</mat-icon>
-                    </button>
-                </div>
-                <div class="fit-text">
-                    {{ chapter?.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}
-                    <br/>
-                    Мета: {{chapterPart.common?.praxisPurpose}}
-                </div>
-                <div *ngIf="isStudent" class="custom-chip">{{chapterPart.practice!.state | StatePipe}}</div>
-            </div>
-            <div *ngIf="chapterPart.common?.praxis?.length" class="chapter-details-container-ext">
-                <div *ngFor="let praxis of chapterPart.common?.praxis" class="row">
-                    <div class="column">{{praxis.number}}.</div>
-                    <div class="column">{{praxis.name}}
-                        <div *ngIf="praxis.refs">
-                            <div *ngFor="let ref of praxis.refs">
-                                <a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br/></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+		<div *ngIf="chapterPart.common?.praxisPurpose">
+			<div class="chapter-part">
+				<div *ngIf="isStudent && chapter.state === STATE_IN_PROCESS" class="action-buttons">
+					<button *ngIf="chapterPart.practice!.state === STATE_NOT_STARTED 
+									|| chapterPart.practice!.state === STATE_PAUSE
+									|| chapterPart.practice!.state === STATE_READY_TO_REVIEW"
+							mat-icon-button
+							(click)="studentService.changePracticeState(chapter!.number, chapterPart, STATE_IN_PROCESS)"
+							matTooltip="{{chapterPart.practice!.state === STATE_NOT_STARTED ? 'Почати практичну' : 'Продовжити практичну'}}"
+							matTooltipPosition="below"
+							aria-label="Play">
+						<mat-icon class="action-icon">play_circle_outline</mat-icon>
+					</button>
+					<button *ngIf="chapterPart.practice!.state === STATE_IN_PROCESS"
+							mat-icon-button
+							(click)="studentService.changePracticeState(chapter!.number, chapterPart, STATE_PAUSE)"
+							matTooltip="Відкласти роботу над практичною"
+							matTooltipPosition="below"
+							aria-label="Pause">
+						<mat-icon class="action-icon">pause_circle_outline</mat-icon>
+					</button>
+					<button *ngIf="chapterPart.practice!.state === STATE_IN_PROCESS"
+							class="done-btn"
+							(click)="practiceReview(chapterPart)"
+							matTooltip="Практична готова до ревью"
+							matTooltipPosition="below"
+							aria-label="Done">
+						<mat-icon class="action-icon">stop_circle_outline</mat-icon>
+					</button>
+					<button *ngIf="chapterPart.practice!.state === STATE_READY_TO_REVIEW"
+							class="done-btn"
+							(click)="checkApproved(chapterPart)"
+							matTooltip="Перевірити стан"
+							matTooltipPosition="below"
+							aria-label="Done">
+						<mat-icon class="action-icon">star_half</mat-icon>
+					</button>
+				</div>
+				<div class="fit-text">
+					{{ chapter.number }}. Практична робота {{showPartNumber ? '№' + chapterPart.common?.number : ''}}<br />
+					Мета: {{chapterPart.common?.praxisPurpose}}
+				</div>
+				<div *ngIf="isStudent" class="custom-chip">{{chapterPart.practice!.state | StatePipe}}</div>
+			</div>
+			<div *ngIf="chapterPart.common?.praxis?.length" class="chapter-details-container-ext">
+				<div *ngFor="let praxis of chapterPart.common?.praxis" class="row">
+					<div class="column">{{praxis.number}}. </div>
+					<div class="column">{{praxis.name}}
+						<div *ngIf="praxis.refs">
+							<div *ngFor="let ref of praxis.refs">
+								<a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <div *ngIf="chapterPart.common?.additionals?.length">
-            <div class="chapter-part">
-                {{ chapter?.number }}. Додатково {{showPartNumber ? '№' + chapterPart.common?.number : ''}}
-            </div>
-            <div *ngIf="chapterPart.common?.additionals?.length" class="chapter-details-container-ext">
-                <div *ngFor="let add of chapterPart.common?.additionals" class="row">
-                    <div class="column">{{add.number}}.</div>
-                    <div class="column">{{add.name}}
-                        <div *ngIf="add.refs">
-                            <div *ngFor="let ref of add.refs">
-                                <a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br/></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		<div *ngIf="chapterPart.common?.additionals?.length">
+			<div class="chapter-part">
+				{{ chapter.number }}. Додатково {{showPartNumber ? '№' + chapterPart.common?.number : ''}}
+			</div>
+			<div *ngIf="chapterPart.common?.additionals?.length" class="chapter-details-container-ext">
+				<div *ngFor="let add of chapterPart.common?.additionals" class="row">
+					<div class="column">{{add.number}}. </div>
+					<div class="column">{{add.name}}
+						<div *ngIf="add.refs">
+							<div *ngFor="let ref of add.refs">
+								<a href={{ref.reference}} target="_blank" rel="noopener">{{ref.title}}<br /></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="isStudent">
+		<h4 class="report-row">Доповіді</h4>
+		<div *ngFor="let report of chapter.myReports"
+				class="report-row"
+				[class.report-announced]="report.state === STATE_ANNOUNCED"
+				[class.report-started]="report.state === STATE_STARTED"
+				[class.report-finished]="report.state === STATE_FINISHED"
+				[class.report-approved]="report.state === STATE_APPROVED">
+			{{report.date}} -[{{report.id}}]- {{report.topic.topic}}{{report.likedPersonIds.length ? '  ~ likes:' + report.likedPersonIds.length : '' }}
+		</div>
+	</div>
+</div>
 
 </section>
 <app-quiz *ngIf="isQuizVisible"
