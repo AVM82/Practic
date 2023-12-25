@@ -14,9 +14,7 @@
     <profiles>
         <profile>
             <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+
             <build>
                 <resources>
                     <resource>
@@ -62,7 +60,10 @@
             </build>
         </profile>
         <profile>
-            <id>local-build</id>
+            <id>develop-build</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <resources>
                     <resource>
@@ -94,12 +95,12 @@
                                 </goals>
                             </execution>
                             <execution>
-                                <id>npm run build local</id>
+                                <id>npm run build develop</id>
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>run build -- --configuration=local</arguments>
+                                    <arguments>run build -- --configuration=develop</arguments>
                                 </configuration>
                             </execution>
                         </executions>
