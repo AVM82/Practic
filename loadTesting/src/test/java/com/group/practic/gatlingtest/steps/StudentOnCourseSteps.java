@@ -5,7 +5,6 @@ import static io.gatling.javaapi.core.CoreDsl.exec;
 import static io.gatling.javaapi.core.CoreDsl.jsonPath;
 
 import com.group.practic.gatlingtest.Feeders;
-import com.group.practic.gatlingtest.PropertyLoader;
 import io.gatling.javaapi.core.Body;
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.CoreDsl;
@@ -13,7 +12,6 @@ import io.gatling.javaapi.http.HttpDsl;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -27,12 +25,9 @@ public class StudentOnCourseSteps {
             }
             """);
     private static final Body.WithString FEEDBACK_BODY = StringBody("#{feedback}");
-    private final String slug;
 
 
     public StudentOnCourseSteps() {
-        Properties properties = new PropertyLoader().getProperties();
-        slug = properties.getProperty("slug");
         feedbackMap = feedbackMap();
     }
 
@@ -44,15 +39,20 @@ public class StudentOnCourseSteps {
 
     public ChainBuilder authUserByEmail() {
         return CoreDsl
-                .exec(
-                        HttpDsl
-                                .http("POST/api/login")
-                                .post("/api/auth")
-                                .body(USER_BODY)
-                                .asJson()
-                                .check(HttpDsl.status().in(200))
-                )
-                .pause(2);
+                .tryMax(5)
+                .on(
+                        exec(
+                                HttpDsl
+                                        .http("POST/api/login")
+                                        .post("/api/auth")
+                                        .body(USER_BODY)
+                                        .asJson()
+                                        .check(HttpDsl.status().in(200),
+                                                jsonPath("$.user.students[0].id")
+                                                        .saveAs("studentId"),
+                                                jsonPath("$.user.id")
+                                                        .saveAs("personId")))
+                                .pause(1, 4));
     }
 
     public ChainBuilder getCourses() {
@@ -61,20 +61,19 @@ public class StudentOnCourseSteps {
                         HttpDsl
                                 .http("GET/api/courses")
                                 .get("/api/courses")
-                                .check(HttpDsl.status().in(200))
-                )
-                .pause(2);
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 4);
     }
 
     public ChainBuilder getCoursesBySlug() {
         return CoreDsl
+                .feed(Feeders.slugs)
                 .exec(
                         HttpDsl
-                                .http("GET/api/courses/" + slug)
-                                .get("/api/courses/" + slug)
-                                .check(HttpDsl.status().in(200))
-                )
-                .pause(2);
+                                .http("GET/api/courses/{slug}")
+                                .get("/api/courses/#{slug}")
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 4);
     }
 
     public ChainBuilder postFeedback() {
@@ -87,20 +86,63 @@ public class StudentOnCourseSteps {
                                 .body(FEEDBACK_BODY)
                                 .asJson()
                                 .check(HttpDsl.status().in(200),
-                                        jsonPath("$.id").saveAs("feedbackId"))
-                )
-                .pause(2);
+                                        jsonPath("$.id").saveAs("feedbackId")))
+                .pause(1, 4);
+    }
+
+    public ChainBuilder getMe() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("GET/api/persons/me")
+                                .get("/api/persons/me")
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 4);
+    }
+
+    public ChainBuilder incrementLike() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("PATCH/api/feedbacks/add/{feedbackId}")
+                                .patch("/api/feedbacks/add/#{feedbackId}"
+                                        + "?page=0&size=10&sortState=DATE_DESCENDING")
+                                .asJson()
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 4);
+    }
+
+    public ChainBuilder decrementLike() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("PATCH/api/feedbacks/remove/{feedbackId}")
+                                .patch("/api/feedbacks/remove/#{feedbackId}"
+                                        + "?page=0&size=10&sortState=DATE_DESCENDING")
+                                .asJson()
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 4);
     }
 
     public ChainBuilder deleteFeedbackById() {
         return CoreDsl.exec(
-                HttpDsl
-                        .http("DELETE /api/feedbacks/{feedbackId}")
-                        .delete("/api/feedbacks/delete/#{feedbackId}"
-                                + "?page=0&size=10&sortState=DATE_DESCENDING")
-                        .asJson()
-                        .check(HttpDsl.status().is(200))
-        );
+                        HttpDsl
+                                .http("DELETE /api/feedbacks/{feedbackId}")
+                                .delete("/api/feedbacks/delete/#{feedbackId}"
+                                        + "?page=0&size=10&sortState=DATE_DESCENDING")
+                                .asJson()
+                                .check(HttpDsl.status().is(200)))
+                .pause(1, 4);
+    }
+
+    public ChainBuilder getReportPage() {
+        return CoreDsl.exec(
+                        HttpDsl
+                                .http("GET /api/students/reports/course/java-dev-tools")
+                                .get("/api/students/reports/course/java-dev-tools")
+                                .asJson()
+                                .check(HttpDsl.status().is(200)))
+                .pause(1, 4);
     }
 
 
