@@ -5,7 +5,6 @@ import static io.gatling.javaapi.core.CoreDsl.exec;
 import static io.gatling.javaapi.core.CoreDsl.jsonPath;
 
 import com.group.practic.gatlingtest.Feeders;
-import com.group.practic.gatlingtest.PropertyLoader;
 import io.gatling.javaapi.core.Body;
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.CoreDsl;
@@ -13,7 +12,6 @@ import io.gatling.javaapi.http.HttpDsl;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -41,17 +39,8 @@ public class StudentOnCourseSteps {
             }
             """);
     private final Iterator<Map<String, Object>> feedbackMap;
-    private final String slug;
-    private final String studentId;
-    private final String studentChapterId;
-    private String chapterId;
 
     public StudentOnCourseSteps() {
-        Properties properties = new PropertyLoader().getProperties();
-        slug = properties.getProperty("slug");
-        studentId = properties.getProperty("student-id");
-        chapterId = "102";
-        studentChapterId = "202";
         feedbackMap = feedbackMap();
     }
 
@@ -63,15 +52,22 @@ public class StudentOnCourseSteps {
 
     public ChainBuilder authUserByEmail() {
         return CoreDsl
-                .exec(
-                        HttpDsl
-                                .http("POST /api/login")
-                                .post("/api/auth")
-                                .body(USER_BODY)
-                                .asJson()
-                                .check(HttpDsl.status().in(200))
-                )
-                .pause(2);
+                .tryMax(5)
+                .on(
+                        exec(
+                                HttpDsl
+                                        .http("POST /api/login")
+                                        .post("/api/auth")
+                                        .body(USER_BODY)
+                                        .asJson()
+                                        .check(HttpDsl.status().in(200),
+                                                jsonPath("$.user.students[0].id")
+                                                        .saveAs("studentId"),
+                                                jsonPath("$.user.students[0].activeChapterNumber")
+                                                        .saveAs("studentChapterId"),
+                                                jsonPath("$.user.id")
+                                                        .saveAs("personId")))
+                                .pause(1, 4));
     }
 
     public ChainBuilder applicationForCourse() {
@@ -116,7 +112,7 @@ public class StudentOnCourseSteps {
                 .exec(
                         HttpDsl
                                 .http("GET /students/chapters")
-                                .get("/api/students/chapters/" + studentId)
+                                .get("/api/students/chapters/#{studentId}")
                                 .check(HttpDsl.status().in(200, 204)))
                 .pause(1, 4);
     }
@@ -126,7 +122,7 @@ public class StudentOnCourseSteps {
                 .exec(
                         HttpDsl
                                 .http("GET /students/chapters/{studentId}/{chapterId}")
-                                .get("/api/students/chapters/" + studentId + "/1")
+                                .get("/api/students/chapters/#{studentId}/#{studentChapterId}")
                                 .check(HttpDsl.status().in(200, 204)))
                 .pause(1, 4);
     }
@@ -135,14 +131,16 @@ public class StudentOnCourseSteps {
         return CoreDsl
                 .exec(
                         HttpDsl
-                                .http("PUT /api/students/chapters/states/{studentChapterId}/{newStateString}")
-                                .put("/api/students/chapters/states/" + studentChapterId +
-                                        "/IN_PROCESS")
+                                .http("PUT /api/students/chapters/states/"
+                                        + "{studentChapterId}/IN_PROCESS")
+                                .put("/api/students/chapters/states/"
+                                        + "#{studentChapterId}/IN_PROCESS")
                                 .check(HttpDsl.status().in(200, 204)))
                 .pause(1, 4)
                 .exec(HttpDsl
-                        .http("PUT /api/students/chapters/states/{studentChapterId}/{newStateString}")
-                        .put("/api/students/chapters/states/" + studentChapterId + "/PAUSE")
+                        .http("PUT /api/students/chapters/states/{studentChapterId}/PAUSE")
+                        .put("/api/students/chapters/states/"
+                                + "#{studentChapterId}/PAUSE")
                         .check(HttpDsl.status().in(200, 204)))
                 .pause(1, 4);
     }
@@ -151,19 +149,22 @@ public class StudentOnCourseSteps {
         return CoreDsl
                 .exec(
                         HttpDsl
-                                .http("PUT /api/students/practices/states/{studentChapterId}/{newStateString}")
-                                .put("/api/students/practices/states/" + studentChapterId +
-                                        "/IN_PROCESS")
+                                .http("PUT /api/students/practices/states/"
+                                        + "{studentChapterId}/IN_PROCESS")
+                                .put("/api/students/practices/states/"
+                                        + "#{studentChapterId}/IN_PROCESS")
                                 .check(HttpDsl.status().in(200)))
                 .pause(1, 4)
                 .exec(HttpDsl
-                        .http("PUT /api/students/practices/states/{studentChapterId}/{newStateString}")
-                        .put("/api/students/practices/states/" + studentChapterId + "/PAUSE")
+                        .http("PUT /api/students/practices/states/{studentChapterId}/PAUSE")
+                        .put("/api/students/practices/states/#{studentChapterId}/PAUSE")
                         .check(HttpDsl.status().in(200)))
                 .pause(1, 4)
                 .exec(HttpDsl
-                        .http("PUT /api/students/practices/states/{studentChapterId}/{newStateString}")
-                        .put("/api/students/practices/states/" + studentChapterId + "/READY_TO_REVIEW")
+                        .http("PUT /api/students/practices/states/"
+                                + "{studentChapterId}/READY_TO_REVIEW")
+                        .put("/api/students/practices/states/"
+                                + "#{studentChapterId}/READY_TO_REVIEW")
                         .check(HttpDsl.status().in(200)))
                 .pause(1, 4);
     }
@@ -180,25 +181,69 @@ public class StudentOnCourseSteps {
                                 .check(HttpDsl.status().in(200),
                                         jsonPath("$.id").saveAs("feedbackId"))
                 )
-                .pause(2);
+                .pause(1, 3);
+    }
+
+    public ChainBuilder getMe() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("GET/api/persons/me")
+                                .get("/api/persons/me")
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 3);
+    }
+
+    public ChainBuilder incrementLike() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("PATCH/api/feedbacks/add/{feedbackId}")
+                                .patch("/api/feedbacks/add/#{feedbackId}"
+                                        + "?page=0&size=10&sortState=DATE_DESCENDING")
+                                .asJson()
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 3);
+    }
+
+    public ChainBuilder decrementLike() {
+        return CoreDsl
+                .exec(
+                        HttpDsl
+                                .http("PATCH/api/feedbacks/remove/{feedbackId}")
+                                .patch("/api/feedbacks/remove/#{feedbackId}"
+                                        + "?page=0&size=10&sortState=DATE_DESCENDING")
+                                .asJson()
+                                .check(HttpDsl.status().in(200)))
+                .pause(1, 3);
+    }
+
+    public ChainBuilder getReportPage() {
+        return CoreDsl.exec(
+                        HttpDsl
+                                .http("GET /api/students/reports/course/java-dev-tools")
+                                .get("/api/students/reports/course/java-dev-tools")
+                                .asJson()
+                                .check(HttpDsl.status().is(200)))
+                .pause(1, 3);
     }
 
     public ChainBuilder deleteFeedbackById() {
         return CoreDsl.exec(
-                HttpDsl
-                        .http("DELETE /api/feedbacks/{feedbackId}")
-                        .delete("/api/feedbacks/delete/#{feedbackId}"
-                                + "?page=0&size=10&sortState=DATE_DESCENDING")
-                        .asJson()
-                        .check(HttpDsl.status().is(200))
-        );
+                        HttpDsl
+                                .http("DELETE /api/feedbacks/{feedbackId}")
+                                .delete("/api/feedbacks/delete/#{feedbackId}"
+                                        + "?page=0&size=10&sortState=DATE_DESCENDING")
+                                .asJson()
+                                .check(HttpDsl.status().is(200)))
+                .pause(1, 3);
     }
 
     public ChainBuilder getCertificateInfo() {
         return CoreDsl.exec(
                 HttpDsl
                         .http("GET /api/certification/{studentId}")
-                        .get("/api/certification/" + studentId)
+                        .get("/api/certification/#{studentId}")
                         .asJson()
                         .check(HttpDsl.status().is(200))
         );
@@ -208,7 +253,7 @@ public class StudentOnCourseSteps {
         return CoreDsl.exec(
                 HttpDsl
                         .http("POST /api/certification/request/{studentId}")
-                        .post("/api/certification/request/" + studentId)
+                        .post("/api/certification/request/#{studentId}")
                         .body(CERTIFICATE_DTO)
                         .asJson()
                         .check(HttpDsl.status().is(200))
