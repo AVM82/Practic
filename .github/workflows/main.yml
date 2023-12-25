@@ -1,9 +1,9 @@
 name: Java Build & Deploy to Elastic Beanstalk
 
 on:
-  push:
+  pull_request:
     branches:
-      - Development_Testing # здесь можно указать имя вашей основной ветки, например, master
+      - development # здесь можно указать имя вашей основной ветки, например, master
 
 jobs:
   build-and-deploy:
