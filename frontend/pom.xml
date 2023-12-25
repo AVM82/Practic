@@ -99,7 +99,7 @@
                                     <goal>npm</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>run build -- --configuration=develop</arguments>
+                                    <arguments>run build -- --configuration=local</arguments>
                                 </configuration>
                             </execution>
                         </executions>
