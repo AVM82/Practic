@@ -1,4 +1,8 @@
-<app-course-navbar (navchapters)="getChapters($event)" (editModeChanged)="setEditMode($event)"></app-course-navbar>
+<app-course-navbar 
+    (navSlug)="getSlug($event)"
+    (navchapters)="getChapters($event)" 
+    (editModeChanged)="setEditMode($event)">
+</app-course-navbar>
 
 <div class="chapter-card-container">
   <mat-card *ngFor="let chapter of chapters; index as i" class="chapter-card"
@@ -16,17 +20,18 @@
             <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
           </mat-card-header>
         </a>
-        <report-button *ngIf="isInvolved" [reportsNumber]="chapter.reportCount"></report-button>
-        
+        <report-button *ngIf="isInvolved" 
+                [slug]="slug"
+                [reports]="chapter.reports">
+        </report-button>
         <div class="diagram-container">
           <div class="diagram">
             <canvas #myCanvas width="80" height="80"></canvas>
           </div>
           <div class="totalPercentage">
-            {{ (percent[i] < 100) ? ((percent[i] < 10) ? '&nbsp;&nbsp;' : '&nbsp;') + percent[i] + '%' : percent[i] + '%' }}
+            {{ percent[i] < 100 ? ((percent[i] < 10) ? '&nbsp;&nbsp;' : '&nbsp;') + percent[i] + '%' : percent[i] + '%' }}
           </div>
         </div>
-
       </div>
 
       <mat-card-footer *ngIf="isStudent">
@@ -38,7 +43,7 @@
                 Практика {{chapter.parts.length > 1 ? part.practice.number : ''}}: {{ part.practice.state | StatePipe }}
             </div>
           <div class="info-tag">
-            Доповідь: {{chapter.myReports == 0 ? 'не' : ''}} проведена
+            Доповіді: {{getReports(chapter.myReports)}}
           </div>
         </div>
       </mat-card-footer>

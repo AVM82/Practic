@@ -20,6 +20,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {InfoMessagesService} from "./app/services/info-messages.service";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatDialogModule} from "@angular/material/dialog";
 
 
 bootstrapApplication(AppComponent, {
@@ -38,7 +39,8 @@ bootstrapApplication(AppComponent, {
             MatCard,
             MatSnackBar,
             MatPaginator,
-            MatSnackBarModule
+            MatSnackBarModule,
+            MatDialogModule
         ),
       SvgIconRegistryService,
       CoursesService,

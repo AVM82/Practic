@@ -57,13 +57,13 @@
                     <div *ngFor="let report of student.reports">
                         <div *ngIf="report.state === finished">
                             <button class="approve"
-                                    matTooltip="{{report.title}}" 
+                                    matTooltip="{{report.topic}}" 
                                     matTooltipPosition="below"
                                     (click)="mentorService.approveReport(report)">
                                 здана
                             </button>
                             <button class="reject"
-                                    matTooltip="{{report.title}}"
+                                    matTooltip="{{report.topic}}"
                                     matTooltipPosition="above"
                                     (click)="mentorService.rejectReport(report)">
                                 доробити

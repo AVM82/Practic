@@ -62,6 +62,12 @@ public interface ResponseUtils {
     }
 
 
+    public static <T> ResponseEntity<T> updateResponse(T result) {
+        return result == null ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
+                : new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
     /* DELETE */
 
 

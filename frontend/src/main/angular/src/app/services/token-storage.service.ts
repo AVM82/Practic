@@ -55,6 +55,9 @@ export class TokenStorageService {
   public getMe(): User {
     if (this.me == undefined)
       window.location.href = environment.loginBaseUrl;
+    else
+      if (this.me.ban)
+        window.location.href = environment.loginBaseUrl + 'ban';
     return this.me!;
   }
 

@@ -1,3 +1,9 @@
+h1 {
+  text-align: center;
+  font-size: 30px; 
+  margin-top: 20px; 
+  margin-bottom: -10px;
+}
 
 .title-field {
   display: flex;
@@ -31,21 +37,22 @@
   align-items: center;
 }
 
-.cancel-button {
-  background-color: #ee7777;
+button {
   color: #fff;
   padding: 8px 16px;
   font-size: 19px;
   cursor: pointer;
   border-radius: 5px;
+}
 
+.cancel-button {
+  background-color: #ee7777;
 }
 
 .ok-button {
   background-color: #27AE60;
-  color: #fff;
-  padding: 8px 16px;
-  font-size: 19px;
-  cursor: pointer;
-  border-radius: 5px;
+}
+
+.certain-button {
+  background-color: lightskyblue;
 }

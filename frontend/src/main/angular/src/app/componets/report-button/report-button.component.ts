@@ -3,7 +3,8 @@ import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {CommonModule, NgFor, NgIf} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
-
+import { Report } from 'src/app/models/report';
+import { ReportState } from "src/app/enums/app-constans";
 
 @Component({
   selector: 'report-button',
@@ -13,23 +14,21 @@ import {MatButtonModule} from "@angular/material/button";
   styleUrls: ['/report-button.component.css']
 })
 export class ReportButtonComponent{
-
-  dropdownText = "Доповідей не заплановано";
+  @Input() reports!: Report[];
+  @Input() slug!: string;
+  dropdownText: string[] = ["Доповідей не заплановано"];
   rep = " доповідь";
+
   constructor(private router: Router,
   private route: ActivatedRoute) {}
-  @Input() reportsNumber!: number
-
+  
 
   isReportsPresent(): boolean {
-    if(this.reportsNumber>0) {
-      if(this.reportsNumber>1&&this.reportsNumber<5){
-        this.rep = ' доповіді'
-      }
-      if(this.reportsNumber>=5){
-        this.rep = ' доповідей'
-      }
-      this.dropdownText = "Заплановано " + this.reportsNumber + this.rep
+    if(this.reports.length > 0) {
+      this.dropdownText = [];
+      this.dropdownText.push("план: " + this.reports.filter(report => report.state === ReportState.ANNOUNCED).length )
+      this.dropdownText.push( " зараз: " + this.reports.filter(report => report.state === ReportState.STARTED).length)
+      this.dropdownText.push( " було: " + this.reports.filter(report => report.state === ReportState.FINISHED || report.state === ReportState.APPROVED).length);
       return false;
     }
     return true;
@@ -37,12 +36,7 @@ export class ReportButtonComponent{
   
   navigate(event: Event) {
     event.stopPropagation();
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug');
-      if (slug) {
-        this.router.navigate(['courses/',slug,'reports']);
-      }
-    })
+    this.router.navigate(['courses', this.slug, 'reports']);
   }
 
 }
