@@ -18,7 +18,7 @@ import { StartPanelComponent } from './pages/start-panel/start-panel.component';
 import { UsersComponent } from './pages/users/users.component';
 import { BannedComponent } from './pages/ban/ban.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
-import {CertificateRequestComponent} from "./componets/certificate-request-dialog/certificate-request.component";
+import {MyProfilePage} from "./pages/my-profile/my-profile-page";
 
 registerLocaleData(localeUk, 'uk');
 
@@ -38,7 +38,7 @@ const routes: Routes = [
   {path: 'courses/:slug/reports', component: ReportDashboardComponent},
   {path: 'courses/:slug/additional', component: AdditionalMaterialsComponent},
   {path: 'courses/:slug', component: CourseDetailsComponent},
-  
+  {path: 'profile', component: MyProfilePage},
   {path: '**', component: PageNotFoundComponent}
 ];
 

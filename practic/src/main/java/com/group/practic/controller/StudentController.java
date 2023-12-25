@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,12 +53,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/students")
 public class StudentController {
 
-    private StudentService studentService;
+    private final StudentService studentService;
 
     private final PersonService personService;
 
@@ -69,24 +70,7 @@ public class StudentController {
 
     private final TopicReportService reportService;
 
-    AdditionalMaterialsService additionalMaterialsService;
-
-
-
-    @Autowired
-    public StudentController(StudentService studentService, TimeSlotService timeSlotService,
-            PersonService personService, AdditionalMaterialsService additionalMaterialsService,
-            StudentReportService studentReportService, CourseService courseService,
-            TopicReportService reportService) {
-        this.studentService = studentService;
-        this.personService = personService;
-        this.studentReportService = studentReportService;
-        this.timeSlotService = timeSlotService;
-        this.courseService = courseService;
-        this.additionalMaterialsService = additionalMaterialsService;
-        this.reportService = reportService;
-    }
-
+    private final AdditionalMaterialsService additionalMaterialsService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
@@ -117,7 +101,6 @@ public class StudentController {
                         .map(List::of).orElseGet(List::of));
     }
 
-
     @GetMapping("/chapters/{studentId}/{number}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<ChapterCompleteDto> getChapter(@PathVariable long studentId,
@@ -126,13 +109,11 @@ public class StudentController {
                 .map(student -> studentService.getOpenedChapter(student, number).orElse(null)));
     }
 
-
     @GetMapping("/chapters/{studentId}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<ChapterDto>> getOpenChapters(@PathVariable long studentId) {
         return getResponse(studentService.get(studentId).map(studentService::getChapters));
     }
-
 
     @PutMapping("/chapters/states/{id}/{newStateString}")
     @PreAuthorize("hasRole('STUDENT')")
@@ -145,7 +126,6 @@ public class StudentController {
                 : badRequest();
     }
 
-
     @PutMapping("/skills/{chapterId}/{subChapterId}/{state}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Boolean> reSetSkills(@PathVariable long chapterId,
@@ -154,13 +134,11 @@ public class StudentController {
                 .map(chapter -> studentService.reSetSkills(chapter, subChapterId, state)));
     }
 
-
     @GetMapping("/practices/{id}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<PracticeDto> getPractice(@PathVariable long id) {
         return getResponse(studentService.getPractice(id).map(PracticeDto::map));
     }
-
 
     @PutMapping("/practices/states/{id}/{newStateString}")
     @PreAuthorize("hasRole('STUDENT')")
@@ -173,14 +151,12 @@ public class StudentController {
                         Optional.of(studentService.changePracticeState(practice.get(), newState)));
     }
 
-
     @GetMapping("/reports/states")
     public ResponseEntity<Collection<String>> getReportStates() {
         List<String> reportStates = Arrays.stream(ReportState.values())
                 .map(state -> state.name().toLowerCase()).toList();
         return getResponse(reportStates);
     }
-
 
     @GetMapping("/reports/course/{slug}")
     public ResponseEntity<Collection<List<StudentReportDto>>> getActualStudentReports(
@@ -189,7 +165,6 @@ public class StudentController {
                 .convertListOfLists(studentReportService.getAllStudentsActualReports(slug)));
 
     }
-
 
     @PostMapping("/reports/{studentChapterId}")
     public ResponseEntity<StudentReportDto> postStudentReport(@PathVariable long studentChapterId,
@@ -200,20 +175,17 @@ public class StudentController {
                 .map(StudentReportDto::map));
     }
 
-
     @GetMapping("/reports/course/{slug}/timeslots")
     public ResponseEntity<Map<String, List<TimeSlotEntity>>> getAvailableTimeSlots(
             @PathVariable String slug) {
         return getResponse(Optional.ofNullable(timeSlotService.getAvailableTimeSlots()));
     }
 
-
     @PostMapping("/reports/course/{slug}/timeslots")
     public ResponseEntity<Optional<List<TimeSlotEntity>>> createTimeslots(
             @PathVariable String slug) {
         return postResponse(Optional.ofNullable(timeSlotService.fillTimeSlots()));
     }
-
 
     @PutMapping("/reports/likes/")
     public ResponseEntity<StudentReportDto> changeLikeCount(@RequestBody int reportId,
@@ -229,7 +201,6 @@ public class StudentController {
         return ResponseUtils.notAcceptable();
     }
 
-
     @PutMapping("/reports/course/")
     public ResponseEntity<StudentReportDto> putStudentReport(
             @RequestBody StudentReportCreationDto studentReportCreationDto) {
@@ -240,7 +211,6 @@ public class StudentController {
                 : updateResponse(Optional.empty());
     }
 
-
     @DeleteMapping("/reports/course/{reportId}")
     public ResponseEntity<StudentReportDto> deleteStudentReport(@PathVariable Integer reportId) {
         Optional<StudentReportEntity> reportEntity = studentReportService.deleteReport(reportId);
@@ -248,7 +218,6 @@ public class StudentController {
                 ? deleteResponse(Optional.of(Converter.convert(reportEntity.get())))
                 : deleteResponse(Optional.empty());
     }
-
 
     @GetMapping("/additionalMaterials/{studentId}")
     @PreAuthorize("hasRole('STUDENT')")
@@ -258,7 +227,6 @@ public class StudentController {
                 studentService.get(studentId).map(studentService::getAdditionalMaterials));
 
     }
-
 
     @PutMapping("/additionalMaterials/{studentId}/{id}")
     @PreAuthorize("hasRole('STUDENT')")
@@ -271,7 +239,6 @@ public class StudentController {
                 .orElse(badRequest());
     }
 
-
     @GetMapping("/topicsreports/{studentChapterId}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Collection<TopicReportDto>> getTopicsByChapter(
@@ -282,5 +249,4 @@ public class StudentController {
                 : getResponse(reportService.getTopicsByChapter(chapter.get().getChapter()).stream()
                         .map(TopicReportDto::new).toList());
     }
-
 }
