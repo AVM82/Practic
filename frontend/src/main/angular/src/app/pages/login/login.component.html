@@ -1,12 +1,57 @@
-<div class="container login-container">
-    <img class="login-background-image" src="assets/background_image.ico" alt="Here must be background image" width="">
-    <div class="login-sub-container">
-        <a href="{{linkedinURL}}">
-            <img class="linkedin-image" src="assets/button_linkedin.ico" alt="Here must be sign in linkedin button">
-        </a>
-        <div>Натискаючи «Авторизуйся через LinkedIn», ви погоджуєтеся з Політикою
-        <br/>
-        Конфіденційності та Умовами використання Practically.Programming.
-        </div>
-    </div>
+
+<div class="login-page">
+<div class="left-column">
+    <img class="login-background-image" src="assets/background_image.png" alt="Here must be background image" width="">
+
+</div>
+
+<div class="right-column">
+<p class="practic">practically.<br>programming.</p>
+<p class="auth-name" *ngIf="!isRegister">Реєструватися</p>
+<p class="login-name" *ngIf="isRegister">Вхід</p>
+
+<mat-form-field class="mat-field"  *ngIf="!isRegister"  >
+    <input class="field" *ngIf="!isRegister" matInput [formControl]="nameControl" placeholder="ПIБ">
+    <mat-error   *ngIf="nameControl.hasError('required')">Поле обязательно для заполнения</mat-error>
+</mat-form-field>
+
+<mat-form-field class="mat-field" >
+    <input class="field" matInput [formControl]="emailControl" placeholder="Email">
+    <mat-error *ngIf="emailControl.hasError('required')">Поле обязательно для заполнения</mat-error>
+    <mat-error *ngIf="emailControl.hasError('email')">Неверный формат email</mat-error>
+</mat-form-field>
+
+<mat-form-field class="mat-field">
+    <input class="field" matInput [type]="hidePassword ? 'password' : 'text'" [formControl]="passwordControl" placeholder="Пароль">
+    <button mat-icon-button class="visible-icon" matSuffix (click)="togglePasswordVisibility()">
+        <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+    </button>
+</mat-form-field>
+
+<div class="check-reset">
+    <img class="check-password" src="assets/rememberme.png" alt="Here must be background image" width="">
+    <img class="check-password" (click)="forgotPassword()"src="assets/forgotpass.png" alt="Here must be background image" width="" >
+
+</div>
+
+
+<button mat-button class = "auth-button" *ngIf="!isRegister" (click)="verificateUser()">Зареєструватися</button>
+<button mat-button class = "auth-button" *ngIf="isRegister" (click)="authUser()">Увійти</button>
+
+<p class="text-privacy">Натискаючи «Зареєструватись», ви погоджуєтеся з <u>Політикою</u><br> <u>Конфіденційності</u> та <u>Умовами використання</u> Practically.Programming.</p>
+<div class="sicial-auth-buttons">
+    <img class="google-image" src="assets/google.png" alt="Here must be sign in linkedin button">
+
+    <a href="{{linkedinURL}}">
+    <img class="linkedin-image" src="assets/linkidin.svg" alt="Here must be sign in linkedin button">
+</a>
+</div>
+
+<p class="have-account" *ngIf="!isRegister">Є акаунт?</p>
+<button mat-button class = "sign-in" *ngIf="!isRegister" (click)="isRegister=!isRegister"><u>Увійди</u></button>
+
+<p class="have-account" *ngIf="isRegister">Немає акаунта?</p>
+<button mat-button class = "sign-in" *ngIf="isRegister" (click)="isRegister=!isRegister"><u>Зареєструйся</u></button>
+
+</div>
 </div>

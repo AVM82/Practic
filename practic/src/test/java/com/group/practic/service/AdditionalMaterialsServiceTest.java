@@ -1,6 +1,7 @@
 package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -10,9 +11,8 @@ import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.repository.AdditionalMaterialsRepository;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,17 +38,17 @@ class AdditionalMaterialsServiceTest {
     @Test
     void testUpdateNewAdditionalMaterial() {
         AdditionalMaterialsEntity additionalMaterialEntity = new AdditionalMaterialsEntity();
-        when(additionalMaterialsRepository.findByCourseAndNumberAndName(
-                additionalMaterialEntity.getCourse(), additionalMaterialEntity.getNumber(),
-                additionalMaterialEntity.getName())).thenReturn(Optional.empty());
+        when(additionalMaterialsRepository.findByCourseAndNumber(
+                additionalMaterialEntity.getCourse(), additionalMaterialEntity.getNumber())
+        ).thenReturn(null);
 
         when(additionalMaterialsRepository.save(additionalMaterialEntity))
                 .thenReturn(additionalMaterialEntity);
 
-        Optional<AdditionalMaterialsEntity> result =
-                additionalMaterialsService.update(additionalMaterialEntity);
-        assertTrue(result.isPresent());
-        assertEquals(additionalMaterialEntity, result.get());
+        AdditionalMaterialsEntity result =
+                additionalMaterialsService.createOrUpdate(additionalMaterialEntity);
+        assertNotNull(result);
+        assertEquals(additionalMaterialEntity, result);
     }
 
     @Test
@@ -56,19 +56,21 @@ class AdditionalMaterialsServiceTest {
         AdditionalMaterialsEntity existingMaterial = new AdditionalMaterialsEntity();
         existingMaterial.setId(1L);
 
-        when(additionalMaterialsRepository.findById(existingMaterial.getId()))
-                .thenReturn(Optional.of(existingMaterial));
+        when(additionalMaterialsRepository.findByCourseAndNumber(existingMaterial.getCourse(),
+                existingMaterial.getNumber()))
+                .thenReturn(existingMaterial);
 
         AdditionalMaterialsEntity updatedMaterial = new AdditionalMaterialsEntity();
         updatedMaterial.setId(existingMaterial.getId());
+        updatedMaterial.setName("newMaterial");
 
         when(additionalMaterialsRepository.save(updatedMaterial))
                 .thenReturn(updatedMaterial);
 
-        Optional<AdditionalMaterialsEntity> result =
-                additionalMaterialsService.update(updatedMaterial);
-        assertTrue(result.isPresent());
-        assertEquals(updatedMaterial, result.get());
+        AdditionalMaterialsEntity result =
+                additionalMaterialsService.createOrUpdate(updatedMaterial);
+        assertNotNull(result);
+        assertEquals(updatedMaterial, result);
     }
 
     @Test
@@ -82,7 +84,7 @@ class AdditionalMaterialsServiceTest {
 
         CourseEntity mockCourse = mock(CourseEntity.class);
 
-        Set<AdditionalMaterialsEntity> result = additionalMaterialsService
+        List<AdditionalMaterialsEntity> result = additionalMaterialsService
                 .getAdditionalMaterials(mockCourse, mockPropertyLoader);
 
         assertTrue(result.isEmpty());

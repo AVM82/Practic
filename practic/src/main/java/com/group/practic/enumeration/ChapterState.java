@@ -2,23 +2,31 @@ package com.group.practic.enumeration;
 
 import java.util.Set;
 
-public enum ChapterState {
-    NOT_STARTED(),
 
-    IN_PROCESS(NOT_STARTED),
+public enum ChapterState implements StateCountable<ChapterState> {
 
-    PAUSE(IN_PROCESS),
+    NOT_STARTED(false),
 
-    DONE();
+    IN_PROCESS(false, NOT_STARTED),
+
+    PAUSE(true, IN_PROCESS),
+
+    DONE(false, IN_PROCESS);
+
 
     private final Set<ChapterState> allowed;
 
-    ChapterState(ChapterState ... next) {
-        allowed = Set.of(next);
+    private final boolean backward;
+
+
+    ChapterState(boolean backward, ChapterState... allowFrom) {
+        this.backward = backward;
+        this.allowed = Set.of(allowFrom);
     }
 
+
     public boolean changeAllowed(ChapterState newState) {
-        return this == newState || allowed.contains(newState);
+        return newState.allowed.contains(this) || (this.backward && allowed.contains(newState));
     }
 
 
@@ -30,4 +38,23 @@ public enum ChapterState {
         }
         throw new IllegalArgumentException("Unknown ChapterState: " + value);
     }
+
+
+    @Override
+    public boolean isStartCountingState() {
+        return this == IN_PROCESS;
+    }
+
+
+    @Override
+    public boolean isStopCountingState() {
+        return this == DONE || this == PAUSE;
+    }
+
+
+    @Override
+    public boolean isPauseState() {
+        return this == PAUSE;
+    }
+
 }

@@ -1,15 +1,21 @@
 <div class="course-container">
-    <mat-card *ngFor="let course of coursesProp" class="course-card">
-        <a [routerLink]="course.route" (click)="onSelect(course.slug)">
+    <mat-card *ngFor="let course of courses" class="course-card" 
+        [class.studentCourse]="me.isStudent(course.slug)"
+        [class.mentorCourse]="me.isMentor(course.slug)"
+        [class.applicantCourse]="me.isApplicant(course.slug)"
+        [class.otherCourse]="!me.isStudent(course.slug) && !me.isMentor(course.slug) && !me.isApplicant(course.slug)">
+        <a [routerLink]="getRoute(course.slug)" (click)="onSelect(course.slug)">
             <mat-card-content class="course-details">
                 <svg-icon class="icon" name={{course.slug}} [stretch]="true"></svg-icon>
                 <h3 class="course-name">{{ course.name }}</h3>
             </mat-card-content>
         </a>
     </mat-card>
-    <mat-card *ngIf="createCapability" class="course-create" (click)="router.navigate(['/courses/create'])">
-        <mat-card-content class="course-details">
-            <h3 class="course-name"># Створити новий курс #</h3>
-        </mat-card-content>
+    <mat-card *ngIf="createCapability" class="course-create">
+        <a [routerLink]="'/courses/create'">
+            <mat-card-content class="course-details">
+                <h3 class="course-name"># Створити новий курс #</h3>
+            </mat-card-content>
+        </a>
     </mat-card>
 </div>

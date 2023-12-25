@@ -1,16 +1,23 @@
+h1 {
+  text-align: center;
+  font-size: 30px; 
+  margin-top: 20px; 
+  margin-bottom: -10px;
+}
 
 .title-field {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 100px;
+  margin-right: 83px;
 
 }
 
 .date-field {
   display: inline-flex;
   flex-direction: column;
-  margin-right: 20px;
+  margin-left: -15px;
+  margin-right: 35px;
 
   margin-top: 50px;
 }
@@ -18,33 +25,34 @@
 .chapter-field {
   display: inline-flex;
   flex-direction: column;
-  margin-left: 20px;
+  margin-left: 5px;
 }
 
 .dialog-actions {
   height: 40px;
-  margin-top: 50px;
-  margin-right: 20px;
+  margin-top: 15px;
+  margin-right: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.cancel-button {
-  background-color: #ee7777;
+button {
   color: #fff;
   padding: 8px 16px;
   font-size: 19px;
   cursor: pointer;
   border-radius: 5px;
+}
 
+.cancel-button {
+  background-color: #ee7777;
 }
 
 .ok-button {
   background-color: #27AE60;
-  color: #fff;
-  padding: 8px 16px;
-  font-size: 19px;
-  cursor: pointer;
-  border-radius: 5px;
+}
+
+.certain-button {
+  background-color: lightskyblue;
 }

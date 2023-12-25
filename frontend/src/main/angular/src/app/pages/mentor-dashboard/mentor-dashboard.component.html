@@ -1,1 +1,78 @@
-<router-outlet></router-outlet>
+<h1>Абітурієнти</h1>
+<div *ngFor="let courseApp of courseApplicants">
+    <table>
+        <caption><h2>{{courseApp.courseName}}</h2></caption>
+        <tr class="headers">
+            <th>заявник</th>
+            <th>час</th>
+            <th>прийняти</th>
+            <th>стан</th>
+            <th>відхилити</th>
+        </tr>
+        <tr *ngFor="let applicant of courseApp.applicants" class="person-row">
+            <td>{{applicant.name}}</td>
+            <td>{{applicant.createdAt}}</td>
+            <td>
+                <button *ngIf="!applicant.student && !applicant.applied && !applicant.rejected" (click)="mentorService.admit(applicant)">
+                    Прийняти
+                </button>
+            </td>
+            <td *ngIf="applicant.applied">прийнятий</td>
+            <td *ngIf="applicant.rejected">відхилений</td>
+            <td *ngIf="!applicant.applied && !applicant.rejected">очікує</td>
+            <td>
+                <button *ngIf="!applicant.student && !applicant.applied && !applicant.rejected" (click)="mentorService.reject(applicant)">
+                    Відхилити
+                </button>
+            </td>
+        </tr>
+    </table>
+    <br>
+</div>
+
+<h1>Студенти</h1>
+<div *ngFor="let courseStudent of courseStudents">
+    <table>
+        <caption><h2>{{courseStudent.courseName}}</h2></caption>
+        <tr class="headers">
+            <th scope="col">Студент\Розділ</th>
+            <th *ngFor="let number of courseStudent.chapterNumbers" scope="col">{{number}}</th>
+        </tr>
+        <tr *ngFor="let student of courseStudent.students" class="person-row">
+            <td>{{student.name}}</td>
+            <th *ngFor="let number of courseStudent.chapterNumbers" scope="col">
+                <div *ngIf="student.activeChapterNumber === number">
+                    <div *ngFor="let practice of student.practices">
+                        <div *ngIf="practice.state === ready">
+                            <button class="approve"
+                                    (click)="mentorService.approvePractice(practice)">
+                                здана
+                            </button>
+                            <button class="reject"
+                                    (click)="mentorService.rejectPractice(practice)">
+                                доробити
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngFor="let report of student.reports">
+                        <div *ngIf="report.state === finished">
+                            <button class="approve"
+                                    matTooltip="{{report.topic}}" 
+                                    matTooltipPosition="below"
+                                    (click)="mentorService.approveReport(report)">
+                                здана
+                            </button>
+                            <button class="reject"
+                                    matTooltip="{{report.topic}}"
+                                    matTooltipPosition="above"
+                                    (click)="mentorService.rejectReport(report)">
+                                доробити
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </table>
+    <br>
+</div>

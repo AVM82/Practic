@@ -1,9 +1,17 @@
 package com.group.practic.controller;
 
+import static com.group.practic.util.ResponseUtils.badRequest;
+import static com.group.practic.util.ResponseUtils.getResponse;
+
 import com.group.practic.dto.QuizDto;
+import com.group.practic.entity.QuizEntity;
+import com.group.practic.entity.QuizResultEntity;
 import com.group.practic.service.QuizService;
+import com.group.practic.service.StudentService;
 import jakarta.validation.constraints.Min;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,21 +26,36 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuizController {
 
     private final QuizService quizService;
+    private final StudentService studentService;
 
     @Autowired
-    public QuizController(QuizService quizService) {
+    public QuizController(QuizService quizService, StudentService studentService) {
         this.quizService = quizService;
+        this.studentService = studentService;
     }
 
-    @GetMapping("/{quizId}/test")
-    public ResponseEntity<QuizDto> getQuiz(@PathVariable(value = "quizId") Long quizId) {
-        return ResponseEntity.ok(quizService.getQuiz(quizId));
+    @GetMapping("/{quizId}")
+    public ResponseEntity<QuizDto> getQuiz(
+            @PathVariable(value = "quizId") Long quizId) {
+        return getResponse(quizService.get(quizId).map(QuizDto::map));
     }
 
-    @PostMapping("/{quizId}/test")
-    public ResponseEntity<List<Boolean>> getResult(
+    @GetMapping("/start/{studentChapterId}")
+    public ResponseEntity<Long> getQuizResultId(
+            @PathVariable(value = "studentChapterId") Long studentChapterId) {
+        return getResponse(studentService.getStudentChapter(studentChapterId)
+                .map(quizService::createQuizResult));
+    }
+
+    @PostMapping("/{quizId}/{quizResultId}/{time}")
+    public ResponseEntity<Collection<Boolean>> getResult(
             @Min(1) @PathVariable(value = "quizId") Long quizId,
-            @RequestBody QuizDto quizzes) {
-        return ResponseEntity.ok(quizService.getResult(quizId, quizzes));
+            @PathVariable(value = "quizResultId") Long quizResultId,
+            @PathVariable(value = "time") Long time,
+            @RequestBody List<List<Long>> ids) {
+        Optional<QuizEntity> quiz = quizService.get(quizId);
+        Optional<QuizResultEntity> quizResult = quizService.getQuizResult(quizResultId);
+        return quiz.isEmpty() || quizResult.isEmpty() ? badRequest()
+                : getResponse(quizService.getResult(quiz.get(), quizResult.get(), ids, time));
     }
 }

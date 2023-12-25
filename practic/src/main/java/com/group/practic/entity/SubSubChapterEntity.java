@@ -12,14 +12,21 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
-@Table(name = "sub_sub_chapter")
-public class SubSubChapterEntity {
+@Table(name = "sub_sub_chapters")
+@Getter
+@Setter
+public class SubSubChapterEntity implements Serializable {
+
+    private static final long serialVersionUID = 67849951914297249L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -35,12 +42,11 @@ public class SubSubChapterEntity {
     @Column(length = 1024)
     String name;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade =  CascadeType.MERGE)
-    Set<ReferenceTitleEntity> refs = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
 
-    public SubSubChapterEntity() {
-    }
+    public SubSubChapterEntity() {}
 
 
     public SubSubChapterEntity(long id, SubChapterEntity subChapter, int number, String name,
@@ -70,53 +76,11 @@ public class SubSubChapterEntity {
     }
 
 
-    public long getId() {
-        return id;
+    public SubSubChapterEntity update(SubSubChapterEntity subSub) {
+        this.name = subSub.name;
+        this.number = subSub.number;
+        this.refs = subSub.refs;
+        return this;
     }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public SubChapterEntity getSubChapter() {
-        return subChapter;
-    }
-
-
-    public void setSubChapter(SubChapterEntity subChapter) {
-        this.subChapter = subChapter;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public Set<ReferenceTitleEntity> getRefs() {
-        return refs;
-    }
-
-
-    public void setRefs(Set<ReferenceTitleEntity> refs) {
-        this.refs = refs;
-    }
-
+    
 }

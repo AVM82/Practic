@@ -6,18 +6,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.io.Serializable;
+import lombok.EqualsAndHashCode;
 
 
 @Entity
-@Table(name = "role")
-public class RoleEntity {
+@Table(name = "roles")
+@EqualsAndHashCode
+public class RoleEntity implements Serializable {
+
+    private static final long serialVersionUID = 3242330353753503171L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    long id;
 
     @Column
-    private String name;
+    String name;
 
 
     public RoleEntity() {}

@@ -1,47 +1,72 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, RouterLink } from "@angular/router";
 import { ApplyBtnComponent } from "src/app/componets/apply-btn/apply-btn.component";
 import { CourseNavbarComponent } from "src/app/componets/course-navbar/course-navbar.component";
 import { EditBtnComponent } from "src/app/componets/edit-btn/edit-course.component";
-import { Course } from "src/app/models/course/course";
-import { CoursesService } from "src/app/services/courses/courses.service";
+import { Course } from "src/app/models/course";
+import { Mentor } from "src/app/models/mentor";
+
+const safeReferenceStarts = '<a target="_blank" rel="noopener" href="';
 
 @Component({
     selector: 'app-main-page',
     standalone: true,
-    imports: [ CourseNavbarComponent, RouterLink, ApplyBtnComponent, EditBtnComponent],
+    imports: [ CourseNavbarComponent, ApplyBtnComponent, EditBtnComponent],
     templateUrl: './main-page.component.html',
     styleUrls: ['./main-page.component.css']
   })
 export class MainPageComponent implements OnInit {
     name: string = '';
+    authorPresent: boolean = false;
     authors!: HTMLElement ;
+    pagePresent: boolean = false;
     page!: HTMLElement ;
+    mentorPresent: boolean = false;
+    mentor!: HTMLElement ;
 
     constructor(
-        private coursesService: CoursesService,
-        private route: ActivatedRoute  
     ) {}
     
     ngOnInit(): void {
         this.authors = document.getElementById('author')!;
+        this.mentor = document.getElementById('mentor')!;
         this.page = document.getElementById('page')!;
     }
 
-    makeA(author: string): string {
+    makeAuthor(author: string): string {
         let a:string[] = author.split('<>');
-        return a.length > 1 ? '<a target="_blank" rel="noopener" href="' + a[1] + '">' + a[0] + '</a>' : a[0];
+        return a.length > 1 ? safeReferenceStarts + a[1] + '">' + a[0] + '</a>' : a[0];
     }
 
     makeAuthorsList(authors: string[]): string {
         let list: string[] = [];
-        authors.forEach(author => list.push(this.makeA(author)));
+        authors.forEach(author => list.push(this.makeAuthor(author)));
+        return list.join(', ');
+    }
+
+    makeMentor(mentor: Mentor): string {
+        return safeReferenceStarts + mentor.linkedInUrl + '">' + mentor.name + '</a>';
+    }
+
+    makeMentorsList(mentors: Mentor[]): string {
+        let list: string[] = [];
+        mentors.forEach(mentor => list.push(this.makeMentor(mentor)));
         return list.join(', ');
     }
 
     getPage(course: Course) {
         this.name = course.name;
-        this.authors.innerHTML = 'Автор' + (course.authors!.length > 1 ? 'и' : '') + ' : ' + this.makeAuthorsList(course.authors!);
-        this.page.innerHTML = course.description!;
+        this.authorPresent = course.authors != null && course.authors.length > 0;
+        if (this.authorPresent) 
+            this.authors.innerHTML = 'Автор' + this.plurals(course.authors!) + ' : ' + this.makeAuthorsList(course.authors!);
+        this.mentorPresent = course.mentors != null && course.mentors.length > 0;
+        if (this.mentorPresent)
+            this.mentor.innerHTML = 'Ментор' + this.plurals(course.mentors!) + ' : ' + this.makeMentorsList(course.mentors!);
+        this.pagePresent = course.description != null;
+        if (this.pagePresent)
+            this.page.innerHTML = course.description!;
+    }
+
+    plurals(arr: any[]): string {
+        return arr.length > 1 ? 'и' : '';
     }
 }

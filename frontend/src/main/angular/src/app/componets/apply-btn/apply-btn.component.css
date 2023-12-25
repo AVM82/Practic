@@ -11,11 +11,10 @@
 }
 
 .wait-button {
-    background-color: #858b88;
+    background-color: #909492;
     color: #000000;
     border: none;
     padding: 10px 20px;
-    cursor: wait;
 }
 
 .apply-button:hover {

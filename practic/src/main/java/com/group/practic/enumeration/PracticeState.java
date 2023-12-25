@@ -3,29 +3,44 @@ package com.group.practic.enumeration;
 import java.util.Set;
 
 
-public enum PracticeState {
+public enum PracticeState implements StateCountable<PracticeState> {
 
-    NOT_STARTED(),
+    NOT_STARTED(false),
 
-    IN_PROCESS(NOT_STARTED),
+    IN_PROCESS(false, NOT_STARTED),
 
-    PAUSE(IN_PROCESS),
+    PAUSE(true, IN_PROCESS),
 
-    READY_TO_REVIEW(IN_PROCESS),
+    READY_TO_REVIEW(true, IN_PROCESS),
 
-    APPROVED(READY_TO_REVIEW);
+    APPROVED(true, READY_TO_REVIEW);
 
 
     private final Set<PracticeState> allowed;
 
+    private final boolean backward;
 
-    PracticeState(PracticeState... next) {
-        allowed = Set.of(next);
+
+    PracticeState(boolean backward, PracticeState... allowFrom) {
+        this.backward = backward;
+        allowed = Set.of(allowFrom);
     }
 
 
     public boolean changeAllowed(PracticeState newState) {
-        return this == newState || allowed.contains(newState);
+        return newState.allowed.contains(this) || (this.backward && allowed.contains(newState));
+    }
+
+
+    @Override
+    public boolean isStartCountingState() {
+        return this == IN_PROCESS;
+    }
+
+
+    @Override
+    public boolean isStopCountingState() {
+        return this == READY_TO_REVIEW || this == PAUSE || this == APPROVED;
     }
 
 
@@ -36,6 +51,12 @@ public enum PracticeState {
             }
         }
         throw new IllegalArgumentException("Unknown PracticeState: " + value);
+    }
+
+
+    @Override
+    public boolean isPauseState() {
+        return this == READY_TO_REVIEW || this == PAUSE;
     }
 
 }

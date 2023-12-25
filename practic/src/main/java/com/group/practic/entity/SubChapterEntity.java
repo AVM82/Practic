@@ -14,14 +14,23 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
-@Table(name = "sub_chapter")
-public class SubChapterEntity {
+@Table(name = "sub_chapters")
+@Getter
+@Setter
+public class SubChapterEntity implements Serializable {
+
+    private static final long serialVersionUID = 1700674118330571946L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -38,30 +47,24 @@ public class SubChapterEntity {
     String name;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    Set<ReferenceTitleEntity> refs = new HashSet<>();
+    private Set<ReferenceTitleEntity> refs = new HashSet<>();
 
-    @OneToMany(mappedBy = "subChapter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subChapter", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @OrderBy("number")
-    Set<SubSubChapterEntity> subSubChapters = new HashSet<>();
+    private List<SubSubChapterEntity> subSubChapters = new ArrayList<>();
+
+    private List<String> skills = new ArrayList<>();
 
 
-    public SubChapterEntity() {
-    }
+    public SubChapterEntity() {}
 
 
-    public SubChapterEntity(ChapterPartEntity chapterPart, int number, String name) {
+    public SubChapterEntity(ChapterPartEntity chapterPart, int number, String name,
+            List<String> skills, Set<ReferenceTitleEntity> refs) {
         this.chapterPart = chapterPart;
         this.number = number;
         this.name = name;
-    }
-
-
-    public SubChapterEntity(long id, ChapterPartEntity chapterPart, int number, String name,
-            Set<ReferenceTitleEntity> refs) {
-        this.id = id;
-        this.chapterPart = chapterPart;
-        this.number = number;
-        this.name = name;
+        this.skills = skills;
         this.refs = refs;
     }
 
@@ -79,77 +82,15 @@ public class SubChapterEntity {
         }
         SubChapterEntity other = (SubChapterEntity) obj;
         return this == other || (Objects.equals(name, other.name) && number == other.number
-                && Objects.equals(refs, other.refs));
+                && Objects.equals(skills, other.skills) && Objects.equals(refs, other.refs));
     }
 
 
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public ChapterPartEntity getChapterPart() {
-        return chapterPart;
-    }
-
-
-    public void setChapterPart(ChapterPartEntity chapterPart) {
-        this.chapterPart = chapterPart;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public Set<ReferenceTitleEntity> getRefs() {
-        return refs;
-    }
-
-
-    public void setRefs(Set<ReferenceTitleEntity> refs) {
-        this.refs = refs;
-    }
-
-
-    public Set<SubSubChapterEntity> getSubSubChapters() {
-        return subSubChapters;
-    }
-
-
-    public void setSubSubChapters(Set<SubSubChapterEntity> subSubChapters) {
-        this.subSubChapters = subSubChapters;
-    }
-
-
-    public void addSubSubChapter(SubSubChapterEntity subSubChapter) {
-        subSubChapters.add(subSubChapter);
-    }
-
-
-    public boolean removeSubSubChapter(SubSubChapterEntity subSubChapter) {
-        return subSubChapters.remove(subSubChapter);
+    public SubChapterEntity update(SubChapterEntity sub) {
+        this.name = sub.name;
+        this.skills = sub.skills;
+        this.refs = sub.refs;
+        return this;
     }
 
 }

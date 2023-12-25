@@ -1,14 +1,14 @@
 package com.group.practic.service;
 
 import com.group.practic.PropertyLoader;
-import com.group.practic.dto.CourseDto;
+import com.group.practic.dto.ChapterDto;
+import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.NewCourseDto;
 import com.group.practic.entity.AdditionalMaterialsEntity;
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.LevelEntity;
-import com.group.practic.entity.PersonEntity;
 import com.group.practic.repository.CourseRepository;
-import com.group.practic.util.Converter;
 import com.group.practic.util.PropertyUtil;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class CourseService {
@@ -59,9 +60,9 @@ public class CourseService {
     }
 
 
-    public List<ChapterEntity> getChapters(String slug) {
-        Optional<CourseEntity> course = courseRepository.findBySlug(slug);
-        return course.isEmpty() ? List.of() : chapterService.getAll(course.get());
+    public List<ChapterDto> getChapters(CourseEntity course, boolean hide) {
+        return Optional.ofNullable(course.getChapters()).map(chapters -> chapters.stream()
+                .map(chapter -> ChapterDto.map(chapter, hide)).toList()).orElse(List.of());
     }
 
 
@@ -71,82 +72,55 @@ public class CourseService {
     }
 
 
-    public Optional<ChapterEntity> getChapterByNumber(String slug, int number) {
-        Optional<CourseEntity> course = get(slug);
-        return course.isEmpty() ? Optional.empty()
-                : chapterService.getChapterByNumber(course.get(), number);
+    public Optional<ChapterEntity> getChapterByNumber(CourseEntity course, int number) {
+        return chapterService.get(course, number);
     }
 
 
-    public Optional<String> getDescription(String slug) {
-        Optional<CourseEntity> course = get(slug);
-        return course.isEmpty() ? Optional.empty()
-                : Optional.ofNullable(course.get().getDescription());
-    }
-
-
-    public Boolean getAdditionalExist(String slug) {
-        Optional<CourseEntity> course = get(slug);
-        return !course.isEmpty() && !course.get().getAdditionalMaterials().isEmpty();
-    }
-
-
-    public Set<AdditionalMaterialsEntity> getAdditional(String slug) {
+    public List<AdditionalMaterialsEntity> getAdditional(String slug) {
         Optional<CourseEntity> course = get(slug);
         return course.isEmpty() ? null : course.get().getAdditionalMaterials();
     }
 
 
-    public Optional<CourseEntity> save(CourseEntity course) {
-        return Optional.ofNullable(courseRepository.save(course));
-    }
-
-
-    public Optional<CourseEntity> create(CourseDto courseDto) {
-        return Optional.ofNullable(courseRepository.save(Converter.convert(courseDto)));
+    public Optional<CourseEntity> create(NewCourseDto dto) {
+        Optional<CourseEntity> exists = get(dto.getSlug());
+        if (exists.isEmpty()) {
+            CourseEntity course = new CourseEntity();
+            course.setName(dto.getName());
+            course.setSlug(dto.getSlug());
+            course.setSvg(dto.getSvg());
+            return Optional.ofNullable(courseRepository.save(course));
+        }
+        return Optional.empty();
     }
 
 
     public Optional<CourseEntity> create(String properties) {
         PropertyLoader prop = new PropertyLoader(properties, true);
-        return prop.initialized ? create(prop) : Optional.empty();
+        return prop.initialized ? createOrUpdate(prop) : Optional.empty();
     }
 
 
-    public Optional<CourseEntity> create(PropertyLoader prop) {
-        CourseEntity courseEntity;
+    public Optional<CourseEntity> createOrUpdate(PropertyLoader prop) {
         String slug = prop.getProperty(PropertyUtil.SLUG_KEY, "");
         if (slug.length() < 5) {
             return Optional.empty();
         }
-        Optional<CourseEntity> course = get(slug);
-        String name = prop.getProperty(PropertyUtil.NAME_KEY, "");
-        String svg = prop.getProperty(PropertyUtil.SVG_KEY, "");
-        if (name.length() < 5) {
-            return Optional.empty();
-        }
-        if (course.isPresent()) {
-            courseEntity = course.get();
-            if (!name.isEmpty()) {
-                courseEntity.setName(name);
-            }
-            if (!svg.isEmpty()) {
-                courseEntity.setSvg(svg);
-            }
-        } else {
-            course = save(new CourseEntity(slug, name, svg));
-            if (course.isEmpty()) {
-                return Optional.empty();
-            }
-            courseEntity = course.get();
-        }
+        CourseEntity courseEntity =
+                new CourseEntity(slug, prop.getProperty(PropertyUtil.NAME_KEY, ""),
+                        prop.getProperty(PropertyUtil.SVG_KEY, ""));
         courseEntity.setAuthors(getAuthorSet(prop));
         courseEntity.setCourseType(prop.getProperty(PropertyUtil.TYPE_KEY, ""));
         courseEntity.setDescription(prop.getProperty(PropertyUtil.DESCRIPTION_KEY, ""));
-        levelService.getLevelsSet(courseEntity, prop);
-        chapterService.getChapters(courseEntity, prop);
-        additionalMaterialsService.getAdditionalMaterials(courseEntity, prop);
-        return save(courseEntity);
+        Optional<CourseEntity> course = get(slug);
+        courseEntity = courseRepository
+                .save(course.isEmpty() ? courseEntity : course.get().update(courseEntity));
+        courseEntity.setLevels(levelService.getLevelsSet(courseEntity, prop));
+        courseEntity.setChapters(chapterService.getChapters(courseEntity, prop));
+        courseEntity.setAdditionalMaterials(
+                additionalMaterialsService.getAdditionalMaterials(courseEntity, prop));
+        return Optional.ofNullable(courseEntity);
     }
 
 
@@ -161,15 +135,15 @@ public class CourseService {
     }
 
 
-    public Set<PersonEntity> getMentors(String slug) {
-        Optional<CourseEntity> course = get(slug);
-        return course.isPresent() ? course.get().getMentors() : Set.of();
+    public List<MentorDto> getMentors(CourseEntity course) {
+        return course.getMentors().stream().map(MentorDto::map).toList();
     }
 
 
-    public Optional<ChapterEntity> getFirstChapter(CourseEntity course) {
-        return course.getChapters().stream()
-                .min((a, b) -> Integer.compare(a.getNumber(), b.getNumber()));
+    public Optional<ChapterEntity> getNextChapterByNumber(CourseEntity course, int number) {
+        return course.getChapters().stream().sequential()
+                .filter(chapter -> chapter.getNumber() > number).findFirst();
     }
 
 }
+

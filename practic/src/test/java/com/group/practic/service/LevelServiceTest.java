@@ -14,13 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 
 
 class LevelServiceTest {
@@ -91,7 +89,7 @@ class LevelServiceTest {
         level1.setCourse(new CourseEntity());
         when(levelRepository.save(any())).thenReturn(level1);
 
-        Set<LevelEntity> result = levelService.getLevelsSet(course, propertyLoader);
+        List<LevelEntity> result = levelService.getLevelsSet(course, propertyLoader);
 
         assertEquals(1, result.size());
     }

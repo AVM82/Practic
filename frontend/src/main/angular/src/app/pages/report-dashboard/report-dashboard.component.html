@@ -1,14 +1,20 @@
-<app-course-navbar (navchapters)="getChapters($event)"></app-course-navbar>
-<mat-card class="top-line">
+<app-course-navbar 
+    (navchapters)="getChapters($event)"
+    (navSlug)="getSlug($event)">
+</app-course-navbar>
+
+<mat-card class="top-line" *ngIf="isStudent">
   <mat-card-content class="report-button" (click)="openDialog()" >Додати доповідь</mat-card-content>
 </mat-card>
+
 <div class="board">
-  <chapter-reports *ngFor="let chapter of reports; let i = index"
-                 [studentReports]="chapter"
-                 [chapterNumber]="i + 1"
+  <chapter-reports *ngFor="let chapter of chapters"
+                 [chapter]="chapter"
+                 [chapters]="openedChapters"
                  [levels]="levels"
-                 [currentUserId]="currentUserId"
-                 [timeslots]="timeslots"></chapter-reports>
+                 [slug]="slug"
+                 [me]="me"
+                 [isStudent]="isStudent"
+                 [isMentor]="isMentor">
+  </chapter-reports>
 </div>              
-
-

@@ -13,7 +13,7 @@ public class FunctionThreadPool<A, R> {
 
     private ExecutorService es;
 
-    private long sleepTimeMs = 1000;
+    private long sleepTimeMs = 250;
 
 
     public FunctionThreadPool(Function<A, R> function) {

@@ -1,9 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {AuthService} from "../../services/auth/auth.service";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {InfoMessagesService} from "../../services/info-messages.service";
-import { CoursesService } from 'src/app/services/courses/courses.service';
+import { User } from 'src/app/models/user';
+import { PersonService } from 'src/app/services/person.service';
+import { StateApplicant } from 'src/app/models/applicant';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
+
+const allowedUpdatePeriodMs = 5000;
 
 @Component({
   selector: 'app-apply-btn',
@@ -14,36 +16,39 @@ import { CoursesService } from 'src/app/services/courses/courses.service';
 })
 export class ApplyBtnComponent implements OnInit {
   @Input() slug: string = '';
-  buttonDisabled: boolean = false;
+  applicant?: StateApplicant;
+  me!: User;
+  timeStampMs: number = 0;
 
   constructor(
-      private courseService: CoursesService,
-      private tokenStorageService: TokenStorageService,
-      private authService: AuthService,
-      private messagesService: InfoMessagesService
-  ) {
-  }
+    private tokenStorageService: TokenStorageService,
+    private personService: PersonService
+  ) { }
 
   ngOnInit() {
-    if (!this.courseService.isStudent) {
-      this.courseService.amIwaitingForApply(this.slug).subscribe(waiting =>
-        this.buttonDisabled = waiting);
-    } 
+    this.me = this.tokenStorageService.me!;
+    this.applicant = this.me.getApplicant(this.slug);
+  }
+
+  checkIsNotStudent(): boolean {
+    let student = this.me.getStudent(this.slug);
+    if (student)
+      window.location.href = window.location.origin + `/courses/` + this.slug + `/chapters/` + student.activeChapterNumber;
+    return true;
   }
 
   onApplyClick() {
-    if (confirm("Ви дійсно хочете записатися на цей курс?"))
-    this.authService.applyOnCourse(this.slug).subscribe({
-      next: user => {
-        this.tokenStorageService.saveUser(user);
-        this.messagesService.showMessage("Заявка прийнята", "normal");
-        document.getElementById('apply')?.setAttribute('disables', 'true');
-        this.buttonDisabled = true;
-      },
-      error: error => {
-        console.error('Помилка при відправці заявки', error);
-        this.messagesService.showMessage("Помилка відправки заявки", "error")
+      this.personService.createApplication(this.slug);
+  }
+
+  checkApplied() {
+    this.applicant = this.me.getApplicant(this.slug);
+    if (this.applicant) {
+      const time = Date.now();
+      if (time > this.timeStampMs) {
+        this.timeStampMs = time + allowedUpdatePeriodMs;
+          this.personService.checkApplicant(this.applicant.applicantId);
       }
-    });
+    }
   }
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, QueryList, ViewChildren} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {ActivatedRoute, RouterLink} from "@angular/router";
@@ -6,80 +6,164 @@ import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
-import {ReportServiceService} from "../../services/report/report-service.service";
-import {StudentReport} from "../../models/report/studentReport";
-import {Practice} from "../../models/practice/practice";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {ChaptersService} from "../../services/chapters/chapters.service";
-import {PracticeStatePipe} from "../../pipes/practice-state.pipe";
-import {ShortChapter} from 'src/app/models/course/chapter';
+import {StudentReport} from "../../models/studentReport";
+import {Practice} from "../../models/practice";
+import {TokenStorageService} from "../../services/token-storage.service";
+import {StatePipe} from "../../pipes/practice-state.pipe";
+import {Chapter} from 'src/app/models/chapter';
+import { User } from 'src/app/models/user';
+import { Report } from 'src/app/models/report';
+import { StateStudent } from 'src/app/models/student';
+import { ReportState, STATE_APPROVED } from 'src/app/enums/app-constans';
+import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
   imports: [CommonModule, CourseNavbarComponent, MatCardModule, RouterLink,
-     MatIconModule, MatButtonModule, ReportButtonComponent, PracticeStatePipe],
+    MatIconModule, MatButtonModule, ReportButtonComponent, StatePipe],
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
-export class CourseDetailsComponent implements OnInit {
-  chapters: ShortChapter[] = [];
-  reports: StudentReport[][]=[];
-  slug: string='';
+export class CourseDetailsComponent implements  AfterViewInit {
+  chapters: Chapter[] = [];
+  reports: StudentReport[][] = [];
+  slug: string = '';
   practices: Practice[] = [];
-  student: boolean = false;
   editMode: boolean = false;
-
+  isStudent: boolean = false;
+  isInvolved: boolean = false;
+  stateStudent?: StateStudent;
+  me!: User;
+  percent: number[] = [];
+  reportsState: String[] = [];
+  @ViewChildren('myCanvas') canvases!: QueryList<ElementRef<HTMLCanvasElement>>;
+  
   constructor(
       private route: ActivatedRoute,
-      private reportService: ReportServiceService,
-      private chaptersService: ChaptersService,
-      private tokenStorageService: TokenStorageService
-  ) {}
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug');
-
-      if(slug) {
-        this.slug = slug;
-      this.student = this.tokenStorageService.isStudent(slug);
-        if (this.student)
-          this.setPractices();
-        this.reportService.getAllActualReports(slug).subscribe(reports => {
-            if (reports) {
-              this.reports.push(...reports);
-              this.reports = [...this.reports];
-            }
-        });
-      }
-    })
+      private tokenStorageService: TokenStorageService,
+      private cdr: ChangeDetectorRef,
+	  private zone: NgZone
+  ) {
+    this.me = this.tokenStorageService.getMe();
   }
 
-  getChapters(chapters: ShortChapter[]) {
+  ngAfterViewInit() {
+    const tests = 0;
+    this.canvases.forEach((canvas, index) => {
+      const practicState = this.chapters[index].parts.length > 0 ? this.chapters[index].parts[0].practice.state : 'null';
+      const percentPracticState = this.getPercentPracticState(practicState);
+      const reports = this.chapters[index].myReports.filter(report => report.state === STATE_APPROVED).length > 0 ? 100 : 0;
+      this.percent[index] = Math.floor((percentPracticState + tests + reports) / 3);
+      this.zone.run(() => {
+        this.cdr.detectChanges();
+      });
+      this.createChart([percentPracticState, tests, reports], canvas);
+    });
+  }
+
+  getSlug(slug: string) {
+    this.slug = slug;
+    this.stateStudent = this.me.getStudent(slug);
+    this.isStudent = this.stateStudent != undefined;
+    this.isInvolved = this.isStudent || this.me.isMentor(slug) || this.me.isGraduate(slug);
+    this.zone.run(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
+getChapters(chapters: Chapter[]) {
     this.chapters = chapters;
-  }
-
-  setPractices() {
-    const practices = this.tokenStorageService.getPractice();
-    if(practices){
-      this.practices = practices;
-    } else {
-      this.chaptersService.getMyPractices().subscribe({
-        next: value => {
-          this.practices = value;
-          this.tokenStorageService.updatePractice(value);
-        }
-      })
-    }
   }
 
   setEditMode(editMode: boolean) {
     this.editMode = editMode;
   }
 
-  editClick(chapter: ShortChapter) {
+  editClick(chapter: Chapter) {
     console.log('edit click on chapter #', chapter.number, '(id=', chapter.id, ')');
+  }
+
+  getReports(myReports: Report[]): string {
+    let number = myReports.filter(report => report.state === ReportState.APPROVED).length;
+    return number === 1 ? '1 проведена' 
+            : ((number === 0 ? 'не' : number) + ' проведено');
+  }
+  
+  createChart(data: number[], canvas: ElementRef<HTMLCanvasElement>) {
+    console.log(data)
+    const ctx = canvas.nativeElement.getContext('2d');
+    const whiteColorfirst = 100 - data[0];
+    const whiteColorSecond = 100 - data[1];
+    const whiteColorThirst = 100 - data[2];
+    if (ctx) {
+      const myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          datasets: [
+          {
+            data: [whiteColorfirst, data[0]],
+            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'],
+            borderWidth: 0,
+            label: "практична"
+          }, 
+          {
+            data: [whiteColorSecond, data[1]],
+            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'],
+            borderWidth: 0,
+            label: "тести"
+          },
+          {
+            data: [whiteColorThirst, data[2]],
+            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'],
+            borderWidth: 0,
+            label: "доповiдь"
+          }]
+        },
+        options: {
+          cutout: '50%',
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (context: any) {
+                  let label = context.dataset.label || '';
+                  return label;
+                }
+              }
+            },
+            legend: { position: 'center' }
+          }
+        }
+      });
+    }
+  }
+
+  getPercentReportState(state: string): number {
+    switch (state) {
+      case 'announced':
+        return 33;
+      case 'started':
+        return 66;
+      case 'finished':
+        return 100;
+      default:
+        return 0;
+    }
+  }
+
+  getPercentPracticState(state: string): number {
+    switch (state.toLocaleUpperCase()) {
+      case 'IN_PROCESS':
+        return 33;
+      case 'PAUSE':
+        return 33;
+      case 'READY_TO_REVIEW':
+        return 66;
+      case 'APPROVED':
+        return 100;
+      default:
+        return 0;
+    }
   }
 
 }

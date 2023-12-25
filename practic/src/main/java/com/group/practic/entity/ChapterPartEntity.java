@@ -3,6 +3,7 @@ package com.group.practic.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,14 +12,21 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import java.util.HashSet;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
-@Table(name = "chapter_part")
-public class ChapterPartEntity {
+@Table(name = "chapter_parts")
+@Getter
+@Setter
+public class ChapterPartEntity implements Serializable {
+
+    private static final long serialVersionUID = 2228357501851519506L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -30,24 +38,23 @@ public class ChapterPartEntity {
 
     int number;
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @OrderBy("number")
-    Set<SubChapterEntity> subChapters = new HashSet<>();
+    private List<SubChapterEntity> subChapters = new ArrayList<>();
 
     @NotBlank
     String praxisPurpose;
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @OrderBy("number")
-    Set<PraxisEntity> praxis = new HashSet<>();
+    private List<PraxisEntity> praxis = new ArrayList<>();
 
-    @OneToMany(mappedBy = "chapterPart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chapterPart", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @OrderBy("number")
-    Set<AdditionalEntity> additionals = new HashSet<>();
+    private List<AdditionalEntity> additionals = new ArrayList<>();
 
 
-    public ChapterPartEntity() {
-    }
+    public ChapterPartEntity() {}
 
 
     public ChapterPartEntity(ChapterEntity chapter, int number, @NotBlank String praxisPurpose) {
@@ -58,8 +65,8 @@ public class ChapterPartEntity {
 
 
     public ChapterPartEntity(long id, ChapterEntity chapter, int number,
-            Set<SubChapterEntity> subChapters, @NotBlank String praxisPurpose,
-            Set<PraxisEntity> praxis, Set<AdditionalEntity> additionals) {
+            List<SubChapterEntity> subChapters, @NotBlank String praxisPurpose,
+            List<PraxisEntity> praxis, List<AdditionalEntity> additionals) {
         super();
         this.id = id;
         this.chapter = chapter;
@@ -87,74 +94,11 @@ public class ChapterPartEntity {
                 || (number == other.number && Objects.equals(praxisPurpose, other.praxisPurpose));
     }
 
-
-    public long getId() {
-        return id;
+    
+    public ChapterPartEntity update(ChapterPartEntity chapterPart) {
+        this.praxisPurpose = chapterPart.praxisPurpose;
+        this.number = chapterPart.number;
+        return this;
     }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-    public ChapterEntity getChapter() {
-        return chapter;
-    }
-
-
-    public void setChapter(ChapterEntity chapter) {
-        this.chapter = chapter;
-    }
-
-
-    public int getNumber() {
-        return number;
-    }
-
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-
-    public Set<SubChapterEntity> getSubChapters() {
-        return subChapters;
-    }
-
-
-    public void setSubChapters(Set<SubChapterEntity> subChapters) {
-        this.subChapters = subChapters;
-    }
-
-
-    public String getPraxisPurpose() {
-        return praxisPurpose;
-    }
-
-
-    public void setPraxisPurpose(String praxisPurpose) {
-        this.praxisPurpose = praxisPurpose;
-    }
-
-
-    public Set<PraxisEntity> getPraxis() {
-        return praxis;
-    }
-
-
-    public void setPraxis(Set<PraxisEntity> praxis) {
-        this.praxis = praxis;
-    }
-
-
-    public Set<AdditionalEntity> getAdditionals() {
-        return additionals;
-    }
-
-
-    public void setAdditionals(Set<AdditionalEntity> additionals) {
-        this.additionals = additionals;
-    }
-
+    
 }

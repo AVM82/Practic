@@ -1,117 +1,162 @@
 package com.group.practic.controller;
 
-import com.group.practic.dto.SendMessageDto;
-import com.group.practic.dto.StudentPracticeDto;
-import com.group.practic.entity.ChapterEntity;
-import com.group.practic.entity.ChapterPartEntity;
+import static com.group.practic.util.ResponseUtils.badRequest;
+import static com.group.practic.util.ResponseUtils.getResponse;
+
+import com.group.practic.dto.ApplicantDto;
+import com.group.practic.dto.ApplicantsForCourseDto;
+import com.group.practic.dto.ChapterCompleteDto;
+import com.group.practic.dto.ChapterDto;
+import com.group.practic.dto.MentorDto;
+import com.group.practic.dto.PersonStudentDto;
+import com.group.practic.dto.PracticeDto;
+import com.group.practic.dto.StudentsForCourseDto;
+import com.group.practic.entity.CourseEntity;
+import com.group.practic.entity.MentorEntity;
 import com.group.practic.entity.PersonEntity;
-import com.group.practic.entity.StudentPracticeEntity;
-import com.group.practic.enumeration.PracticeState;
-import com.group.practic.service.ChapterPartService;
-import com.group.practic.service.ChapterService;
-import com.group.practic.service.EmailSenderService;
+import com.group.practic.service.ApplicantService;
+import com.group.practic.service.CourseService;
+import com.group.practic.service.MentorService;
 import com.group.practic.service.PersonService;
-import com.group.practic.service.StudentChapterService;
-import com.group.practic.service.StudentPracticeService;
-import com.group.practic.util.Converter;
-import jakarta.validation.Valid;
+import com.group.practic.service.StudentService;
+import jakarta.validation.constraints.Min;
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
-@RequestMapping("/api/mentor")
+@RequestMapping("/api/mentors")
 public class MentorController {
 
-    private ChapterPartService chapterPartService;
+    CourseService courseService;
 
-    private PersonService personService;
+    ApplicantService applicantService;
 
-    private StudentPracticeService studentPracticeService;
+    MentorService mentorService;
 
-    private ChapterService chapterService;
+    PersonService personService;
 
-    private StudentChapterService studentChapterService;
+    StudentService studentService;
 
-    private EmailSenderService emailSenderService;
 
     @Autowired
-    public MentorController(ChapterPartService chapterPartService, PersonService personService,
-                            StudentPracticeService studentPracticeService,
-                            ChapterService chapterService,
-                            StudentChapterService studentChapterService,
-                            EmailSenderService emailSenderService) {
-        this.chapterPartService = chapterPartService;
+    public MentorController(MentorService mentorService, CourseService courseService,
+            ApplicantService applicantService, PersonService personService,
+            StudentService studentService) {
+        this.courseService = courseService;
+        this.applicantService = applicantService;
+        this.mentorService = mentorService;
         this.personService = personService;
-        this.studentPracticeService = studentPracticeService;
-        this.chapterService = chapterService;
-        this.studentChapterService = studentChapterService;
-        this.emailSenderService = emailSenderService;
+        this.studentService = studentService;
     }
 
-    @PostMapping("/practices")
-    @PreAuthorize("hasRole('MENTOR')||hasRole('ADMIN')")
-    public ResponseEntity<StudentPracticeDto> approvePractice(
-            @RequestBody @Valid StudentPracticeDto studentPracticeDto
-    ) {
-        Optional<PersonEntity> student = personService.get(studentPracticeDto.getStudentId());
 
-        if (student.isPresent()) {
-            ChapterPartEntity chapterPart =
-                    chapterPartService.getChapterPartById(studentPracticeDto.getChapterPartId());
-
-            StudentPracticeEntity studentPractice =
-                    studentPracticeService.getPractice(
-                            student.get(), studentPracticeDto.getChapterPartId()
-                    );
-
-            studentPractice.setState(PracticeState.APPROVED);
-
-            StudentPracticeEntity updatedPractice = studentPracticeService.save(studentPractice);
-
-            Set<StudentPracticeEntity> practices =
-                    studentPracticeService.getAllPracticesByChapter(
-                            student.get(), chapterPart.getChapter()
-                    );
-
-            ChapterEntity nextChapter = getNextChapter(chapterPart.getChapter());
-
-            if (isAllPracticesApproved(practices) && nextChapter != null) {
-                studentChapterService.addChapter(student.get().getId(), nextChapter.getId());
-                this.notify(student.get(), nextChapter.getShortName());
-            }
-
-            return ResponseEntity.ok(Converter.convert(updatedPractice));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
+    @PostMapping("/add/{slug}/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    public ResponseEntity<MentorDto> addMentor(@PathVariable String slug,
+            @Min(1) @PathVariable long id) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        Optional<PersonEntity> person = personService.get(id);
+        return course.isEmpty() || person.isEmpty() ? badRequest()
+                : getResponse(Optional.of(mentorService.addMentor(person.get(), course.get())));
     }
 
-    private ChapterEntity getNextChapter(ChapterEntity chapter) {
-        Optional<ChapterEntity> nextChapter =
-                chapterService.getChapterByNumber(chapter.getCourse(), chapter.getNumber() + 1);
-        return nextChapter.orElse(null);
+
+    @PostMapping("/remove/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    public ResponseEntity<Boolean> removeMentor(@Min(1) @PathVariable long id) {
+        Optional<MentorEntity> mentor = mentorService.get(id);
+        return mentor.isEmpty() ? badRequest()
+                : getResponse(Optional.of(mentorService.removeMentor(mentor.get()).isInactive()));
     }
 
-    private boolean isAllPracticesApproved(Set<StudentPracticeEntity> practices) {
-        return practices.stream()
-                .allMatch(practice -> practice.getState() == PracticeState.APPROVED);
+
+    @GetMapping("/applicants")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Collection<ApplicantsForCourseDto>> getMyApplicants() {
+        return getResponse(mentorService.getMyApplicants());
     }
 
-    private void notify(PersonEntity student, String chapterShortName) {
-        SendMessageDto messageDto = new SendMessageDto();
-        messageDto.setAddress(student.getEmail());
-        messageDto.setHeader("Відкрито новий розділ!");
-        messageDto.setMessage("Вітаємо, вам відкрито новий розділ " + chapterShortName);
-        this.emailSenderService.sendMessage(messageDto);
+
+    @GetMapping("/applicants/{slug}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Collection<ApplicantDto>> getMyApplicantsForCourse(
+            @PathVariable String slug) {
+        Optional<CourseEntity> course = courseService.get(slug);
+        return course.isEmpty() ? badRequest()
+                : getResponse(mentorService.getApplicantsForCourse(course.get()));
+    }
+
+
+    @PostMapping("/applicants/admit/{id}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<PersonStudentDto> adminStudent(@Min(1) @PathVariable long id) {
+        return getResponse(
+                applicantService.get(id).map(applicant -> mentorService.admitStudent(applicant)));
+    }
+
+
+    @PostMapping("/applicants/reject/{id}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<ApplicantDto> rejectApplicant(@Min(1) @PathVariable long id) {
+        return getResponse(applicantService.get(id)
+                .map(applicant -> ApplicantDto.map(mentorService.rejectApplicant(applicant))));
+    }
+
+
+    @GetMapping("/chapters/{slug}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Collection<ChapterDto>> getChapters(@PathVariable String slug) {
+        return getResponse(courseService.get(slug).filter(mentorService::isMyCourse)
+                .map(mentorService::getChapters));
+    }
+
+
+
+    @GetMapping("/chapters/{slug}/{number}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<ChapterCompleteDto> getChapter(@PathVariable String slug,
+            @Min(1) @PathVariable int number) {
+        return getResponse(courseService.get(slug).filter(mentorService::isMyCourse)
+                .map(course -> mentorService.getChapter(course, number).orElseGet(null)));
+    }
+
+
+    @GetMapping("/students")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<Collection<StudentsForCourseDto>> getMyStudents() {
+        return getResponse(mentorService.getMyStudents());
+    }
+
+
+    @PutMapping("/practices/approve/{id}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<PracticeDto> approvePractice(@PathVariable long id) {
+        return getResponse(studentService.getPractice(id).map(mentorService::approvePractice));
+    }
+
+
+    @PutMapping("/practices/reject/{id}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<PracticeDto> rejectPractice(@PathVariable long id) {
+        return getResponse(studentService.getPractice(id).map(mentorService::rejectPractice));
+    }
+
+
+    @PutMapping("/practices/cancelApproved/{id}")
+    @PreAuthorize("hasRole('MENTOR')")
+    public ResponseEntity<PracticeDto> cancelApprovedPractice(@PathVariable long id) {
+        return getResponse(
+                studentService.getPractice(id).map(mentorService::cancelApprovedPractice));
     }
 
 }

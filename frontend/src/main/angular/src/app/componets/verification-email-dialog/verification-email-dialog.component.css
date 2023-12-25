@@ -1,0 +1,23 @@
+
+.buttons{
+    text-align: center;
+}
+
+.buttons button:first-child {
+    border: none;
+    background-color: #ee7777;
+    color: #fff;
+    padding: 8px 8px;
+    font-size: 19px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+.text{
+    margin-top: 35px;
+    margin-bottom: 23px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: center;
+    font-size: 19px;
+}

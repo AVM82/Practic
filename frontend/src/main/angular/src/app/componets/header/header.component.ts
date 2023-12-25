@@ -2,12 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatButtonModule} from "@angular/material/button";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
+import {TokenStorageService} from "../../services/token-storage.service";
 import {NgIf} from "@angular/common";
 import {environment} from "../../../enviroments/enviroment";
-import {Router, RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
-import { User } from 'src/app/models/user/user';
 
 @Component({
     selector: 'app-header',
@@ -18,25 +17,26 @@ import { User } from 'src/app/models/user/user';
 })
 
 export class HeaderComponent implements OnInit{
-
+  
   isAdmin: boolean = false;
   isAuthenticated: boolean = false;
-  name: string = "User"
-  profilePictureUrl = ""
-
+  name: string = "User";
+  profilePictureUrl = "";
+  
   constructor(
       private tokenStorageService:TokenStorageService,
-      private router: Router
-  ) {
-  }
+      private route: ActivatedRoute,
+      private router:Router
+
+      ) { }
+
   ngOnInit(): void {
-    const token = this.tokenStorageService.getToken();
-    const user: User = this.tokenStorageService.getUser();
-    if (token && user) {
-      this.isAdmin = user.hasAnyRole('ADMIN');
+    const user = this.tokenStorageService.getUser();
+    if (user) {
+      this.isAdmin = user.hasAdminRole();
       this.isAuthenticated = user.isAuthenticated;
       this.name = user.name;
-      this.profilePictureUrl = user.profilePictureUrl
+      this.profilePictureUrl = user.profilePictureUrl;
     }
   }
 
@@ -45,16 +45,17 @@ export class HeaderComponent implements OnInit{
     window.location.href = logoutUrl;
   }
 
-  toAdminPage() {
-    this.router.navigate(['/admin']);
-  }
+
 
   onMenuButtonClick(item: string) {
+    if(item === 'person') {
+      this.tokenStorageService.refreshMe();
+    }
     if(item === 'logout') {
       this.logout();
     }
-    if(item === 'admin') {
-      this.toAdminPage();
+    if(item === 'profile') {
+      this.router.navigate(['profile']);
     }
   }
 }

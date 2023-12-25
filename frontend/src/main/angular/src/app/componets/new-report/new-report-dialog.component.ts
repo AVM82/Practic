@@ -6,171 +6,78 @@ import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angula
 import {MatButtonModule} from "@angular/material/button";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatSelectModule} from "@angular/material/select";
-import {NewStudentReport} from "../../models/newStudentReport/newStudentReport";
-import {DatePipe, NgForOf} from "@angular/common";
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
-import * as _moment from 'moment';
-import {default as _rollupMoment} from 'moment';
-import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
-import 'moment/locale/uk';
-import {CoursesService} from "../../services/courses/courses.service";
-import { BehaviorSubject } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
-import { CommonModule } from '@angular/common';
-import { TopicReportService } from '../../services/topic-report.service';
-import { Observable } from 'rxjs';
+import {CommonModule} from "@angular/common";
+import {MatNativeDateModule} from '@angular/material/core';
+import {FormReport, TopicReport} from "../../models/report";
+import { DAYS_AHEAD_REPORT_ANNOUNCE } from 'src/app/enums/app-constans';
+import { CalendarEventService } from 'src/app/services/calendar-event.service';
+import { ReportService } from 'src/app/services/report.service';
 
-
-const moment = _rollupMoment || _moment;
-
-export const MY_FORMATS = {
-    parse: {
-        dateInput: 'DD-MM-YYYY',
-    },
-    display: {
-        dateInput: 'DD MMMM',
-        monthYearLabel: 'MMMM ',
-        dateA11yLabel: 'LL',
-        monthYearA11yLabel: 'MMMM ',
-    },
-};
 
 @Component({
     selector: 'app-new-report',
     templateUrl: './new-report-dialog.component.html',
     styleUrls: ['./new-report-dialog.component.css'],
-    providers: [
-        {
-            provide: DateAdapter,
-            useClass: MomentDateAdapter,
-            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-        },
-        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-        { provide: MAT_DATE_LOCALE, useValue: 'uk' },
-        AsyncPipe
-    ],
-
     standalone: true,
-    imports: [
-        MatDialogModule,
-        FormsModule,
-        MatButtonModule,
-        MatSelectModule,
-        NgForOf,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        DatePipe,
-        CommonModule
-    ],
+    imports: [ MatDialogModule, FormsModule, MatButtonModule, MatSelectModule, MatFormFieldModule, MatInputModule,
+        MatDatepickerModule, MatNativeDateModule, CommonModule, ReactiveFormsModule ],
 })
-export class NewReportDialogComponent implements OnInit{
+export class NewReportDialogComponent implements OnInit {
     minDate: Date;
+    minMs: number = 0;
     maxDate: Date;
-    date = new FormControl(moment(), Validators.required);
-    timeslot = new FormControl('', Validators.required);
-    chapter = new FormControl('', Validators.required);
-    title = new FormControl('', Validators.compose([
-        Validators.required,
-        Validators.minLength(10),
-        Validators.maxLength(100)
+    dateForm = new FormControl({value: this.data.report?.date || '', disabled: !this.data.slug},
+                        Validators.required);
+    chapterForm = new FormControl({value: this.data.chapter || this.data.chapters[this.data.chapters.length - 1], 
+                                   disabled: !this.data.slug},
+                        Validators.required);
+    topicForm = new FormControl({value: this.chapterForm.value.topicReports.find((topic: { id: any; }) => topic.id === this.data.report?.topic.id),
+                                 disabled: !this.data.slug},
+                        Validators.compose([
+                                    Validators.required,
+                                    Validators.minLength(5),
+                                    Validators.maxLength(100)
     ]));
-    dateStr: string = '';
-    openChapters$ = new BehaviorSubject<number[]>([]);
-    activeChapter:number = 1;
-    topicsReport$: Observable<{ topic: string }[]> = new BehaviorSubject<{ topic: string }[]>([]);
+    freeDate: boolean[] = [];
+    dateFilter = (d: Date | null): boolean => {
+        if (d != null && this.reportDateMs == CalendarEventService.toMs(d))
+            return true;
+        const index = d == null ? -1 : Math.trunc(d.valueOf() - this.minMs) / 86400000;
+        return index >= 0 && index < this.freeDate.length && this.freeDate[index];
+    };
+    reportDateMs: number = 0;
 
-        constructor(
+    constructor(
+        private reportService: ReportService,
         public dialogRef: MatDialogRef<NewReportDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public newStudentReport: NewStudentReport,
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        private coursesService: CoursesService,
-        private topicReportService: TopicReportService
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {
-        const currentYear = new Date().getFullYear();
-        const currentMonth = new Date().getMonth();
-        const currentDay = new Date().getDate();
-        this.minDate = new Date(currentYear, currentMonth, currentDay);
-        this.maxDate = new Date(currentYear, currentMonth, currentDay + 14);
-        moment.locale('uk');
+        this.minDate = CalendarEventService.dateFromNowPlus(1);
+        console.log('minDate=', this.minDate)
+        this.minMs = CalendarEventService.toMs(this.minDate);
+        this.maxDate = CalendarEventService.dateFromNowPlus(DAYS_AHEAD_REPORT_ANNOUNCE);
+        if (data.report) {
+            this.reportDateMs = CalendarEventService.toMs(new Date(data.report.date));
+            console.log(data.chapter)
+        }
     }
 
     ngOnInit(): void {
-        this.getOpenChapters();
-
-        this.openChapters$.subscribe(chapters => {
-            console.log(chapters);
-            if (chapters.length > 0) {
-                this.activeChapter = chapters[chapters.length - 1];
-                this.initTopicsReports();
-            }
-        });
+        if (this.data.slug)
+            this.reportService.fillFreeDateFrom(this.data.slug, this.freeDate, CalendarEventService.toLocalDate(this.minDate));
     }
 
-      updateActiveChapter(selectChapter:number){
-        this.activeChapter=selectChapter;
-        this.initTopicsReports();
-      }
-
-    getOpenChapters(): void {
-
-        this.coursesService.getOpenChapters().subscribe({
-          next: chapters => {
-            const ids = chapters.map(chapter => chapter.id).sort((a, b) => a - b);
-            this.openChapters$.next(ids);
-
-          },
-          error: error => {
-            console.error('Помилка при запиті доступних глав', error);
-            this.openChapters$.next([]);
-          }
-        });
-      }
-
-    initTopicsReports(){
-        console.log(this.activeChapter + " new student chapt");
-        this.topicReportService.getTopicsReportsOnChapter(this.activeChapter).subscribe({
-            next: topics => {
-                if (topics) {
-                    const topicsReports = topics.map((topic:any) => topic.topic);
-                    (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next(topics);
-                } else
-                    console.warn('No topics for this chapter');
-            },
-            error: error => {
-              console.error('Помилка при отриманні доступних тем доповіді', error);
-              (this.topicsReport$ as BehaviorSubject<{ topic: string }[]>).next([]);
-            }
-          });
+    getFormReport(): FormReport {
+        return {
+            id: this.data.report?.id | 0,
+            chapter: this.chapterForm.value,
+            date: CalendarEventService.stringDateToLocalDate(this.dateForm.value),
+            topic: this.topicForm.value!
+        };
     }
 
-
-    getnewStudentReport():NewStudentReport{
-        this.newStudentReport.chapter=this.activeChapter;
-        return this.newStudentReport;
+    correctDate(strdate: string | null): Date | undefined{
+        return strdate ? CalendarEventService.toLocalDate(new Date(strdate)) : undefined;
     }
 
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
-
-    getTimeslots(date: any) {
-        if (date != null) {
-            this.dateStr = date.format('YYYY-MM-DD');
-        }
-        // @ts-ignore
-        return this.data.timeslots[this.dateStr];
-    }
-
-    formatTime(timeValue: string): string {
-        const parts = timeValue.split(':');
-        if (parts.length >= 2) {
-            return `${parts[0]}:${parts[1]}`;
-        }
-        return timeValue;
-    }
-
-    protected readonly Date = Date;
 }

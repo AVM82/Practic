@@ -1,20 +1,28 @@
 package com.group.practic.dto;
 
-import lombok.AllArgsConstructor;
+import com.group.practic.entity.StudentPracticeEntity;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
-@Setter
 public class PracticeDto {
 
-    @NotNull
-    private long chapterPartId;
+    long id;
 
-    @NotNull
-    private String state;
+    int number;
+
+    String state;
+
+
+    public static PracticeDto map(StudentPracticeEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        PracticeDto dto = new PracticeDto();
+        dto.id = entity.getId();
+        dto.number = entity.getNumber();
+        dto.state = entity.getState().name();
+        return dto;
+    }
+
 }

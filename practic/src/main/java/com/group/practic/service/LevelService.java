@@ -8,12 +8,10 @@ import com.group.practic.util.PropertyUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,8 +48,8 @@ public class LevelService {
     }
 
 
-    public Set<LevelEntity> getLevelsSet(CourseEntity course, PropertyLoader prop) {
-        Set<LevelEntity> result = new HashSet<>();
+    public List<LevelEntity> getLevelsSet(CourseEntity course, PropertyLoader prop) {
+        List<LevelEntity> result = new ArrayList<>();
         Map<Integer, List<Integer>> levelMap = getLevelMap(prop);
         for (Entry<Integer, List<Integer>> entry : levelMap.entrySet()) {
             LevelEntity level = new LevelEntity(0, course, entry.getKey(), entry.getValue());

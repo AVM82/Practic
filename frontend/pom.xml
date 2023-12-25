@@ -107,5 +107,51 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>develop-build</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>target/frontend</directory>
+                        <targetPath>static</targetPath>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.13.4</version>
+                        <configuration>
+                            <workingDirectory>src/main/angular</workingDirectory>
+                            <nodeVersion>v16.20.2</nodeVersion>
+                            <npmVersion>8.19.4</npmVersion>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install node and npm</id>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>npm run build develop</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run build -- --configuration=develop</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

@@ -1,11 +1,15 @@
 package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import com.group.practic.dto.EventDto;
 import com.group.practic.dto.MessageSendingResultDto;
 import com.group.practic.dto.SendMessageDto;
+import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.StudentEntity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -23,10 +26,10 @@ class CalendarEventServiceTest {
     private CalendarEventService calendarEventService;
 
     @Mock
-    private PersonService personService;
+    private StudentService studentService;
 
     @Mock
-    private Sender sender;
+    private EmailSenderService emailSenderService;
 
     @BeforeEach
     public void setUp() {
@@ -52,15 +55,18 @@ class CalendarEventServiceTest {
         eventDto.setEndEvent(LocalDateTime.now());
         eventDto.setSubjectReport("Test Event");
         eventDto.setDescription("Test Description");
-        List<PersonEntity> personEntities = new ArrayList<>();
+
+        List<StudentEntity> studentEntities = new ArrayList<>();
         PersonEntity person1 = new PersonEntity();
         person1.setEmail("person1@example.com");
-        personEntities.add(person1);
-        Mockito.when(personService.get()).thenReturn(personEntities);
-        Mockito.when(sender.sendMessage(Mockito.any(SendMessageDto.class))).thenReturn(true);
-
+        CourseEntity course = new CourseEntity("java-dev-tools", "java mentoring course", "svg");
+        StudentEntity student1 = new StudentEntity(person1, course);
+        studentEntities.add(student1);
+        when(studentService.getStudentsOfCourse(course, false, false))
+                .thenReturn(studentEntities);
+        when(emailSenderService.sendMessage(any(SendMessageDto.class))).thenReturn(true);
         MessageSendingResultDto result =
-                calendarEventService.sendEventMessageAllPerson(sender, eventDto);
+                calendarEventService.sendEventMessageAllPerson(eventDto, course);
 
         assertEquals(1, result.getSuccessfulDeliveries());
     }

@@ -11,13 +11,21 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class TokenProvider {
+
     private final AppProperties appProperties;
+
+    @Value("${superToken.email}")
+    private String superTokenEmail;
+
+    @Value("${superToken.expiredAtMs}")
+    private long superTokenExpiredAtMs;
 
     public TokenProvider(AppProperties appProperties) {
         this.appProperties = appProperties;
@@ -25,27 +33,31 @@ public class TokenProvider {
 
     public String createToken(Authentication authentication) {
         AuthUserDto userPrincipal = (AuthUserDto) authentication.getPrincipal();
-
+        String userEmail = userPrincipal.getEmail() != null ? userPrincipal.getEmail() : "";
         Date now = new Date();
         Date expiryDate = new Date(
-                now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
-
+                now.getTime()
+                        + (userEmail.equals(superTokenEmail)
+                        ? superTokenExpiredAtMs
+                        : appProperties.getAuth().getTokenExpirationMsec()
+                ));
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getPerson().getId()))
-                .setIssuedAt(new Date())
+                .setSubject(Long.toString(userPrincipal.getId()))
+                .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
     }
+
 
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(appProperties.getAuth().getTokenSecret())
                 .parseClaimsJws(token)
                 .getBody();
-
         return Long.parseLong(claims.getSubject());
     }
+
 
     public boolean validateToken(String authToken) {
         try {
@@ -66,4 +78,5 @@ public class TokenProvider {
         }
         return false;
     }
+
 }

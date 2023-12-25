@@ -1,28 +1,32 @@
 package com.group.practic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Objects;
 
+
 @Entity
-@Table(name = "topic_report")
-public class TopicReportEntity {
+@Table(name = "topic_reports")
+public class TopicReportEntity implements Serializable {
+
+    private static final long serialVersionUID = -5832117767034934071L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @ManyToOne
+    @JsonIgnore
     private ChapterEntity chapter;
 
     @NotBlank
-    @Min(value = 10)
     String topic;
 
 

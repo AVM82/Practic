@@ -1,7 +1,6 @@
 package com.group.practic.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -16,7 +15,6 @@ import com.group.practic.repository.ChapterPartRepository;
 import com.group.practic.repository.PraxisRepository;
 import com.group.practic.repository.SubChapterRepository;
 import com.group.practic.repository.SubSubChapterRepository;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +58,7 @@ class ChapterPartServiceTest {
 
         when(chapterPartRepository.save(chapterPartEntity)).thenReturn(chapterPartEntity);
 
-        ChapterPartEntity result = chapterPartService.create(chapterPartEntity);
+        ChapterPartEntity result = chapterPartService.createOrUpdate(chapterPartEntity);
 
         assertNotNull(result);
         assertEquals(chapterPartEntity, result);
@@ -70,13 +68,12 @@ class ChapterPartServiceTest {
     void testCreateSubChapter() {
         SubChapterEntity subChapterEntity = new SubChapterEntity();
 
-        when(subChapterRepository.findByChapterPartAndNumberAndName(
-                subChapterEntity.getChapterPart(), subChapterEntity.getNumber(),
-                subChapterEntity.getName())).thenReturn(null);
+        when(subChapterRepository.findByChapterPartAndNumber(
+                subChapterEntity.getChapterPart(), subChapterEntity.getNumber())).thenReturn(null);
 
         when(subChapterRepository.save(subChapterEntity)).thenReturn(subChapterEntity);
 
-        SubChapterEntity result = chapterPartService.createSub(subChapterEntity);
+        SubChapterEntity result = chapterPartService.createOrUpdateSub(subChapterEntity);
 
         assertNotNull(result);
         assertEquals(subChapterEntity, result);
@@ -87,7 +84,8 @@ class ChapterPartServiceTest {
         long subChapterId = 1;
         SubChapterEntity subChapterEntity = new SubChapterEntity();
 
-        when(subChapterRepository.findById(subChapterId)).thenReturn(Optional.of(subChapterEntity));
+        when(subChapterRepository.findById(subChapterId))
+                .thenReturn(Optional.of(subChapterEntity));
 
         Optional<SubChapterEntity> result = chapterPartService.getSub(subChapterId);
 
@@ -113,13 +111,13 @@ class ChapterPartServiceTest {
     void testCreateSubSubChapter() {
         SubSubChapterEntity subSubChapterEntity = new SubSubChapterEntity();
 
-        when(subSubChapterRepository.findBySubChapterAndNumberAndName(
-                subSubChapterEntity.getSubChapter(), subSubChapterEntity.getNumber(),
-                subSubChapterEntity.getName())).thenReturn(null);
+        when(subSubChapterRepository.findBySubChapterAndNumber(
+                subSubChapterEntity.getSubChapter(), subSubChapterEntity.getNumber())
+        ).thenReturn(null);
 
         when(subSubChapterRepository.save(subSubChapterEntity)).thenReturn(subSubChapterEntity);
 
-        SubSubChapterEntity result = chapterPartService.createSubSub(subSubChapterEntity);
+        SubSubChapterEntity result = chapterPartService.createOrUpdateSubSub(subSubChapterEntity);
 
         assertNotNull(result);
         assertEquals(subSubChapterEntity, result);
@@ -129,13 +127,12 @@ class ChapterPartServiceTest {
     void testCreatePraxis() {
         PraxisEntity praxisEntity = new PraxisEntity();
 
-        when(praxisRepository.findByChapterPartAndNumberAndName(
-                praxisEntity.getChapterPart(), praxisEntity.getNumber(),
-                praxisEntity.getName())).thenReturn(null);
+        when(praxisRepository.findByChapterPartAndNumber(
+                praxisEntity.getChapterPart(), praxisEntity.getNumber())).thenReturn(null);
 
         when(praxisRepository.save(praxisEntity)).thenReturn(praxisEntity);
 
-        PraxisEntity result = chapterPartService.createPraxis(praxisEntity);
+        PraxisEntity result = chapterPartService.createOrUpdatePraxis(praxisEntity);
 
         assertNotNull(result);
         assertEquals(praxisEntity, result);
@@ -145,41 +142,15 @@ class ChapterPartServiceTest {
     void testCreateAdditional() {
         AdditionalEntity additionalEntity = new AdditionalEntity();
 
-        when(additionalRepository.findByNumberAndName(
-                additionalEntity.getNumber(), additionalEntity.getName())).thenReturn(null);
+        when(additionalRepository.findByChapterPartAndNumber(new ChapterPartEntity(),
+                additionalEntity.getNumber())).thenReturn(null);
 
         when(additionalRepository.save(additionalEntity)).thenReturn(additionalEntity);
 
-        AdditionalEntity result = chapterPartService.createAdditional(additionalEntity);
+        AdditionalEntity result = chapterPartService.createOrUpdateAdditional(additionalEntity);
 
         assertNotNull(result);
         assertEquals(additionalEntity, result);
-    }
-
-    @Test
-    void testPartNumberExistsWhenPartExists() {
-        int numberToCheck = 1;
-        Set<ChapterPartEntity> parts = new HashSet<>();
-        ChapterPartEntity part = new ChapterPartEntity();
-        part.setNumber(numberToCheck);
-        parts.add(part);
-
-        boolean result = chapterPartService.partNumberExists(numberToCheck, parts);
-
-        assertTrue(result);
-    }
-
-    @Test
-    void testPartNumberExistsWhenPartDoesNotExist() {
-        int numberToCheck = 1;
-        Set<ChapterPartEntity> parts = new HashSet<>();
-        ChapterPartEntity part = new ChapterPartEntity();
-        part.setNumber(2);
-        parts.add(part);
-
-        boolean result = chapterPartService.partNumberExists(numberToCheck, parts);
-
-        assertFalse(result);
     }
 
     @Test

@@ -12,12 +12,29 @@
     box-sizing: border-box;
     display: flex;
     align-items: center;
+    opacity: 0.66;
     transition: transform 0.3s, background-color 0.3s;
+}
+
+.course-card.studentCourse {
+    background-color: rgb(149, 235, 149);
+}
+
+.course-card.mentorCourse {
+    background-color: rgb(149, 189, 235);
+}
+
+.course-card.applicantCourse {
+    background-color: rgb(207, 148, 204);
+}
+
+.course-card.otherCourse {
+    background-color: rgb(216, 216, 216);
 }
 
 .course-card:hover {
     transform: translateY(-5px);
-    background-color: #f0f0f0;
+    opacity: 1;
 }
 
 .course-create {
@@ -27,6 +44,7 @@
     display: flex;
     align-items: center;
     transition: transform 0.3s, background-color 0.3s;
+    opacity: 0.66;
     cursor: pointer;
     background-color: #e0e0e0;
 }
@@ -34,6 +52,7 @@
 .course-create:hover {
     transform: translateY(-5px);
     background-color: #e0f0e0;
+    opacity: 1;
 }
 
 .card-link {

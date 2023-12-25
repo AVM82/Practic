@@ -8,9 +8,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
@@ -30,7 +32,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}))
+@Table(name = "persons", uniqueConstraints = @UniqueConstraint(columnNames = {"email", "discord"}),
+        indexes = @Index(columnList = "email"))
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,11 +43,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @ToString
 public class PersonEntity implements UserDetails {
 
-    private static final long serialVersionUID = 2865461614246570865L;
+    static final long serialVersionUID = 2865461614246570865L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    long id;
 
     boolean inactive;
 
@@ -52,68 +55,67 @@ public class PersonEntity implements UserDetails {
 
     LocalDateTime registered = LocalDateTime.now();
 
-    private String email;
+    String email;
 
     @Column
     @NotBlank
-    private String name;
+    String name;
 
-    @NotBlank
-    private String discord;
+    String discord;
 
     @Column
-    @NotBlank
-    private String linkedin;
+    String linkedin;
 
-    private String contacts;
+    String contacts;
 
-    private String password;
+    String password;
 
-    private String profilePictureUrl;
+    String profilePictureUrl;
 
+    String personPageUrl;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "persons_roles", joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    private Set<StudentEntity> students = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "person_application", joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private Set<CourseEntity> courses = new HashSet<>();
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    private Set<MentorEntity> mentors = new HashSet<>();
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    private Set<ApplicantEntity> applicants = new HashSet<>();
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.MERGE)
+    private Set<GraduateEntity> graduates = new HashSet<>();
 
 
-    public PersonEntity(String name, String linkedin) {
+    public PersonEntity(String name, String linkedin, RoleEntity role) {
         this.name = name;
         this.linkedin = linkedin;
+        if (role != null) {
+            this.roles.add(role);
+        }
     }
 
 
-    public PersonEntity(String name, String linkedin, Set<RoleEntity> roles) {
+    public PersonEntity(String name, String password, String email, String linkedin,
+            String profilePictureUrl, RoleEntity guestRole) {
         this.name = name;
+        this.password = password;
+        this.email = email;
         this.linkedin = linkedin;
-        this.roles = roles;
+        this.profilePictureUrl = profilePictureUrl;
+        this.roles.add(guestRole);
     }
-
-
 
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<SimpleGrantedAuthority> authorities = new HashSet<>();
-        if (roles != null) {
-            authorities = roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
-                    .collect(Collectors.toUnmodifiableSet());
-        }
-        return authorities;
-    }
-
-
-    @JsonIgnore
-    @Override
-    public String getPassword() {
-        return null;
+        return roles.stream().map(p -> new SimpleGrantedAuthority("ROLE_" + p.getName()))
+                        .collect(Collectors.toUnmodifiableSet());
     }
 
 
@@ -148,12 +150,7 @@ public class PersonEntity implements UserDetails {
     @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return true;
-    }
-
-
-    public boolean containsRole(String role) {
-        return roles.stream().anyMatch(personRole -> personRole.getName().equals(role));
+        return !ban;
     }
 
 }

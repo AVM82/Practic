@@ -1,26 +1,39 @@
-<div>
+<div *ngIf="report.state !== STATE_CANCELLED" report>
     <mat-card class="base-card">
-        <mat-card class="inner-info-card">
+        <mat-card class="inner-info-card" 
+                [class.approved]="report.state === STATE_APPROVED"
+                [class.in-process]="report.state === STATE_STARTED"
+                [class.finished]="report.state === STATE_FINISHED">
             <div class="student-image">
-                <img src="{{profilePictureUrl}}" alt="no image" width="60" height="60">
+                <img src="{{report.profilePictureUrl || 'assets/default_profile_picture.png'}}" alt="no image"
+                     width="60" height="60">
             </div>
-            <div class="student-name">{{studentName}}</div>
-            <div class="report-date">{{dateValue | date:"dd MMMM"}}</div>
-            <div class="report-time-border">
-                <div class="report-time" >{{formatTime()}}</div>
-            </div>
+            <div class="student-name">{{report.personName}}</div>
+            <div class="report-date">{{report.date | date:"dd MMMM"}}</div>
         </mat-card>
         <mat-card-title class="report-topic-header">Доповідь на тему:</mat-card-title>
-        <mat-card-title class="report-topic-text">{{reportTopic}}</mat-card-title>
+        <mat-card-title class="report-topic-text">{{report.topic.topic}}</mat-card-title>
         <div class="like-counter-location">
-            <ng-container *ngIf="isCurrentUserReport()">
-                <button mat-button class="change-report-btn" (click)="openChangeReportDialog()">Змінити</button>
-                <button mat-button class="cancel-report-btn" (click)="openCancelReportDialog()">Скасувати</button>
+            <button mat-button class="action-buttons" (click)="reportService.refreshReport(report, chapter)">
+                <mat-icon class="action-icon">refresh</mat-icon>
+            </button>
+            <ng-container *ngIf="report.personId === me.id && report.state !== STATE_APPROVED">
+                <button mat-button *ngIf="canStart()" class="action-buttons" (click)="reportService.changeState(report, STATE_STARTED)">
+                    <mat-icon class="action-icon">play_circle_outline</mat-icon>
+                </button>
+                <button mat-button *ngIf="canStop()" class="action-buttons" (click)="reportService.changeState(report, STATE_FINISHED)">
+                    <mat-icon class="action-icon">stop_circle_outline</mat-icon>
+                </button>
+                <button mat-button *ngIf="!isToday(report.date)" class="change-report-btn" (click)="openChangeReportDialog()">Змінити</button>
+                <button mat-button *ngIf="report.state === STATE_ANNOUNCED || report.state === STATE_STARTED" class="cancel-report-btn" (click)="openCancelReportDialog()">Скасувати</button>
             </ng-container>
-            <mat-card-title class="like-counter-number ">
-                {{likedPersonsIdList.length}}
+            <button *ngIf="isMentor && report.state === STATE_FINISHED" class="action-buttons" (click)="reportService.changeState(report, STATE_APPROVED)">
+                <mat-icon class="action-icon">star_half</mat-icon>
+            </button>
+            <mat-card-title class="like-counter-number">
+                {{report.state !== STATE_ANNOUNCED ? report.likedPersonIds.length : ''}}
             </mat-card-title>
-            <div (click)="pressLikeButton()">
+            <div *ngIf="!isMentor && report.personId !== me.id && report.state !== STATE_ANNOUNCED" (click)="pressLikeButton()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 30 30" fill="none">
                     <path d="M18.2434 24H5.52745V8.64L13.4893 0L14.6062 0.93C14.7208 1.03 14.8067 1.17 14.864 1.35C14.9212 1.53 14.9499 1.75 14.9499 2.01V2.31L13.6611 8.64H22.2243C22.6826 8.64 23.0835 8.82 23.4272 9.18C23.7709 9.54 23.9427 9.96 23.9427 10.44V12.8952C23.9427 13.0384 23.957 13.185 23.9857 13.335C24.0143 13.485 24 13.63 23.9427 13.77L20.3341 22.47C20.1646 22.895 19.8821 23.2563 19.4865 23.5538C19.091 23.8513 18.6766 24 18.2434 24ZM5.52745 8.64V10.44H1.71838V22.2H5.52745V24H0V8.64H5.52745Z"
                           fill="#27AE60"/>
@@ -29,5 +42,3 @@
         </div>
     </mat-card>
 </div>
-
-

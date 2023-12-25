@@ -8,7 +8,7 @@
     display: flex;
     flex-direction: row;
     text-align: left;
-    background-color: #000000;
+    background-color: #E0E0E0;
     color: #FFFFFF;
     font-size: 12px;
 }
@@ -24,6 +24,129 @@
 }
 
 .linkedin-image {
-    width: 534px;
-    height: 106px;
+    margin-top: 24px;
+    margin-left: 13px;
+    width: 206px;
+    height: 40px;
+}
+
+.google-image{
+    margin-left: 30px;
+    margin-top: 24px;
+    margin-right: 13px;
+    width: 190px;
+    height: 40px;
+    cursor: pointer;
+
+}
+
+.left-column{
+    background-color: #E0E0E0;
+    width: 60%;
+    height: 800px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;  
+    justify-content: center;
+
+}
+
+.right-column{
+    background-color:#C6C6C6;
+    width: 40%;
+    height: 800px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;  
+    color: #FFFFFF;
+}
+
+.practic{
+ margin-top: 50px;  
+ margin-left: 65%; 
+ font-size: 30px;
+ cursor: default;
+}
+
+.mat-field  {
+    width: 400px;
+    height: 70px;
+    font-size: 20px;
+    border-radius: 10px !important;
+}
+
+
+
+.field{
+    color: #C6C6C6;
+}
+
+.check-password{
+    margin-left: 54px;
+    margin-right: 54px;
+    cursor: pointer;
+}
+
+.auth-name{
+font-size: 27px;
+margin-top: 10px;
+margin-bottom: 18px;
+cursor: default;
+}
+
+.login-name{
+    cursor: default;
+    font-size: 27px;
+    margin-top: 80px;
+    margin-bottom: 18px;
+    color: #27AE60;
+}
+
+.auth-button{
+    background-color: #27AE60;
+    color: #fff;
+    padding: 8px 8px;
+    font-size: 25px;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 400px;
+    margin-left: 5px;
+    margin-top: 20px;
+}
+
+.visible-icon{
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    border: none;
+}
+
+.have-account{
+    font-size: 20px;
+    margin-top: 60px;
+    margin-bottom: 0px;
+    cursor: default;
+
+}
+
+.sign-in{
+    margin-top: 5px;
+    font-size: 20px;
+    background-color: #C6C6C6;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+.login-page{
+ display: flex;
+}
+.text-privacy{
+    margin-left: 5px;
+    cursor: default;
+    font-size: 12.3px;
 }

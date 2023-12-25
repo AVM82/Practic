@@ -1,66 +1,81 @@
 package com.group.practic.service;
 
-import static com.group.practic.util.Converter.toDto;
-
-import com.group.practic.dto.AnswerDto;
-import com.group.practic.dto.QuestionDto;
-import com.group.practic.dto.QuizDto;
-import com.group.practic.entity.AnswerEntity;
-import com.group.practic.entity.QuestionEntity;
 import com.group.practic.entity.QuizEntity;
-import com.group.practic.exception.ResourceNotFoundException;
+import com.group.practic.entity.QuizResultEntity;
+import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.repository.QuizRepository;
+import com.group.practic.repository.QuizResultRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class QuizService {
+
+    public static final int CORRECT_ANSWERS_PERCENT = 75;
     private final QuizRepository quizRepository;
+    private final AnswerService answerService;
+    private final StudentService studentService;
+    private final QuizResultRepository resultRepository;
 
     @Autowired
-    public QuizService(QuizRepository quizRepository) {
+    public QuizService(QuizRepository quizRepository, AnswerService answerService,
+                       StudentService studentService, QuizResultRepository resultRepository) {
         this.quizRepository = quizRepository;
+        this.answerService = answerService;
+        this.studentService = studentService;
+        this.resultRepository = resultRepository;
     }
 
-    public QuizDto getQuiz(Long quizId) {
-        Optional<QuizEntity> optional = quizRepository.findById(quizId);
-        if (optional.isPresent()) {
-            QuizEntity quizEntity = optional.get();
-            return toDto(quizEntity);
+    public Optional<QuizEntity> get(Long id) {
+        return quizRepository.findById(id);
+    }
+
+    public List<Boolean> getResult(
+            QuizEntity quiz, QuizResultEntity quizResult,
+            List<List<Long>> ids, long time) {
+        List<Long> fromDb = answerService.getAllCorrectByQuiz(quiz.getId());
+        List<Boolean> result = checkQuiz(ids, fromDb);
+
+        saveResult(result, quiz, quizResult, ids, time);
+
+        return result;
+    }
+
+    private void saveResult(List<Boolean> result, QuizEntity quiz,
+                            QuizResultEntity quizResult,
+                            List<List<Long>> ids, long time) {
+        quizResult.setQuestionCount(quiz.getQuestions().size());
+        int countOfNotZeros = (int) ids.stream()
+                .flatMap(List::stream)
+                .filter(i -> i != 0L)
+                .count();
+        quizResult.setAnsweredCount(countOfNotZeros);
+        int correctAnswers = (int) result.stream().filter(b -> b).count();
+        quizResult.setCorrectAnsweredCount(correctAnswers);
+        boolean passedTest = (
+                (correctAnswers * 100) / quiz.getQuestions().size()) >= CORRECT_ANSWERS_PERCENT;
+        quizResult.setPassed(passedTest);
+        quizResult.setSecondSpent(time);
+        resultRepository.save(quizResult);
+        if (passedTest) {
+            studentService.quizPassed(quizResult.getStudentChapter());
         }
-        throw new ResourceNotFoundException("getQuiz", "quizId", quizId);
     }
 
-    public List<Boolean> getResult(Long quizId, QuizDto quizDtos) {
-        Optional<QuizEntity> optional = quizRepository.findById(quizId);
-        if (optional.isPresent()) {
-            QuizEntity quizEntity = optional.get();
-            List<QuestionEntity> questionsFromDb = quizEntity.getQuestions();
-
-            return questionsFromDb.stream()
-                    .map(questionEntity -> {
-                        String question = questionEntity.getQuestion();
-                        List<AnswerEntity> answers = questionEntity.getAnswers();
-                        Optional<QuestionDto> matchingQuestionDto = quizDtos.getQuestions().stream()
-                                .filter(questionDto -> question.equals(questionDto.getQuestion()))
-                                .findFirst();
-
-                        return matchingQuestionDto
-                                .map(questionDto -> checkAnswer(questionDto.getAnswers(), answers))
-                                .orElse(false);
-                    })
-                    .toList();
-        }
-        throw new ResourceNotFoundException("getQuiz", "quizId", quizId);
+    public Long createQuizResult(StudentChapterEntity studentChapter) {
+        return resultRepository.save(new QuizResultEntity(studentChapter)).getId();
     }
 
-    private boolean checkAnswer(List<AnswerDto> fromUi, List<AnswerEntity> fromDb) {
-        return fromDb.stream().allMatch(dbAnswer ->
-                fromUi.stream()
-                        .filter(uiAnswer -> uiAnswer.getAnswer().equals(dbAnswer.getAnswer()))
-                        .allMatch(uiAnswer -> uiAnswer.isCorrect() == dbAnswer.isCorrect())
-        );
+    public Optional<QuizResultEntity> getQuizResult(Long quizResultId) {
+        return resultRepository.findById(quizResultId);
+    }
+
+    private List<Boolean> checkQuiz(List<List<Long>> fromUi, List<Long> fromDb) {
+        return fromUi.stream()
+                .map(fromDb::containsAll)
+                .toList();
     }
 }

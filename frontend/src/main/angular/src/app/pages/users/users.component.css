@@ -1,0 +1,70 @@
+h1 {
+    width: 100%;
+    text-align: center;
+}
+
+table {
+    border: 1px;
+    border-color: aquamarine;
+    width: 100%;
+    cursor: context-menu;
+}
+
+.headers {
+    background-color: rgb(247, 247, 207);
+    text-align: center;
+}
+
+.user-row {
+    background-color: rgb(235, 235, 235);
+}
+
+.ban {
+    background-color: rgb(212, 145, 145);
+}
+
+.inactive {
+    background-color: rgb(126, 158, 185);
+}
+
+.inactive-ban {
+    background-color: rgb(191, 126, 219);
+}
+
+.column {
+    flex-direction: column;
+    display: flex;
+}
+
+.menus {
+    cursor: context-menu;
+    display: block;
+    flex-direction: column;
+}
+
+.menu-header {
+    text-align: center;
+    justify-content: center;
+    cursor: context-menu;
+}
+
+.menuitem:hover {
+    cursor: context-menu;
+    background-color: rgb(114, 207, 207);
+}
+
+.course-add {
+    background-color: rgb(188, 188, 235);
+    cursor: context-menu;
+}
+
+.course-remove {
+    background-color: rgb(250, 176, 176);
+    cursor: context-menu;
+}
+
+.icon {
+    width: 32px; 
+    height: 32px;
+    margin-right: 10px;
+}

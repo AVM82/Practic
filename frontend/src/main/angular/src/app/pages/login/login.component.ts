@@ -1,77 +1,88 @@
-import {Component, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {AppConstants} from "../../enums/app-constans";
-import {ActivatedRoute} from "@angular/router";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
-import {AuthService} from "../../services/auth/auth.service";
+import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { AppConstants, TOKEN_KEY } from "../../enums/app-constans";
+import { ActivatedRoute } from "@angular/router";
+import { TokenStorageService } from "../../services/token-storage.service";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import {
+  FormControl,
+  ReactiveFormsModule,
+  FormsModule,
+  Validators,
+} from "@angular/forms";
+import { EmailPassAuthService } from "src/app/services/email-pass-auth.service";
+import { FargotPassDialogComponent } from "src/app/componets/forgotten-password/forgotten-password.component";
+import { VerificationEmailDialogComponent } from "src/app/componets/verification-email-dialog/verification-email-dialog.component";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatDialogModule, MatDialog } from "@angular/material/dialog";
+import { User } from "src/app/models/user";
 
 @Component({
-  selector: 'app-login',
+  selector: "app-login",
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatDialogModule
+  ],
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"],
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
+  isRegister = true;
   linkedinURL = AppConstants.LINKEDIN_AUTH_URL;
-  isLoggedIn = false;
-  isLoginFailed = false;
-  errorMessage = '';
-  currentUser: any;
+  hidePassword: boolean = true;
+  passwordControl = new FormControl("");
+  nameControl = new FormControl("", Validators.required);
+  emailControl = new FormControl("", [Validators.required, Validators.email]);
+
   constructor(
-      private route: ActivatedRoute,
-      private tokenStorage: TokenStorageService,
-      private authService: AuthService
-  ) {
-  }
+    private route: ActivatedRoute,
+    private tokenStorage: TokenStorageService,
+    private emailAuth: EmailPassAuthService,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
-    const error: string | null = this.route.snapshot.queryParamMap.get('error');
-    const logout: string | null = this.route.snapshot.queryParamMap.get('logout');
+    const token: string | null = this.route.snapshot.queryParamMap.get("token");
+    const error: string | null = this.route.snapshot.queryParamMap.get("error");
+    const logout: string | null = this.route.snapshot.queryParamMap.get("logout");
+    const veriftoken: string | null = this.route.snapshot.queryParamMap.get("veriftoken");
 
-    console.log(error);
-    console.log(logout);
-    
-    if(logout === 'true') {
+    if (veriftoken) {
+      this.registerNewUser(veriftoken);
+    }
+
+    if (logout === "true") {
       this.tokenStorage.signOut();
-      window.location.href = '/login';
+      window.location.href = "/login";
     }
 
-    const token: string | null = this.route.snapshot.queryParamMap.get('token');
-    console.log(token);
-    if(token) {
-      this.tokenStorage.saveToken(token);
-
-      this.authService.getCurrentUser().subscribe({
-        next: value => {
-          console.log(value);
-          this.login(value);
-        },
-        error: err => {
-          this.errorMessage = err;
-          this.isLoginFailed = true;
-        }
-      })
-    } else 
-
-      if (this.tokenStorage.getToken()) {
-        this.isLoggedIn = true;
-        this.currentUser = this.tokenStorage.getUser();
-      }
-
-    if(error){
-      this.errorMessage = error;
+    if (this.tokenStorage.getToken()) {
+      if (!this.tokenStorage.getUser())
+        window.sessionStorage.removeItem(TOKEN_KEY);
       this.redirect();
-    }
+    } else if (token) {
+      this.tokenStorage.saveToken(token);
+      this.tokenStorage.getCurrentUser().subscribe(
+        value => this.login(value));
+    } else if (error)
+      this.redirect();
   }
 
-
-  login(data: any): void {
-    this.tokenStorage.saveUser(data);
-    this.isLoginFailed = false;
-    this.isLoggedIn = true;
-    this.currentUser = this.tokenStorage.getUser();
-    this.redirect();
+  login(data: User): void {
+    if (data.ban)
+      window.location.href = "/ban"
+    else {
+      this.tokenStorage.saveUser(data);
+      this.tokenStorage.me = data;
+      this.redirect();
+    }
   }
 
   redirect(): void {
@@ -79,4 +90,88 @@ export class LoginComponent implements OnInit{
     window.history.replaceState({}, document.title, baseUrl);
     window.location.reload();
   }
+
+  verificateUser(): void {
+
+    if (this.emailControl.valid && this.passwordControl.valid) {
+      const name: string | null = this.nameControl.value!;
+      const email: string | null = this.emailControl.value!;
+      const password: string | null = this.passwordControl.value!;
+
+      if (name != null || email != null || password != null) {
+       
+        this.emailAuth.verificateByEmail(name, email, password).subscribe(
+          (response) => {
+            this.nameControl.reset();
+            this.emailControl.reset();
+            this.passwordControl.reset();  
+            this.openVerificateDialog();
+          },
+          (error) => {
+            if (error.status === 409) {
+              this.authUser();
+            } else {
+              console.error('An error occurred:', error);
+            }
+          }
+        );
+      }
+    } else {
+      console.error("Invalid data. Name, email, and password are required.");
+    }
+  }
+
+  authUser(): void {
+    const email: string | null = this.emailControl.value!;
+    const password: string | null = this.passwordControl.value!;
+    if (email != null || password != null) {
+      this.emailAuth.emailPassAuth(email, password).subscribe(
+        (response) => {
+          this.tokenStorage.saveToken(response.accessToken);
+          this.login(response.user);
+          this.nameControl.reset();
+          this.emailControl.reset();
+          this.passwordControl.reset();
+        },
+        (error) => {
+          console.error("User not added:", error);
+        }
+      );
+    }
+  }
+
+
+  registerNewUser(token: string): void {
+    this.emailAuth.emailPassRegister(token).subscribe(
+      (response) => {
+        this.tokenStorage.saveToken(response.accessToken);
+        this.login(response.user);
+        this.nameControl.reset();
+        this.emailControl.reset();
+        this.passwordControl.reset();
+      },
+      (error) => {
+        console.error("User not added:", error);
+      }
+    );
+  }
+
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  forgotPassword(): void {
+    this.dialog.open(FargotPassDialogComponent, {
+      width: '600px',
+      height: '300px'
+    });
+  }
+
+  openVerificateDialog(): void {
+    this.dialog.open(VerificationEmailDialogComponent, {
+      width: '600px',
+      height: '150px'
+    });
+  }
+
 }

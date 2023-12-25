@@ -1,27 +1,55 @@
 export enum ApiUrls {
+  Me = '/api/persons/me',
+  Persons = '/api/persons',
+  Application = '/api/persons/application/',
+
+  Certification = '/api/certification/',
+  
+  Feedbacks = '/api/feedbacks',
+
+  Quizzes = '/api/quizzes/',
+
   Courses = '/api/courses',
   Course = '/api/courses/',
   NewCourse = '/api/courses/NewCourse',
   NewCourseFromProperties = '/api/courses/NewCourseFromProperties',
+  Chapters = '/api/students/chapters/',
+
   Students = '/api/students',
+  StudentChapters = '/api/students/chapters/',
+  StudentSkills = '/api/students/skills/',
+  StudentChapterStates = '/api/students/chapters/states/',
+  StudentAdditionalMaterials = '/api/students/additionalMaterials/',
   Practices = '/api/students/practices/',
-  PracticeStates = '/api/students/practices/states',
-  Reports = '/api/students/reports/course/',
+  PracticeStates = '/api/students/practices/states/',
+  Reports = '/api/students/reports/',
   ReportStates = '/api/students/reports/states',
-  AdditionalMaterials = '/api/students/additionalMaterials/',
-  Chapters = '/api/chapters',
-  Me = '/api/persons/me',
-  Applicants = '/api/persons/applicants',
-  OpenChapters = '/api/students/chapters',
-  PracticeState = '/api/students/practices',
-  PracticeApprove = '/api/mentor/practices',
-  Feedbacks = '/api/feedbacks/',
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
-  TopicsReports = '/api/topicsreports'
+  TopicsReports = '/api/topicsreports/',
+  StudentChapterTopicsReports = '/api/students/topicsreports/',
+
+  Mentors = '/api/mentors/',
+  Applicants = '/api/mentors/applicants',
+  CourseStudents = '/api/mentors/students',
+  MentorPractices = '/api/mentors/practices',
+
+  EmailPassAuth = 'api/auth',
+  EmailPassRegister = 'api/register',
+
+  CalendarEventEmailNotification = '/api/events/sendEvent/',
+  
+  SendSecretCode = '/api/password-reset/send-code',
+  MatchCode = '/api/password-reset/match-code',
+  ResetPassword = '/api/password-reset',
+  VerificateByEmail = 'api/verification',
+  MatchTokenForVerificateByEmail = 'api/verification/match-token',
+  Profile ='api/persons/profile'
+
 }
 
-
+export const sendCalendarEventEmailNotificationUrl = (slug: string): string =>
+    ApiUrls.CalendarEventEmailNotification + slug ;
 export const getChaptersUrl = (slug: string): string =>
     ApiUrls.Course + slug + `/allchapters`;
 
@@ -40,29 +68,47 @@ export const getCourseUrl = (slug: string): string =>
 export const getReportsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}`;
 
+export const postReportsUrl = (studentChapterId: number): string =>
+    `/api/students/reports/${studentChapterId}`;
+
 export const getLevelsUrl = (slug: string): string =>
     `/api/courses/${slug}/levels`;
 
 export const timeslotsUrl = (slug: string): string =>
     `/api/students/reports/course/${slug}/timeslots`;
 
-export const getDescriptionUrl = (slug: string): string =>
-    ApiUrls.Course + slug + `/description`;
+export const getStudentsAllAdditionalMaterialsUrl = (studentId: number): string =>
+    ApiUrls.StudentAdditionalMaterials + studentId;
 
-export const getMentorsUrl = (slug: string): string =>
-    ApiUrls.Course+ slug +`/mentors`;
-
-export const getStudentsAllAdditionalMaterialsUrl = (slug: string): string =>
-    ApiUrls.AdditionalMaterials + slug;
-
-export const getStudentAdditionalMaterialUrl = (slug: string, id: number): string =>
-    ApiUrls.AdditionalMaterials + slug + `/` + id;
-
-export const getActiveChapterNumber = (slug: string): string =>
-    ApiUrls.Course+ slug +`/activeChapterNumber`;
+export const getStudentAdditionalMaterialUrl = (studentId: number, addId: number): string =>
+    getStudentsAllAdditionalMaterialsUrl(studentId) + `/` + addId;
 
 export const deleteReportsUrl = (reportId: number): string =>
     `/api/students/reports/course/${reportId}`;
 
 export const getApplicationUrl = (slug: string): string =>
-    `/api/persons/application/` + slug;
+    ApiUrls.Application + slug;
+
+export const getApplicationCheckUrl = (id: number): string =>
+    ApiUrls.Application + id;
+
+export const getStudentChaptersUrl = (studentId: number): string =>
+    ApiUrls.StudentChapters + studentId;
+
+export const getStudentChapterUrl = (studentId: number, chapterN: number): string =>
+    ApiUrls.StudentChapters + studentId + `/` + chapterN;
+
+export const addRoleUrl = (id: number, role: string): string =>
+    ApiUrls.Persons + `/` + id + `/add/` + role;
+
+export const removeRoleUrl = (id: number, role: string): string =>
+    ApiUrls.Persons + `/` + id + `/remove/` + role;
+
+export const addMentorUrl = (slug: string, id: number): string =>
+    ApiUrls.Mentors + `add/`+ slug + `/` + id;
+
+export const removeMentorUrl = (id: number): string =>
+    ApiUrls.Mentors + `remove/` + id;
+
+export const getSetChapterStateUrl = (chapterId: number, newState: string): string =>
+    ApiUrls.StudentChapterStates + chapterId + `/` + newState;

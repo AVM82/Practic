@@ -1,9 +1,13 @@
-<app-course-navbar (navchapters)="getChapters($event)" (editModeChanged)="setEditMode($event)"></app-course-navbar>
+<app-course-navbar 
+    (navSlug)="getSlug($event)"
+    (navchapters)="getChapters($event)" 
+    (editModeChanged)="setEditMode($event)">
+</app-course-navbar>
 
 <div class="chapter-card-container">
   <mat-card *ngFor="let chapter of chapters; index as i" class="chapter-card"
-            [class.locked]="!chapter.visible" [class.edit]="editMode">
-    <ng-container *ngIf="chapter.visible">
+            [class.locked]="chapter.hidden" [class.edit]="editMode">
+    <ng-container *ngIf="!chapter.hidden">
 
       <div *ngIf="editMode" class="chapter-button" (click)="editClick(chapter)">
           <mat-card-header class="course-details">
@@ -16,24 +20,35 @@
             <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
           </mat-card-header>
         </a>
-        <report-button [reportsNumber]="reports[chapter.number-1] ? reports[chapter.number-1].length : 0"></report-button>
+        <report-button *ngIf="isInvolved" 
+                [slug]="slug"
+                [reports]="chapter.reports">
+        </report-button>
+        <div class="diagram-container">
+          <div class="diagram">
+            <canvas #myCanvas width="80" height="80"></canvas>
+          </div>
+          <div class="totalPercentage">
+            {{ percent[i] < 100 ? ((percent[i] < 10) ? '&nbsp;&nbsp;' : '&nbsp;') + percent[i] + '%' : percent[i] + '%' }}
+          </div>
+        </div>
       </div>
 
-      <mat-card-footer *ngIf="student">
+      <mat-card-footer *ngIf="isStudent">
         <div class="info-tags">
           <div class="info-tag">
-            Теорія: не розпочато
+            Теорія: {{chapter.state | StatePipe}}
           </div>
-            <div *ngFor="let part of chapter.partsId" class="info-tag">
-                Практика: {{ part | practiceState: practices }}
+            <div *ngFor="let part of chapter.parts" class="info-tag">
+                Практика {{chapter.parts.length > 1 ? part.practice.number : ''}}: {{ part.practice.state | StatePipe }}
             </div>
           <div class="info-tag">
-            Доповідь: не проведена
+            Доповіді: {{getReports(chapter.myReports)}}
           </div>
         </div>
       </mat-card-footer>
     </ng-container>
-    <ng-container *ngIf="!chapter.visible">
+    <ng-container *ngIf="chapter.hidden">
       <mat-card-header class="course-details">
         <h3>Розділ {{ chapter?.number }}: {{chapter.shortName}}</h3>
       </mat-card-header>

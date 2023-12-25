@@ -7,14 +7,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
 @Entity
-@Table(name = "level")
-public class LevelEntity {
+@Table(name = "levels")
+public class LevelEntity implements Serializable {
+
+    private static final long serialVersionUID = 246439068201491029L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -26,7 +29,7 @@ public class LevelEntity {
 
     int number;
 
-    List<Integer> chapterN = new ArrayList<>();
+    private List<Integer> chapterN = new ArrayList<>();
 
     String discordChat; // ?
 

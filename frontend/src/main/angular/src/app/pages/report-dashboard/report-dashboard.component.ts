@@ -1,130 +1,70 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ActivatedRoute, RouterOutlet} from "@angular/router";
-import {ChapterReportsComponent} from "../../modules/chapter-reports/chapter-reports.component";
+import {ChapterReportsComponent} from "../../componets/chapter-reports/chapter-reports.component";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
-import {StudentReport} from "../../models/report/studentReport";
-import {ReportServiceService} from "../../services/report/report-service.service";
 import {MatCardModule} from "@angular/material/card";
-import {CoursesService} from "../../services/courses/courses.service";
+import {CoursesService} from "../../services/courses.service";
 import {NewReportDialogComponent} from "../../componets/new-report/new-report-dialog.component";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
-import {TimeSlot} from "../../models/timeSlot/time-slot";
-import {TimeSlotService} from "../../services/timeSlot/time-slot.service";
-import {Level} from "../../models/level/level";
+import {Level} from "../../models/level";
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
 import {MatButtonModule} from "@angular/material/button";
-import {TokenStorageService} from "../../services/auth/token-storage.service";
-import { ShortChapter } from 'src/app/models/course/chapter';
-
+import {Chapter} from 'src/app/models/chapter';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
+import {User} from "../../models/user";
+import { ReportService } from 'src/app/services/report.service';
 
 @Component({
     selector: 'report-dashboard',
     standalone: true,
-    imports: [
-        MatDialogModule,
-        CommonModule,
-        RouterOutlet,
-        ChapterReportsComponent,
-        ReportCardComponent,
-        MatCardModule,
-        CourseNavbarComponent,
-        MatButtonModule,
-    ],
+    imports: [ MatDialogModule, CommonModule, ChapterReportsComponent, ReportCardComponent,
+        MatCardModule, CourseNavbarComponent, MatButtonModule ],
     templateUrl: './report-dashboard.component.html',
     styleUrls: ['./report-dashboard.component.css']
 })
-export class ReportDashboardComponent implements OnInit/*, OnDestroy*/ {
-    reports: StudentReport[][] = [];
-    chapters: ShortChapter[] = [];
+export class ReportDashboardComponent {
+    chapters: Chapter[] = [];
+    openedChapters: Chapter[] = [];
     levels: Level[] = []
-    timeslots!: Map<string, TimeSlot[]>;
-    currentUserId!: any;
+    me!:User;
+    slug: string = '';
+    isStudent: boolean = false;
+    isMentor: boolean = false;
 
     constructor(
         public dialog: MatDialog,
         private coursesService: CoursesService,
-        private route: ActivatedRoute,
-        private reportService: ReportServiceService,
-        private timeSlotService: TimeSlotService,
         private tokenStorageService: TokenStorageService,
+        public reportService: ReportService
     ) {
+        this.me = tokenStorageService.getMe();
     }
 
-
-    ngOnInit(): void {
-        this.currentUserId = this.coursesService.id;
-        this.route.paramMap.subscribe(params => {
-            const slug = params.get('slug');
-            console.log(slug)
-            console.log(this.reports)
-            if (slug) 
-                this.updateData(slug)
-        });
+    getSlug(slug: string) {
+        this.slug = slug;
+        this.coursesService.getLevels(slug).subscribe(levels => this.levels = levels);
+        this.isMentor = this.me.isMentor(slug);
+        this.isStudent = this.me.isStudent(slug);
     }
 
-    updateData(slug:string):void{
-                this.loadLevels(slug);
-                this.loadReports(slug);
-                this.loadTimeSlots(slug);
-                this.createTimeSlots(slug)
-    }
-
-    getChapters(chapters: ShortChapter[]) {
+    getChapters(chapters: Chapter[]) {
         this.chapters = chapters;
-      }
-    
-    
-    loadReports(slug: string): void {
-        this.reportService.getAllActualReports(slug).subscribe(reports => {
-            this.reports = [];
-            this.reports.push(...reports);
-            this.reports = [...this.reports];
-            this.loadTimeSlots(slug);
-        });
-    }
-
-    loadLevels(slug: string): void {
-        this.coursesService.getLevels(slug).subscribe(levels => {
-            this.levels = levels;
-            console.log(this.levels)
-        });
-    }
-
-    loadTimeSlots(slug: string): void {
-        this.timeSlotService.getAllAvailableTimeSlots(slug).subscribe(timeslots => {
-            this.timeslots = new Map<string, TimeSlot[]>();
-            this.timeslots = timeslots;
-            console.log(this.timeslots);
-        });
-    }
-
-    createTimeSlots(slug: string): void {
-        this.timeSlotService.createNewTimeslots(slug).subscribe();
+        this.openedChapters = chapters.filter(chapter => !chapter.hidden);
+        this.openedChapters.forEach(chapter => ReportService.refreshMyReports(chapter));
     }
 
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
-                height: '60%',
-                width: '50%',
-                data: {
-                    chapters: this.chapters,
-                    timeslots: this.timeslots
-                },
+                height: '50%', width: '60%',
+                data: { chapters: this.openedChapters,
+                        slug: this.slug }
             });
-
         dialogRef.afterClosed().subscribe(result => {
-            this.route.paramMap.subscribe(params => {
-                const slug = params.get('slug');
-                console.log('The dialog was closed');
-                console.log("result of creating dialog")
-                console.log(result);
-                if (result.timeslotId && result.title && result.chapter && slug) {
-                    this.reportService.createNewReport(result, slug).subscribe();
-                    this.loadReports(slug)
-                }
-            });
+            console.log("result of creating report dialog: ", result);
+            if (result)
+                this.reportService.createReport(result, this.isStudent, this.me.id, this.slug);
         });
     }
+
 }
