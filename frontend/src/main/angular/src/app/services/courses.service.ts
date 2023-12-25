@@ -12,9 +12,10 @@ import { TokenStorageService } from './token-storage.service';
 import { StateMentor } from '../models/mentor';
 import { SvgIconRegistryService } from 'angular-svg-icon';
 import { User } from '../models/user';
-import { STATE_NOT_STARTED } from '../enums/app-constans';
+import { LEVEL_COLORS, STATE_NOT_STARTED } from '../enums/app-constans';
 import { Practice } from '../models/practice';
 import { ChapterPart } from '../models/chapterpart';
+import { ReportService } from './report.service';
 
 const requestTextResponse: Object = {
   responseType: 'text'
@@ -35,6 +36,7 @@ export class CoursesService {
 
   constructor(
     private tokenStorageService: TokenStorageService,
+    private reportService: ReportService,
     private http: HttpClient,
     private _router: Router,
     private svg_registry: SvgIconRegistryService
@@ -89,8 +91,10 @@ export class CoursesService {
     return this.chapters 
             ? of(this.chapters)
             : this.http.get<Chapter[]>(this.selectChaptersEndpoint(slug)).pipe(map(chapters => {
-                        if (chapters)
-                          this.chapters = chapters;
+                        if (chapters) {
+                          this.chapters = [];
+                          chapters.forEach(chapter => this.chapters?.push(chapter));
+                        }
                         return chapters;
                       }));
   }
@@ -101,24 +105,26 @@ export class CoursesService {
     return this.me.isMentor(slug) ? ApiUrls.Mentors + `chapters/` + slug : getChaptersUrl(slug); 
   }
 
-  getChapter(slug: string, number: number): Observable<Observable<Chapter>> {
-    this.setCourse(slug);
-    return this.getChapters(slug).pipe(map(chapters => {
-      let chapter = chapters.find(chapter  => chapter.number === number)!;
-      return chapter.name ? of(chapter)
-        : this.http.get<CompleteChapter>(this.selectChapterEndpoint(slug, number))
+  extChapter(chapter: Chapter): Observable<Chapter> {
+    return chapter.name ? of(this.freshChapterReports(chapter))
+        : this.http.get<CompleteChapter>(this.selectChapterEndpoint(chapter))
           .pipe(map(ext => {
               Chapter.complete(chapter, ext);
               return chapter;
             }));
-    }))
   }
 
-  selectChapterEndpoint(slug: string, number: number): string {
+  freshChapterReports(chapter: Chapter): Chapter {
+    this.reportService.refreshChapter(chapter, this.slug);
+    return chapter;
+  }
+
+  selectChapterEndpoint(chapter: Chapter): string {
     if (this.stateStudent)
-      return getStudentChapterUrl(this.stateStudent.id, number);
-    return this.me.isMentor(slug) ? ApiUrls.Mentors + `chapters/` + slug + `/` + number
-      : getChapterUrl(slug, number); 
+      return chapter.myReports ? ApiUrls.StudentChapters + 'chapter/' + chapter.id
+        : ApiUrls.StudentChapters + this.stateStudent.id + '/' + chapter.number;
+    return this.me.isMentor(this.slug) ? ApiUrls.Mentors + 'chapters/' + this.slug + '/' + chapter.number
+      : ApiUrls.Chapters + chapter.id; 
   }
 
   getLevels(slug:string): Observable<Level[]>{
@@ -201,7 +207,13 @@ export class CoursesService {
     shortChapter.parts.find(part => practice.number === part.practice.number)!.practice.state = practice.state;
   }
 
-
+  getChapterColor(number: number): string {
+    if (this.levels)
+      for(let i = 0; i < this.levels.length; i++)
+        if (this.levels[i].chapterN.some(chapterN => chapterN === number))
+          return LEVEL_COLORS[i];
+    return '#FF0000';
+  }
 
   /**
    * Handle Http operation that failed.

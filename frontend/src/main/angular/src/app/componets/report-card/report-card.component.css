@@ -15,6 +15,15 @@
   border-radius: 4px;
   display: flex;
 }
+.approved {
+  background: #6de19d;
+}
+.in-process {
+  background:orange;
+}
+.finished{
+  background: gold;
+}
 .student-image{
   margin-top:5px;
   margin-left:10px;
@@ -105,9 +114,9 @@
   margin: 5px;
 }
 
-
-
-
-
-
-
+.action-buttons .action-icon {
+  font-size: 32px;
+  height: 32px;
+  width: 32px;
+  justify-content: center;
+}

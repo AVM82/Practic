@@ -23,7 +23,7 @@ public class StudentDto {
 
     List<PracticeDto> practices;
 
-    List<StudentReportDto> reports;
+    List<ReportDto> reports;
 
 
     public static StudentDto map(StudentEntity entity) {
@@ -42,6 +42,7 @@ public class StudentDto {
         if (chapter.isPresent()) {
             dto.chapterState = chapter.get().getState().name();
             dto.practices = chapter.get().getPractices().stream().map(PracticeDto::map).toList();
+            dto.reports = chapter.get().getReports().stream().map(ReportDto::map).toList();
         }
         return dto;
     }

@@ -11,6 +11,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -19,6 +20,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "quiz_results")
 @Getter
 @Setter
+@NoArgsConstructor
 public class QuizResultEntity implements Serializable {
 
     @Serial
@@ -45,10 +47,9 @@ public class QuizResultEntity implements Serializable {
 
     long secondSpent;
 
+
     public QuizResultEntity(StudentChapterEntity studentChapter) {
         this.studentChapter = studentChapter;
     }
 
-    public QuizResultEntity() {
-    }
 }

@@ -25,35 +25,46 @@ public class TopicReportService {
         this.topicReportRepository = topicReportRepository;
     }
 
+
     public Collection<TopicReportEntity> getAllTopicReport() {
         List<TopicReportEntity> list = topicReportRepository.findAll();
         list.sort(Comparator.comparing(TopicReportEntity::getId));
         return list;
     }
 
+
     public TopicReportEntity addTopicReport(ChapterEntity chapter, String topic) {
         return create(chapter, topic);
     }
+
 
     public Collection<TopicReportEntity> getTopicsByChapter(ChapterEntity chapter) {
         return topicReportRepository.findByChapter(chapter);
 
     }
 
+
     public Optional<TopicReportEntity> get(ChapterEntity chapter, String topic) {
         return topicReportRepository.findByChapterAndTopic(chapter, topic);
     }
 
+
+    public Optional<TopicReportEntity> get(long id) {
+        return topicReportRepository.findById(id);
+    }
+
+
     public TopicReportEntity create(ChapterEntity chapter, String topic) {
         Optional<TopicReportEntity> exist = get(chapter, topic);
-        return exist.orElseGet(() -> topicReportRepository
-                .save(new TopicReportEntity(chapter, topic)));
+        return exist
+                .orElseGet(() -> topicReportRepository.save(new TopicReportEntity(chapter, topic)));
     }
+
 
     public List<TopicReportEntity> getChapterTopics(ChapterEntity chapter, PropertyLoader prop) {
         List<TopicReportEntity> result = new ArrayList<>();
-        String keyStarts = PropertyUtil
-                .createKeyStarts(chapter.getNumber(), PropertyUtil.TOPIC_REPORT_PART);
+        String keyStarts =
+                PropertyUtil.createKeyStarts(chapter.getNumber(), PropertyUtil.TOPIC_REPORT_PART);
         for (Map.Entry<Object, Object> entry : prop.getEntrySet()) {
             String key = (String) entry.getKey();
             if (key.startsWith(keyStarts) && PropertyUtil.countDots(key) == 3
