@@ -17,6 +17,7 @@ import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.PracticeState;
 import com.group.practic.repository.MentorRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +39,7 @@ public class MentorService {
 
     PersonService personService;
 
-    StudentReportService reportService;
+    ReportService reportService;
 
     EmailSenderService emailSenderService;
 
@@ -46,7 +47,7 @@ public class MentorService {
     @Autowired
     public MentorService(MentorRepository mentorRepository, ApplicantService applicantService,
             StudentService studentService, CourseService courseService, PersonService personService,
-            EmailSenderService emailSenderService, StudentReportService reportService) {
+            EmailSenderService emailSenderService, ReportService reportService) {
         this.mentorRepository = mentorRepository;
         this.applicantService = applicantService;
         this.studentService = studentService;
@@ -156,18 +157,14 @@ public class MentorService {
 
 
     public List<ChapterDto> getChapters(CourseEntity course) {
-        return Optional.ofNullable(course.getChapters())
-                .map(chapters -> chapters.stream()
-                        .map(chapter -> ChapterDto.map(chapter,
-                                reportService.getActualReportCount(chapter)))
-                        .toList())
-                .orElseGet(List::of);
+        return Optional.ofNullable(course.getChapters()).map(chapters -> ChapterDto.map(chapters,
+                false, reportService.getActual(course, LocalDate.now()))).orElseGet(List::of);
     }
 
 
     public Optional<ChapterCompleteDto> getChapter(CourseEntity course, int number) {
         return courseService.getChapterByNumber(course, number).map(chapter -> ChapterCompleteDto
-                .map(chapter, reportService.getActualReportCount(chapter)));
+                .map(chapter, reportService.getChapterActual(course, LocalDate.now(), number)));
     }
 
 

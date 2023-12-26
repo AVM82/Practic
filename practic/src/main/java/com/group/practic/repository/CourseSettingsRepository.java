@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CourseSettingsRepository extends JpaRepository<CourseSettingsEntity, Long> {
 
     Optional<CourseSettingsEntity> findByCourse(CourseEntity course);
+
 }

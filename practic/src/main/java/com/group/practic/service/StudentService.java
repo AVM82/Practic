@@ -13,6 +13,7 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.DaysCountable;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.ReportEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
@@ -38,19 +39,22 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StudentService {
 
-    private final StudentRepository studentRepository;
+    public static long MIN_REPORT_COUNT_PER_CHAPTER = 1;
 
-    private final StudentChapterRepository studentChapterRepository;
+    StudentRepository studentRepository;
 
-    private final StudentPracticeRepository studentPracticeRepository;
+    StudentChapterRepository studentChapterRepository;
 
-    private final PersonService personService;
+    StudentPracticeRepository studentPracticeRepository;
 
-    private final CourseService courseService;
+    PersonService personService;
 
-    private final StudentReportService reportService;
+    CourseService courseService;
 
-    private final EmailSenderService emailSenderService;
+    ReportService reportService;
+
+    EmailSenderService emailSenderService;
+
 
     public List<StudentEntity> get() {
         return studentRepository.findAll();
@@ -109,6 +113,7 @@ public class StudentService {
                 .save(chapter.isPresent() ? nextChapter(student, chapter.get()) : finish(student));
     }
 
+
     protected StudentEntity nextChapter(StudentEntity student, ChapterEntity chapter) {
         StudentChapterEntity studentChapter =
                 studentChapterRepository.save(new StudentChapterEntity(student, chapter));
@@ -118,6 +123,7 @@ public class StudentService {
                 "Розділ №" + chapter.getNumber() + " " + chapter.getShortName());
         return student;
     }
+
 
     protected void closeChapter(StudentChapterEntity studentChapter) {
         StudentEntity student = studentChapter.getStudent();
@@ -133,10 +139,12 @@ public class StudentService {
         // pass chapter to the statistics
     }
 
+
     protected StudentEntity start(StudentEntity student) {
         student.setStart(LocalDate.now());
         return studentRepository.save(student);
     }
+
 
     protected StudentEntity finish(StudentEntity student) {
         student.setActiveChapterNumber(0);
@@ -156,34 +164,43 @@ public class StudentService {
 
     public List<ChapterDto> getChapters(StudentEntity student) {
         int visibleMaxNumber = student.getActiveChapterNumber();
+        List<ReportEntity> allReports =
+                reportService.getActual(student.getCourse(), LocalDate.now());
         List<ChapterDto> result = new ArrayList<>();
-        result.addAll(
-                nonNullList(student.getStudentChapters()).stream()
-                        .map(chapter -> ChapterDto.map(chapter,
-                                reportService.getActualReportCount(chapter.getChapter())))
-                        .toList());
+        result.addAll(ChapterDto.map(student.getStudentChapters(), allReports));
         if (visibleMaxNumber > 0) {
             result.addAll(nonNullList(student.getCourse().getChapters()).stream()
                     .filter(chapter -> chapter.getNumber() > visibleMaxNumber)
-                    .map(chapter -> ChapterDto.map(chapter, true)).toList());
+                    .map(chapter -> ChapterDto.map(chapter, true, allReports)).toList());
         }
         return result;
     }
 
+
+    public Optional<ChapterCompleteDto> getOpenedChapter(StudentChapterEntity chapter) {
+        return Optional.of(ChapterCompleteDto.map(chapter, reportService.getChapterActual(
+                chapter.getStudent().getCourse(), LocalDate.now(), chapter.getNumber())));
+    }
+
+
     public Optional<ChapterCompleteDto> getOpenedChapter(StudentEntity student, int number) {
         return student.getStudentChapters().stream()
                 .filter(chapter -> chapter.getChapter().getNumber() == number).findFirst()
-                .map(chapter -> ChapterCompleteDto.map(chapter,
-                        reportService.getActualReportCount(chapter.getChapter())));
+                .map(chapter -> ChapterCompleteDto.map(chapter, reportService
+                        .getChapterActual(student.getCourse(), LocalDate.now(), number)));
     }
+
 
     protected boolean allowToCloseChapter(StudentChapterEntity chapter) {
         // --> complete the test immediately
-        return chapter.getState().changeAllowed(ChapterState.DONE) && chapter.getPractices()
-                .stream().filter(practice -> practice.getState() == PracticeState.APPROVED)
-                .count() == chapter.getChapter().getParts().size()
+        return chapter.getState().changeAllowed(ChapterState.DONE)
+                && chapter.getPractices().stream()
+                        .filter(practice -> practice.getState() == PracticeState.APPROVED)
+                        .count() == chapter.getChapter().getParts().size()
+                && chapter.countApprovedReports() >= MIN_REPORT_COUNT_PER_CHAPTER
                 && chapter.isQuizPassed();
     }
+
 
     protected StudentChapterEntity changeChapterState(StudentChapterEntity chapter,
             ChapterState newState) {
@@ -205,10 +222,12 @@ public class StudentService {
         return chapter;
     }
 
+
     public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter,
             ChapterState newState) {
         return Optional.of(NewStateChapterDto.map(changeChapterState(chapter, newState)));
     }
+
 
     public Optional<Boolean> changeAdditionalMaterial(StudentEntity student,
             AdditionalMaterialsEntity additionalMaterial, boolean state) {
@@ -216,15 +235,19 @@ public class StudentService {
                 .save(student.changeAdditionalMaterial(additionalMaterial, state)) != null);
     }
 
+
     public List<AdditionalMaterialsDto> getAdditionalMaterials(StudentEntity student) {
         List<AdditionalMaterialsEntity> studentAdd = student.getAdditionalMaterials();
         return student.getCourse().getAdditionalMaterials().stream()
                 .map(add -> AdditionalMaterialsDto.map(add, studentAdd.contains(add))).toList();
     }
 
+
+
     public Optional<StudentPracticeEntity> getPractice(long id) {
         return studentPracticeRepository.findById(id);
     }
+
 
     protected List<StudentPracticeEntity> createPractices(StudentChapterEntity studentChapter) {
         List<StudentPracticeEntity> result = new ArrayList<>();
@@ -232,6 +255,7 @@ public class StudentService {
                 .save(new StudentPracticeEntity(studentChapter, part.getNumber()))));
         return result;
     }
+
 
     protected void pausePractices(List<StudentPracticeEntity> practices) {
         practices.forEach(practice -> {
@@ -242,11 +266,13 @@ public class StudentService {
         });
     }
 
+
     public PracticeDto changePracticeState(StudentPracticeEntity practice, PracticeState newState) {
         return PracticeDto.map(TimeCalculator.setNewState(practice, newState)
                 ? studentPracticeRepository.save(practice)
                 : practice);
     }
+
 
     public StudentEntity ban(StudentEntity student) {
         student.setBan(true);
@@ -255,9 +281,11 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
+
     public List<StudentEntity> ban(Collection<StudentEntity> students) {
         return students.stream().map(this::ban).toList();
     }
+
 
     public boolean reSetSkills(StudentChapterEntity chapter, long subChapterId, boolean state) {
         if (chapter.getChapter().getParts().stream().anyMatch(part -> part.getSubChapters().stream()
@@ -268,8 +296,17 @@ public class StudentService {
         return false;
     }
 
+
+    public boolean isCorrectStudentChapter(StudentChapterEntity studentChapter, CourseEntity course,
+            PersonEntity person) {
+        StudentEntity student = studentChapter.getStudent();
+        return student.getCourse().equals(course) && student.getPerson().equals(person);
+    }
+
+
     public void quizPassed(StudentChapterEntity studentChapter) {
         studentChapter.setQuizPassed(true);
         studentChapterRepository.save(studentChapter);
     }
+
 }

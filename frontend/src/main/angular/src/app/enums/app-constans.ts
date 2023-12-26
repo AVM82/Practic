@@ -82,6 +82,7 @@ export class ReportState {
   static readonly FINISHED = STATE_FINISHED;
   static readonly APPROVED = STATE_APPROVED;
   static readonly CANCELLED = STATE_CANCELLED;
+  static readonly isActual = (state: string): boolean => state === this.ANNOUNCED || state === this.STARTED;
 }
 
 export const BUTTON_START = 'ПОЧАТИ';
@@ -90,3 +91,10 @@ export const BUTTON_PAUSE = 'ПАУЗА';
 export const BUTTON_CONTINUE = 'ПРОДОВЖИТИ';
 export const BUTTON_REPORT = 'ДОПОВІДЬ';
 export const BUTTON_TEST = 'ТЕСТ';
+
+export const LEVEL_COLORS = ['#84C984', '#D86D6D', '#CED069', '#6565A3']
+
+export const REQUIRED_REPORT_COUNT: number = 1;
+export const DAYS_AHEAD_REPORT_ANNOUNCE = 7;
+export const MAX_REPORT_COUNT_PER_DAY = 3;
+
