@@ -27,13 +27,9 @@ public class Scenario {
             .exec(studentSteps.getMe())
             .exec(studentSteps.incrementLike())
             .exec(studentSteps.decrementLike())
-            .exec(studentSteps.getReportPage())
             .exec(studentSteps.deleteFeedbackById())
             .exec(studentSteps.getCertificateInfo())
             .exec(studentSteps.sendCertificateRequest())
-            .exec(studentSteps.createTimeslots())
-            .exec(studentSteps.getStudentsReports())
-            .exec(studentSteps.getStudentsReportsCourseSlugTimeslots())
 
             .exec(coursesSteps.getCoursesAdditional())
             .exec(coursesSteps.getCourseBySlug());
@@ -62,9 +58,7 @@ public class Scenario {
             .exec(steps.getTopicReportsByIdChapter())
             .exec(steps.getTopicsReports())
 
-            .exec(studentSteps.getStudentsReportsCourseSlugTimeslots())
             //.exec(studentSteps.getStudentOnCourse())
-            .exec(studentSteps.getStudentsReports())
             .exec(studentSteps.getStudentsChapters())
             //.exec(studentSteps.getStudentById())
             .exec(studentSteps.getStudentsStates())

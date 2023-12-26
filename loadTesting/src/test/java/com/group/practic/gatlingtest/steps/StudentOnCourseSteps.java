@@ -212,16 +212,6 @@ public class StudentOnCourseSteps {
                 .pause(1, 3);
     }
 
-    public ChainBuilder getReportPage() {
-        return CoreDsl.exec(
-                        HttpDsl
-                                .http("GET /api/students/reports/course/java-dev-tools")
-                                .get("/api/students/reports/course/java-dev-tools")
-                                .asJson()
-                                .check(HttpDsl.status().is(200)))
-                .pause(1, 3);
-    }
-
     public ChainBuilder deleteFeedbackById() {
         return CoreDsl.exec(
                         HttpDsl
@@ -252,48 +242,6 @@ public class StudentOnCourseSteps {
                         .asJson()
                         .check(HttpDsl.status().is(200))
         );
-    }
-
-    public ChainBuilder getStudentsReports() {
-        return CoreDsl
-                .feed(Feeders.slugs)
-                .tryMax(5)
-                .on(
-                        exec(
-                                HttpDsl
-                                        .http("GET /api/students/reports/course/{slug}")
-                                        .get("/api/students/reports/course/#{slug}")
-                                        .check(HttpDsl.status().in(200)))
-                                .pause(3, 7)
-                ).exitHereIfFailed();
-    }
-
-    public ChainBuilder getStudentsReportsCourseSlugTimeslots() {
-        return CoreDsl
-                .feed(Feeders.slugs)
-                .tryMax(5)
-                .on(
-                        exec(
-                                HttpDsl
-                                        .http("GET /api/students/reports/course/{slug}/timeslots")
-                                        .get("/api/students/reports/course/#{slug}/timeslots")
-                                        .check(HttpDsl.status().in(200, 204)))
-                                .pause(1, 4)
-                ).exitHereIfFailed();
-    }
-
-    public ChainBuilder createTimeslots() {
-        return CoreDsl
-                .feed(Feeders.slugs)
-                .tryMax(5)
-                .on(
-                        exec(
-                                HttpDsl
-                                        .http("POST /students/reports/course/{slug}/timeslots")
-                                        .post("/api/students/reports/course/#{slug}/timeslots")
-                                        .check(HttpDsl.status().in(201)))
-                                .pause(3, 7)
-                ).exitHereIfFailed();
     }
 
     public ChainBuilder getStudentById() {
