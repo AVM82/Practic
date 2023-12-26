@@ -31,90 +31,66 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 @Service
+@RequiredArgsConstructor
 public class StudentService {
 
-    public static long MIN_REPORT_COUNT_PER_CHAPTER = 1;
+    public static final long MIN_REPORT_COUNT_PER_CHAPTER = 1;
 
-    StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
-    StudentChapterRepository studentChapterRepository;
+    private final StudentChapterRepository studentChapterRepository;
 
-    StudentPracticeRepository studentPracticeRepository;
+    private final StudentPracticeRepository studentPracticeRepository;
 
-    PersonService personService;
+    private final PersonService personService;
 
-    CourseService courseService;
+    private final CourseService courseService;
 
-    ReportService reportService;
+    private final ReportService reportService;
 
-    EmailSenderService emailSenderService;
-
-
-    @Autowired
-    public StudentService(StudentRepository studentRepository, CourseService courseService,
-            PersonService personService, ChapterService chapterService,
-            StudentChapterRepository studentChapterRepository,
-            EmailSenderService emailSenderService, ReportService reportService,
-            StudentPracticeRepository studentPracticeRepository) {
-        this.studentRepository = studentRepository;
-        this.courseService = courseService;
-        this.studentChapterRepository = studentChapterRepository;
-        this.studentPracticeRepository = studentPracticeRepository;
-        this.personService = personService;
-        this.emailSenderService = emailSenderService;
-        this.reportService = reportService;
-    }
+    private final EmailSenderService emailSenderService;
 
 
     public List<StudentEntity> get() {
         return studentRepository.findAll();
     }
 
-
     public Optional<StudentEntity> get(long id) {
         return studentRepository.findById(id);
     }
-
 
     public List<StudentEntity> get(boolean inactive, boolean ban) {
         return studentRepository.findAllByInactiveAndBan(inactive, ban);
     }
 
-
     public Optional<StudentEntity> get(PersonEntity person, CourseEntity course) {
         return studentRepository.findByPersonAndCourse(person, course);
     }
 
-
     public Optional<StudentEntity> get(PersonEntity person, CourseEntity course, boolean inactive,
-            boolean ban) {
+                                       boolean ban) {
         return studentRepository.findByPersonAndCourseAndInactiveAndBan(person, course, inactive,
                 ban);
     }
 
-
     public List<StudentEntity> getCoursesOfPerson(PersonEntity person, boolean inactive,
-            boolean ban) {
+                                                  boolean ban) {
         return studentRepository.findAllByPersonAndInactiveAndBan(person, inactive, ban);
     }
 
-
     public List<StudentEntity> getStudentsOfCourse(CourseEntity course, boolean inactive,
-            boolean ban) {
+                                                   boolean ban) {
         return studentRepository.findAllByCourseAndInactiveAndBanOrderByActiveChapterNumber(course,
                 inactive, ban);
     }
 
-
     public Optional<StudentChapterEntity> getStudentChapter(long studentChapterId) {
         return studentChapterRepository.findById(studentChapterId);
     }
-
 
     public StudentEntity create(PersonEntity person, CourseEntity course) {
         if (get(person, course).isEmpty()) {
@@ -125,11 +101,9 @@ public class StudentService {
         return null;
     }
 
-
     public StudentEntity create(ApplicantEntity applicant) {
         return create(applicant.getPerson(), applicant.getCourse());
     }
-
 
     protected StudentEntity openNextChapter(StudentEntity student) {
         Optional<ChapterEntity> chapter = courseService.getNextChapterByNumber(student.getCourse(),
@@ -182,12 +156,10 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-
     public Optional<StudentEntity> getStudentOfCourse(CourseEntity course) {
         return studentRepository.findByPersonAndCourseAndInactiveAndBan(PersonService.me(), course,
                 false, false);
     }
-
 
     public List<ChapterDto> getChapters(StudentEntity student) {
         int visibleMaxNumber = student.getActiveChapterNumber();
@@ -222,15 +194,15 @@ public class StudentService {
         // --> complete the test immediately
         return chapter.getState().changeAllowed(ChapterState.DONE)
                 && chapter.getPractices().stream()
-                        .filter(practice -> practice.getState() == PracticeState.APPROVED)
-                        .count() == chapter.getChapter().getParts().size()
+                .filter(practice -> practice.getState() == PracticeState.APPROVED)
+                .count() == chapter.getChapter().getParts().size()
                 && chapter.countApprovedReports() >= MIN_REPORT_COUNT_PER_CHAPTER
                 && chapter.isQuizPassed();
     }
 
 
     protected StudentChapterEntity changeChapterState(StudentChapterEntity chapter,
-            ChapterState newState) {
+                                                      ChapterState newState) {
         if (chapter.getState() == ChapterState.NOT_STARTED && newState == ChapterState.IN_PROCESS
                 && chapter.getNumber() == 1) {
             start(chapter.getStudent());
@@ -251,7 +223,7 @@ public class StudentService {
 
 
     public Optional<NewStateChapterDto> changeState(StudentChapterEntity chapter,
-            ChapterState newState) {
+                                                    ChapterState newState) {
         return Optional.of(NewStateChapterDto.map(changeChapterState(chapter, newState)));
     }
 
@@ -268,7 +240,6 @@ public class StudentService {
         return student.getCourse().getAdditionalMaterials().stream()
                 .map(add -> AdditionalMaterialsDto.map(add, studentAdd.contains(add))).toList();
     }
-
 
 
     public Optional<StudentPracticeEntity> getPractice(long id) {
@@ -325,15 +296,15 @@ public class StudentService {
 
 
     public boolean isCorrectStudentChapter(StudentChapterEntity studentChapter, CourseEntity course,
-            PersonEntity person) {
+                                           PersonEntity person) {
         StudentEntity student = studentChapter.getStudent();
         return student.getCourse().equals(course) && student.getPerson().equals(person);
     }
 
-    
+
     public void quizPassed(StudentChapterEntity studentChapter) {
         studentChapter.setQuizPassed(true);
         studentChapterRepository.save(studentChapter);
     }
-    
+
 }
