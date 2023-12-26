@@ -21,6 +21,7 @@ import com.group.practic.repository.RoleRepository;
 import com.group.practic.security.user.LinkedinOauth2UserInfo;
 import com.group.practic.security.user.Oauth2UserInfo;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -171,12 +172,12 @@ class PersonServiceTest {
         assertTrue(roles.contains(role1));
         assertTrue(roles.contains(role2));
     }
-    /*
+
     @Test
     void testAddAlreadyExistedRoleToUserById() {
         PersonEntity personEntity = new PersonEntity("Max", "linkedin", new RoleEntity());
         RoleEntity roleUser = new RoleEntity("ROLE_USER");
-        personEntity.setRoles(Set.of(roleUser));
+        personEntity.setRoles(new HashSet<>(Set.of(roleUser)));
 
         when(roleRepository.findByName("ROLE_USER")).thenReturn(roleUser);
         when(personRepository.save(any(PersonEntity.class))).thenReturn(personEntity);
@@ -190,11 +191,11 @@ class PersonServiceTest {
     void testAddNewRoleToUserById() {
         PersonEntity personEntity = new PersonEntity("Max", "linkedin", new RoleEntity());
         RoleEntity roleUser = new RoleEntity("ROLE_USER");
-        personEntity.setRoles(Set.of(roleUser));
+        personEntity.setRoles(new HashSet<>(Set.of(roleUser)));
 
         PersonEntity savedPersonEntity = new PersonEntity("Max", "linkedin", new RoleEntity());
         RoleEntity roleMentor = new RoleEntity("ROLE_MENTOR");
-        savedPersonEntity.setRoles(Set.of(roleUser, roleMentor));
+        savedPersonEntity.setRoles(new HashSet<>(Set.of(roleUser, roleMentor)));
 
         when(roleRepository.findByName("ROLE_MENTOR")).thenReturn(roleMentor);
         when(personRepository.save(personEntity)).thenReturn(savedPersonEntity);
@@ -205,7 +206,7 @@ class PersonServiceTest {
         assertEquals(2, resultPersonEntity.getRoles().size());
         assertTrue(resultPersonEntity.getRoles().contains(roleMentor));
     }
-    */
+
     @Test
     void testUpdateExistingUser() {
 
@@ -293,45 +294,6 @@ class PersonServiceTest {
         assertEquals("first last", currentPerson.getName());
     }
 
-    /* @Test
-     void testIsCurrentPersonMentorWhenCurrentUserIsMentor() {
-
-         Set<RoleEntity> roles = new HashSet<>();
-         roles.add(new RoleEntity(PersonService.ROLE_MENTOR));
-
-         PersonEntity currentPerson = new PersonEntity();
-         currentPerson.setRoles(roles);
-
-         Authentication authentication = mock(Authentication.class);
-         when(authentication.getPrincipal()).thenReturn(currentPerson);
-
-         SecurityContext securityContext = mock(SecurityContext.class);
-         when(securityContext.getAuthentication()).thenReturn(authentication);
-         SecurityContextHolder.setContext(securityContext);
-
-         boolean result = personService.isCurrentPersonMentor();
-         assertTrue(result);
-     }
-
-     @Test
-     void testIsCurrentPersonMentorWhenCurrentUserIsNotMentor() {
-         Set<RoleEntity> roles = new HashSet<>();
-         roles.add(new RoleEntity(PersonService.ROLE_STUDENT));
-
-         PersonEntity currentPerson = new PersonEntity();
-         currentPerson.setRoles(roles);
-
-         Authentication authentication = mock(Authentication.class);
-         when(authentication.getPrincipal()).thenReturn(currentPerson);
-
-         SecurityContext securityContext = mock(SecurityContext.class);
-         when(securityContext.getAuthentication()).thenReturn(authentication);
-         SecurityContextHolder.setContext(securityContext);
-
-         boolean result = personService.isCurrentPersonMentor();
-         assertFalse(result);
-     }
-    */
     @Test
     void testAddEmailToCurrentUser() {
         PersonEntity currentPerson = new PersonEntity();
@@ -467,13 +429,13 @@ class PersonServiceTest {
         Set<RoleEntity> roles = personService.getRoles(nonExistentRoles);
         assertEquals(0, roles.size());
     }
-    /*
+
     @Test
     void testAddRolesToPerson() {
         PersonEntity person = new PersonEntity();
         RoleEntity studentRole = new RoleEntity(PersonService.ROLE_STUDENT);
         RoleEntity adminRole = new RoleEntity(PersonService.ROLE_ADMIN);
-        person.setRoles(Set.of(studentRole, adminRole));
+        person.setRoles(new HashSet<>(Set.of(studentRole, adminRole)));
 
         when(personRepository.save(any(PersonEntity.class))).thenReturn(person);
 
@@ -485,5 +447,4 @@ class PersonServiceTest {
         assertTrue(savedPerson.getRoles().contains(adminRole));
         assertFalse(savedPerson.getRoles().contains(new RoleEntity(PersonService.ROLE_GUEST)));
     }
-    */
 }

@@ -1,37 +1,44 @@
-<div class="certificate-request-window">
-    <h2 mat-dialog-title>Certificate Request Form</h2>
-  
+<div class="main-container">
+    <h2 class="title" align="center">Certificate Request Form</h2>
+
     <div>
-      <mat-dialog-content *ngIf="certificateInfo" class="mat-typography">
-  
-        <h3>Info</h3>
-        <div class="certificate-request-info">
-            <p>Name</p>
-            <input class="certificate-input" [(ngModel)]="certificateInfo.studentName" placeholder="Enter your name" required="true"/><br>
-            <p>Course</p>
-            <input class="certificate-field" [(ngModel)]="certificateInfo.courseName" readonly /><br>
-            <p>Start date</p>
-            <input class="certificate-field" [(ngModel)]="certificateInfo.start" readonly /><br>
-            <p>Finish date</p>
-            <input class="certificate-field" [(ngModel)]="certificateInfo.finish" readonly /><br>
-            <p>Days spent</p>
-            <input class="certificate-field" [(ngModel)]="certificateInfo.daysSpent" readonly /><br>
-        </div>
-  
-        <h3>Skills</h3>
-        <div class="certificate-request-skills">
-          <dl class="skills-list">
-            <dd *ngFor="let skill of certificateInfo!.selectedSkills, index as i">
-              <input (change)="skill.enabledSkill = !skill.enabledSkill" type="checkbox" checked="skill.enabledSkill" /> {{skill.name}}
-            </dd>
-          </dl>
-        </div>
-  
-      </mat-dialog-content>
-  
-      <mat-dialog-actions align="start">
-        <button class="cancel-button" mat-button mat-dialog-close>Cancel</button>
-        <button class="ok-button" mat-button (click)="sendMessage()" [mat-dialog-close]="true">SendRequest</button>
-      </mat-dialog-actions>
+        <mat-dialog-content *ngIf="certificateInfo">
+            <h3 class="sub-title" align="center">Info</h3>
+            <div class="certificate-request-info">
+                <p class="skill-name">Name</p>
+                <input class="certificate-input" [(ngModel)]="certificateInfo.studentName" placeholder="Enter your name"
+                       required="true" oninput="checkName()"/>
+                <hr>
+                <p>Course</p>
+                <input class="certificate-field" [(ngModel)]="certificateInfo.courseName" readonly/>
+                <hr>
+                <p>Start date</p>
+                <input class="certificate-field" [(ngModel)]="certificateInfo.start" readonly/>
+                <hr>
+                <p>Finish date</p>
+                <input class="certificate-field" [(ngModel)]="certificateInfo.finish" readonly/>
+                <hr>
+                <p>Days spent</p>
+                <input class="certificate-field" [(ngModel)]="certificateInfo.daysSpent" readonly/>
+                <hr>
+            </div>
+
+            <h3 class="sub-title" align="center">Skills</h3>
+            <div class="certificate-request-skills">
+                <dl class="skills-list">
+                    <dd *ngFor="let skill of certificateInfo!.selectedSkills, index as i">
+                        <input (change)="skill.enabledSkill = !skill.enabledSkill" type="checkbox"
+                               checked="skill.enabledSkill"/> {{skill.name}}
+                    </dd>
+                </dl>
+            </div>
+        </mat-dialog-content>
+
+        <mat-dialog-actions align="start">
+            <button class="cancel-button" mat-button mat-dialog-close>Cancel</button>
+            <button class="ok-button" *ngIf="checkName(certificateInfo.studentName)" mat-button (click)="sendMessage()"
+                    [mat-dialog-close]="true">SendRequest
+            </button>
+        </mat-dialog-actions>
     </div>
-  </div>
+</div>
