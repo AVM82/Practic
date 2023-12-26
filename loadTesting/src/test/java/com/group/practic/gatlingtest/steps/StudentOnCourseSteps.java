@@ -32,12 +32,6 @@ public class StudentOnCourseSteps {
             }
             """);
     private static final Body.WithString FEEDBACK_BODY = StringBody("#{feedback}");
-    private static final Body STUDENT_REPORT = StringBody("""
-            {
-            "timeslotId": 196,
-            "title": "test"
-            }
-            """);
     private final Iterator<Map<String, Object>> feedbackMap;
 
     public StudentOnCourseSteps() {
@@ -188,7 +182,7 @@ public class StudentOnCourseSteps {
         return CoreDsl
                 .exec(
                         HttpDsl
-                                .http("GET/api/persons/me")
+                                .http("GET /api/persons/me")
                                 .get("/api/persons/me")
                                 .check(HttpDsl.status().in(200)))
                 .pause(1, 3);
@@ -198,7 +192,7 @@ public class StudentOnCourseSteps {
         return CoreDsl
                 .exec(
                         HttpDsl
-                                .http("PATCH/api/feedbacks/add/{feedbackId}")
+                                .http("PATCH /api/feedbacks/add/{feedbackId}")
                                 .patch("/api/feedbacks/add/#{feedbackId}"
                                         + "?page=0&size=10&sortState=DATE_DESCENDING")
                                 .asJson()
@@ -210,7 +204,7 @@ public class StudentOnCourseSteps {
         return CoreDsl
                 .exec(
                         HttpDsl
-                                .http("PATCH/api/feedbacks/remove/{feedbackId}")
+                                .http("PATCH /api/feedbacks/remove/{feedbackId}")
                                 .patch("/api/feedbacks/remove/#{feedbackId}"
                                         + "?page=0&size=10&sortState=DATE_DESCENDING")
                                 .asJson()
@@ -267,7 +261,7 @@ public class StudentOnCourseSteps {
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("GET/api/students/reports/course/{slug}")
+                                        .http("GET /api/students/reports/course/{slug}")
                                         .get("/api/students/reports/course/#{slug}")
                                         .check(HttpDsl.status().in(200)))
                                 .pause(3, 7)
@@ -295,7 +289,7 @@ public class StudentOnCourseSteps {
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("POST/students/reports/course/{slug}/timeslots")
+                                        .http("POST /students/reports/course/{slug}/timeslots")
                                         .post("/api/students/reports/course/#{slug}/timeslots")
                                         .check(HttpDsl.status().in(201)))
                                 .pause(3, 7)
@@ -309,7 +303,7 @@ public class StudentOnCourseSteps {
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("GET/students/{id}")
+                                        .http("GET /students/{id}")
                                         .get("/api/students/#{personId}")
                                         .check(HttpDsl.status().in(200, 204)))
                                 .pause(1, 4)
@@ -322,7 +316,7 @@ public class StudentOnCourseSteps {
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("GET/students/reports/state")
+                                        .http("GET /students/reports/state")
                                         .get("/api/students/reports/states")
                                         .check(HttpDsl.status().in(200, 204)))
                                 .pause(1, 4)
@@ -336,7 +330,7 @@ public class StudentOnCourseSteps {
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("GET/students/practices/{practiceState}")
+                                        .http("GET /students/practices/{practiceState}")
                                         .get("/api/students/practices/#{state}")
                                         .check(HttpDsl.status().in(200, 204)))
                                 .pause(1, 5)
@@ -349,7 +343,7 @@ public class StudentOnCourseSteps {
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("GET/students/practices/states")
+                                        .http("GET /students/practices/states")
                                         .get("/api/students/practices/states")
                                         .check(HttpDsl.status().in(200, 204)))
                                 .pause(1, 5)
@@ -362,7 +356,7 @@ public class StudentOnCourseSteps {
                 .on(
                         exec(
                                 HttpDsl
-                                        .http("GET/students/practices/my")
+                                        .http("GET /students/practices/my")
                                         .get("/api/students/practices/my")
                                         .check(HttpDsl.status().in(200, 204)))
                                 .pause(1, 5)
@@ -375,7 +369,7 @@ public class StudentOnCourseSteps {
                 .feed(Feeders.courses)
                 .feed(Feeders.persons)
                 .tryMax(5)
-                .on(exec(HttpDsl.http("GET/students?courseId=Id&studentId=Id")
+                .on(exec(HttpDsl.http("GET /students?courseId=Id&studentId=Id")
                         .get("/api/students?courseId=#{courseId}&studentId=#{personId}")
                         .check(HttpDsl.status()
                                 .in(200, 204)))
