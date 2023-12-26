@@ -4,13 +4,11 @@ import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {CertificateInfo} from 'src/app/models/certificateInfo';
 import {TokenStorageService} from 'src/app/services/token-storage.service';
 import {CertificateService} from 'src/app/services/certificate.service';
 import {CoursesService} from 'src/app/services/courses.service';
-import {map} from "rxjs";
 
 @Component({
     selector: 'app-certificate-data',
@@ -23,11 +21,10 @@ import {map} from "rxjs";
         MatDialogModule,
         MatButtonModule,
         MatCheckboxModule,
-        MatFormFieldModule,
-        MatInputModule],
+        MatInputModule,
+    ],
 })
 export class CertificateDataComponent implements OnInit {
-
     certificateInfo!: CertificateInfo;
 
     constructor(
@@ -38,7 +35,8 @@ export class CertificateDataComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.certificateService.getCertificateInfo(this.data.student.id).subscribe(cert => {
+        this.certificateService.getCertificateInfo(this.data.student.id)
+            .subscribe(cert => {
                 this.certificateInfo = new CertificateInfo(
                     cert.studentName, cert.courseName, cert.skills, cert.start, cert.finish, cert.daysSpent);
             });
@@ -50,4 +48,8 @@ export class CertificateDataComponent implements OnInit {
             .filter(s => s.enabledSkill).map(s => s.name);
         this.certificateService.postCertificateInfo(this.certificateInfo, this.data.student.id);
     };
+
+    checkName(name: string): boolean {
+        return name.match(/([А-ЯA-Z][- а-яА-Яa-zA-z])/) !== null;
+    }
 }

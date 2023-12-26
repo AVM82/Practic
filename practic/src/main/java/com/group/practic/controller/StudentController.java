@@ -35,7 +35,7 @@ import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,10 +50,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/students")
 public class StudentController {
 
-    private StudentService studentService;
+    private final StudentService studentService;
 
     private final PersonService personService;
 
@@ -61,25 +62,11 @@ public class StudentController {
 
     private final TopicReportService topicReportService;
 
-    AdditionalMaterialsService additionalMaterialsService;
+    private final AdditionalMaterialsService additionalMaterialsService;
 
-    ReportService reportService;
+    private final ReportService reportService;
 
-    ChapterService chapterService;
-
-    @Autowired
-    public StudentController(StudentService studentService, ReportService reportService,
-            PersonService personService, AdditionalMaterialsService additionalMaterialsService,
-            CourseService courseService, TopicReportService topicReportService,
-            ChapterService chapterService) {
-        this.studentService = studentService;
-        this.personService = personService;
-        this.courseService = courseService;
-        this.additionalMaterialsService = additionalMaterialsService;
-        this.topicReportService = topicReportService;
-        this.reportService = reportService;
-        this.chapterService = chapterService;
-    }
+    private final ChapterService chapterService;
 
 
     @GetMapping
@@ -108,14 +95,14 @@ public class StudentController {
         course = courseService.get(courseId.get());
         return person.isEmpty() || course.isEmpty() ? badRequest()
                 : getResponse(studentService.get(person.get(), course.get(), inactive, ban)
-                        .map(List::of).orElseGet(List::of));
+                .map(List::of).orElseGet(List::of));
     }
 
 
     @GetMapping("/chapters/{studentId}/{number}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<ChapterCompleteDto> getChapter(@PathVariable long studentId,
-            @PathVariable int number) {
+                                                         @PathVariable int number) {
         return getResponse(studentService.get(studentId)
                 .flatMap(student -> studentService.getOpenedChapter(student, number)));
     }
@@ -139,7 +126,7 @@ public class StudentController {
     @PutMapping("/chapters/states/{id}/{newStateString}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<NewStateChapterDto> stateChapter(@PathVariable long id,
-            @PathVariable String newStateString) {
+                                                           @PathVariable String newStateString) {
         ChapterState newState = ChapterState.fromString(newStateString);
         Optional<StudentChapterEntity> chapter = studentService.getStudentChapter(id);
         return chapter.isPresent()
@@ -151,7 +138,8 @@ public class StudentController {
     @PutMapping("/skills/{chapterId}/{subChapterId}/{state}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Boolean> reSetSkills(@PathVariable long chapterId,
-            @PathVariable long subChapterId, @PathVariable boolean state) {
+                                               @PathVariable long subChapterId,
+                                               @PathVariable boolean state) {
         return getResponse(studentService.getStudentChapter(chapterId)
                 .map(chapter -> studentService.reSetSkills(chapter, subChapterId, state)));
     }
@@ -167,12 +155,12 @@ public class StudentController {
     @PutMapping("/practices/states/{id}/{newStateString}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<PracticeDto> statePractice(@PathVariable long id,
-            @PathVariable String newStateString) {
+                                                     @PathVariable String newStateString) {
         PracticeState newState = PracticeState.fromString(newStateString);
         Optional<StudentPracticeEntity> practice = studentService.getPractice(id);
         return practice.isEmpty() || newState == PracticeState.APPROVED ? badRequest()
                 : updateResponse(
-                        Optional.of(studentService.changePracticeState(practice.get(), newState)));
+                Optional.of(studentService.changePracticeState(practice.get(), newState)));
     }
 
 
@@ -187,7 +175,7 @@ public class StudentController {
 
     @GetMapping("/reports/freeDates/{slug}/{fromDate}")
     public ResponseEntity<List<Boolean>> isFreeDate(@PathVariable String slug,
-            @PathVariable LocalDate fromDate) {
+                                                    @PathVariable LocalDate fromDate) {
         return getResponse(courseService.get(slug)
                 .map(course -> reportService.getFreeDaysFrom(course, fromDate)));
     }
@@ -195,7 +183,7 @@ public class StudentController {
 
     @PostMapping("/reports/{slug}")
     public ResponseEntity<ReportDto> create(@PathVariable String slug,
-            @RequestBody FrontReportDto createDto) {
+                                            @RequestBody FrontReportDto createDto) {
         Optional<CourseEntity> course = courseService.get(slug);
         Optional<PersonEntity> person = personService.get(createDto.getPersonId());
         Optional<TopicReportEntity> topic = topicReportService.get(createDto.getTopicReportId());
@@ -204,11 +192,11 @@ public class StudentController {
             return postResponse(
                     ReportDto.map(createDto.getStudentChapterId() != 0
                             ? reportService.create(
-                                    studentService
-                                            .getStudentChapter(createDto.getStudentChapterId()),
-                                    course.get(), person.get(), createDto.getDate(), topic.get())
+                            studentService
+                                    .getStudentChapter(createDto.getStudentChapterId()),
+                            course.get(), person.get(), createDto.getDate(), topic.get())
                             : reportService.create(course.get(), person.get(), createDto.getDate(),
-                                    createDto.getChapterNumber(), topic.get())));
+                            createDto.getChapterNumber(), topic.get())));
         }
         return badRequest();
     }
@@ -216,22 +204,22 @@ public class StudentController {
 
     @PutMapping("/reports/{id}")
     public ResponseEntity<ReportDto> update(@PathVariable long id,
-            @RequestBody FrontReportDto updateDto) {
+                                            @RequestBody FrontReportDto updateDto) {
         Optional<ReportEntity> report = reportService.get(id);
         Optional<TopicReportEntity> topic = topicReportService.get(updateDto.getTopicReportId());
         return report.isPresent() && topic.isPresent()
                 ? updateResponse(ReportDto.map(reportService.update(report.get(),
-                        updateDto.getChapterNumber(),
-                        studentService.getStudentChapter(updateDto.getStudentChapterId())
-                                .orElse(null),
-                        updateDto.getDate(), topic.get())))
+                updateDto.getChapterNumber(),
+                studentService.getStudentChapter(updateDto.getStudentChapterId())
+                        .orElse(null),
+                updateDto.getDate(), topic.get())))
                 : badRequest();
     }
 
 
     @GetMapping("/reports/{slug}/{number}")
     public ResponseEntity<Collection<ReportDto>> getChapterReports(@PathVariable String slug,
-            @PathVariable int number) {
+                                                                   @PathVariable int number) {
         return getResponse(courseService.get(slug)
                 .map(course -> reportService.getChapterActual(course, LocalDate.now(), number))
                 .map(ReportDto::map));
@@ -240,7 +228,7 @@ public class StudentController {
 
     @PatchMapping("/reports/{id}/{newState}")
     public ResponseEntity<ReportDto> changeState(@PathVariable long id,
-            @PathVariable ReportState newState) {
+                                                 @PathVariable ReportState newState) {
         return updateResponse(
                 reportService.get(id).map(report -> reportService.changeState(report, newState)));
     }
@@ -264,7 +252,8 @@ public class StudentController {
     @PutMapping("/additionalMaterials/{studentId}/{id}")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Boolean> changeAdditionalMaterial(@PathVariable long studentId,
-            @PathVariable long id, @RequestBody boolean state) {
+                                                            @PathVariable long id,
+                                                            @RequestBody boolean state) {
         Optional<StudentEntity> student = studentService.get(studentId);
         Optional<AdditionalMaterialsEntity> add = additionalMaterialsService.get(id);
         return updateResponse(student.isPresent() && add.isPresent()
