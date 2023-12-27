@@ -120,9 +120,12 @@ export class CoursesService {
   }
 
   selectChapterEndpoint(chapter: Chapter): string {
-    if (this.stateStudent)
-      return chapter.myReports ? ApiUrls.StudentChapters + 'chapter/' + chapter.id
-        : ApiUrls.StudentChapters + this.stateStudent.id + '/' + chapter.number;
+    if (this.stateStudent) {
+      if (chapter.myReports)
+        return ApiUrls.StudentChapters + 'chapter/' + chapter.id;
+      chapter.myReports = [];
+      return ApiUrls.StudentChapters + this.stateStudent.id + '/' + chapter.number;
+    }
     return this.me.isMentor(this.slug) ? ApiUrls.Mentors + 'chapters/' + this.slug + '/' + chapter.number
       : ApiUrls.Chapters + chapter.id; 
   }
