@@ -46,7 +46,7 @@ public class StudentOnCourseSteps {
 
     public ChainBuilder authUserByEmail() {
         return CoreDsl
-                .tryMax(5)
+                .tryMax(1)
                 .on(
                         exec(
                                 HttpDsl
@@ -58,7 +58,7 @@ public class StudentOnCourseSteps {
                                                 jsonPath("$.user.students[0].id")
                                                         .saveAs("studentId"),
                                                 jsonPath("$.user.students[0].activeChapterNumber")
-                                                        .saveAs("studentChapterId"),
+                                                        .saveAs("activeChapterNumber"),
                                                 jsonPath("$.user.id")
                                                         .saveAs("personId")))
                                 .pause(1, 4));
@@ -107,7 +107,10 @@ public class StudentOnCourseSteps {
                         HttpDsl
                                 .http("GET /students/chapters")
                                 .get("/api/students/chapters/#{studentId}")
-                                .check(HttpDsl.status().in(200, 204)))
+                                .asJson()
+                                .check(HttpDsl.status().in(200, 204),
+                                        jsonPath("$[0].id")
+                                                .saveAs("studentChapterId")))
                 .pause(1, 4);
     }
 
@@ -116,7 +119,7 @@ public class StudentOnCourseSteps {
                 .exec(
                         HttpDsl
                                 .http("GET /students/chapters/{studentId}/{chapterId}")
-                                .get("/api/students/chapters/#{studentId}/#{studentChapterId}")
+                                .get("/api/students/chapters/#{studentId}/#{activeChapterNumber}")
                                 .check(HttpDsl.status().in(200, 204)))
                 .pause(1, 4);
     }
@@ -233,7 +236,8 @@ public class StudentOnCourseSteps {
         );
     }
 
-    public ChainBuilder sendCertificateRequest() {
+    // WARNING: this step can do DoS attack!!!
+    /*public ChainBuilder sendCertificateRequest() {
         return CoreDsl.exec(
                 HttpDsl
                         .http("POST /api/certification/request/{studentId}")
@@ -242,7 +246,7 @@ public class StudentOnCourseSteps {
                         .asJson()
                         .check(HttpDsl.status().is(200))
         );
-    }
+    }*/
 
     public ChainBuilder getStudentById() {
         return CoreDsl
