@@ -73,6 +73,7 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @Column(name = "is_quiz_passed")
     boolean isQuizPassed = false;
 
+    @Column(name = "days_spent")
     int daysSpent;
 
     LocalDate startCounting;

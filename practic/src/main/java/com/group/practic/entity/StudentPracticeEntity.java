@@ -47,6 +47,7 @@ public class StudentPracticeEntity implements Serializable, DaysCountable<Practi
     @Column(name = "updated_at", nullable = true)
     Timestamp updatedAt;
 
+    @Column(name = "days_spent")
     int daysSpent;
 
     LocalDate startCounting;

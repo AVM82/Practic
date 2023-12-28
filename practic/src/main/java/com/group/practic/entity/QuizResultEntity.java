@@ -1,6 +1,7 @@
 package com.group.practic.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,14 +38,19 @@ public class QuizResultEntity implements Serializable {
     @CreationTimestamp
     Timestamp startedAt;
 
+    @Column(name = "question_count")
     int questionCount;
 
+    @Column(name = "answered_count")
     int answeredCount;
 
+    @Column(name = "correct_answered_count")
     int correctAnsweredCount;
 
+    @Column(name = "passed", nullable = false)
     boolean passed;
 
+    @Column(name = "second_spent")
     long secondSpent;
 
 
