@@ -1,6 +1,7 @@
 package com.group.practic.entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -46,6 +47,7 @@ public class StudentEntity implements Serializable {
     @ManyToOne
     CourseEntity course;
 
+    @Column(name = "active_chapter_number")
     int activeChapterNumber;
 
     LocalDate registered = LocalDate.now();
@@ -54,8 +56,10 @@ public class StudentEntity implements Serializable {
 
     LocalDate finish;
 
+    @Column(name = "weeks")
     int weeks;
 
+    @Column(name = "days_spent")
     int daysSpent;
 
     private Set<String> skills = new HashSet<>();
