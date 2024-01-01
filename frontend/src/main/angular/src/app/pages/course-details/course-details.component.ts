@@ -55,6 +55,7 @@ export class CourseDetailsComponent implements AfterViewInit {
         const reportPerceent = this.getPercentCompletionReport(index)
         this.percent[index] = Math.floor((practicPercent + quizPercent + reportPerceent) / 3);
         this.createChart([practicPercent, quizPercent, reportPerceent], canvas);
+        this.cdr.detectChanges();
       });
     });
   }
