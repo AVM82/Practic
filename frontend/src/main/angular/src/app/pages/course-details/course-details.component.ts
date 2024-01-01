@@ -1,16 +1,16 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, QueryList, ViewChildren} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
-import {ActivatedRoute, RouterLink} from "@angular/router";
-import {MatCardModule} from "@angular/material/card";
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {ReportButtonComponent} from "../../componets/report-button/report-button.component";
-import {StudentReport} from "../../models/studentReport";
-import {Practice} from "../../models/practice";
-import {TokenStorageService} from "../../services/token-storage.service";
-import {StatePipe} from "../../pipes/practice-state.pipe";
-import {Chapter} from 'src/app/models/chapter';
+import { OnInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, QueryList, ViewChildren } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CourseNavbarComponent } from "../../componets/course-navbar/course-navbar.component";
+import { ActivatedRoute, RouterLink } from "@angular/router";
+import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { ReportButtonComponent } from "../../componets/report-button/report-button.component";
+import { StudentReport } from "../../models/studentReport";
+import { Practice } from "../../models/practice";
+import { TokenStorageService } from "../../services/token-storage.service";
+import { StatePipe } from "../../pipes/practice-state.pipe";
+import { Chapter } from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
 import { Report } from 'src/app/models/report';
 import { StateStudent } from 'src/app/models/student';
@@ -25,7 +25,7 @@ import Chart from 'chart.js/auto';
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
-export class CourseDetailsComponent implements  AfterViewInit {
+export class CourseDetailsComponent implements AfterViewInit, OnInit {
   chapters: Chapter[] = [];
   reports: StudentReport[][] = [];
   slug: string = '';
@@ -38,29 +38,56 @@ export class CourseDetailsComponent implements  AfterViewInit {
   percent: number[] = [];
   reportsState: String[] = [];
   @ViewChildren('myCanvas') canvases!: QueryList<ElementRef<HTMLCanvasElement>>;
-  
+
   constructor(
-      private route: ActivatedRoute,
-      private tokenStorageService: TokenStorageService,
-      private cdr: ChangeDetectorRef,
-	  private zone: NgZone
+    private route: ActivatedRoute,
+    private tokenStorageService: TokenStorageService,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
   ) {
     this.me = this.tokenStorageService.getMe();
   }
 
+  ngOnInit(): void {
+    this.zone.run(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
+
   ngAfterViewInit() {
-    const tests = 0;
-    this.canvases.forEach((canvas, index) => {
-      const practicState = this.chapters[index].parts.length > 0 ? this.chapters[index].parts[0].practice.state : 'null';
-      const percentPracticState = this.getPercentPracticState(practicState);
-      const reports = this.chapters[index].myReports.filter(report => report.state === STATE_APPROVED).length > 0 ? 100 : 0;
-      this.percent[index] = Math.floor((percentPracticState + tests + reports) / 3);
+    console.log("ng after start");
+    if (this.canvases == null) {
       this.zone.run(() => {
         this.cdr.detectChanges();
       });
-      this.createChart([percentPracticState, tests, reports], canvas);
+    }
+    const tests = 0;
+
+    this.canvases.forEach((canvas, index) => {
+      const practicPercent = this.getAveragePercentPracticForAllParts(index);
+
+
+      const reports = this.getPercentCompletionReport(index)
+      console.log("for each :" + index)
+      // const practicState = this.chapters[index].parts.length > 0 ? this.chapters[index].parts[0].practice.state : 'null';
+      // const practicState = this.practices.length;
+      // console.log(practicState);
+
+      // const percentPracticState = this.getPercentPracticState(practicState);
+      // const percentPracticState = 100;
+      // const reports = this.chapters[index].myReports.filter(report => report.state === STATE_APPROVED).length > 0 ? 100 : 0;
+      // const reports = 100;
+      this.percent[index] = Math.floor((practicPercent + tests + reports) / 3);
+      // console.log("data: "+practicState+" ,"+percentPracticState+", "+reports);
+
+
+      this.createChart([practicPercent, tests, reports], canvas);
     });
+
   }
+
+
 
   getSlug(slug: string) {
     this.slug = slug;
@@ -72,7 +99,7 @@ export class CourseDetailsComponent implements  AfterViewInit {
     });
   }
 
-getChapters(chapters: Chapter[]) {
+  getChapters(chapters: Chapter[]) {
     this.chapters = chapters;
   }
 
@@ -86,10 +113,27 @@ getChapters(chapters: Chapter[]) {
 
   getReports(myReports: Report[]): string {
     let number = myReports.filter(report => report.state === ReportState.APPROVED).length;
-    return number === 1 ? '1 проведена' 
-            : ((number === 0 ? 'не' : number) + ' проведено');
+    return number === 1 ? '1 проведена'
+      : ((number === 0 ? 'не' : number) + ' проведено');
   }
-  
+
+  getAveragePercentPracticForAllParts(chapterIndex: number) {
+    let result = 0
+    this.chapters[chapterIndex].parts.forEach((chapter) => {
+      result = result + this.getPercentPracticState(chapter.practice.state);
+    });
+    return result / this.chapters[chapterIndex].parts.length;
+  }
+
+  getPercentCompletionReport(chapterIndex: number) {
+    if (this.chapters[chapterIndex].myReports.length > 0) {
+      const firstReportState = this.chapters[chapterIndex].myReports[0].state;
+      console.log(firstReportState);
+      return this.getPercentReportState(firstReportState);
+    }
+    return 0;
+  }
+
   createChart(data: number[], canvas: ElementRef<HTMLCanvasElement>) {
     console.log(data)
     const ctx = canvas.nativeElement.getContext('2d');
@@ -101,24 +145,24 @@ getChapters(chapters: Chapter[]) {
         type: 'doughnut',
         data: {
           datasets: [
-          {
-            data: [whiteColorfirst, data[0]],
-            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'],
-            borderWidth: 0,
-            label: "практична"
-          }, 
-          {
-            data: [whiteColorSecond, data[1]],
-            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'],
-            borderWidth: 0,
-            label: "тести"
-          },
-          {
-            data: [whiteColorThirst, data[2]],
-            backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'],
-            borderWidth: 0,
-            label: "доповiдь"
-          }]
+            {
+              data: [whiteColorfirst, data[0]],
+              backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'],
+              borderWidth: 0,
+              label: "практична"
+            },
+            {
+              data: [whiteColorSecond, data[1]],
+              backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'],
+              borderWidth: 0,
+              label: "тести"
+            },
+            {
+              data: [whiteColorThirst, data[2]],
+              backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'],
+              borderWidth: 0,
+              label: "доповiдь"
+            }]
         },
         options: {
           cutout: '50%',
@@ -139,12 +183,14 @@ getChapters(chapters: Chapter[]) {
   }
 
   getPercentReportState(state: string): number {
-    switch (state) {
-      case 'announced':
-        return 33;
-      case 'started':
-        return 66;
-      case 'finished':
+    switch (state.toUpperCase()) {
+      case 'ANNOUNCED':
+        return 25;
+      case 'STARTED':
+        return 50;
+      case 'FINISHED':
+        return 75;
+      case 'APPROVED':
         return 100;
       default:
         return 0;
@@ -152,7 +198,9 @@ getChapters(chapters: Chapter[]) {
   }
 
   getPercentPracticState(state: string): number {
-    switch (state.toLocaleUpperCase()) {
+    console.log(state);
+    
+    switch (state.toUpperCase()) {
       case 'IN_PROCESS':
         return 33;
       case 'PAUSE':
