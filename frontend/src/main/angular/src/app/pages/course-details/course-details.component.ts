@@ -1,7 +1,7 @@
-import { OnInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseNavbarComponent } from "../../componets/course-navbar/course-navbar.component";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
@@ -25,7 +25,7 @@ import Chart from 'chart.js/auto';
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
-export class CourseDetailsComponent implements AfterViewInit, OnInit {
+export class CourseDetailsComponent implements AfterViewInit {
   chapters: Chapter[] = [];
   reports: StudentReport[][] = [];
   slug: string = '';
@@ -40,7 +40,6 @@ export class CourseDetailsComponent implements AfterViewInit, OnInit {
   @ViewChildren('myCanvas') canvases!: QueryList<ElementRef<HTMLCanvasElement>>;
 
   constructor(
-    private route: ActivatedRoute,
     private tokenStorageService: TokenStorageService,
     private cdr: ChangeDetectorRef,
     private zone: NgZone
@@ -48,30 +47,16 @@ export class CourseDetailsComponent implements AfterViewInit, OnInit {
     this.me = this.tokenStorageService.getMe();
   }
 
-  ngOnInit(): void {
-    this.zone.run(() => {
-      this.cdr.detectChanges();
-    });
-  }
-
-
-  ngAfterViewInit() {
-    console.log("ng after start");
-    if (this.canvases == null) {
-      this.zone.run(() => {
-        this.cdr.detectChanges();
+  ngAfterViewInit() {  
+    this.canvases.changes.subscribe((queryList: QueryList<ElementRef<HTMLCanvasElement>>) => {
+      queryList.forEach((canvas, index) => {
+        const practicPercent = this.getAveragePercentPracticForAllParts(index);
+        const quizPercent = this.getPercentQuizCompletion(index);
+        const reportPerceent = this.getPercentCompletionReport(index)
+        this.percent[index] = Math.floor((practicPercent + quizPercent + reportPerceent) / 3);
+        this.createChart([practicPercent, quizPercent, reportPerceent], canvas);
       });
-    }
-
-    this.canvases.forEach((canvas, index) => {
-      const practicPercent = this.getAveragePercentPracticForAllParts(index);
-      const quizPercent = this.getPercentQuizCompletion(index);
-      const reportPerceent = this.getPercentCompletionReport(index)
-      console.log("for each :" + index)
-      this.percent[index] = Math.floor((practicPercent + quizPercent + reportPerceent) / 3);
-      this.createChart([practicPercent, quizPercent, reportPerceent], canvas);
     });
-
   }
 
 
@@ -99,7 +84,7 @@ export class CourseDetailsComponent implements AfterViewInit, OnInit {
   }
 
   getReports(myReports: Report[]): string {
-    let number = myReports.filter(report => report.state === ReportState.APPROVED).length;
+      let number = myReports?.filter(report => report.state === ReportState.APPROVED).length;
     return number === 1 ? '1 проведена'
       : ((number === 0 ? 'не' : number) + ' проведено');
   }
@@ -107,34 +92,28 @@ export class CourseDetailsComponent implements AfterViewInit, OnInit {
   getAveragePercentPracticForAllParts(chapterIndex: number): number {
     let result = 0;
     const parts = this.chapters[chapterIndex].parts;
-  
     if (parts?.length > 0) {
       parts.forEach((chapter) => {
         if (chapter.practice) {
           result += this.getPercentPracticState(chapter.practice.state);
         }
       });
-  
       return result / parts.length;
-    }
-  
+    }  
     return result;
   }
   
   getPercentCompletionReport(chapterIndex: number): number {
     const reports = this.chapters[chapterIndex].myReports;
-
     if (reports?.length > 0) {
       const firstReportState = reports[0].state;
       console.log(firstReportState);
       return this.getPercentReportState(firstReportState);
     }
-
     return 0;
   }
 
   getPercentQuizCompletion(chapterIndex: number): number {
-
     return this.chapters[chapterIndex].quizPassed?100:0;
   }
 
