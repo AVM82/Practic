@@ -62,27 +62,14 @@ export class CourseDetailsComponent implements AfterViewInit, OnInit {
         this.cdr.detectChanges();
       });
     }
-    const tests = 0;
 
     this.canvases.forEach((canvas, index) => {
       const practicPercent = this.getAveragePercentPracticForAllParts(index);
-
-
-      const reports = this.getPercentCompletionReport(index)
+      const quizPercent = this.getPercentQuizCompletion(index);
+      const reportPerceent = this.getPercentCompletionReport(index)
       console.log("for each :" + index)
-      // const practicState = this.chapters[index].parts.length > 0 ? this.chapters[index].parts[0].practice.state : 'null';
-      // const practicState = this.practices.length;
-      // console.log(practicState);
-
-      // const percentPracticState = this.getPercentPracticState(practicState);
-      // const percentPracticState = 100;
-      // const reports = this.chapters[index].myReports.filter(report => report.state === STATE_APPROVED).length > 0 ? 100 : 0;
-      // const reports = 100;
-      this.percent[index] = Math.floor((practicPercent + tests + reports) / 3);
-      // console.log("data: "+practicState+" ,"+percentPracticState+", "+reports);
-
-
-      this.createChart([practicPercent, tests, reports], canvas);
+      this.percent[index] = Math.floor((practicPercent + quizPercent + reportPerceent) / 3);
+      this.createChart([practicPercent, quizPercent, reportPerceent], canvas);
     });
 
   }
@@ -117,21 +104,38 @@ export class CourseDetailsComponent implements AfterViewInit, OnInit {
       : ((number === 0 ? 'не' : number) + ' проведено');
   }
 
-  getAveragePercentPracticForAllParts(chapterIndex: number) {
-    let result = 0
-    this.chapters[chapterIndex].parts.forEach((chapter) => {
-      result = result + this.getPercentPracticState(chapter.practice.state);
-    });
-    return result / this.chapters[chapterIndex].parts.length;
+  getAveragePercentPracticForAllParts(chapterIndex: number): number {
+    let result = 0;
+    const parts = this.chapters[chapterIndex].parts;
+  
+    if (parts?.length > 0) {
+      parts.forEach((chapter) => {
+        if (chapter.practice) {
+          result += this.getPercentPracticState(chapter.practice.state);
+        }
+      });
+  
+      return result / parts.length;
+    }
+  
+    return result;
   }
+  
+  getPercentCompletionReport(chapterIndex: number): number {
+    const reports = this.chapters[chapterIndex].myReports;
 
-  getPercentCompletionReport(chapterIndex: number) {
-    if (this.chapters[chapterIndex].myReports.length > 0) {
-      const firstReportState = this.chapters[chapterIndex].myReports[0].state;
+    if (reports?.length > 0) {
+      const firstReportState = reports[0].state;
       console.log(firstReportState);
       return this.getPercentReportState(firstReportState);
     }
+
     return 0;
+  }
+
+  getPercentQuizCompletion(chapterIndex: number): number {
+
+    return this.chapters[chapterIndex].quizPassed?100:0;
   }
 
   createChart(data: number[], canvas: ElementRef<HTMLCanvasElement>) {
@@ -199,7 +203,7 @@ export class CourseDetailsComponent implements AfterViewInit, OnInit {
 
   getPercentPracticState(state: string): number {
     console.log(state);
-    
+
     switch (state.toUpperCase()) {
       case 'IN_PROCESS':
         return 33;
