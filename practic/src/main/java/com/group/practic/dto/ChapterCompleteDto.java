@@ -4,7 +4,6 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
 import com.group.practic.entity.QuizResultEntity;
 import com.group.practic.entity.ReportEntity;
-import com.group.practic.entity.QuizResultEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import java.util.List;

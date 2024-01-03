@@ -10,7 +10,6 @@ import {Quiz} from "../../models/quiz";
 import {QuizService} from "../../services/quiz.service";
 import {User} from "../../models/user";
 import {TokenStorageService} from "../../services/token-storage.service";
-import {ActivatedRoute} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {TimerService} from "../../services/timer.service";
 import {TimerComponent} from "../timer/timer.component";
@@ -66,7 +65,6 @@ export class QuizComponent implements OnInit {
     constructor(
         private quizService: QuizService,
         private tokenStorageService: TokenStorageService,
-        private route: ActivatedRoute,
         private timerService: TimerService) {
         this.me = this.tokenStorageService.getMe();
     }
@@ -75,24 +73,18 @@ export class QuizComponent implements OnInit {
         this.quizId = this.studentChapter.quizId;
         this.studentChapterId = this.studentChapter.id;
         if (this.quizId > 0 && this.studentChapterId > 0) {
-
-            // get quiz from backend (all answers = false)
             this.quizService.getQuiz(this.quizId)
                 .subscribe(quiz => {
                     this.quiz = quiz;
                     this.quizName = this.quiz.quizName;
                     this.questionsLength = this.quiz.questions.length;
-                    // Condition -> if test was passed
                     if (!this.isQuizResultVisible) {
-                        // Go to quiz
                         this.setQuizState(STATE_NOT_STARTED);
                     } else {
                         this.quizResultId = this.studentChapter.quizResultId;
-                        // Load student answers from backend
                         this.quizService.getSavedResult(this.quizId, this.quizResultId)
                             .subscribe(answers => {
                                 this.answersResult = answers;
-                                // Init this.quiz via student answers
                                 this.quiz.questions.forEach((q, i) => {
                                     q.answers.forEach((a,j) => {
                                         this.answersResult.forEach(list => {
@@ -103,7 +95,6 @@ export class QuizComponent implements OnInit {
                                     })
                                 })
                                 this.initQuizResult();
-                                // Go to quiz result
                                 this.setQuizState(STATE_QUIZ_RESULT);
                             });
 
@@ -159,7 +150,7 @@ export class QuizComponent implements OnInit {
         this.quizState = state;
     }
 
-    selectedAnswer(questionIndex: number, answer: Answer) {
+    selectedAnswer(answer: Answer) {
         answer.correct = !answer.correct;
     }
 
@@ -210,7 +201,7 @@ export class QuizComponent implements OnInit {
 
     redirectFromTest(passed: boolean) {
         if (passed) {
-            this.studentChapter.isQuizPassed = true;
+            this.studentChapter.quizPassed = true;
         }
         this.closeQuiz.emit();
     }

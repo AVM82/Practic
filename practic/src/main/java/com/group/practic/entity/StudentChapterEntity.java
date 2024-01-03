@@ -68,7 +68,6 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @OrderBy("date")
     private List<ReportEntity> reports = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
     @OneToOne(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
     private QuizResultEntity quizResult;
 

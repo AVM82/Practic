@@ -16,6 +16,7 @@ public class QuestionDto {
         dto.setAnswers(answerDtos);
         return dto;
     }
+
     public static QuestionDto map(QuestionEntity entity) {
         QuestionDto dto = new QuestionDto();
         dto.setId(entity.getId());

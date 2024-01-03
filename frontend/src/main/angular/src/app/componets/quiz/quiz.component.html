@@ -64,7 +64,7 @@
                 *ngFor="let answer of quiz.questions[currentIndex].answers; let i = index;">
                 <li class="variant-answer-item"
                     [class.selected-answer-item]="answer.correct"
-                    (click)="selectedAnswer(currentIndex, answer)">
+                    (click)="selectedAnswer(answer)">
                     <h5 class="answer-text">{{answer.answer}}</h5>
                 </li>
             </ul>

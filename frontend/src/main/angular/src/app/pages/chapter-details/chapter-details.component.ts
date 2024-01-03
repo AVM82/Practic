@@ -96,13 +96,13 @@ export class ChapterDetailsComponent {
       case STATE_NOT_STARTED: return BUTTON_START;
       case STATE_PAUSE: return BUTTON_CONTINUE;
       case STATE_IN_PROCESS: 
-         if (this.notAllPracticesHaveBeenApproved())
-            return BUTTON_PAUSE;
-          if (!this.reportService.reportsSubmitted(this.chapter!.myReports))
-            return BUTTON_REPORT;
-          if (!this.chapter!.quizPassed)
-            return BUTTON_TEST;
-          return BUTTON_FINISH;
+        if (this.notAllPracticesHaveBeenApproved())
+          return BUTTON_PAUSE;
+        if (!this.reportService.reportsSubmitted(this.chapter!.myReports))
+          return BUTTON_REPORT;
+        if (!this.chapter!.quizPassed)
+          return BUTTON_TEST;
+        return BUTTON_FINISH;
       default: return '%#&$#^@&%(*&(*(+|}{}*';
     }
   }

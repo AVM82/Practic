@@ -1,12 +1,8 @@
 <section *ngIf="!isQuizVisible && !isQuizResultVisible">
-    <app-course-navbar [currentChapter]="number"></app-course-navbar>
 <app-course-navbar
 	(currentChapter)="getChapter($event)"
 	(navSlug)="getSlug($event)">
 </app-course-navbar>
-
-    <section *ngIf="!isQuizVisible && !isQuizResultVisible">
-
 <div *ngIf="chapter">
 	<div class="chapter-header">
 		<h3 class="fit-text">Розділ {{ chapter.number }}: {{chapter.name}}</h3>

@@ -69,9 +69,7 @@ public class QuizService {
         quizResult.setPassed(passedTest);
         quizResult.setSecondSpent(time);
         resultRepository.save(quizResult);
-//        if (passedTest) {
-//            studentService.quizPassed(quizResult.getStudentChapter());
-//        }
+        studentService.quizPassed(quizResult.getStudentChapter());
         saveAnswers(quiz, quizResult, ids);
     }
 
@@ -99,7 +97,7 @@ public class QuizService {
 
     public Long createQuizResult(StudentChapterEntity studentChapter) {
         return resultRepository.save(
-                new QuizResultEntity(studentChapter, new ArrayList<>())).getId();
+                new QuizResultEntity(studentChapter)).getId();
     }
 
     public Optional<QuizResultEntity> getQuizResult(Long quizResultId) {
