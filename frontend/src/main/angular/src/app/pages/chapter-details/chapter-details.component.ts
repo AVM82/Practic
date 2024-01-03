@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
-import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {CdkAccordionModule} from '@angular/cdk/accordion';
@@ -17,8 +17,9 @@ import { CoursesService } from 'src/app/services/courses.service';
 import { StudentService } from 'src/app/services/student.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { ReportButtonComponent } from 'src/app/componets/report-button/report-button.component';
-import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START, BUTTON_TEST,
-         STATE_ANNOUNCED, STATE_APPROVED, STATE_DONE, STATE_FINISHED, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW, STATE_STARTED
+import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START, BUTTON_TEST, BUTTON_RESULT_TEST,
+         STATE_ANNOUNCED, STATE_APPROVED, STATE_DONE, STATE_FINISHED, STATE_IN_PROCESS, STATE_NOT_STARTED,
+    STATE_PAUSE, STATE_READY_TO_REVIEW, STATE_STARTED
        } from 'src/app/enums/app-constans';
 import { ChapterPart } from 'src/app/models/chapterpart';
 import { SubChapter } from 'src/app/models/subchapter';
@@ -59,8 +60,10 @@ export class ChapterDetailsComponent {
   readonly STATE_ANNOUNCED = STATE_ANNOUNCED;
   readonly STATE_STARTED = STATE_STARTED;
   readonly STATE_FINISHED = STATE_FINISHED;
+    readonly BUTTON_RESULT_TEST = BUTTON_RESULT_TEST;
   isQuizVisible: boolean = false;
-  
+  isQuizResultVisible: boolean = false;
+
   constructor(
     public coursesService: CoursesService,
     public studentService: StudentService,
@@ -82,7 +85,7 @@ export class ChapterDetailsComponent {
   getChapter(chapter: Chapter) {
       this.showPartNumber = chapter && chapter.parts.length > 1;
       if (this.coursesService.stateStudent != undefined)
-        for(const part of chapter.parts) 
+        for(const part of chapter.parts)
           for(const sub of part.common!.subChapters)
             sub.checked = chapter.subs!.some(id => id === sub.id)
       this.chapter = chapter;
@@ -93,13 +96,13 @@ export class ChapterDetailsComponent {
       case STATE_NOT_STARTED: return BUTTON_START;
       case STATE_PAUSE: return BUTTON_CONTINUE;
       case STATE_IN_PROCESS: 
-         if (this.notAllPracticesHaveBeenApproved())
-            return BUTTON_PAUSE;
-          if (!this.reportService.reportsSubmitted(this.chapter!.myReports))
-            return BUTTON_REPORT;
-          if (!this.chapter!.quizPassed)
-            return BUTTON_TEST;
-          return BUTTON_FINISH;
+        if (this.notAllPracticesHaveBeenApproved())
+          return BUTTON_PAUSE;
+        if (!this.reportService.reportsSubmitted(this.chapter!.myReports))
+          return BUTTON_REPORT;
+        if (!this.chapter!.quizPassed)
+          return BUTTON_TEST;
+        return BUTTON_FINISH;
       default: return '%#&$#^@&%(*&(*(+|}{}*';
     }
   }
@@ -111,9 +114,9 @@ export class ChapterDetailsComponent {
   changeState(event: any) {
     switch (event.target.innerText) {
       case BUTTON_CONTINUE:
-      case BUTTON_START:  this.studentService.changeChapterState(this.chapter!, STATE_IN_PROCESS, this.studentState!); 
+      case BUTTON_START:  this.studentService.changeChapterState(this.chapter!, STATE_IN_PROCESS, this.studentState!);
                           break;
-      case BUTTON_PAUSE:  this.studentService.changeChapterState(this.chapter!, STATE_PAUSE, this.studentState!); 
+      case BUTTON_PAUSE:  this.studentService.changeChapterState(this.chapter!, STATE_PAUSE, this.studentState!);
                           break;
       case BUTTON_REPORT: this.router.navigate(['/courses', this.slug, 'reports']);
                           break;
@@ -144,5 +147,11 @@ export class ChapterDetailsComponent {
 
   closeQuiz() {
     this.isQuizVisible = false;
+    this.isQuizResultVisible = false;
+  }
+
+  getResultQuiz() {
+    this.isQuizVisible = false;
+    this.isQuizResultVisible = true;
   }
 }

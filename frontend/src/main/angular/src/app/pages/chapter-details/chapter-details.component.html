@@ -1,10 +1,8 @@
-<app-course-navbar 
+<section *ngIf="!isQuizVisible && !isQuizResultVisible">
+<app-course-navbar
 	(currentChapter)="getChapter($event)"
 	(navSlug)="getSlug($event)">
 </app-course-navbar>
-
-<section *ngIf="!isQuizVisible">
-
 <div *ngIf="chapter">
 	<div class="chapter-header">
 		<h3 class="fit-text">Розділ {{ chapter.number }}: {{chapter.name}}</h3>
@@ -18,6 +16,9 @@
 			<button *ngIf="isStudent && chapter.state !== STATE_DONE" class="chapter-button" (click)="changeState($event)">
 				{{getTextAccordingState()}}
 			</button>
+            <button *ngIf="isStudent && chapter.quizPassed" class="chapter-button" (click)="getResultQuiz()">
+                {{BUTTON_RESULT_TEST}}
+            </button>
             <app-certificate-request *ngIf="isStudent" [student]="coursesService.stateStudent!"></app-certificate-request>
 		</div>
 	</div>
@@ -28,7 +29,7 @@
 		</div>
 
 		<cdk-accordion class="chapter-details-container" [multi]="true">
-			<cdk-accordion-item *ngFor="let subchapter of chapterPart.common?.subChapters; let index = index" 
+			<cdk-accordion-item *ngFor="let subchapter of chapterPart.common?.subChapters; let index = index"
 								#accordionItem="cdkAccordionItem"
 								class="accordion-item"
 								role="button"
@@ -38,7 +39,7 @@
 								[attr.aria-controls]="'accordion-body-' + index">
 				<div  class="subchapter-header">
 					<div class="subblock">
-						<mat-icon *ngIf="subchapter.subSubChapters?.length || subchapter.refs" 
+						<mat-icon *ngIf="subchapter.subSubChapters?.length || subchapter.refs"
 								(click)="accordionItem.toggle()"
 								class="accordion-button">
 							{{accordionItem.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
@@ -48,14 +49,14 @@
 							<div *ngFor="let skill of subchapter.skills" class="skill">{{skill}}</div>
 						</div>
 					</div>
-					<input *ngIf="chapter.number === activeNumber && chapter.state === STATE_IN_PROCESS" 
+					<input *ngIf="chapter.number === activeNumber && chapter.state === STATE_IN_PROCESS"
 							type="checkbox"
-							[id]="subchapter.id" 
-							[checked]="isSelected(subchapter.id)" 
+							[id]="subchapter.id"
+							[checked]="isSelected(subchapter.id)"
 							(change)="changeSkills($event, subchapter)"/>
 				</div>
 				<div *ngIf=accordionItem.expanded
-					role="region" 
+					role="region"
 					[style.display]="accordionItem.expanded ? '' : 'none'">
 					<hr class="horizontal-line">
 					<div *ngIf=subchapter.refs>
@@ -80,7 +81,7 @@
 		<div *ngIf="chapterPart.common?.praxisPurpose">
 			<div class="chapter-part">
 				<div *ngIf="isStudent && chapter.state === STATE_IN_PROCESS" class="action-buttons">
-					<button *ngIf="chapterPart.practice!.state === STATE_NOT_STARTED 
+					<button *ngIf="chapterPart.practice!.state === STATE_NOT_STARTED
 									|| chapterPart.practice!.state === STATE_PAUSE
 									|| chapterPart.practice!.state === STATE_READY_TO_REVIEW"
 							mat-icon-button
@@ -170,5 +171,10 @@
 </section>
 <app-quiz *ngIf="isQuizVisible"
           [studentChapter]="chapter!"
+          (closeQuiz)="closeQuiz()">
+</app-quiz>
+<app-quiz *ngIf="isQuizResultVisible"
+          [studentChapter]="chapter!"
+          [isQuizResultVisible]="isQuizResultVisible"
           (closeQuiz)="closeQuiz()">
 </app-quiz>

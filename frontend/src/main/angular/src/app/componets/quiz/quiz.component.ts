@@ -1,10 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CORRECT_ANSWERS_PERCENT, STATE_FINISHED, STATE_NOT_STARTED, STATE_STARTED} from "../../enums/app-constans";
+import {
+    CORRECT_ANSWERS_PERCENT,
+    STATE_FINISHED,
+    STATE_NOT_STARTED,
+    STATE_QUIZ_RESULT,
+    STATE_STARTED
+} from "../../enums/app-constans";
 import {Quiz} from "../../models/quiz";
 import {QuizService} from "../../services/quiz.service";
 import {User} from "../../models/user";
 import {TokenStorageService} from "../../services/token-storage.service";
-import {ActivatedRoute} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {TimerService} from "../../services/timer.service";
 import {TimerComponent} from "../timer/timer.component";
@@ -26,6 +31,7 @@ import {Chapter} from "../../models/chapter";
 })
 export class QuizComponent implements OnInit {
     @Input() studentChapter!: Chapter;
+    @Input() isQuizResultVisible!: boolean;
     @Output() closeQuiz: EventEmitter<any> = new EventEmitter();
 
     quizState: string = '';
@@ -41,6 +47,10 @@ export class QuizComponent implements OnInit {
     passed: boolean = false;
     currentSum: number = 0;
     barLine: string = '';
+    answersFromUI: number[][] = [];
+    quizResult: Quiz = new Quiz();
+    originQuiz!: Quiz;
+    answersResult!: number[][];
 
     studentChapterId: number = 0;
     quizResultId: number = 0;
@@ -49,11 +59,12 @@ export class QuizComponent implements OnInit {
     protected readonly STATE_NOT_STARTED = STATE_NOT_STARTED;
     protected readonly STATE_STARTED = STATE_STARTED;
     protected readonly STATE_FINISHED = STATE_FINISHED;
+    protected readonly STATE_QUIZ_RESULT = STATE_QUIZ_RESULT;
+    protected readonly CORRECT_ANSWERS_PERCENT = CORRECT_ANSWERS_PERCENT;
 
     constructor(
         private quizService: QuizService,
         private tokenStorageService: TokenStorageService,
-        private route: ActivatedRoute,
         private timerService: TimerService) {
         this.me = this.tokenStorageService.getMe();
     }
@@ -64,13 +75,52 @@ export class QuizComponent implements OnInit {
         if (this.quizId > 0 && this.studentChapterId > 0) {
             this.quizService.getQuiz(this.quizId)
                 .subscribe(quiz => {
-                        this.quiz = quiz;
-                        this.quizName = this.quiz.quizName;
-                        this.questionsLength = this.quiz.questions.length;
+                    this.quiz = quiz;
+                    this.quizName = this.quiz.quizName;
+                    this.questionsLength = this.quiz.questions.length;
+                    if (!this.isQuizResultVisible) {
+                        this.setQuizState(STATE_NOT_STARTED);
+                    } else {
+                        this.quizResultId = this.studentChapter.quizResultId;
+                        this.quizService.getSavedResult(this.quizId, this.quizResultId)
+                            .subscribe(answers => {
+                                this.answersResult = answers;
+                                this.quiz.questions.forEach((q, i) => {
+                                    q.answers.forEach((a,j) => {
+                                        this.answersResult.forEach(list => {
+                                            if (list.includes(a.id)) {
+                                                this.quiz.questions[i].answers[j].correct = true;
+                                            }
+                                        })
+                                    })
+                                })
+                                this.initQuizResult();
+                                this.setQuizState(STATE_QUIZ_RESULT);
+                            });
+
                     }
-                );
-            this.quizState = STATE_NOT_STARTED;
+                });
         }
+    }
+
+    private initQuizResult() {
+        this.currentIndex = 0;
+        Object.assign(this.quizResult, this.quiz);
+        this.quizService.getOriginQuiz(this.quizId).subscribe(originQuiz => {
+            this.originQuiz = originQuiz;
+            this.originQuiz.questions.forEach((originQuestion, i) => {
+                originQuestion.answers.forEach((originAnswer, j) => {
+                    const quizResultAnswer = this.quizResult.questions[i].answers[j];
+                    if (!originAnswer.correct && !quizResultAnswer.correct) {
+                        quizResultAnswer.color = 'white';
+                    } else if (!originAnswer.correct && quizResultAnswer.correct) {
+                        quizResultAnswer.color = 'red';
+                    } else {
+                        quizResultAnswer.color = 'green';
+                    }
+                });
+            });
+        });
     }
 
     nextQuestion() {
@@ -87,7 +137,10 @@ export class QuizComponent implements OnInit {
 
     startQuiz(): void {
         this.quizService.getQuizResultId(this.studentChapterId)
-            .subscribe(id => this.quizResultId = id);
+            .subscribe(id => {
+                this.quizResultId = id;
+                this.studentChapter.quizResultId = id;
+            });
         this.timerValue = 60 * this.quiz.questions.length;
         this.timerService.startTimer(this.timerValue);
         this.setQuizState(STATE_STARTED);
@@ -97,7 +150,7 @@ export class QuizComponent implements OnInit {
         this.quizState = state;
     }
 
-    selectedAnswer(questionIndex: number, answer: Answer) {
+    selectedAnswer(answer: Answer) {
         answer.correct = !answer.correct;
     }
 
@@ -110,7 +163,6 @@ export class QuizComponent implements OnInit {
     }
 
     getResult() {
-        const answersFromUI: number[][] = [];
         this.quiz.questions.forEach((q: { answers: Answer[]; }) => {
             if (q.answers.some(answer => answer.correct)) {
                 let list: number[] = [];
@@ -119,35 +171,38 @@ export class QuizComponent implements OnInit {
                         list.push(a.id)
                     }
                 })
-                answersFromUI.push(list);
+                this.answersFromUI.push(list);
                 list = [];
             } else {
                 let list: number[] = [0];
-                answersFromUI.push(list);
+                this.answersFromUI.push(list);
             }
         })
 
-        this.quizService.getResult(this.quizId, this.quizResultId, answersFromUI, this.time)
+        this.quizService.getResult(this.quizId, this.quizResultId, this.answersFromUI, this.time)
             .subscribe({
                     next: data => {
                         this.resultList = data;
                         this.resultList.forEach(b => {
-                            if (b.valueOf()) {
-                                this.rightAnswers = this.rightAnswers + 1;
+                                if (b.valueOf()) {
+                                    this.rightAnswers = this.rightAnswers + 1;
+                                }
                             }
+                        );
+                        if (((this.rightAnswers * 100) / this.quiz.questions.length) >= CORRECT_ANSWERS_PERCENT) {
+                            this.passed = true;
+                            this.studentChapter.quizPassed = true;
                         }
-                    );
-                    if (((this.rightAnswers * 100) / this.quiz.questions.length) >= CORRECT_ANSWERS_PERCENT) {
-                        this.passed = true;
-                        this.studentChapter.quizPassed = true;
+                        this.setQuizState(STATE_FINISHED);
                     }
-                    this.setQuizState(STATE_FINISHED);
                 }
-            }
-        );
+            );
     }
 
-    redirectFromTest() {
+    redirectFromTest(passed: boolean) {
+        if (passed) {
+            this.studentChapter.quizPassed = true;
+        }
         this.closeQuiz.emit();
     }
 

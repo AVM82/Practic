@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.io.Serial;
@@ -67,11 +68,11 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @OrderBy("date")
     private List<ReportEntity> reports = new ArrayList<>();
 
-    @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
-    private List<QuizResultEntity> quizResults = new ArrayList<>();
+    @OneToOne(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
+    private QuizResultEntity quizResult;
 
     @Column(name = "is_quiz_passed")
-    boolean isQuizPassed = false;
+    boolean isQuizPassed;
 
     @Column(name = "days_spent")
     int daysSpent;
