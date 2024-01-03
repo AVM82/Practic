@@ -14,7 +14,7 @@ import { Chapter } from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
 import { Report } from 'src/app/models/report';
 import { StateStudent } from 'src/app/models/student';
-import { ReportState, STATE_APPROVED } from 'src/app/enums/app-constans';
+import { ChapterState, PracticeState, ReportState } from 'src/app/enums/app-constans';
 import Chart from 'chart.js/auto';
 
 @Component({
@@ -52,9 +52,10 @@ export class CourseDetailsComponent implements AfterViewInit {
       queryList.forEach((canvas, index) => {
         const practicPercent = this.getAveragePercentPracticForAllParts(index);
         const quizPercent = this.getPercentQuizCompletion(index);
-        const reportPerceent = this.getPercentCompletionReport(index)
-        this.percent[index] = Math.floor((practicPercent + quizPercent + reportPerceent) / 3);
-        this.createChart([practicPercent, quizPercent, reportPerceent], canvas);
+        const reportPercent = this.getPercentCompletionReport(index)
+        //next set theory value according subchapter weights
+        this.percent[index] = ChapterState.countAveragePercent(100, practicPercent, reportPercent, quizPercent);
+        this.createChart([practicPercent, quizPercent, reportPercent], canvas);
         this.cdr.detectChanges();
       });
     });
@@ -96,7 +97,7 @@ export class CourseDetailsComponent implements AfterViewInit {
     if (parts?.length > 0) {
       parts.forEach((chapter) => {
         if (chapter.practice) {
-          result += this.getPercentPracticState(chapter.practice.state);
+          result += PracticeState.PERCENT.get(chapter.practice.state)!;
         }
       });
       return result / parts.length;
@@ -109,7 +110,7 @@ export class CourseDetailsComponent implements AfterViewInit {
     if (reports?.length > 0) {
       const firstReportState = reports[0].state;
       console.log(firstReportState);
-      return this.getPercentReportState(firstReportState);
+      return ReportState.PERCENT.get(firstReportState)!;
     }
     return 0;
   }
@@ -163,38 +164,6 @@ export class CourseDetailsComponent implements AfterViewInit {
           }
         }
       });
-    }
-  }
-
-  getPercentReportState(state: string): number {
-    switch (state.toUpperCase()) {
-      case 'ANNOUNCED':
-        return 25;
-      case 'STARTED':
-        return 50;
-      case 'FINISHED':
-        return 75;
-      case 'APPROVED':
-        return 100;
-      default:
-        return 0;
-    }
-  }
-
-  getPercentPracticState(state: string): number {
-    console.log(state);
-
-    switch (state.toUpperCase()) {
-      case 'IN_PROCESS':
-        return 33;
-      case 'PAUSE':
-        return 33;
-      case 'READY_TO_REVIEW':
-        return 66;
-      case 'APPROVED':
-        return 100;
-      default:
-        return 0;
     }
   }
 

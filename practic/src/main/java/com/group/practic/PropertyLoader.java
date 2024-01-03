@@ -59,7 +59,8 @@ public class PropertyLoader {
 
 
     public static boolean loadProperties(Properties prop, String file) {
-        try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8)) {
+        try (FileReader fr = new FileReader(CoursesInitializator.COURSE_PROPRTY_FOLDER + file,
+                StandardCharsets.UTF_8)) {
             prop.load(fr);
             return true;
         } catch (IOException e) {
