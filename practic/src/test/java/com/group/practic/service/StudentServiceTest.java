@@ -12,11 +12,13 @@ import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
 import com.group.practic.entity.CourseEntity;
 import com.group.practic.entity.PersonEntity;
+import com.group.practic.entity.ReportEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentEntity;
 import com.group.practic.entity.StudentPracticeEntity;
 import com.group.practic.enumeration.ChapterState;
 import com.group.practic.enumeration.PracticeState;
+import com.group.practic.enumeration.ReportState;
 import com.group.practic.repository.StudentChapterRepository;
 import com.group.practic.repository.StudentRepository;
 import java.lang.reflect.InvocationTargetException;
@@ -75,8 +77,8 @@ class StudentServiceTest {
         for (int i = 0; i < size; i++) {
             try {
                 result.add(type.getDeclaredConstructor().newInstance());
-            } catch (NoSuchMethodException | InstantiationException
-                     | IllegalAccessException | InvocationTargetException e) {
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
+                    | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
@@ -100,6 +102,21 @@ class StudentServiceTest {
     }
 
 
+    private void setReports(StudentChapterEntity studentChapter, int totalCount,
+            int approvedCount) {
+        List<ReportEntity> generatedReports = new ArrayList<>();
+        for (int i = 1; i <= totalCount; i++, approvedCount--) {
+            ReportEntity report =
+                    new ReportEntity(studentChapter, courseEntity, personEntity, null, null);
+            if (approvedCount > 0) {
+                report.setState(ReportState.APPROVED);
+            }
+            generatedReports.add(report);
+        }
+        studentChapter.setReports(generatedReports);
+    }
+
+
     @Test
     void testAllowToCloseChapter() {
         StudentChapterEntity studentChapter =
@@ -119,6 +136,9 @@ class StudentServiceTest {
         setPractices(studentChapter, 4, 3);
         assertFalse(studentService.allowToCloseChapter(studentChapter));
         setPractices(studentChapter, 4, 4);
+        assertFalse(studentService.allowToCloseChapter(studentChapter));
+        setReports(studentChapter, (int) StudentService.MIN_REPORT_COUNT_PER_CHAPTER,
+                (int) StudentService.MIN_REPORT_COUNT_PER_CHAPTER);
         assertFalse(studentService.allowToCloseChapter(studentChapter));
         studentChapter.setQuizPassed(true);
         assertTrue(studentService.allowToCloseChapter(studentChapter));
@@ -187,10 +207,13 @@ class StudentServiceTest {
         assertEquals(ChapterState.IN_PROCESS,
                 studentService.changeChapterState(studentChapter, ChapterState.DONE).getState());
         setPractices(studentChapter, 4, 3);
+
         assertEquals(ChapterState.IN_PROCESS,
                 studentService.changeChapterState(studentChapter, ChapterState.DONE).getState());
 
         setPractices(studentChapter, 4, 4);
+        setReports(studentChapter, (int) StudentService.MIN_REPORT_COUNT_PER_CHAPTER,
+                (int) StudentService.MIN_REPORT_COUNT_PER_CHAPTER);
         when(studentRepository.save(any(StudentEntity.class))).thenReturn(new StudentEntity());
         when(studentEntity.getFinish()).thenReturn(LocalDate.of(2023, 12, 31));
         when(studentEntity.getStart()).thenReturn(LocalDate.of(2023, 1, 1));
@@ -234,6 +257,8 @@ class StudentServiceTest {
         studentChapter.setState(ChapterState.IN_PROCESS);
         studentChapter.setStartCounting(LocalDate.of(2023, 11, 1));
         setPractices(studentChapter, 4, 4);
+        setReports(studentChapter, (int) StudentService.MIN_REPORT_COUNT_PER_CHAPTER,
+                (int) StudentService.MIN_REPORT_COUNT_PER_CHAPTER);
         when(courseService.getNextChapterByNumber(any(), eq(0))).thenReturn(Optional.empty());
         when(studentEntity.getFinish()).thenReturn(LocalDate.of(2023, 12, 31));
         when(studentEntity.getStart()).thenReturn(LocalDate.of(2023, 1, 1));

@@ -1,22 +1,20 @@
-
-import { Chapter } from 'src/app/models/chapter';
-import { Component, OnInit, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseNavbarComponent } from "../../componets/course-navbar/course-navbar.component";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { ReportButtonComponent } from "../../componets/report-button/report-button.component";
-import { ReportServiceService } from "../../services/report-service.service";
 import { StudentReport } from "../../models/studentReport";
 import { Practice } from "../../models/practice";
 import { TokenStorageService } from "../../services/token-storage.service";
-import { ChaptersService } from "../../services/chapters.service";
 import { StatePipe } from "../../pipes/practice-state.pipe";
+import { Chapter } from 'src/app/models/chapter';
 import { User } from 'src/app/models/user';
-import { CoursesService } from 'src/app/services/courses.service';
+import { Report } from 'src/app/models/report';
 import { StateStudent } from 'src/app/models/student';
+import { ReportState, STATE_APPROVED } from 'src/app/enums/app-constans';
 import Chart from 'chart.js/auto';
 
 @Component({
@@ -27,7 +25,7 @@ import Chart from 'chart.js/auto';
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.css']
 })
-export class CourseDetailsComponent implements OnInit, AfterViewInit {
+export class CourseDetailsComponent implements AfterViewInit {
   chapters: Chapter[] = [];
   reports: StudentReport[][] = [];
   slug: string = '';
@@ -41,12 +39,7 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
   reportsState: String[] = [];
   @ViewChildren('myCanvas') canvases!: QueryList<ElementRef<HTMLCanvasElement>>;
 
-
   constructor(
-    private route: ActivatedRoute,
-    private reportService: ReportServiceService,
-    private coursesService: CoursesService,
-    private chaptersService: ChaptersService,
     private tokenStorageService: TokenStorageService,
     private cdr: ChangeDetectorRef,
     private zone: NgZone
@@ -54,38 +47,29 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
     this.me = this.tokenStorageService.getMe();
   }
 
-
-  ngAfterViewInit() {
-    const tests = 0;
-
-    this.canvases.forEach((canvas, index) => {
-      const practicState = this.chapters[index].parts.length > 0 ? this.chapters[index].parts[0].practice.state : 'null';
-      const percentPracticState = this.getPercentPracticState(practicState);
-      const reports = this.chapters[index].myReports > 0 ? 100 : 0;
-      this.percent[index] = Math.floor((percentPracticState + tests + reports) / 3);
-      this.zone.run(() => {
+  ngAfterViewInit() {  
+    this.canvases.changes.subscribe((queryList: QueryList<ElementRef<HTMLCanvasElement>>) => {
+      queryList.forEach((canvas, index) => {
+        const practicPercent = this.getAveragePercentPracticForAllParts(index);
+        const quizPercent = this.getPercentQuizCompletion(index);
+        const reportPerceent = this.getPercentCompletionReport(index)
+        this.percent[index] = Math.floor((practicPercent + quizPercent + reportPerceent) / 3);
+        this.createChart([practicPercent, quizPercent, reportPerceent], canvas);
         this.cdr.detectChanges();
       });
-      this.createChart([percentPracticState, tests, reports], canvas);
     });
-
   }
 
 
-  ngOnInit(): void {
+
+  getSlug(slug: string) {
+    this.slug = slug;
+    this.stateStudent = this.me.getStudent(slug);
+    this.isStudent = this.stateStudent != undefined;
+    this.isInvolved = this.isStudent || this.me.isMentor(slug) || this.me.isGraduate(slug);
     this.zone.run(() => {
       this.cdr.detectChanges();
     });
-
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug');
-      if (slug) {
-        this.slug = slug;
-        this.stateStudent = this.me.getStudent(slug);
-        this.isStudent = this.stateStudent != undefined;
-        this.isInvolved = this.isStudent || this.me.isMentor(slug) || this.me.isGraduate(slug);
-      }
-    })
   }
 
   getChapters(chapters: Chapter[]) {
@@ -100,7 +84,42 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
     console.log('edit click on chapter #', chapter.number, '(id=', chapter.id, ')');
   }
 
+  getReports(myReports: Report[]): string {
+      let number = myReports?.filter(report => report.state === ReportState.APPROVED).length;
+    return number === 1 ? '1 проведена'
+      : ((number === 0 ? 'не' : number) + ' проведено');
+  }
+
+  getAveragePercentPracticForAllParts(chapterIndex: number): number {
+    let result = 0;
+    const parts = this.chapters[chapterIndex].parts;
+    if (parts?.length > 0) {
+      parts.forEach((chapter) => {
+        if (chapter.practice) {
+          result += this.getPercentPracticState(chapter.practice.state);
+        }
+      });
+      return result / parts.length;
+    }  
+    return result;
+  }
+  
+  getPercentCompletionReport(chapterIndex: number): number {
+    const reports = this.chapters[chapterIndex].myReports;
+    if (reports?.length > 0) {
+      const firstReportState = reports[0].state;
+      console.log(firstReportState);
+      return this.getPercentReportState(firstReportState);
+    }
+    return 0;
+  }
+
+  getPercentQuizCompletion(chapterIndex: number): number {
+    return this.chapters[chapterIndex].quizPassed?100:0;
+  }
+
   createChart(data: number[], canvas: ElementRef<HTMLCanvasElement>) {
+    console.log(data)
     const ctx = canvas.nativeElement.getContext('2d');
     const whiteColorfirst = 100 - data[0];
     const whiteColorSecond = 100 - data[1];
@@ -109,33 +128,25 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
       const myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          datasets: [{
-            data: [whiteColorfirst, data[0]],
-            backgroundColor: [
-              'rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'
-            ],
-            borderWidth: 0
-            ,
-            label: "практична"
-          }, {
-            data: [whiteColorSecond, data[1]],
-            backgroundColor: [
-              'rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'
-            ],
-
-            borderWidth: 0,
-            label: "тести"
-          },
-
-          {
-            data: [whiteColorThirst, data[2]],
-            backgroundColor: [
-              'rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'
-            ],
-
-            borderWidth: 0,
-            label: "доповiдь"
-          }]
+          datasets: [
+            {
+              data: [whiteColorfirst, data[0]],
+              backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(27, 122, 88, 1)'],
+              borderWidth: 0,
+              label: "практична"
+            },
+            {
+              data: [whiteColorSecond, data[1]],
+              backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(69, 204, 126, 1)'],
+              borderWidth: 0,
+              label: "тести"
+            },
+            {
+              data: [whiteColorThirst, data[2]],
+              backgroundColor: ['rgba(103, 101, 101, 0.1)', 'rgba(119, 254, 176, 1)'],
+              borderWidth: 0,
+              label: "доповiдь"
+            }]
         },
         options: {
           cutout: '50%',
@@ -148,10 +159,7 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
                 }
               }
             },
-            legend: {
-              position: 'center'
-            }
-
+            legend: { position: 'center' }
           }
         }
       });
@@ -159,12 +167,14 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
   }
 
   getPercentReportState(state: string): number {
-    switch (state) {
-      case 'announced':
-        return 33;
-      case 'started':
-        return 66;
-      case 'finished':
+    switch (state.toUpperCase()) {
+      case 'ANNOUNCED':
+        return 25;
+      case 'STARTED':
+        return 50;
+      case 'FINISHED':
+        return 75;
+      case 'APPROVED':
         return 100;
       default:
         return 0;
@@ -172,7 +182,9 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
   }
 
   getPercentPracticState(state: string): number {
-    switch (state.toLocaleUpperCase()) {
+    console.log(state);
+
+    switch (state.toUpperCase()) {
       case 'IN_PROCESS':
         return 33;
       case 'PAUSE':
@@ -185,4 +197,5 @@ export class CourseDetailsComponent implements OnInit, AfterViewInit {
         return 0;
     }
   }
+
 }

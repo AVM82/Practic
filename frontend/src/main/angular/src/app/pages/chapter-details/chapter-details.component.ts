@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CourseNavbarComponent} from "../../componets/course-navbar/course-navbar.component";
-import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {CdkAccordionModule} from '@angular/cdk/accordion';
@@ -17,14 +17,16 @@ import { CoursesService } from 'src/app/services/courses.service';
 import { StudentService } from 'src/app/services/student.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { ReportButtonComponent } from 'src/app/componets/report-button/report-button.component';
-import {
-  BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_RESULT_TEST, BUTTON_START, BUTTON_TEST,
-  STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW
-} from 'src/app/enums/app-constans';
+import { BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START, BUTTON_TEST, BUTTON_RESULT_TEST,
+         STATE_ANNOUNCED, STATE_APPROVED, STATE_DONE, STATE_FINISHED, STATE_IN_PROCESS, STATE_NOT_STARTED,
+    STATE_PAUSE, STATE_READY_TO_REVIEW, STATE_STARTED
+       } from 'src/app/enums/app-constans';
 import { ChapterPart } from 'src/app/models/chapterpart';
 import { SubChapter } from 'src/app/models/subchapter';
+import { ReportService } from 'src/app/services/report.service';
 import {QuizComponent} from "../../componets/quiz/quiz.component";
 import {CertificateRequestComponent} from "../../componets/certificate-request-dialog/certificate-request.component";
+import { StateStudent } from 'src/app/models/student';
 
 
 
@@ -37,65 +39,56 @@ import {CertificateRequestComponent} from "../../componets/certificate-request-d
   templateUrl: './chapter-details.component.html',
   styleUrls: ['./chapter-details.component.css']
 })
-export class ChapterDetailsComponent implements OnInit {
+export class ChapterDetailsComponent {
 
   practices: Practice[] = [];
   isStudent: boolean = false;
   isMentor: boolean = false;
   chapter?: Chapter;
-  isActiveChapter: boolean = false;
+  activeNumber: number = 0;
   showPartNumber: boolean = false;
   number: number = 0;
   slug: string = '';
+  studentState?: StateStudent;
   me!: User;
-  readonly not_started = STATE_NOT_STARTED;
-  readonly done = STATE_DONE;
-  readonly process = STATE_IN_PROCESS;
-  readonly pause = STATE_PAUSE;
-  readonly ready = STATE_READY_TO_REVIEW;
-  readonly approved = STATE_APPROVED;
-  protected readonly BUTTON_RESULT_TEST = BUTTON_RESULT_TEST;
-  service: StudentService;
+  readonly STATE_NOT_STARTED = STATE_NOT_STARTED;
+  readonly STATE_DONE = STATE_DONE;
+  readonly STATE_IN_PROCESS = STATE_IN_PROCESS;
+  readonly STATE_PAUSE = STATE_PAUSE;
+  readonly STATE_READY_TO_REVIEW = STATE_READY_TO_REVIEW;
+  readonly STATE_APPROVED = STATE_APPROVED;
+  readonly STATE_ANNOUNCED = STATE_ANNOUNCED;
+  readonly STATE_STARTED = STATE_STARTED;
+  readonly STATE_FINISHED = STATE_FINISHED;
+    readonly BUTTON_RESULT_TEST = BUTTON_RESULT_TEST;
   isQuizVisible: boolean = false;
   isQuizResultVisible: boolean = false;
-  // passedTest?: boolean;
 
   constructor(
     public coursesService: CoursesService,
-    private studentService: StudentService,
-    private route: ActivatedRoute,
+    public studentService: StudentService,
+    private reportService: ReportService,
     private tokenStorageService: TokenStorageService,
     private router: Router
   ) {
     this.me = this.tokenStorageService.getMe();
-    this.service = this.studentService;
   }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug')
-      const number = Number(params.get('chapterN')) | 0;
-      if (slug && number > 0)
-        this.coursesService.getChapter(slug, number).subscribe(chapterObs => chapterObs.subscribe(chapter =>
-          this.init(chapter, slug, number)));
-
-    });
+  getSlug(slug: string) {
+    this.slug = slug;
+    this.isMentor = this.me.isMentor(slug);
+    this.studentState = this.me.getStudent(slug);
+    this.isStudent = this.studentState != undefined;
+    this.activeNumber = this.isStudent ? this.me.getCourseActiveChapterNumber(slug) : 0;
   }
 
-  private init(chapter: Chapter, slug: string, number: number) {
-      this.chapter = chapter;
-      this.slug = slug;
-      this.showPartNumber = this.chapter && this.chapter.parts.length > 1;
-      this.isMentor = this.me.isMentor(slug);
-      this.number = number;
-      this.isActiveChapter = number === this.me.getCourseActiveChapterNumber(slug);
-      this.isStudent = this.coursesService.stateStudent != undefined;
-      if (this.isStudent) {
-        this.studentService.setStudent(this.me.getStudent(slug)!);
+  getChapter(chapter: Chapter) {
+      this.showPartNumber = chapter && chapter.parts.length > 1;
+      if (this.coursesService.stateStudent != undefined)
         for(const part of chapter.parts)
           for(const sub of part.common!.subChapters)
-            sub.checked = this.isSelected(sub.id);
-      }
+            sub.checked = chapter.subs!.some(id => id === sub.id)
+      this.chapter = chapter;
   }
 
   getTextAccordingState(): string {
@@ -103,12 +96,13 @@ export class ChapterDetailsComponent implements OnInit {
       case STATE_NOT_STARTED: return BUTTON_START;
       case STATE_PAUSE: return BUTTON_CONTINUE;
       case STATE_IN_PROCESS: 
-         // if (this.notAllPracticesHaveBeenApproved())
-         //    return BUTTON_PAUSE;
-//          if (this.chapter!.myReports == 0)
-//            return BUTTON_REPORT;
-         if (!this.chapter!.isQuizPassed) return BUTTON_TEST;
-         return BUTTON_FINISH;
+         if (this.notAllPracticesHaveBeenApproved())
+            return BUTTON_PAUSE;
+          if (!this.reportService.reportsSubmitted(this.chapter!.myReports))
+            return BUTTON_REPORT;
+          if (!this.chapter!.quizPassed)
+            return BUTTON_TEST;
+          return BUTTON_FINISH;
       default: return '%#&$#^@&%(*&(*(+|}{}*';
     }
   }
@@ -120,15 +114,15 @@ export class ChapterDetailsComponent implements OnInit {
   changeState(event: any) {
     switch (event.target.innerText) {
       case BUTTON_CONTINUE:
-      case BUTTON_START:  this.studentService.changeChapterState(this.chapter!, STATE_IN_PROCESS); 
+      case BUTTON_START:  this.studentService.changeChapterState(this.chapter!, STATE_IN_PROCESS, this.studentState!);
                           break;
-      case BUTTON_PAUSE:  this.studentService.changeChapterState(this.chapter!, STATE_PAUSE); 
+      case BUTTON_PAUSE:  this.studentService.changeChapterState(this.chapter!, STATE_PAUSE, this.studentState!);
                           break;
       case BUTTON_REPORT: this.router.navigate(['/courses', this.slug, 'reports']);
                           break;
       case BUTTON_TEST: this.isQuizVisible = true;
                           break;
-      case BUTTON_FINISH: this.studentService.changeChapterState(this.chapter!, STATE_DONE);
+      case BUTTON_FINISH: this.studentService.changeChapterState(this.chapter!, STATE_DONE, this.studentState!);
                           break;
       default: console.error(' BUTTON failure : ', event.target.value);
     }
@@ -136,7 +130,7 @@ export class ChapterDetailsComponent implements OnInit {
 
   practiceReview(chapterPart: ChapterPart) {
     if (confirm('Всі вимоги практичної роботи виконані ?'))
-      this.studentService.changePracticeState(this.chapter!.number, chapterPart, this.ready)
+      this.studentService.changePracticeState(this.chapter!.number, chapterPart, STATE_READY_TO_REVIEW)
   }
 
   checkApproved(chapterPart: ChapterPart) {
@@ -153,7 +147,6 @@ export class ChapterDetailsComponent implements OnInit {
 
   closeQuiz() {
     this.isQuizVisible = false;
-    // this.passedTest = true;
     this.isQuizResultVisible = false;
   }
 

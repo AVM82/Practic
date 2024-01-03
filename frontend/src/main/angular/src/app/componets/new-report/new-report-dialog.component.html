@@ -1,7 +1,6 @@
 <div class="dialog">
 
-    <h1 mat-dialog-title style="text-align: center;font-size: 30px; margin-top: 20px; margin-bottom: -10px;">Запланувати
-        доповідь</h1>
+    <h1>{{data.slug ? (data.report ? 'Редагувати  доповідь #' + data.report.id : 'Запланувати доповідь') : 'Скасувати доповідь #' + data.report.id}}</h1>
     <div mat-dialog-content style="padding-left: 100px">
         <div class="date-field">
             <mat-label>Дата</mat-label>
@@ -9,31 +8,20 @@
                 <input matInput [min]="minDate"
                        [max]="maxDate"
                        [matDatepicker]="picker"
-                       [formControl]="date"
-                       [(ngModel)]="newStudentReport.date">
+                       [matDatepickerFilter]="dateFilter"
+                       [formControl]="dateForm">
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-        </div>
-        <div class="date-field">
-            <mat-label>Час</mat-label>
-            <mat-form-field appearance="outline" style="align-items: center">
-                <mat-select [(ngModel)]="newStudentReport.timeslotId"
-                            [formControl]="timeslot">
-                    <mat-option *ngFor="let timeslot of getTimeslots(newStudentReport.date);"
-                                [value]="timeslot.id"
-                                (click)="setNewStudentReportTime(timeslot.time)">{{formatTime(timeslot.time)}}</mat-option>
-                </mat-select>
             </mat-form-field>
         </div>
 
         <div class="chapter-field">
             <mat-label>Розділ</mat-label>
             <mat-form-field appearance="outline" style="width: 100px;">
-                <mat-select [(ngModel)]="activeChapter.number"
-                            [formControl]="chapter" (selectionChange)="updateActiveChapter($event.value)">
-                    <mat-option *ngFor="let chapter of data.chapters" [value]="chapter.number">
-                        {{ chapter.number }}
+                <mat-select [formControl]="chapterForm"
+                            (selectionChange)="topicForm.setValue(undefined)">
+                    <mat-option *ngFor="let chapter of data.chapters" [value]="chapter">
+                        {{chapter.number}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -41,20 +29,25 @@
 
         <div class="title-field">
             <mat-label>Тема доповіді</mat-label>
-            <mat-form-field appearance="outline" style="width: 618px;">
-                <mat-select [(ngModel)]="newStudentReport.title"
-                            [formControl]="title">
-                    <mat-option *ngFor="let topic of topicsReport"
-                                [value]="topic.topicReport">{{topic.topicReport}}</mat-option>
+            <mat-form-field appearance="outline" style="width: 640px;">
+                <mat-select [formControl]="topicForm">
+                    <mat-option *ngFor="let topic of chapterForm.value.topicReports"
+                                [value]="topic">{{topic.topic}}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
 
     </div>
     <div mat-dialog-actions class="dialog-actions">
-        <button mat-button class="cancel-button" (click)="onNoClick()">Відхилити</button>
-        <button mat-button class="ok-button" [mat-dialog-close]="getNewStudentReport()" cdkFocusInitial>
+        <button mat-button class="cancel-button" (click)="dialogRef.close()">
+            Відхилити
+        </button>
+        <button mat-button *ngIf="data.slug && dateForm.value && chapterForm.value && topicForm.value"
+                class="ok-button" [mat-dialog-close]="getFormReport()" cdkFocusInitial>
             Прийняти
+        </button>
+        <button mat-button *ngIf="!data.slug" class="certain-button" [mat-dialog-close]="getFormReport()">
+            Звичайно скасувати
         </button>
     </div>
 

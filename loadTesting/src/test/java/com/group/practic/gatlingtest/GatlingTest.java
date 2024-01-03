@@ -22,7 +22,7 @@ public class GatlingTest extends Simulation {
     private static final String PROPERTY = "simulation.properties";
 
     public GatlingTest() {
-        Properties properties = getProperties();
+        Properties properties = new PropertyLoader().getProperties();
         HttpProtocolBuilder httpProtocol = HttpDsl.http.baseUrl(properties.getProperty("baseUrl"))
                 .authorizationHeader(properties.getProperty("jwtToken"))
                 .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -34,30 +34,17 @@ public class GatlingTest extends Simulation {
         this.setUp(Scenario.userScenario.injectOpen(
                 CoreDsl.constantUsersPerSec(Integer.parseInt(properties.getProperty("users")))
                         .during(Integer
-                                .parseInt(properties.getProperty("during")))),
-
-                Scenario.adminScenario.injectOpen(
+                                .parseInt(properties.getProperty("during"))))
+        /*  Scenario.adminScenario.injectOpen(
                         rampUsers(Integer.parseInt(properties.getProperty("admins")))
                                 .during(Integer.parseInt(properties.getProperty("during")))
                 ),
 
                 Scenario.visitorsScenario.injectOpen(
                         atOnceUsers(Integer.parseInt(properties.getProperty("visitors")))
-                )
+        )*/
         ).protocols(httpProtocol);
+
     }
 
-
-
-    private Properties getProperties() {
-        Properties properties = new Properties();
-        try (InputStream is = GatlingTest.class.getClassLoader().getResourceAsStream(PROPERTY)) {
-            Reader reader = new InputStreamReader(
-                    Objects.requireNonNull(is), StandardCharsets.UTF_8);
-            properties.load(reader);
-        } catch (IOException e) {
-            logger.error("cannot load property ", e);
-        }
-        return properties;
-    }
 }

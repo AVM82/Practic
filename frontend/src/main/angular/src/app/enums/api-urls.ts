@@ -22,7 +22,7 @@ export enum ApiUrls {
   StudentAdditionalMaterials = '/api/students/additionalMaterials/',
   Practices = '/api/students/practices/',
   PracticeStates = '/api/students/practices/states/',
-  Reports = '/api/students/reports/course/',
+  Reports = '/api/students/reports/',
   ReportStates = '/api/students/reports/states',
   ReportLikeList = '/api/students/reports/likes/',
   MyPractices = '/api/students/practices/my',
@@ -43,7 +43,8 @@ export enum ApiUrls {
   MatchCode = '/api/password-reset/match-code',
   ResetPassword = '/api/password-reset',
   VerificateByEmail = 'api/verification',
-  MatchTokenForVerificateByEmail = 'api/verification/match-token'
+  MatchTokenForVerificateByEmail = 'api/verification/match-token',
+  Profile ='api/persons/profile'
 
 }
 

@@ -15,8 +15,7 @@ import { SubChapter } from "../models/subchapter";
   })
   
 export class StudentService {
-    student!: StateStudent;
-
+    
     constructor(
         private tokenStorageService: TokenStorageService,
         private coursesService: CoursesService,
@@ -24,11 +23,7 @@ export class StudentService {
     ) {
     }
 
-    setStudent(student: StateStudent): void {
-        this.student = student;
-    }
-
-    changeChapterState(chapter: Chapter, newState: string): void {
+    changeChapterState(chapter: Chapter, newState: string, student: StateStudent): void {
         this.http.put<NewStateChapter>(getSetChapterStateUrl(chapter.id, newState), {}).subscribe(state => {
             chapter.state = state.state;
             if (state.state === STATE_PAUSE)
@@ -37,10 +32,10 @@ export class StudentService {
                         this.changePracticeState(chapter.number, part, STATE_PAUSE);
                 });
             this.coursesService.changeChapterState(chapter.number, chapter.state);
-            if (this.student.activeChapterNumber != state.activeChapterNumber) {
-                this.student.activeChapterNumber = state.activeChapterNumber;
+            if (student.activeChapterNumber != state.activeChapterNumber) {
+                student.activeChapterNumber = state.activeChapterNumber;
                 if (state.activeChapterNumber == 0)
-                    this.student.inactive = true
+                    student.inactive = true
                 else
                     this.coursesService.openStudentChapter(state.activeChapterNumber);
                 this.tokenStorageService.saveMe();

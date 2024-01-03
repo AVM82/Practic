@@ -5,7 +5,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {TokenStorageService} from "../../services/token-storage.service";
 import {NgIf} from "@angular/common";
 import {environment} from "../../../enviroments/enviroment";
-import {ActivatedRoute, RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MenuBtnComponent} from "../menu-btn/menu-btn.component";
 
 @Component({
@@ -25,7 +25,9 @@ export class HeaderComponent implements OnInit{
   
   constructor(
       private tokenStorageService:TokenStorageService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private router:Router
+
       ) { }
 
   ngOnInit(): void {
@@ -43,9 +45,7 @@ export class HeaderComponent implements OnInit{
     window.location.href = logoutUrl;
   }
 
-  toAdminPage() {
-    window.location.href = '/admin';
-  }
+
 
   onMenuButtonClick(item: string) {
     if(item === 'person') {
@@ -54,8 +54,8 @@ export class HeaderComponent implements OnInit{
     if(item === 'logout') {
       this.logout();
     }
-    if(item === 'admin') {
-      this.toAdminPage();
+    if(item === 'profile') {
+      this.router.navigate(['profile']);
     }
   }
 }

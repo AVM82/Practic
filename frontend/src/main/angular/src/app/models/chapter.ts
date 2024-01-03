@@ -1,6 +1,7 @@
 import {ChapterPart} from "./chapterpart";
-import {ReportState, STATE_NOT_STARTED} from 'src/app/enums/app-constans';
-import {StudentReport, TopicReport} from "./report";
+import {STATE_NOT_STARTED} from 'src/app/enums/app-constans';
+import {Report, TopicReport} from "./report";
+import { ReportService } from "../services/report.service";
 
 export class Chapter {
   id: number;
@@ -11,14 +12,14 @@ export class Chapter {
   parts: ChapterPart[];
   skills?: string[];
   state: string;
-  reportCount: number;
-  myReports: number;
-  reports?: StudentReport[];
+  reports: Report[];
+  myReports:  Report[];
   subs?: number[];
   topicReports?: TopicReport [];
-  isQuizPassed: boolean;
+  quizPassed: boolean;
   quizId: number;
   quizResultId: number;
+
   constructor(
     id: number,
     number: number,
@@ -26,9 +27,10 @@ export class Chapter {
     shortName: string,
     parts: ChapterPart[],
     state: string,
-    reportCount: number,
-    myReports: number,
-    isQuizPassed: boolean,
+    myReports:  Report[],
+    reports: Report[],
+    topicReports: TopicReport [],
+    quizPassed: boolean,
     quizId: number,
     quizResultId: number
   ) {
@@ -36,11 +38,12 @@ export class Chapter {
     this.number = number;
     this.hidden = hidden;
     this.shortName = shortName;
-    this.parts = parts; 
-    this.reportCount = reportCount;
+    this.parts = parts;
     this.state = state || STATE_NOT_STARTED;
+    this.reports = reports;
     this.myReports = myReports;
-    this.isQuizPassed = isQuizPassed;
+    this.topicReports = topicReports;
+    this.quizPassed = quizPassed;
     this.quizId = quizId;
     this.quizResultId = quizResultId;
   }
@@ -50,12 +53,9 @@ export class Chapter {
     chapter.name = ext.name;
     chapter.parts = ext.parts;
     chapter.skills = ext.skills;
-    chapter.reportCount = ext.reportCount;
     chapter.reports = ext.reports;
-    if (ext.reports)
-      chapter.myReports = ext.reports.filter(report => report.state === ReportState.APPROVED).length;
+    ReportService.refreshMyReports(chapter);
     chapter.subs = ext.subs;
-    chapter.topicReports = ext.topicReports;
     chapter.quizResultId = ext.quizResultId;
   }
 }
@@ -65,10 +65,9 @@ export interface CompleteChapter {
   name: string;
   parts: ChapterPart[];
   skills: string[];
-  reportCount: number;
-  reports: StudentReport[];
+  myReports: Report[];
+  reports: Report[];
   subs: number[];
-  topicReports: TopicReport [];
   quizResultId: number;
 }
 

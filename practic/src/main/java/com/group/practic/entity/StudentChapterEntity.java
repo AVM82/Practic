@@ -54,11 +54,10 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     ChapterState state = ChapterState.NOT_STARTED;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(nullable = false)
     Timestamp createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
     Timestamp updatedAt;
 
     @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
@@ -66,8 +65,8 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     private List<StudentPracticeEntity> practices = new ArrayList<>();
 
     @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
-    @OrderBy("id")
-    private List<StudentReportEntity> reports = new ArrayList<>();
+    @OrderBy("date")
+    private List<ReportEntity> reports = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
     @OneToOne(mappedBy = "studentChapter", cascade = CascadeType.MERGE)
@@ -76,6 +75,7 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
     @Column(name = "is_quiz_passed")
     boolean isQuizPassed;
 
+    @Column(name = "days_spent")
     int daysSpent;
 
     LocalDate startCounting;
@@ -110,19 +110,22 @@ public class StudentChapterEntity implements Serializable, DaysCountable<Chapter
 
 
     public long countApprovedReports() {
-        return reports.stream().filter(StudentReportEntity::isCountable).count();
+        return reports.stream().filter(ReportEntity::isCountable).count();
     }
 
 
     public long countNonCancelledReports() {
-        return reports.stream().filter(StudentReportEntity::isNonCancelled).count();
+        return reports.stream().filter(ReportEntity::isNonCancelled).count();
     }
 
+    
     public boolean isQuizPassed() {
         return isQuizPassed;
     }
 
+    
     public void setQuizPassed(boolean quizPassed) {
         isQuizPassed = quizPassed;
     }
+    
 }

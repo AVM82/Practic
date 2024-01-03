@@ -1,0 +1,33 @@
+<div class="chapter-reports-row">
+
+  <div class="chapter-bar" [style.background]="courseService.getChapterColor(chapter.number)"
+      (click)="reportService.refreshChapter(chapter, slug)">
+    <div class="chapter-sign">
+      Розділ {{chapter.number}}
+    </div>
+  </div>
+
+  <div style="display: flex;">
+    <report-card *ngFor="let report of chapter.reports.slice(startOfRange, endOfRange)"
+                 [report]="report"
+                 [me]="me"
+                 [slug]="slug"
+                 [isStudent]="isStudent"
+                 [isMentor]="isMentor"
+                 [chapter]="chapter"
+                 [chapters]="chapters">
+    </report-card>
+  </div>
+
+  <ng-container *ngIf="chapter.reports.length > reportsOnPage">
+    <div style="display: flex;">
+      <button (click)="previousReports()" mat-icon-button aria-label>
+        <mat-icon>arrow_circle_left</mat-icon>
+      </button>
+      <button (click)="nextReports()" mat-icon-button aria-label>
+        <mat-icon>arrow_circle_right</mat-icon>
+      </button>
+    </div>
+  </ng-container>
+
+</div>
