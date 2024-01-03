@@ -60,7 +60,8 @@ public class QuizController {
             @PathVariable(value = "quizResultId") Long quizResultId) {
         Optional<QuizEntity> quiz = quizService.get(quizId);
         Optional<QuizResultEntity> quizResult = quizService.getQuizResult(quizResultId);
-        return getResponse(quizService.loadAnswers(quiz.get(), quizResult.get()));
+        return quiz.isEmpty() || quizResult.isEmpty() ? badRequest()
+                : getResponse(quizService.loadAnswers(quiz.get(), quizResult.get()));
     }
 
     @PostMapping("/{quizId}/{quizResultId}/{time}")
