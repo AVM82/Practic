@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
+    
+    public static final String COURSE_PROPRTY_FOLDER = "./";
 
     CourseService courseService;
 
