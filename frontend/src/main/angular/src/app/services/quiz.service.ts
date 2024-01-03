@@ -24,11 +24,6 @@ export class QuizService {
         window.sessionStorage.setItem('quiz', JSON.stringify(quiz));
     }
 
-    // getSavedQuiz(): Quiz | undefined {
-    //     const quizJson = window.sessionStorage.getItem('quiz');
-    //     return quizJson ? Quiz.fromJson(JSON.parse(quizJson)) : undefined;
-    // }
-
     getQuizResultId(studentChapterId: number): Observable<number> {
         return this.http.get<number>(ApiUrls.Quizzes + 'start/' + studentChapterId);
     }
