@@ -60,6 +60,8 @@ export const STATE_CANCELLED = 'CANCELLED';
 export const STATE_FINISHED = 'FINISHED';
 export const STATE_STARTED = 'STARTED';
 export const STATE_ANNOUNCED = 'ANNOUNCED';
+export const STATE_QUIZ_RESULT = "STATE_QUIZ_RESULT";
+
 
 export class ChapterState {
   static readonly NOT_STARTED = STATE_NOT_STARTED;
@@ -90,3 +92,4 @@ export const BUTTON_PAUSE = 'ПАУЗА';
 export const BUTTON_CONTINUE = 'ПРОДОВЖИТИ';
 export const BUTTON_REPORT = 'ДОПОВІДЬ';
 export const BUTTON_TEST = 'ТЕСТ';
+export const BUTTON_RESULT_TEST = 'ПОДИВИТИСЬ ТЕСТ';

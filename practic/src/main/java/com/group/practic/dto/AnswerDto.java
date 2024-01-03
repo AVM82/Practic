@@ -7,7 +7,7 @@ public class AnswerDto {
 
     private Long id;
     private String answer;
-    private boolean correct = false;
+    private boolean correct;
 
     public AnswerDto() {
     }
@@ -18,8 +18,12 @@ public class AnswerDto {
         this.correct = correct;
     }
 
-    public static AnswerDto map(AnswerEntity entity) {
+    public static AnswerDto mapForUi(AnswerEntity entity) {
         return new AnswerDto(entity.getId(), entity.getAnswer(), false);
+    }
+
+    public static AnswerDto map(AnswerEntity entity) {
+        return new AnswerDto(entity.getId(), entity.getAnswer(), entity.isCorrect());
     }
 
 

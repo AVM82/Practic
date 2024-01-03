@@ -18,7 +18,7 @@ import { StudentService } from 'src/app/services/student.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { ReportButtonComponent } from 'src/app/componets/report-button/report-button.component';
 import {
-  BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_START, BUTTON_TEST,
+  BUTTON_CONTINUE, BUTTON_FINISH, BUTTON_PAUSE, BUTTON_REPORT, BUTTON_RESULT_TEST, BUTTON_START, BUTTON_TEST,
   STATE_APPROVED, STATE_DONE, STATE_IN_PROCESS, STATE_NOT_STARTED, STATE_PAUSE, STATE_READY_TO_REVIEW
 } from 'src/app/enums/app-constans';
 import { ChapterPart } from 'src/app/models/chapterpart';
@@ -54,8 +54,11 @@ export class ChapterDetailsComponent implements OnInit {
   readonly pause = STATE_PAUSE;
   readonly ready = STATE_READY_TO_REVIEW;
   readonly approved = STATE_APPROVED;
+  protected readonly BUTTON_RESULT_TEST = BUTTON_RESULT_TEST;
   service: StudentService;
   isQuizVisible: boolean = false;
+  isQuizResultVisible: boolean = false;
+  // passedTest?: boolean;
 
   constructor(
     public coursesService: CoursesService,
@@ -100,8 +103,8 @@ export class ChapterDetailsComponent implements OnInit {
       case STATE_NOT_STARTED: return BUTTON_START;
       case STATE_PAUSE: return BUTTON_CONTINUE;
       case STATE_IN_PROCESS: 
-         if (this.notAllPracticesHaveBeenApproved())
-            return BUTTON_PAUSE;
+         // if (this.notAllPracticesHaveBeenApproved())
+         //    return BUTTON_PAUSE;
 //          if (this.chapter!.myReports == 0)
 //            return BUTTON_REPORT;
          if (!this.chapter!.isQuizPassed) return BUTTON_TEST;
@@ -150,5 +153,12 @@ export class ChapterDetailsComponent implements OnInit {
 
   closeQuiz() {
     this.isQuizVisible = false;
+    // this.passedTest = true;
+    this.isQuizResultVisible = false;
+  }
+
+  getResultQuiz() {
+    this.isQuizVisible = false;
+    this.isQuizResultVisible = true;
   }
 }

@@ -11,8 +11,7 @@
                 автоматично відлічувати час.
             </p>
             <p>
-                Кожне питання має лише один вірний варіант
-                відповіді.
+                Кожне питання може мати кілька правильних варіантів.
             </p>
             <p class="test-wish">Бажаємо успіхів та задоволення від
                 тестування!</p>
@@ -28,11 +27,11 @@
                 <div class="test-progress-time">
                     <span>Час на відповідь</span>
                     <span>
-                            <app-timer
-                                    (timerValueChange)="handleTimerValueChange($event)"
-                                    (timerFinished)="handleTimerFinished()"
-                            ></app-timer>
-                        </span>
+                        <app-timer
+                                (timerValueChange)="handleTimerValueChange($event)"
+                                (timerFinished)="handleTimerFinished()"
+                        ></app-timer>
+                    </span>
                 </div>
                 <div class="progress-container">
                     <div class="progress-bar" [style.width]="barLine">
@@ -70,9 +69,11 @@
                 </li>
             </ul>
             <div class="button-block">
-                <button class="btn-back" (click)="previousQuestion()">
-                    <span class="btn-text">Назад</span>
-                </button>
+                <div *ngIf="currentIndex > 0">
+                    <button class="btn-back" (click)="previousQuestion()">
+                        <span class="btn-text">Назад</span>
+                    </button>
+                </div>
                 <div *ngIf="currentIndex < quiz.questions.length - 1">
                     <button class="btn-next" (click)="nextQuestion()">
                         <span class="btn-text">Наступне запитання</span>
@@ -97,7 +98,7 @@
             вищому рівні!
         </div>
         <div class="result-text" *ngIf="!passed">
-            Спробуй ще (((
+            Відсоток ваших відповідей становить менше {{CORRECT_ANSWERS_PERCENT}} відсотків
         </div>
         <div class="result-indicate">
             <ul class="result-list" *ngFor="let result of resultList; let i = index;">
@@ -117,8 +118,52 @@
                 </li>
             </ul>
         </div>
-        <button class="finish-btn" (click)="redirectFromTest()">
-            <span class="finish-btn-text">Закінчити тест</span>
+        <button class="finish-btn" (click)="redirectFromTest(true)">
+            <span class="finish-btn-text">Готово</span>
         </button>
+<!--        <button class="finish-btn" (click)="goToLookTest()">-->
+<!--            <span class="finish-btn-text">Перевірить тест</span>-->
+<!--        </button>-->
+    </div>
+
+    <div class="progress" *ngSwitchCase="STATE_QUIZ_RESULT">
+        <div class="result-indicate">
+            <ul class="progress-answers-list" *ngFor="let question of quizResult.questions; let i = index;">
+                <li (click)="goToQuestion(i)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50"
+                         height="50" viewBox="0 0 50 50" fill="none">
+                        <rect x="0.5" y="0.5" width="49" height="49"
+                              rx="9.5" fill="yellow" stroke="#B7B7B7"/>
+                    </svg>
+                </li>
+            </ul>
+        </div>
+        <div class="test-body">
+            <h5 class="test-body-count">{{currentIndex + 1}}/{{questionsLength}}</h5>
+            <div class="question">{{quizResult.questions[currentIndex].question}}</div>
+            <ul class="variant-answer-list"
+                *ngFor="let answer of quizResult.questions[currentIndex].answers; let i = index;">
+                <li class="variant-answer-item" [style.background]="answer.color">
+                    <h5 class="answer-text">{{answer.answer}}</h5>
+                </li>
+            </ul>
+            <div class="button-block">
+                <div *ngIf="currentIndex > 0">
+                    <button class="btn-back" (click)="previousQuestion()">
+                        <span class="btn-text">Назад</span>
+                    </button>
+                </div>
+                <div *ngIf="currentIndex < quizResult.questions.length - 1">
+                    <button class="btn-next" (click)="nextQuestion()">
+                        <span class="btn-text">Наступне запитання</span>
+                    </button>
+                </div>
+                <div *ngIf="currentIndex == quizResult.questions.length - 1">
+                    <button class="finish-btn" (click)="redirectFromTest(false)">
+                        <span class="finish-btn-text">Готово</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -18,6 +18,7 @@ export class Chapter {
   topicReports?: TopicReport [];
   isQuizPassed: boolean;
   quizId: number;
+  quizResultId: number;
   constructor(
     id: number,
     number: number,
@@ -28,7 +29,8 @@ export class Chapter {
     reportCount: number,
     myReports: number,
     isQuizPassed: boolean,
-    quizId: number
+    quizId: number,
+    quizResultId: number
   ) {
     this.id = id;
     this.number = number;
@@ -40,6 +42,7 @@ export class Chapter {
     this.myReports = myReports;
     this.isQuizPassed = isQuizPassed;
     this.quizId = quizId;
+    this.quizResultId = quizResultId;
   }
 
   public static complete(chapter: Chapter, ext: CompleteChapter) {
@@ -53,6 +56,7 @@ export class Chapter {
       chapter.myReports = ext.reports.filter(report => report.state === ReportState.APPROVED).length;
     chapter.subs = ext.subs;
     chapter.topicReports = ext.topicReports;
+    chapter.quizResultId = ext.quizResultId;
   }
 }
 
@@ -65,6 +69,7 @@ export interface CompleteChapter {
   reports: StudentReport[];
   subs: number[];
   topicReports: TopicReport [];
+  quizResultId: number;
 }
 
 export interface NewStateChapter {

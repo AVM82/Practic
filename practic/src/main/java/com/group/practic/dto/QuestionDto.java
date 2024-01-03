@@ -8,6 +8,14 @@ public class QuestionDto {
     private String question;
     private List<AnswerDto> answers;
 
+    public static QuestionDto mapForUi(QuestionEntity entity) {
+        QuestionDto dto = new QuestionDto();
+        dto.setId(entity.getId());
+        dto.setQuestion(entity.getQuestion());
+        List<AnswerDto> answerDtos = entity.getAnswers().stream().map(AnswerDto::mapForUi).toList();
+        dto.setAnswers(answerDtos);
+        return dto;
+    }
     public static QuestionDto map(QuestionEntity entity) {
         QuestionDto dto = new QuestionDto();
         dto.setId(entity.getId());

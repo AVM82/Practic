@@ -1,4 +1,4 @@
-<section *ngIf="!isQuizVisible">
+<section *ngIf="!isQuizVisible && !isQuizResultVisible">
     <app-course-navbar [currentChapter]="number"></app-course-navbar>
 
     <div class="chapter-header">
@@ -16,6 +16,9 @@
             </report-button>
             <button *ngIf="chapter?.state !== done" class="chapter-button" (click)="changeState($event)">
                 {{getTextAccordingState()}}
+            </button>
+            <button *ngIf="chapter?.isQuizPassed" class="chapter-button" (click)="getResultQuiz()">
+                {{BUTTON_RESULT_TEST}}
             </button>
             <app-certificate-request *ngIf="isStudent" [student]="coursesService.stateStudent!"></app-certificate-request>
         </div>
@@ -157,5 +160,10 @@
 </section>
 <app-quiz *ngIf="isQuizVisible"
           [studentChapter]="chapter!"
+          (closeQuiz)="closeQuiz()">
+</app-quiz>
+<app-quiz *ngIf="isQuizResultVisible"
+          [studentChapter]="chapter!"
+          [isQuizResultVisible]="isQuizResultVisible"
           (closeQuiz)="closeQuiz()">
 </app-quiz>

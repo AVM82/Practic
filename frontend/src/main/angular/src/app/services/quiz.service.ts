@@ -24,12 +24,20 @@ export class QuizService {
         window.sessionStorage.setItem('quiz', JSON.stringify(quiz));
     }
 
-    getSavedQuiz(): Quiz | undefined {
-        const quizJson = window.sessionStorage.getItem('quiz');
-        return quizJson ? Quiz.fromJson(JSON.parse(quizJson)) : undefined;
-    }
+    // getSavedQuiz(): Quiz | undefined {
+    //     const quizJson = window.sessionStorage.getItem('quiz');
+    //     return quizJson ? Quiz.fromJson(JSON.parse(quizJson)) : undefined;
+    // }
 
     getQuizResultId(studentChapterId: number): Observable<number> {
         return this.http.get<number>(ApiUrls.Quizzes + 'start/' + studentChapterId);
+    }
+
+    getOriginQuiz(quizId: number): Observable<Quiz> {
+        return  this.http.get<Quiz>(ApiUrls.Quizzes + quizId + '/origin')
+    }
+
+    getSavedResult(quizId: number, quizResultId: number): Observable<number[][]> {
+        return this.http.get<number[][]>(ApiUrls.Quizzes + quizId + '/result/' + quizResultId);
     }
 }
