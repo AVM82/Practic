@@ -66,6 +66,13 @@ export class ChapterState {
   static readonly IN_PROCESS = STATE_IN_PROCESS;
   static readonly PAUSE = STATE_PAUSE;
   static readonly DONE = STATE_DONE;
+  static readonly WEIGHT_THEORY = 0.25;
+  static readonly WEIGHT_PRACTIC = 0.50;
+  static readonly WEIGHT_REPORT = 0.15;
+  static readonly WEIGHT_QUIZ = 0.10;
+  static readonly countAveragePercent = (theory: number, practic: number, report: number, quiz: number): number =>
+        Math.floor(theory * ChapterState.WEIGHT_THEORY + practic * ChapterState.WEIGHT_PRACTIC
+          + report * ChapterState.WEIGHT_REPORT + quiz * ChapterState.WEIGHT_QUIZ)
 }
 
 export class PracticeState {
@@ -74,6 +81,13 @@ export class PracticeState {
   static readonly PAUSE = STATE_PAUSE;
   static readonly READY_TO_REVIEW = STATE_READY_TO_REVIEW;
   static readonly APPROVED = STATE_APPROVED;
+  static readonly PERCENT = new Map<string, number>([
+    [PracticeState.NOT_STARTED, 0],
+    [PracticeState.IN_PROCESS, 33],
+    [PracticeState.PAUSE, 33],
+    [PracticeState.READY_TO_REVIEW, 70],
+    [PracticeState.APPROVED, 100]
+  ]);
 }
 
 export class ReportState {
@@ -83,6 +97,13 @@ export class ReportState {
   static readonly APPROVED = STATE_APPROVED;
   static readonly CANCELLED = STATE_CANCELLED;
   static readonly isActual = (state: string): boolean => state === this.ANNOUNCED || state === this.STARTED;
+  static readonly PERCENT = new Map<string, number>([
+    [ReportState.ANNOUNCED, 10],
+    [ReportState.STARTED, 50],
+    [ReportState.FINISHED, 80],
+    [ReportState.APPROVED, 100],
+    [ReportState.CANCELLED, 0]
+  ]);
 }
 
 export const BUTTON_START = 'ПОЧАТИ';
@@ -97,4 +118,3 @@ export const LEVEL_COLORS = ['#84C984', '#D86D6D', '#CED069', '#6565A3']
 export const REQUIRED_REPORT_COUNT: number = 1;
 export const DAYS_AHEAD_REPORT_ANNOUNCE = 7;
 export const MAX_REPORT_COUNT_PER_DAY = 3;
-
