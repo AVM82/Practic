@@ -19,14 +19,12 @@ public class PropertyLoader {
 
 
     public PropertyLoader(String file, boolean string) {
-        initialized = string ? loadPropertiesFromString(prop, file)
-                : loadProperties(prop, Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file));
+        initialized = string ? loadPropertiesFromString(prop, file) : loadProperties(prop, file);
     }
 
 
     public PropertyLoader(String file) {
-        initialized =
-                loadProperties(prop, Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file));
+        initialized = loadProperties(prop, file);
     }
 
 
@@ -47,7 +45,7 @@ public class PropertyLoader {
 
 
     protected boolean loadProperties(ClassLoader classLoader, String file) {
-        if (loadProperties(prop, Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file))) {
+        if (loadProperties(prop, file)) {
             return true;
         } else {
             try {
@@ -61,8 +59,10 @@ public class PropertyLoader {
     }
 
 
-    public static boolean loadProperties(Properties prop, Path file) {
-        try (FileReader fr = new FileReader(file.toString(), StandardCharsets.UTF_8)) {
+    public static boolean loadProperties(Properties prop, String file) {
+        try (FileReader fr = new FileReader(
+                Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file).toString(),
+                StandardCharsets.UTF_8)) {
             prop.load(fr);
             return true;
         } catch (IOException e) {
