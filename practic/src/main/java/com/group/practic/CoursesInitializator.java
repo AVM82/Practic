@@ -3,6 +3,7 @@ package com.group.practic;
 import com.group.practic.service.CourseService;
 import jakarta.annotation.PostConstruct;
 import java.io.File;
+import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
     
-    public static final String COURSE_PROPRTY_FOLDER = "./";
+    public static final Path COURSE_PROPRTY_FOLDER = new File("./").toPath().normalize();
 
     CourseService courseService;
 
