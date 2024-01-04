@@ -14,7 +14,7 @@ public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
     
-    public static final Path COURSE_PROPRTY_FOLDER = new File("./").toPath().normalize();
+    public static final Path COURSE_PROPERTY_FOLDER = new File("./").toPath().normalize();
 
     CourseService courseService;
 
