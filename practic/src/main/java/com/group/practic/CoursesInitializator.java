@@ -3,7 +3,6 @@ package com.group.practic;
 import com.group.practic.service.CourseService;
 import jakarta.annotation.PostConstruct;
 import java.io.File;
-import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
-    
-    public static final Path COURSE_PROPERTY_FOLDER = new File("./").toPath().normalize();
+
+    public static final String COURSE_PROPERTY_FOLDER = "./";
 
     CourseService courseService;
 
@@ -31,8 +30,8 @@ public class CoursesInitializator {
     @PostConstruct
     void initialize() {
         if (refresh) {
-            File[] files = new File(".")
-                    .listFiles(f -> f.isFile() && f.getName().endsWith(COURSE_MASK));
+            File[] files =
+                    new File(".").listFiles(f -> f.isFile() && f.getName().endsWith(COURSE_MASK));
             for (File file : files) {
                 initCourse(file.getName());
             }

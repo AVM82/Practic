@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -19,12 +20,13 @@ public class PropertyLoader {
 
     public PropertyLoader(String file, boolean string) {
         initialized = string ? loadPropertiesFromString(prop, file)
-                : loadProperties(prop, CoursesInitializator.COURSE_PROPERTY_FOLDER + file);
+                : loadProperties(prop, Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file));
     }
 
 
     public PropertyLoader(String file) {
-        initialized = loadProperties(prop, file);
+        initialized =
+                loadProperties(prop, Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file));
     }
 
 
@@ -45,7 +47,7 @@ public class PropertyLoader {
 
 
     protected boolean loadProperties(ClassLoader classLoader, String file) {
-        if (loadProperties(prop, file)) {
+        if (loadProperties(prop, Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file))) {
             return true;
         } else {
             try {
@@ -59,11 +61,8 @@ public class PropertyLoader {
     }
 
 
-    public static boolean loadProperties(Properties prop, String file) {
-        if (!file.startsWith(CoursesInitializator.COURSE_PROPERTY_FOLDER.toString())) {
-            return false;
-        }
-        try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8)){
+    public static boolean loadProperties(Properties prop, Path file) {
+        try (FileReader fr = new FileReader(file.toString(), StandardCharsets.UTF_8)) {
             prop.load(fr);
             return true;
         } catch (IOException e) {
