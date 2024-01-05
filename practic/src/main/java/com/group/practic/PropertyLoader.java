@@ -60,7 +60,7 @@ public class PropertyLoader {
 
 
     protected boolean loadProperties(Properties prop, File file) {
-        try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8) ) {
+        try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8)) {
             prop.load(fr);
             return true;
         } catch (IOException e) {
