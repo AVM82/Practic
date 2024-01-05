@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {RouterLink} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ReportCardComponent} from "../../componets/report-card/report-card.component";
-import {Report} from "../../models/report";
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {Level} from "../../models/level";
@@ -11,7 +10,6 @@ import { Chapter } from 'src/app/models/chapter';
 import {ReportService} from 'src/app/services/report.service';
 import { CoursesService } from 'src/app/services/courses.service';
 import { User } from 'src/app/models/user';
-import { ChangeDetectionStrategy } from '@angular/compiler';
 
 @Component({
   selector: 'chapter-reports',

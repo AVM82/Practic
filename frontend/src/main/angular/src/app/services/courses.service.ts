@@ -3,13 +3,13 @@ import {Course} from "../models/course";
 import {HttpClient} from "@angular/common/http";
 import {Observable, map, of} from "rxjs";
 import {Router} from "@angular/router";
-import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, getChapterUrl, getStudentChapterUrl, getStudentChaptersUrl, getStudentsAllAdditionalMaterialsUrl} from "../enums/api-urls";
+import {ApiUrls, getChaptersUrl, getLevelsUrl, getMaterialsUrl, getStudentAdditionalMaterialUrl, 
+        getStudentChaptersUrl, getStudentsAllAdditionalMaterialsUrl} from "../enums/api-urls";
 import {AdditionalMaterials} from 'src/app/models/additional.material';
 import {Level} from "../models/level";
 import { Chapter, CompleteChapter } from 'src/app/models/chapter';
 import { StateStudent } from '../models/student';
 import { TokenStorageService } from './token-storage.service';
-import { StateMentor } from '../models/mentor';
 import { SvgIconRegistryService } from 'angular-svg-icon';
 import { User } from '../models/user';
 import { LEVEL_COLORS, STATE_NOT_STARTED } from '../enums/app-constans';

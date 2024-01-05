@@ -13,7 +13,7 @@ export enum ApiUrls {
   Course = '/api/courses/',
   NewCourse = '/api/courses/NewCourse',
   NewCourseFromProperties = '/api/courses/NewCourseFromProperties',
-  Chapters = '/api/students/chapters/',
+  Chapters = '/api/courses/chapters/',
 
   Students = '/api/students',
   StudentChapters = '/api/students/chapters/',

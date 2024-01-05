@@ -36,7 +36,7 @@ export class CourseDetailsComponent implements AfterViewInit {
   stateStudent?: StateStudent;
   me!: User;
   percent: number[] = [];
-  reportsState: String[] = [];
+
   @ViewChildren('myCanvas') canvases!: QueryList<ElementRef<HTMLCanvasElement>>;
 
   constructor(
@@ -53,7 +53,7 @@ export class CourseDetailsComponent implements AfterViewInit {
         const practicPercent = this.getAveragePercentPracticForAllParts(index);
         const quizPercent = this.getPercentQuizCompletion(index);
         const reportPercent = this.getPercentCompletionReport(index)
-        //next set theory value according subchapter weights
+        //next set theory value(100) according checked subchapter weights
         this.percent[index] = ChapterState.countAveragePercent(100, practicPercent, reportPercent, quizPercent);
         this.createChart([practicPercent, quizPercent, reportPercent], canvas);
         this.cdr.detectChanges();
@@ -86,9 +86,10 @@ export class CourseDetailsComponent implements AfterViewInit {
   }
 
   getReports(myReports: Report[]): string {
-      let number = myReports?.filter(report => report.state === ReportState.APPROVED).length;
-    return number === 1 ? '1 проведена'
-      : ((number === 0 ? 'не' : number) + ' проведено');
+    let number = myReports?.filter(report => report.state === ReportState.APPROVED).length;
+    if (number === 1)
+      return '1 проведена';
+    return  (number === 0 ? 'не' : number) + ' проведено';
   }
 
   getAveragePercentPracticForAllParts(chapterIndex: number): number {
