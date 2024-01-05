@@ -97,7 +97,7 @@ public class CourseService {
 
 
     public Optional<CourseEntity> create(String properties) {
-        PropertyLoader prop = new PropertyLoader(properties, true);
+        PropertyLoader prop = new PropertyLoader(properties);
         return prop.initialized ? createOrUpdate(prop) : Optional.empty();
     }
 
