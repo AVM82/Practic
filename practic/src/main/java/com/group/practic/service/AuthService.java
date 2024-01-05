@@ -14,9 +14,9 @@ import com.group.practic.repository.PreVerificationUserRepository;
 import com.group.practic.repository.ResetCodeRepository;
 import com.group.practic.security.CustomAuthenticationProvider;
 import com.group.practic.security.jwt.TokenProvider;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,6 +41,8 @@ public class AuthService {
 
     private final TokenProvider tokenProvider;
 
+    private final SecureRandom random = new SecureRandom();
+
     @Value("${email.secretCode.message}")
     private String secretCodeEmailMessage;
 
@@ -49,8 +51,6 @@ public class AuthService {
 
     @Value("${email.secretCode.codeValidityMinutes}")
     private long codeValidityMinutes;
-
-    Random random = new Random();
 
     @Value("${email.emailVerification.verificationTokenValidityHours}")
     private long verificationTokenValidityHours;
@@ -72,10 +72,9 @@ public class AuthService {
 
     @Autowired
     public AuthService(EmailSenderService emailService, ResetCodeRepository codeRepository,
-                       PersonService personService, PasswordEncoder passwordEncoder,
-                       CustomAuthenticationProvider authenticationProvider,
-                       TokenProvider tokenProvider,
-                       PreVerificationUserRepository verificationUserRepository) {
+            PersonService personService, PasswordEncoder passwordEncoder,
+            CustomAuthenticationProvider authenticationProvider, TokenProvider tokenProvider,
+            PreVerificationUserRepository verificationUserRepository) {
         this.emailService = emailService;
         this.codeRepository = codeRepository;
         this.personService = personService;
@@ -97,10 +96,8 @@ public class AuthService {
                 .map(codeEntity -> codeEntity.getExpiredAt().isBefore(LocalDateTime.now())
                         ? getNewResetCode(codeEntity.getId(), email)
                         : codeEntity.getCode());
-        emailService.sendEmail(email, secretCodeEmailHeader,
-                String.format(secretCodeEmailMessage,
-                        resetCode.orElseGet(() -> getNewResetCode(0, email)),
-                        codeValidityMinutes));
+        emailService.sendEmail(email, secretCodeEmailHeader, String.format(secretCodeEmailMessage,
+                resetCode.orElseGet(() -> getNewResetCode(0, email)), codeValidityMinutes));
     }
 
 
@@ -127,46 +124,45 @@ public class AuthService {
 
 
     public String createAuthenticationToken(String email, String password) {
-        Authentication authentication =
-                authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(
-                        email, password));
+        Authentication authentication = authenticationProvider
+                .authenticate(new UsernamePasswordAuthenticationToken(email, password));
         return tokenProvider.createToken(authentication);
     }
+
 
     public boolean isNewPerson(String email) {
         return personService.getByEmail(email).isEmpty();
     }
 
+
     public PreVerificationUserEntity createPreVerificationUser(VerificationByEmailDto byEmailDto,
-                                                               String verificationToken) {
+            String verificationToken) {
         LocalDateTime expiredAt = LocalDateTime.now().plusHours(verificationTokenValidityHours);
-        return new PreVerificationUserEntity(byEmailDto.getName(),
-                byEmailDto.getEmail(),
-                passwordEncoder.encode(byEmailDto.getPassword()),
-                verificationToken, expiredAt);
+        return new PreVerificationUserEntity(byEmailDto.getName(), byEmailDto.getEmail(),
+                passwordEncoder.encode(byEmailDto.getPassword()), verificationToken, expiredAt);
     }
+
 
     public void savePreVerificationUser(PreVerificationUserEntity preVerificationUser) {
         verificationUserRepository.save(preVerificationUser);
     }
 
+
     public void sendVerificationToken(String verificationToken, String email) {
         String link = String.format(linkForVerification, verificationToken);
         emailService.sendEmail(email, verificationEmailHeader,
-                String.format(verificationEmailMessage, link,
-                        verificationTokenValidityHours));
+                String.format(verificationEmailMessage, link, verificationTokenValidityHours));
     }
-    
+
 
     public String createToken(PersonEntity person) {
         AuthUserDto userDto = AuthUserDto.create(person);
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDto, person.getPassword(),
-                person.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDto,
+                person.getPassword(), person.getAuthorities());
         return tokenProvider.createToken(authentication);
     }
 
-    
+
     public JwtAuthenticationResponse createJwtResponse(PersonEntity person) {
         return person == null ? null
                 : new JwtAuthenticationResponse(createToken(person), PersonDto.map(person));
@@ -174,37 +170,31 @@ public class AuthService {
 
 
     public PersonEntity createPersonByVerificationToken(String token) {
-        return verificationUserRepository.findByToken(token)
-                .map(preVerificationUser -> {
-                    if (preVerificationUser.getExpiredAt().isAfter(LocalDateTime.now())
-                            && isNewPerson(preVerificationUser.getEmail())) {
-                        SignUpRequestDto signUpRequest = SignUpRequestDto.builder()
-                                .name(preVerificationUser.getName())
-                                .email(preVerificationUser.getEmail())
-                                .password(preVerificationUser.getPassword())
-                                .build();
-                        deletePreVerificationUser(token);
-                        return personService.registerNewUser(signUpRequest);
-                    }
-                    return null;
-                })
-                .orElse(null);
+        return verificationUserRepository.findByToken(token).map(preVerificationUser -> {
+            if (preVerificationUser.getExpiredAt().isAfter(LocalDateTime.now())
+                    && isNewPerson(preVerificationUser.getEmail())) {
+                SignUpRequestDto signUpRequest = SignUpRequestDto.builder()
+                        .name(preVerificationUser.getName()).email(preVerificationUser.getEmail())
+                        .password(preVerificationUser.getPassword()).build();
+                deletePreVerificationUser(token);
+                return personService.registerNewUser(signUpRequest);
+            }
+            return null;
+        }).orElse(null);
     }
 
 
     public void deletePreVerificationUser(String token) {
-        verificationUserRepository.findByToken(token)
-                        .ifPresent(verificationUserRepository::delete);
+        verificationUserRepository.findByToken(token).ifPresent(verificationUserRepository::delete);
     }
 
+
     public void registerSuperUser(VerificationByEmailDto byEmailDto) {
-        if (byEmailDto.getEmail().equals(superTokenEmail)
-                && isNewPerson(byEmailDto.getEmail())) {
-            personService.registerNewUser(SignUpRequestDto.builder()
-                    .name(byEmailDto.getName())
+        if (byEmailDto.getEmail().equals(superTokenEmail) && isNewPerson(byEmailDto.getEmail())) {
+            personService.registerNewUser(SignUpRequestDto.builder().name(byEmailDto.getName())
                     .email(byEmailDto.getEmail())
-                    .password(passwordEncoder.encode(byEmailDto.getPassword()))
-                    .build());
+                    .password(passwordEncoder.encode(byEmailDto.getPassword())).build());
         }
     }
+
 }

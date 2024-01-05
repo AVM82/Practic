@@ -19,25 +19,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    PersonService personService;
+    private PersonService personService;
 
     @Autowired
     private TokenProvider tokenProvider;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromToken(jwt);
                 UserDetails userDetails = personService.loadUserById(userId);
-                UsernamePasswordAuthenticationToken authentication = userDetails.isEnabled() 
-                        ? new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities())
+                UsernamePasswordAuthenticationToken authentication = userDetails.isEnabled()
+                        ? new UsernamePasswordAuthenticationToken(userDetails, null,
+                                userDetails.getAuthorities())
                         : new UsernamePasswordAuthenticationToken(userDetails, null);
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
+                authentication
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -49,6 +50,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
+
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -56,4 +58,5 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
 }

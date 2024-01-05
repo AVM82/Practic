@@ -27,15 +27,21 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
     private static RestTemplate restTemplate = new RestTemplate();
 
     private static ObjectMapper objectMapper = new ObjectMapper();
+
+
+    @Autowired
+    public CustomOauth2UserService(PersonService personService, Environment env) {
+        this.personService = personService;
+        this.env = env;
+    }
+
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oauth2UserRequest)
@@ -56,6 +62,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         }
     }
 
+
     private void populateEmailAddressFromLinkedIn(
             String accessToken, Map<String, Object> attributes
     ) throws OAuth2AuthenticationException {
@@ -66,6 +73,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         attributes.put("emailAddress", element);
     }
+
 
     private void populateProfilePictureFromLinkedIn(
             String accessToken, Map<String, Object> attributes) {
@@ -80,6 +88,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         }
     }
 
+
     private ResponseEntity<String> makeLinkedInApiRequest(
             String accessToken, String requestEndpoint) {
         // Create a header with the access token
@@ -90,6 +99,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         // Make a GET request to LinkedIn's email endpoint with the token
         return restTemplate.exchange(requestEndpoint, HttpMethod.GET, entity, String.class);
     }
+
 
     private String extractElement(String element, String responseBody) {
         String result = null;
@@ -112,18 +122,18 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         } catch (JsonProcessingException e) {
             log.error("Cannot process JSON from response's body", e);
         }
-
         return result;
     }
+
 
     private String extractEmailAddressElement(JsonNode rootNode) {
         JsonNode emailAddressElement = rootNode
                 .get("elements").get(0)
                 .get("handle~")
                 .get("emailAddress");
-
         return emailAddressElement.textValue();
     }
+
 
     private String extractProfilePictureUrlElement(JsonNode rootNode) {
         JsonNode profilePictureUrlElement = rootNode
@@ -132,7 +142,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
                 .get("elements").get(0)
                 .get("identifiers").get(0)
                 .get("identifier");
-
         return profilePictureUrlElement.textValue();
     }
+
 }

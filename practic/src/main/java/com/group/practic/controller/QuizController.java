@@ -29,13 +29,20 @@ public class QuizController {
     private final StudentService studentService;
 
     @Autowired
-    public QuizController(QuizService quizService, StudentService studentService) {
+    public QuizController(QuizService quizService,
+                          StudentService studentService) {
         this.quizService = quizService;
         this.studentService = studentService;
     }
 
     @GetMapping("/{quizId}")
-    public ResponseEntity<QuizDto> getQuiz(
+    public ResponseEntity<QuizDto> getQuizForUi(
+            @PathVariable(value = "quizId") Long quizId) {
+        return getResponse(quizService.get(quizId).map(QuizDto::mapForUi));
+    }
+
+    @GetMapping("/{quizId}/origin")
+    public ResponseEntity<QuizDto> getOriginQuiz(
             @PathVariable(value = "quizId") Long quizId) {
         return getResponse(quizService.get(quizId).map(QuizDto::map));
     }
@@ -45,6 +52,16 @@ public class QuizController {
             @PathVariable(value = "studentChapterId") Long studentChapterId) {
         return getResponse(studentService.getStudentChapter(studentChapterId)
                 .map(quizService::createQuizResult));
+    }
+
+    @GetMapping("/{quizId}/result/{quizResultId}")
+    public ResponseEntity<Collection<List<Long>>> loadAnswers(
+            @PathVariable(value = "quizId") Long quizId,
+            @PathVariable(value = "quizResultId") Long quizResultId) {
+        Optional<QuizEntity> quiz = quizService.get(quizId);
+        Optional<QuizResultEntity> quizResult = quizService.getQuizResult(quizResultId);
+        return quiz.isEmpty() || quizResult.isEmpty() ? badRequest()
+                : getResponse(quizService.loadAnswers(quiz.get(), quizResult.get()));
     }
 
     @PostMapping("/{quizId}/{quizResultId}/{time}")

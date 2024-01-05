@@ -28,24 +28,20 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private HttpCookieOauth2AuthRequestRepository httpCookieOauth2AuthRequestRepository;
 
+
     @Autowired
-    Oauth2AuthenticationSuccessHandler(
-            TokenProvider tokenProvider,
-            AppProperties appProperties,
+    Oauth2AuthenticationSuccessHandler(TokenProvider tokenProvider, AppProperties appProperties,
             HttpCookieOauth2AuthRequestRepository httpCookieOauth2AuthRequestRepository) {
         this.tokenProvider = tokenProvider;
         this.appProperties = appProperties;
         this.httpCookieOauth2AuthRequestRepository = httpCookieOauth2AuthRequestRepository;
     }
 
-    @Override
-    public void onAuthenticationSuccess(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication
-    ) throws IOException, ServletException {
-        String targetUrl = determineTargetUrl(request, response, authentication);
 
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+            Authentication authentication) throws IOException, ServletException {
+        String targetUrl = determineTargetUrl(request, response, authentication);
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -55,16 +51,12 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
-    @Override
-    protected String determineTargetUrl(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication
-    ) {
-        Optional<String> redirectUri = CookieUtils
-                .getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-                .map(Cookie::getValue);
 
+    @Override
+    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
+            Authentication authentication) {
+        Optional<String> redirectUri = CookieUtils
+                .getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
         if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
             throw new BadRequestException(
                     "Unauthorized Redirect URI got. Can't proceed with the authentication");
@@ -74,30 +66,27 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String token = tokenProvider.createToken(authentication);
 
-        return UriComponentsBuilder
-                .fromUriString(targetUrl)
-                .queryParam("token", token)
-                .build()
+        return UriComponentsBuilder.fromUriString(targetUrl).queryParam("token", token).build()
                 .toUriString();
     }
 
-    protected void clearAuthenticationAttributes(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+
+    protected void clearAuthenticationAttributes(HttpServletRequest request,
+            HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
         httpCookieOauth2AuthRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
 
+
     private boolean isAuthorizedRedirectUri(String uri) {
         URI clientRedirectUri = URI.create(uri);
 
-        return appProperties.getOauth2()
-                .getAuthorizedRedirectUris()
-                .stream().anyMatch(authorizedRedirectUri -> {
+        return appProperties.getOauth2().getAuthorizedRedirectUris().stream()
+                .anyMatch(authorizedRedirectUri -> {
                     URI authorizedUri = URI.create(authorizedRedirectUri);
                     return authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
                             && authorizedUri.getPort() == clientRedirectUri.getPort();
                 });
     }
+
 }

@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {Course} from "../../models/course";
 import {MatIconModule} from "@angular/material/icon";
 import {CoursesService} from "../../services/courses.service";
-import {ActivatedRoute, RouterLink} from "@angular/router";
+import {ActivatedRoute, ParamMap, RouterLink} from "@angular/router";
 import {MatButtonModule} from "@angular/material/button";
 import { Chapter } from 'src/app/models/chapter';
 import { ApplyBtnComponent } from '../apply-btn/apply-btn.component';
@@ -48,34 +48,42 @@ export class CourseNavbarComponent implements OnInit {
       if (slug) {
         this.slug = slug;
         this.navSlug.emit(slug);
-        this.coursesService.getCourse(this.slug).subscribe(course => {
-          if (course) {
-            this.navCourse.emit(course);
-            this.showAdditionalMaterials = course.additionalMaterialsExist;
-          }
-        });
-        this.coursesService.getChapters(this.slug).subscribe(shortChapters =>{
-          if (shortChapters) {
-            this.showChapters = shortChapters.length > 0;
-            this.chapters = shortChapters;
-            this.navchapters.emit(shortChapters);
-          }
-          let url = this.route.snapshot.url;
-          this.showEditButton = this.me.isMentor(this.slug) && (url.length !== 3 || url[2].path !== 'reports');
-          if (url.length == 4 && url[2].path === 'chapters') {
-            const number = Number(params.get('chapterN')) | 0;
-            const chapter = shortChapters.find(shortChapters  => shortChapters.number === number);
-            if (chapter)
-              this.coursesService.extChapter(chapter).subscribe(chapter => {
-                  this.currentChapter.emit(chapter);
-                  this.currentNumber = chapter.number;
-                } )
-          }
-        });
+        this.loadCourse(slug);
+        this.loadChapters(slug, params);
      }
     }) 
   }
  
+  private loadCourse(slug: string): void {
+    this.coursesService.getCourse(this.slug).subscribe(course => {
+      if (course) {
+        this.navCourse.emit(course);
+        this.showAdditionalMaterials = course.additionalMaterialsExist;
+      }
+    });
+  }
+
+  private loadChapters(slug: string, params: ParamMap): void {
+    this.coursesService.getChapters(this.slug).subscribe(shortChapters =>{
+      if (shortChapters) {
+        this.showChapters = shortChapters.length > 0;
+        this.chapters = shortChapters;
+        this.navchapters.emit(shortChapters);
+      }
+      let url = this.route.snapshot.url;
+      this.showEditButton = this.me.isMentor(this.slug) && (url.length !== 3 || url[2].path !== 'reports');
+      if (url.length == 4 && url[2].path === 'chapters') {
+        const number = Number(params.get('chapterN')) | 0;
+        const chapter = shortChapters.find(shortChapters  => shortChapters.number === number);
+        if (chapter)
+          this.coursesService.extChapter(chapter).subscribe(chapter => {
+              this.currentChapter.emit(chapter);
+              this.currentNumber = chapter.number;
+            } )
+      }
+    });
+  }
+
   setEditMode(editMode: boolean) {
     this.editModeChanged.emit(editMode);
   }

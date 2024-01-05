@@ -16,28 +16,29 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class Oauth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    private final HttpCookieOauth2AuthRequestRepository httpCookieOauth2AuthRequestRepository;
+
+
     @Autowired
-    HttpCookieOauth2AuthRequestRepository httpCookieOauth2AuthRequestRepository;
+    public Oauth2AuthenticationFailureHandler(
+            HttpCookieOauth2AuthRequestRepository httpCookieOauth2AuthRequestRepository) {
+        this.httpCookieOauth2AuthRequestRepository = httpCookieOauth2AuthRequestRepository;
+    }
+
 
     @Override
-    public void onAuthenticationFailure(
-            HttpServletRequest request,
-            HttpServletResponse response,
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException {
-        String targetUrl = CookieUtils
-                .getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-                .map(Cookie::getValue)
-                .orElse(("/"));
+        String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue).orElse(("/"));
 
-        targetUrl = UriComponentsBuilder
-                .fromUriString(targetUrl)
-                .queryParam("error", exception.getLocalizedMessage())
-                .build()
-                .encode()
+        targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("error", exception.getLocalizedMessage()).build().encode()
                 .toUriString();
 
         httpCookieOauth2AuthRequestRepository.removeAuthorizationRequestCookies(request, response);
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
+
 }

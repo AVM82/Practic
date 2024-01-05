@@ -29,7 +29,6 @@ public class Scenario {
             .exec(studentSteps.decrementLike())
             .exec(studentSteps.deleteFeedbackById())
             .exec(studentSteps.getCertificateInfo())
-            .exec(studentSteps.sendCertificateRequest())
 
             .exec(coursesSteps.getCoursesAdditional())
             .exec(coursesSteps.getCourseBySlug());

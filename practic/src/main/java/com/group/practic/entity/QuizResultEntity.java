@@ -1,26 +1,28 @@
 package com.group.practic.entity;
 
+import static jakarta.persistence.CascadeType.MERGE;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+
 
 
 @Entity
 @Table(name = "quiz_results")
 @Getter
 @Setter
-@NoArgsConstructor
 public class QuizResultEntity implements Serializable {
 
     @Serial
@@ -30,9 +32,12 @@ public class QuizResultEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long id;
 
-    @ManyToOne
+    @OneToOne
     @JsonIgnore
     StudentChapterEntity studentChapter;
+
+    @OneToOne(mappedBy = "quizResult", cascade = MERGE)
+    private AnswerResultEntity answerResult;
 
     @CreationTimestamp
     Timestamp startedAt;
@@ -43,13 +48,15 @@ public class QuizResultEntity implements Serializable {
 
     int correctAnsweredCount;
 
+    @Column(name = "passed", nullable = false)
     boolean passed;
 
     long secondSpent;
-
 
     public QuizResultEntity(StudentChapterEntity studentChapter) {
         this.studentChapter = studentChapter;
     }
 
+    public QuizResultEntity() {
+    }
 }

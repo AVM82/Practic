@@ -13,6 +13,8 @@ public class CoursesInitializator {
 
     public static final String COURSE_MASK = ".course";
 
+    public static final String COURSE_PROPERTY_FOLDER = "./";
+
     CourseService courseService;
 
     @Value("${refreshDB_on_start}")
@@ -28,8 +30,8 @@ public class CoursesInitializator {
     @PostConstruct
     void initialize() {
         if (refresh) {
-            File[] files = new File(".")
-                    .listFiles(f -> f.isFile() && f.getName().endsWith(COURSE_MASK));
+            File[] files =
+                    new File(".").listFiles(f -> f.isFile() && f.getName().endsWith(COURSE_MASK));
             for (File file : files) {
                 initCourse(file.getName());
             }
@@ -39,7 +41,7 @@ public class CoursesInitializator {
 
     public boolean initCourse(String filename) {
         if (PropertyLoader.isComprehendedString(filename)) {
-            PropertyLoader prop = new PropertyLoader(filename);
+            PropertyLoader prop = new PropertyLoader(new File(filename));
             return prop.initialized && courseService.createOrUpdate(prop).isPresent();
         }
         return false;

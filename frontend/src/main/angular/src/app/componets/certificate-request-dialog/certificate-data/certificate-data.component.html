@@ -1,9 +1,9 @@
 <div class="main-container">
-    <h2 class="title" align="center">Certificate Request Form</h2>
+    <h2 class="title">Certificate Request Form</h2>
 
     <div>
         <mat-dialog-content *ngIf="certificateInfo">
-            <h3 class="sub-title" align="center">Info</h3>
+            <h3 class="sub-title">Info</h3>
             <div class="certificate-request-info">
                 <p class="skill-name">Name</p>
                 <input class="certificate-input" [(ngModel)]="certificateInfo.studentName" placeholder="Enter your name"
@@ -23,7 +23,7 @@
                 <hr>
             </div>
 
-            <h3 class="sub-title" align="center">Skills</h3>
+            <h3 class="sub-title">Skills</h3>
             <div class="certificate-request-skills">
                 <dl class="skills-list">
                     <dd *ngFor="let skill of certificateInfo!.selectedSkills, index as i">
@@ -34,7 +34,7 @@
             </div>
         </mat-dialog-content>
 
-        <mat-dialog-actions align="start">
+        <mat-dialog-actions>
             <button class="cancel-button" mat-button mat-dialog-close>Cancel</button>
             <button class="ok-button" *ngIf="checkName(certificateInfo.studentName)" mat-button (click)="sendMessage()"
                     [mat-dialog-close]="true">SendRequest

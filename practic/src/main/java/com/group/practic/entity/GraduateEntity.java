@@ -1,5 +1,6 @@
 package com.group.practic.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,8 +44,10 @@ public class GraduateEntity implements Serializable {
 
     LocalDate finish;
 
+    @Column(name = "weeks")
     int weeks;
 
+    @Column(name = "days_spent")
     int daysSpent;
 
     private Set<String> skills;

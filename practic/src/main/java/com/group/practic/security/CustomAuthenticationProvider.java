@@ -15,14 +15,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-    @Autowired
+
     private final PersonService personService;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
-    public CustomAuthenticationProvider(PersonService personService) {
+    private final PasswordEncoder passwordEncoder;
+
+
+    @Autowired
+    public CustomAuthenticationProvider(PersonService personService,
+            PasswordEncoder passwordEncoder) {
         this.personService = personService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 

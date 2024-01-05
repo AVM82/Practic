@@ -11,8 +11,6 @@ public class FunctionThreadPool<A, R> {
 
     private Function<A, R> function;
 
-    private ExecutorService es;
-
     private long sleepTimeMs = 250;
 
 
@@ -23,13 +21,13 @@ public class FunctionThreadPool<A, R> {
 
     public FunctionThreadPool(Function<A, R> function, long sleepTimeMs) {
         this.function = function;
-        this.sleepTimeMs = sleepTimeMs > 10 || sleepTimeMs < this.sleepTimeMs ? sleepTimeMs
-                : this.sleepTimeMs;
+        this.sleepTimeMs =
+                sleepTimeMs > 10 || sleepTimeMs < this.sleepTimeMs ? sleepTimeMs : this.sleepTimeMs;
     }
 
 
     public Collection<R> execute(Collection<A> arguments) {
-        es = Executors.newFixedThreadPool(arguments.size());
+        ExecutorService es = Executors.newFixedThreadPool(arguments.size());
         Collection<FunctionThread<A, R>> pool = createPool(arguments);
         pool.forEach(es::execute);
         while (!es.isTerminated()) {

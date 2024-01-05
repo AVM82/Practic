@@ -2,6 +2,7 @@ package com.group.practic.dto;
 
 import com.group.practic.entity.ChapterEntity;
 import com.group.practic.entity.ChapterPartEntity;
+import com.group.practic.entity.QuizResultEntity;
 import com.group.practic.entity.ReportEntity;
 import com.group.practic.entity.StudentChapterEntity;
 import com.group.practic.entity.StudentPracticeEntity;
@@ -25,9 +26,10 @@ public class ChapterCompleteDto {
     List<ReportDto> reports;
 
     List<ReportDto> myReports;
-    
+
     Set<Long> subs;
 
+    Long quizResultId;
 
     public static ChapterCompleteDto map(ChapterEntity entity) {
         ChapterCompleteDto dto = new ChapterCompleteDto();
@@ -60,6 +62,8 @@ public class ChapterCompleteDto {
         dto.myReports = entity.getReports().stream().map(ReportDto::map).toList();
         dto.reports = reports.stream().map(ReportDto::map).toList();
         dto.subs = entity.getSubs();
+        QuizResultEntity quizResult = entity.getQuizResult();
+        dto.quizResultId = quizResult != null ? quizResult.getId() : null;
         return dto;
     }
 

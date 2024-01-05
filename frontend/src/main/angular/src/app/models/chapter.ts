@@ -18,7 +18,8 @@ export class Chapter {
   topicReports?: TopicReport [];
   quizPassed: boolean;
   quizId: number;
-  
+  quizResultId: number;
+
   constructor(
     id: number,
     number: number,
@@ -30,19 +31,21 @@ export class Chapter {
     reports: Report[],
     topicReports: TopicReport [],
     quizPassed: boolean,
-    quizId: number
+    quizId: number,
+    quizResultId: number
   ) {
     this.id = id;
     this.number = number;
     this.hidden = hidden;
     this.shortName = shortName;
-    this.parts = parts; 
+    this.parts = parts;
     this.state = state || STATE_NOT_STARTED;
     this.reports = reports;
     this.myReports = myReports;
     this.topicReports = topicReports;
     this.quizPassed = quizPassed;
     this.quizId = quizId;
+    this.quizResultId = quizResultId;
   }
 
   public static complete(chapter: Chapter, ext: CompleteChapter) {
@@ -53,6 +56,7 @@ export class Chapter {
     chapter.reports = ext.reports;
     ReportService.refreshMyReports(chapter);
     chapter.subs = ext.subs;
+    chapter.quizResultId = ext.quizResultId;
   }
 }
 
@@ -64,6 +68,7 @@ export interface CompleteChapter {
   myReports: Report[];
   reports: Report[];
   subs: number[];
+  quizResultId: number;
 }
 
 export interface NewStateChapter {

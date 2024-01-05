@@ -50,6 +50,6 @@ export class CertificateDataComponent implements OnInit {
     };
 
     checkName(name: string): boolean {
-        return name.match(/([А-ЯA-Z][- а-яА-Яa-zA-z])/) !== null;
+        return /([А-ЯA-Z][- а-яА-Яa-zA-Z])/.exec(name) != null;
     }
 }

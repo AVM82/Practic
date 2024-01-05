@@ -12,7 +12,7 @@ import {CommonModule} from "@angular/common";
         TranslocoRootModule,
         CommonModule
     ],
-    styleUrls: ['./timer.component.css']
+    styleUrls: []
 })
 export class TimerComponent implements OnInit, OnDestroy {
 

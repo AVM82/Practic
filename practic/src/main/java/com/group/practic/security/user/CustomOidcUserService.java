@@ -15,8 +15,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CustomOidcUserService extends OidcUserService {
 
-    @Autowired
     private PersonService personService;
+
+
+    @Autowired
+    public CustomOidcUserService(PersonService personService) {
+        super();
+        this.personService = personService;
+    }
+
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
@@ -37,5 +44,6 @@ public class CustomOidcUserService extends OidcUserService {
         }
         return null;
     }
+
 }
 
