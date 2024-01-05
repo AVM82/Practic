@@ -23,9 +23,6 @@ export class MainPageComponent implements OnInit {
     mentorPresent: boolean = false;
     mentor!: HTMLElement ;
 
-    constructor(
-    ) {}
-    
     ngOnInit(): void {
         this.authors = document.getElementById('author')!;
         this.mentor = document.getElementById('mentor')!;
