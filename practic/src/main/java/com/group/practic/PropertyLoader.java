@@ -59,7 +59,7 @@ public class PropertyLoader {
     }
 
 
-    public static boolean loadProperties(Properties prop, String file) {
+    protected boolean loadProperties(Properties prop, String file) {
         try (FileReader fr = new FileReader(
                 Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file).toString(),
                 StandardCharsets.UTF_8)) {

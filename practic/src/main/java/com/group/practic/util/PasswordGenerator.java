@@ -5,11 +5,11 @@ import java.util.Locale;
 import java.util.Random;
 
 
-public class PasswordGenerator {
+public interface PasswordGenerator {
 
-    private static final Random random = new Random();
+    static final Random random = new Random();
 
-    private static final Faker faker = new Faker(new Locale("en"));
+    static final Faker faker = new Faker(new Locale("en"));
 
 
     public static String generateRandomPassword() {
@@ -28,7 +28,7 @@ public class PasswordGenerator {
             case 9 -> faker.hobbit().character();
             default -> faker.harryPotter().character();
         };
-        result = result.replaceAll(" ", "");
+        result = result.replace(" ", "");
         return result;
     }
 
