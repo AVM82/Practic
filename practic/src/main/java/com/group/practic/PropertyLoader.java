@@ -18,18 +18,18 @@ public class PropertyLoader {
     Properties prop = new Properties();
 
 
-    public PropertyLoader(String file, boolean fromString) {
-        initialized = fromString ? loadPropertiesFromString(prop, file) : loadProperties(prop, file);
+    public PropertyLoader(String string) {
+        initialized = loadPropertiesFromString(prop, string);
     }
 
 
-    public PropertyLoader(String filename) {
-        initialized = loadProperties(prop, filename);
+    public PropertyLoader(File file) {
+        initialized = loadProperties(prop, file);
     }
 
 
-    public PropertyLoader(ClassLoader classLoader, String filename) {
-        initialized = loadProperties(classLoader, filename);
+    public PropertyLoader(ClassLoader classLoader, File file) {
+        initialized = loadProperties(classLoader, file);
     }
 
 
@@ -44,12 +44,12 @@ public class PropertyLoader {
     }
 
 
-    protected boolean loadProperties(ClassLoader classLoader, String filename) {
-        if (loadProperties(prop, filename)) {
+    protected boolean loadProperties(ClassLoader classLoader, File file) {
+        if (loadProperties(prop, file)) {
             return true;
         } else {
             try {
-                prop.load(new InputStreamReader(classLoader.getResourceAsStream(filename),
+                prop.load(new InputStreamReader(classLoader.getResourceAsStream(file.getPath()),
                         StandardCharsets.UTF_8));
                 return true;
             } catch (IOException e1) {
@@ -59,12 +59,7 @@ public class PropertyLoader {
     }
 
 
-    protected boolean loadProperties(Properties prop, String filename) {
-        File file = new File(filename);
-        if (!file.toPath().normalize().startsWith(CoursesInitializator.COURSE_PROPERTY_FOLDER)
-            || !filename.endsWith(CoursesInitializator.COURSE_MASK)) {
-            return false;
-        }
+    protected boolean loadProperties(Properties prop, File file) {
         try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8) ) {
             prop.load(fr);
             return true;
