@@ -1,11 +1,11 @@
 package com.group.practic;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -18,24 +18,24 @@ public class PropertyLoader {
     Properties prop = new Properties();
 
 
-    public PropertyLoader(String file, boolean string) {
-        initialized = string ? loadPropertiesFromString(prop, file) : loadProperties(prop, file);
+    public PropertyLoader(String file, boolean fromString) {
+        initialized = fromString ? loadPropertiesFromString(prop, file) : loadProperties(prop, file);
     }
 
 
-    public PropertyLoader(String file) {
-        initialized = loadProperties(prop, file);
+    public PropertyLoader(String filename) {
+        initialized = loadProperties(prop, filename);
     }
 
 
-    public PropertyLoader(ClassLoader classLoader, String file) {
-        initialized = loadProperties(classLoader, file);
+    public PropertyLoader(ClassLoader classLoader, String filename) {
+        initialized = loadProperties(classLoader, filename);
     }
 
 
-    private boolean loadPropertiesFromString(Properties prop, String file) {
+    private boolean loadPropertiesFromString(Properties prop, String string) {
         try {
-            prop.load(new InputStreamReader(new ByteArrayInputStream(file.getBytes()),
+            prop.load(new InputStreamReader(new ByteArrayInputStream(string.getBytes()),
                     StandardCharsets.UTF_8));
             return true;
         } catch (IOException e) {
@@ -44,12 +44,12 @@ public class PropertyLoader {
     }
 
 
-    protected boolean loadProperties(ClassLoader classLoader, String file) {
-        if (loadProperties(prop, file)) {
+    protected boolean loadProperties(ClassLoader classLoader, String filename) {
+        if (loadProperties(prop, filename)) {
             return true;
         } else {
             try {
-                prop.load(new InputStreamReader(classLoader.getResourceAsStream(file),
+                prop.load(new InputStreamReader(classLoader.getResourceAsStream(filename),
                         StandardCharsets.UTF_8));
                 return true;
             } catch (IOException e1) {
@@ -59,10 +59,13 @@ public class PropertyLoader {
     }
 
 
-    protected boolean loadProperties(Properties prop, String file) {
-        try (FileReader fr = new FileReader(
-                Path.of(CoursesInitializator.COURSE_PROPERTY_FOLDER, file).toString(),
-                StandardCharsets.UTF_8)) {
+    protected boolean loadProperties(Properties prop, String filename) {
+        File file = new File(filename);
+        if (!file.toPath().normalize().startsWith(CoursesInitializator.COURSE_PROPERTY_FOLDER)
+            || !filename.endsWith(CoursesInitializator.COURSE_MASK)) {
+            return false;
+        }
+        try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8) ) {
             prop.load(fr);
             return true;
         } catch (IOException e) {
