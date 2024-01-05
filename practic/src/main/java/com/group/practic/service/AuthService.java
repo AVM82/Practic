@@ -14,9 +14,9 @@ import com.group.practic.repository.PreVerificationUserRepository;
 import com.group.practic.repository.ResetCodeRepository;
 import com.group.practic.security.CustomAuthenticationProvider;
 import com.group.practic.security.jwt.TokenProvider;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +41,7 @@ public class AuthService {
 
     private final TokenProvider tokenProvider;
 
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     @Value("${email.secretCode.message}")
     private String secretCodeEmailMessage;
