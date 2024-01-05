@@ -1,13 +1,13 @@
 package com.group.practic.util;
 
 import com.github.javafaker.Faker;
+import java.security.SecureRandom;
 import java.util.Locale;
-import java.util.Random;
 
 
 public interface PasswordGenerator {
 
-    static final Random random = new Random();
+    static final SecureRandom random = new SecureRandom();
 
     static final Faker faker = new Faker(new Locale("en"));
 
