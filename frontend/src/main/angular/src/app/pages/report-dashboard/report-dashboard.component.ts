@@ -56,7 +56,7 @@ export class ReportDashboardComponent {
     openDialog(): void {
         const dialogRef = this.dialog.open(NewReportDialogComponent,
             {
-                height: '50%', width: '60%',
+                height: '385px', width: '640px',
                 data: { chapters: this.openedChapters,
                         slug: this.slug }
             });
