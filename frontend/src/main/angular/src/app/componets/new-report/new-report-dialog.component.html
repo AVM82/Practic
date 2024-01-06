@@ -29,7 +29,7 @@
 
         <div class="title-field">
             <mat-label>Тема доповіді</mat-label>
-            <mat-form-field appearance="outline" style="width: 640px;">
+            <mat-form-field appearance="outline" style="width: 550px;">
                 <mat-select [formControl]="topicForm">
                     <mat-option *ngFor="let topic of chapterForm.value.topicReports"
                                 [value]="topic">{{topic.topic}}</mat-option>
