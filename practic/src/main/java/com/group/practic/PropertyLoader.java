@@ -1,6 +1,7 @@
 package com.group.practic;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,24 +18,24 @@ public class PropertyLoader {
     Properties prop = new Properties();
 
 
-    public PropertyLoader(String file, boolean string) {
-        initialized = string ? loadPropertiesFromString(prop, file) : loadProperties(prop, file);
+    public PropertyLoader(String string) {
+        initialized = loadPropertiesFromString(prop, string);
     }
 
 
-    public PropertyLoader(String file) {
+    public PropertyLoader(File file) {
         initialized = loadProperties(prop, file);
     }
 
 
-    public PropertyLoader(ClassLoader classLoader, String file) {
+    public PropertyLoader(ClassLoader classLoader, File file) {
         initialized = loadProperties(classLoader, file);
     }
 
 
-    private boolean loadPropertiesFromString(Properties prop, String file) {
+    private boolean loadPropertiesFromString(Properties prop, String string) {
         try {
-            prop.load(new InputStreamReader(new ByteArrayInputStream(file.getBytes()),
+            prop.load(new InputStreamReader(new ByteArrayInputStream(string.getBytes()),
                     StandardCharsets.UTF_8));
             return true;
         } catch (IOException e) {
@@ -43,12 +44,12 @@ public class PropertyLoader {
     }
 
 
-    protected boolean loadProperties(ClassLoader classLoader, String file) {
+    protected boolean loadProperties(ClassLoader classLoader, File file) {
         if (loadProperties(prop, file)) {
             return true;
         } else {
             try {
-                prop.load(new InputStreamReader(classLoader.getResourceAsStream(file),
+                prop.load(new InputStreamReader(classLoader.getResourceAsStream(file.getPath()),
                         StandardCharsets.UTF_8));
                 return true;
             } catch (IOException e1) {
@@ -58,9 +59,8 @@ public class PropertyLoader {
     }
 
 
-    public static boolean loadProperties(Properties prop, String file) {
-        try (FileReader fr = new FileReader(CoursesInitializator.COURSE_PROPRTY_FOLDER + file,
-                StandardCharsets.UTF_8)) {
+    protected boolean loadProperties(Properties prop, File file) {
+        try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8)) {
             prop.load(fr);
             return true;
         } catch (IOException e) {

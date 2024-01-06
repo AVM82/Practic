@@ -8,7 +8,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatSelectModule} from "@angular/material/select";
 import {CommonModule} from "@angular/common";
 import {MatNativeDateModule} from '@angular/material/core';
-import {FormReport, TopicReport} from "../../models/report";
+import {FormReport} from "../../models/report";
 import { DAYS_AHEAD_REPORT_ANNOUNCE } from 'src/app/enums/app-constans';
 import { CalendarEventService } from 'src/app/services/calendar-event.service';
 import { ReportService } from 'src/app/services/report.service';

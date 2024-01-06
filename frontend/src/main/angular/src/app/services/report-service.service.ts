@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {catchError, delay, Observable, of, retry, tap} from "rxjs";
+import {catchError,  Observable, of, tap} from "rxjs";
 import {ApiUrls, deleteReportsUrl, getReportsUrl, postReportsUrl} from "../enums/api-urls";
 import {Report} from "../models/report";
 import {NewStudentReport} from "../models/newStudentReport";
@@ -31,16 +31,6 @@ export class ReportServiceService {
         this.setCourseSlug(slug);
         this.http.get<Report[][]>(getReportsUrl(slug)).subscribe(reports => this.reports = reports);
     }
-
-/*    
-    getAllActualReports(slug: string): Observable<StudentReport[][]> {
-        return this.http.get<StudentReport[][]>(getReportsUrl(slug)).pipe(
-            delay(2000),
-            retry(2),
-            tap(reports => this.reports = reports),
-            catchError(this.handleError<StudentReport[][]>(`get actual reports = ${slug}`)));
-    }
-*/
 
     createNewReport(newReport: NewStudentReport): Observable<Report> {
         return this.http.post<Report>(postReportsUrl(newReport.chapterId), newReport)
