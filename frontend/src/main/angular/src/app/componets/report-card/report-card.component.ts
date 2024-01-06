@@ -63,7 +63,7 @@ export class ReportCardComponent {
     openChangeReportDialog(): void {
         const dialogRef = this.changingReportDialog.open(NewReportDialogComponent,
             {
-                height: '50%', width: '60%',
+                height: '385px', width: '640px',
                 data: {
                     report: this.report,
                     chapter: this.chapter,
@@ -80,7 +80,7 @@ export class ReportCardComponent {
     openCancelReportDialog(): void {
         const dialogRef = this.cancelingReportDialog.open(NewReportDialogComponent,
             {
-                height: '50%', width: '60%',
+                height: '385px', width: '640px',
                 data: { report: this.report,
                         chapter: this.chapter,
                         chapters: this.chapters
