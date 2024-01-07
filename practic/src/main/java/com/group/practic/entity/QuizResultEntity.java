@@ -8,11 +8,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,8 +38,8 @@ public class QuizResultEntity implements Serializable {
     @JsonIgnore
     StudentChapterEntity studentChapter;
 
-    @OneToOne(mappedBy = "quizResult", cascade = MERGE)
-    private AnswerResultEntity answerResult;
+    @OneToMany(mappedBy = "quizResult", cascade = MERGE)
+    private List<AnswerResultEntity> answerResults;
 
     @CreationTimestamp
     Timestamp startedAt;
